@@ -11,6 +11,8 @@ function init(){
  const dyn=document.getElementById('v5DynamicFields');
  const reset=document.getElementById('resetProfile');
  if(!card||!form||!grid||!store||!cat||!budget||!dyn)return;
+ const result=document.getElementById('resultSection');
+ if(result)result.remove();
  const budgetField=budget.closest('.v5-field'),catField=cat.closest('.v5-field'),subField=sub&&sub.closest('.v5-field');
  card.querySelectorAll('.v5-step4-toggle,.v5-profile-completion-toggle').forEach(el=>el.remove());
  const t=document.createElement('button');
@@ -24,17 +26,7 @@ function init(){
  function normalizeTopFields(){moveLabelInside(store,'فروشگاهتو انتخاب کن');moveLabelInside(cat,'دسته بندی');moveLabelInside(sub,'انتخاب کالا');[store,cat,sub].forEach(field=>{const wrap=field&&field.closest('.v5-field');const label=wrap&&wrap.querySelector(':scope > span');if(label)label.style.display='none'});const hint=document.getElementById('v5StoreHint');if(hint)hint.style.display='none';}
  normalizeTopFields();
  function syncIcon(open){t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید');}
- function mountRecommendations(){
-   const result=document.getElementById('resultSection');
-   if(!result||result.parentElement===card)return;
-   result.classList.remove('v5-result-card');
-   result.classList.add('v6-inline-recommendations');
-   result.hidden=true;
-   result.style.display='none';
-   card.appendChild(result);
- }
- mountRecommendations();
- function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}const result=document.getElementById('resultSection');if(result){result.hidden=true;result.style.display='none';}}
+ function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}}
  function setOpen(open){
    card.classList.toggle('is-open',open);
    form.hidden=false;
@@ -44,8 +36,6 @@ function init(){
    if(subField)subField.hidden=!open||!cat.value;
    if(budgetField)budgetField.hidden=!open||cat.value!=='digital';
    if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none';}
-   const result=document.getElementById('resultSection');
-   if(result){result.hidden=!open;result.style.display=open?'block':'none';}
    if(!open){cat.disabled=true;if(sub)sub.disabled=true}else cat.disabled=!store.value;
    syncIcon(open);
  }
@@ -76,10 +66,5 @@ function initCompletionCardToggle(){
  toggle.addEventListener('click',()=>setOpen(toggle.getAttribute('aria-expanded')!=='true'));
  setOpen(false);
 }
-(function installInlineRecommendationsStyle(){
- const style=document.createElement('style');
- style.textContent='.v5-profile-card .v6-inline-recommendations{display:none!important;width:100%;margin:18px 0 0;padding:0;background:transparent;border:0;box-shadow:none;border-radius:0}.v5-profile-card.is-open .v6-inline-recommendations{display:block!important}.v5-profile-card .v6-inline-recommendations .section-title{text-align:center!important}.v5-profile-card .v6-inline-recommendations .section-title h2,.v5-profile-card .v6-inline-recommendations .section-title p{text-align:center!important;margin-left:auto;margin-right:auto}';
- document.head.appendChild(style);
-})();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();initCompletionCardToggle()},{once:true});else setTimeout(()=>{init();initCompletionCardToggle()},0);
 })();
