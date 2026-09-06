@@ -4,10 +4,18 @@
   "description": "پلتفرم هوشمند برای تجربه بهترین خرید اینترنتی",
   "start_url": "./",
   "scope": "./",
-  "display": "browser",
+  "display": "standalone",
   "orientation": "portrait",
   "dir": "rtl",
   "lang": "fa",
   "theme_color": "#2a4169",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
