@@ -28,19 +28,7 @@ function init(){
      menu.classList.remove('v6-menu');
      home.classList.add('v6-menu');
    }
-   if(recommendations){
-     const replacement=recommendations.cloneNode(true);
-     const label=replacement.querySelector('span');
-     if(label)label.textContent='پیشنهادات';
-     recommendations.replaceWith(replacement);
-     replacement.addEventListener('click',function(){
-       const result=document.getElementById('resultSection');
-       if(!result)return;
-       result.classList.add('v6-nav-result-visible');
-       result.style.setProperty('display','block','important');
-       result.scrollIntoView({behavior:'smooth',block:'start'});
-     });
-   }
+   if(recommendations)recommendations.remove();
 
    /* Icons-only footer navigation. */
    if(!document.getElementById('v6-nav-icons-only-style')){
