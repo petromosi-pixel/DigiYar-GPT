@@ -16,22 +16,20 @@ function init(){
  }));
  buttons.forEach(b=>b.setAttribute('aria-expanded','false'));
 
- /* Final V6 navigation placement: keep footer design, swap Home/Menu slots. */
+ /* Final V6 navigation placement: swap the Home and Menu positions only. */
  const nav=document.getElementById('v6FooterNav');
  if(nav){
    const menu=nav.querySelector('[data-v6-action="menu"]');
    const home=nav.querySelector('[data-v6-action="home"]');
    const recommendations=nav.querySelector('[data-v6-action="recommendations"]');
    if(menu&&home){
-     const marker=document.createComment('v6-menu-home-swap');
-     nav.insertBefore(marker,menu);
      nav.insertBefore(home,menu);
-     nav.insertBefore(menu,marker);
-     marker.remove();
+     nav.appendChild(menu);
    }
    if(recommendations){
      const replacement=recommendations.cloneNode(true);
-     replacement.querySelector('span').textContent='پیشنهادات';
+     const label=replacement.querySelector('span');
+     if(label)label.textContent='پیشنهادات';
      recommendations.replaceWith(replacement);
      replacement.addEventListener('click',function(){
        const result=document.getElementById('resultSection');
