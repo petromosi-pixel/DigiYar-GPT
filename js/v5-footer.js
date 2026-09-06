@@ -15,6 +15,37 @@ function init(){
    if(!wasOpen){panel.hidden=false;panel.classList.add('is-open');this.classList.add('is-active');this.setAttribute('aria-expanded','true');panel.scrollIntoView({behavior:'smooth',block:'nearest'});}
  }));
  buttons.forEach(b=>b.setAttribute('aria-expanded','false'));
+
+ /* Final V6 navigation placement: keep footer design, swap Home/Menu slots. */
+ const nav=document.getElementById('v6FooterNav');
+ if(nav){
+   const menu=nav.querySelector('[data-v6-action="menu"]');
+   const home=nav.querySelector('[data-v6-action="home"]');
+   const recommendations=nav.querySelector('[data-v6-action="recommendations"]');
+   if(menu&&home){
+     const marker=document.createComment('v6-menu-home-swap');
+     nav.insertBefore(marker,menu);
+     nav.insertBefore(home,menu);
+     nav.insertBefore(menu,marker);
+     marker.remove();
+   }
+   if(recommendations){
+     const replacement=recommendations.cloneNode(true);
+     replacement.querySelector('span').textContent='پیشنهادات';
+     recommendations.replaceWith(replacement);
+     replacement.addEventListener('click',function(){
+       const result=document.getElementById('resultSection');
+       if(!result)return;
+       result.classList.add('v6-nav-result-visible');
+       result.style.setProperty('display','block','important');
+       result.scrollIntoView({behavior:'smooth',block:'start'});
+     });
+   }
+ }
+
+ /* The OS status bar cannot be covered by a normal web page; use the same light chrome as the footer. */
+ const theme=document.querySelector('meta[name="theme-color"]');
+ if(theme)theme.setAttribute('content','#ffffff');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
