@@ -1,9 +1,28 @@
 .v5-profile-card .v5-step4-toggle.v5-step4-final-toggle .v5-step4-toggle-icon{transition:transform .55s cubic-bezier(.34,1.56,.64,1)}
 .v5-profile-card .v5-step4-toggle.v5-step4-final-toggle[aria-expanded="false"] .v5-step4-toggle-icon{transform:rotate(90deg)}
 .v5-profile-card .v5-step4-toggle.v5-step4-final-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(-90deg)}
-/* Same approved toggle treatment for the profile-completion card. */
 .v5-profile-completion .v5-step4-toggle.v5-step4-final-toggle{width:58px!important;height:28px!important;margin:0 auto!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;opacity:.85;cursor:pointer;display:flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important;position:relative!important;z-index:5!important}
 .v5-profile-completion .v5-step4-toggle-icon{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:0!important;width:38px!important;height:24px!important;line-height:1!important;transform:none!important;animation:none!important;visibility:visible!important;opacity:1!important;color:var(--v5-navy)!important}
 .v5-profile-completion .v5-step4-toggle-icon i{display:block!important;width:auto!important;height:auto!important;margin:0 -1px!important;background:none!important;border:0!important;font-family:inherit!important;font-size:16px!important;font-style:normal!important;font-weight:400!important;line-height:1!important;transform:none!important;animation:none!important;color:currentColor!important;visibility:visible!important;opacity:1!important}
 .v5-profile-completion .v5-step4-toggle.v5-step4-final-toggle[aria-expanded="false"] .v5-step4-toggle-icon{transform:rotate(90deg)!important;animation:none!important}
 .v5-profile-completion .v5-step4-toggle.v5-step4-final-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(-90deg)!important;animation:none!important}
+.v5-result-card{position:relative;text-align:center!important;overflow:visible!important}
+.v5-result-card[hidden]{display:none!important}
+.v5-result-card .section-title,.v5-result-card .section-title h2,.v5-result-card .section-title p{text-align:center!important}
+.v5-result-card #recommendations{display:grid;gap:12px;margin-top:12px}
+.v5-result-card .recommendation{position:relative;padding:12px;border:1px solid #dfe6f0;border-radius:14px;background:#fff;text-align:center;box-sizing:border-box}
+.v5-result-card .recommendation-rank{font-weight:800;color:var(--v5-navy)}
+.v5-result-card .recommendation-product-image img{width:100%;max-width:180px;height:180px;object-fit:contain;display:block;margin:8px auto}
+.v5-result-card .recommendation h3{margin:8px 0;font-size:14px}
+.v5-result-card .recommendation-price{font-weight:800;margin:5px 0}
+.v5-result-card .recommendation-features{font-size:12px;line-height:1.7;margin:5px 0}
+.v5-result-card .recommendation-link{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;padding:8px 14px;border-radius:10px;background:var(--v5-navy);color:#fff;text-decoration:none;font-weight:700}
+.v5-result-card .need-summary{margin-top:10px}
+.v5-result-card .recommendation-loading{text-align:center;padding:14px;color:#69778d}
+.v5-profile-completion .v5-step4-toggle-icon,.v5-popular-card .v5-popular-toggle-icon{color:var(--v5-navy)!important}
+.v6-dark .v5-profile-completion .v5-step4-toggle-icon,.v6-dark .v5-popular-card .v5-popular-toggle-icon,.v6-dark .v5-profile-card .v5-step4-toggle-icon{color:#f8fafc!important;text-shadow:0 0 8px rgba(255,255,255,.18)}
+.v6-dark .v5-result-card .recommendation{border-color:#334155;background:#111827;color:#f8fafc}
+.v6-dark .v5-result-card .recommendation-rank,.v6-dark .v5-result-card .recommendation h3{color:#f8fafc}
+.v6-dark .v5-result-card .recommendation-price{color:#fbbf24}
+.v6-dark .v5-result-card .recommendation-features,.v6-dark .v5-result-card .recommendation-loading{color:#cbd5e1}
+.v6-dark .v5-result-card .recommendation-link{background:#e5e7eb;color:#111827}
