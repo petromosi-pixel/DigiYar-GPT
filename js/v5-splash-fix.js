@@ -2,6 +2,13 @@
 (function () {
   'use strict';
 
+  function installPromptAnimationFix() {
+    var style = document.createElement('style');
+    style.id = 'digiyar-install-prompt-animation';
+    style.textContent = '@keyframes digiyarInstallPromptIn{from{opacity:0;transform:translate3d(-50%,-130%,0)}to{opacity:1;transform:translate3d(-50%,0,0)}}#installPrompt.show{animation:digiyarInstallPromptIn .65s cubic-bezier(.22,1,.36,1) both;}';
+    document.head.appendChild(style);
+  }
+
   function dismissSplash() {
     var splash = document.getElementById('splashScreen');
     if (!splash) return;
@@ -16,6 +23,8 @@
     var splash = document.getElementById('splashScreen');
     if (!splash) return;
     splash.setAttribute('aria-hidden', 'false');
+
+    installPromptAnimationFix();
 
     /* Splash uses the clean logo only; never swap between old/new assets. */
     var logo = splash.querySelector('.v5-splash-logo');
