@@ -17,12 +17,13 @@
     if (!splash) return;
     splash.setAttribute('aria-hidden', 'false');
 
-    /* Use ONLY the current splash/app icon. Never swap to the legacy logo. */
+    /* Splash uses the clean logo only; never swap between old/new assets. */
     var logo = splash.querySelector('.v5-splash-logo');
     if (logo) {
-      logo.src = './icon/icon-512.png';
+      logo.src = './assets/logos/logo.png';
       logo.removeAttribute('srcset');
       logo.decoding = 'async';
+      logo.loading = 'eager';
     }
 
     var loader = splash.querySelector('.v5-splash-loader');
@@ -34,7 +35,6 @@
     var legacyLogo = splash.querySelector('.legacy-splash-logo');
     if (legacyLogo) legacyLogo.remove();
 
-    /* Splash remains 3 seconds; install prompt waits 5 seconds after this ends. */
     window.setTimeout(dismissSplash, 3000);
   }
 
