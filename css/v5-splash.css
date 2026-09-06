@@ -96,10 +96,11 @@
   animation: v6DotFill 3s ease-in-out infinite;
 }
 
+/* یک چرخه کامل لودینگ = کل زمان نمایش اسپلش */
 .v5-splash-loader span:nth-child(1) { animation-delay: 0s; }
-.v5-splash-loader span:nth-child(2) { animation-delay: .75s; }
-.v5-splash-loader span:nth-child(3) { animation-delay: 1.5s; }
-.v5-splash-loader span:nth-child(4) { animation-delay: 2.25s; }
+.v5-splash-loader span:nth-child(2) { animation-delay: -.75s; }
+.v5-splash-loader span:nth-child(3) { animation-delay: -1.5s; }
+.v5-splash-loader span:nth-child(4) { animation-delay: -2.25s; }
 
 @keyframes v6SplashEnter {
   from { opacity: 0; }
