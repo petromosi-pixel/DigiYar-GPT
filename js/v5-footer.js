@@ -25,6 +25,9 @@ function init(){
    if(menu&&home){
      nav.insertBefore(home,menu);
      nav.appendChild(menu);
+     /* Move the navy highlight from the hamburger to Home. */
+     menu.classList.remove('v6-menu');
+     home.classList.add('v6-menu');
    }
    if(recommendations){
      const replacement=recommendations.cloneNode(true);
@@ -38,6 +41,14 @@ function init(){
        result.style.setProperty('display','block','important');
        result.scrollIntoView({behavior:'smooth',block:'start'});
      });
+   }
+
+   /* Preview: remove navigation icons and keep the labels only. */
+   if(!document.getElementById('v6-nav-labels-only-style')){
+     const style=document.createElement('style');
+     style.id='v6-nav-labels-only-style';
+     style.textContent='.v6-footer-nav button svg{display:none!important}.v6-footer-nav button{gap:0!important}.v6-footer-nav .v6-menu{height:50px!important}';
+     document.head.appendChild(style);
    }
  }
 
