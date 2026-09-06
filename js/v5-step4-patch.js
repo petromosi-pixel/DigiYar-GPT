@@ -24,7 +24,17 @@ function init(){
  function normalizeTopFields(){moveLabelInside(store,'فروشگاهتو انتخاب کن');moveLabelInside(cat,'دسته بندی');moveLabelInside(sub,'انتخاب کالا');[store,cat,sub].forEach(field=>{const wrap=field&&field.closest('.v5-field');const label=wrap&&wrap.querySelector(':scope > span');if(label)label.style.display='none'});const hint=document.getElementById('v5StoreHint');if(hint)hint.style.display='none';}
  normalizeTopFields();
  function syncIcon(open){t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید');}
- function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}const result=document.getElementById('resultSection');if(result)result.hidden=true;}
+ function mountRecommendations(){
+   const result=document.getElementById('resultSection');
+   if(!result||result.parentElement===card)return;
+   result.classList.remove('v5-result-card');
+   result.classList.add('v6-inline-recommendations');
+   result.hidden=false;
+   result.style.display='block';
+   card.appendChild(result);
+ }
+ mountRecommendations();
+ function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}const result=document.getElementById('resultSection');if(result){result.hidden=false;result.style.display='block';}}
  function setOpen(open){
    card.classList.toggle('is-open',open);
    form.hidden=false;
@@ -64,5 +74,10 @@ function initCompletionCardToggle(){
  toggle.addEventListener('click',()=>setOpen(toggle.getAttribute('aria-expanded')!=='true'));
  setOpen(false);
 }
+(function installInlineRecommendationsStyle(){
+ const style=document.createElement('style');
+ style.textContent='.v5-profile-card .v6-inline-recommendations{display:block!important;width:100%;margin:18px 0 0;padding:0;background:transparent;border:0;box-shadow:none;border-radius:0}.v5-profile-card .v6-inline-recommendations .section-title{text-align:center!important}.v5-profile-card .v6-inline-recommendations .section-title h2,.v5-profile-card .v6-inline-recommendations .section-title p{text-align:center!important;margin-left:auto;margin-right:auto}';
+ document.head.appendChild(style);
+})();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();initCompletionCardToggle()},{once:true});else setTimeout(()=>{init();initCompletionCardToggle()},0);
 })();
