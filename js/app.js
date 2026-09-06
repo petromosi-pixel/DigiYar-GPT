@@ -21,7 +21,7 @@
   const reset=$("resetProfile");if(reset)reset.addEventListener("click",function(){if(window.DigiYarUserProfile)window.DigiYarUserProfile.clear();if($("profileForm"))$("profileForm").reset();renderProfile(null);});
   let deferredInstallPrompt=null;let installPromptShown=false;let installPromptDismissed=false;let installPromptTimer=null;let installPromptDelayTimer=null;
   const installPrompt=$("installPrompt"),installBtn=$("installBtn"),installDismiss=$("installDismiss");
-  function hideInstallPrompt(){if(!installPrompt)return;installPrompt.classList.remove("show");window.setTimeout(function(){installPrompt.classList.add("hidden");},350);}
+  function hideInstallPrompt(){if(!installPrompt)return;installPrompt.classList.remove("show");window.setTimeout(function(){installPrompt.classList.add("hidden");},600);}
   function showInstallPrompt(){if(installPromptShown||installPromptDismissed||!deferredInstallPrompt||!installPrompt)return;installPromptShown=true;installPrompt.classList.remove("hidden");requestAnimationFrame(function(){installPrompt.classList.add("show");});window.clearTimeout(installPromptTimer);installPromptTimer=window.setTimeout(hideInstallPrompt,9000);}
   /* Splash is 3s. Install notification must appear exactly 5s after splash ends. */
   const installEligibleAt=Date.now()+8000;
