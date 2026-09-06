@@ -26,6 +26,14 @@
 
     installPromptAnimationFix();
 
+    /* Use the same clean, no-red-circle logo in the install notification. */
+    var installIcon = document.querySelector('#installPrompt .install-prompt-icon img');
+    if (installIcon) {
+      installIcon.src = './assets/logos/logo.png';
+      installIcon.removeAttribute('srcset');
+      installIcon.decoding = 'async';
+    }
+
     /* Splash uses the clean logo only; never swap between old/new assets. */
     var logo = splash.querySelector('.v5-splash-logo');
     if (logo) {
