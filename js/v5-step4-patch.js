@@ -29,12 +29,12 @@ function init(){
    if(!result||result.parentElement===card)return;
    result.classList.remove('v5-result-card');
    result.classList.add('v6-inline-recommendations');
-   result.hidden=false;
-   result.style.display='block';
+   result.hidden=true;
+   result.style.display='none';
    card.appendChild(result);
  }
  mountRecommendations();
- function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}const result=document.getElementById('resultSection');if(result){result.hidden=false;result.style.display='block';}}
+ function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}const result=document.getElementById('resultSection');if(result){result.hidden=true;result.style.display='none';}}
  function setOpen(open){
    card.classList.toggle('is-open',open);
    form.hidden=false;
@@ -44,6 +44,8 @@ function init(){
    if(subField)subField.hidden=!open||!cat.value;
    if(budgetField)budgetField.hidden=!open||cat.value!=='digital';
    if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none';}
+   const result=document.getElementById('resultSection');
+   if(result){result.hidden=!open;result.style.display=open?'block':'none';}
    if(!open){cat.disabled=true;if(sub)sub.disabled=true}else cat.disabled=!store.value;
    syncIcon(open);
  }
@@ -76,7 +78,7 @@ function initCompletionCardToggle(){
 }
 (function installInlineRecommendationsStyle(){
  const style=document.createElement('style');
- style.textContent='.v5-profile-card .v6-inline-recommendations{display:block!important;width:100%;margin:18px 0 0;padding:0;background:transparent;border:0;box-shadow:none;border-radius:0}.v5-profile-card .v6-inline-recommendations .section-title{text-align:center!important}.v5-profile-card .v6-inline-recommendations .section-title h2,.v5-profile-card .v6-inline-recommendations .section-title p{text-align:center!important;margin-left:auto;margin-right:auto}';
+ style.textContent='.v5-profile-card .v6-inline-recommendations{display:none!important;width:100%;margin:18px 0 0;padding:0;background:transparent;border:0;box-shadow:none;border-radius:0}.v5-profile-card.is-open .v6-inline-recommendations{display:block!important}.v5-profile-card .v6-inline-recommendations .section-title{text-align:center!important}.v5-profile-card .v6-inline-recommendations .section-title h2,.v5-profile-card .v6-inline-recommendations .section-title p{text-align:center!important;margin-left:auto;margin-right:auto}';
  document.head.appendChild(style);
 })();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();initCompletionCardToggle()},{once:true});else setTimeout(()=>{init();initCompletionCardToggle()},0);
