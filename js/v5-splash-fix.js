@@ -18,7 +18,7 @@
 
     splash.setAttribute('aria-hidden', 'false');
 
-    /* Keep the approved high-resolution logo asset and avoid the legacy red-ring icon. */
+    /* Use the splash logo asset at the established path. */
     var logo = splash.querySelector('.v5-splash-logo');
     if (logo) logo.src = './assets/logos/logo.png';
 
@@ -37,7 +37,7 @@
     var legacyLogo = splash.querySelector('.legacy-splash-logo');
     if (legacyLogo) legacyLogo.remove();
 
-    /* Exact visual timing requested for the V6 splash. */
+    /* Splash duration and loader cycle are both 3 seconds. */
     window.setTimeout(dismissSplash, 3000);
   }
 
