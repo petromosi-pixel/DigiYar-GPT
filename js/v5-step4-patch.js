@@ -11,8 +11,17 @@ function init(){
  const dyn=document.getElementById('v5DynamicFields');
  const reset=document.getElementById('resetProfile');
  if(!card||!form||!grid||!store||!cat||!budget||!dyn)return;
- const result=document.getElementById('resultSection');
- if(result)result.remove();
+ let result=document.getElementById('resultSection');
+ if(!result){
+   result=document.createElement('section');
+   result.id='resultSection';
+   result.className='card v5-result-card';
+   result.innerHTML='<div class="section-title"><h2>پیشنهادات دیجی‌یار</h2><p id="resultHint">بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن</p></div><div id="needSummary" class="need-summary empty" hidden></div><div id="recommendations" class="recommendations"></div>';
+   card.insertAdjacentElement('afterend',result);
+ }else if(!document.getElementById('recommendations')){
+   const box=document.createElement('div');box.id='recommendations';box.className='recommendations';result.appendChild(box);
+ }
+ result.hidden=true;
  const budgetField=budget.closest('.v5-field'),catField=cat.closest('.v5-field'),subField=sub&&sub.closest('.v5-field');
  card.querySelectorAll('.v5-step4-toggle,.v5-profile-completion-toggle').forEach(el=>el.remove());
  const t=document.createElement('button');
@@ -26,7 +35,7 @@ function init(){
  function normalizeTopFields(){moveLabelInside(store,'فروشگاهتو انتخاب کن');moveLabelInside(cat,'دسته بندی');moveLabelInside(sub,'انتخاب کالا');[store,cat,sub].forEach(field=>{const wrap=field&&field.closest('.v5-field');const label=wrap&&wrap.querySelector(':scope > span');if(label)label.style.display='none'});const hint=document.getElementById('v5StoreHint');if(hint)hint.style.display='none';}
  normalizeTopFields();
  function syncIcon(open){t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید');}
- function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}}
+ function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}if(result){result.hidden=true;result.classList.remove('is-open');}}
  function setOpen(open){
    card.classList.toggle('is-open',open);
    form.hidden=false;
