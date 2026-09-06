@@ -1,10 +1,10 @@
 /* =========================================================
    DigiYar V6
    Service Worker
-   Cache Version: 6.0.7
+   Cache Version: 6.0.8
    ========================================================= */
 
-const CACHE_VERSION = "digiyar-v6-6.0.7";
+const CACHE_VERSION = "digiyar-v6-6.0.8";
 
 const APP_SHELL = [
   "./",
