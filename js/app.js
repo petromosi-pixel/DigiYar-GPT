@@ -5,7 +5,7 @@
 (function () {
   "use strict";
   function $(id){return document.getElementById(id);}
-  function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];});}
+  function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;"," >":"&gt;",'"':"&quot;","'":"&#039;"}[c];});}
   function toArray(value){return Array.isArray(value)?value:[];}
   function getProductImage(product){return product&&(product.image||product.imageUrl||product.thumbnail||product.thumbnailUrl||product.photo||"");}
   function priorityLabel(index){return ["اولویت اول","اولویت دوم","اولویت سوم"][index]||"اولویت "+(index+1);}
@@ -86,10 +86,23 @@
   const reset=$("resetProfile");
   if(reset)reset.addEventListener("click",function(){if(window.DigiYarUserProfile)window.DigiYarUserProfile.clear();if($("profileForm"))$("profileForm").reset();renderProfile(null);});
 
-  let deferredInstallPrompt=null;const installPrompt=$("installPrompt"),installBtn=$("installBtn"),installDismiss=$("installDismiss");
-  window.addEventListener("beforeinstallprompt",function(event){event.preventDefault();deferredInstallPrompt=event;if(installPrompt){installPrompt.classList.remove("hidden");requestAnimationFrame(function(){installPrompt.classList.add("show");});}});
+  let deferredInstallPrompt=null;
+  let installPromptShown=false;
+  let installPromptDismissed=false;
+  const installPrompt=$("installPrompt"),installBtn=$("installBtn"),installDismiss=$("installDismiss");
+  function showInstallPrompt(){
+    if(installPromptShown||installPromptDismissed||!deferredInstallPrompt||!installPrompt)return;
+    installPromptShown=true;
+    installPrompt.classList.remove("hidden");
+    requestAnimationFrame(function(){installPrompt.classList.add("show");});
+  }
+  window.addEventListener("beforeinstallprompt",function(event){
+    event.preventDefault();
+    deferredInstallPrompt=event;
+  });
+  window.setTimeout(showInstallPrompt,5000);
   if(installBtn)installBtn.addEventListener("click",async function(){if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();try{await deferredInstallPrompt.userChoice;}catch(e){}deferredInstallPrompt=null;if(installPrompt)installPrompt.classList.remove("show");});
-  if(installDismiss)installDismiss.addEventListener("click",function(){if(installPrompt)installPrompt.classList.remove("show");});
+  if(installDismiss)installDismiss.addEventListener("click",function(){installPromptDismissed=true;if(installPrompt)installPrompt.classList.remove("show");});
 
   renderPlatforms();
   let savedProfile=null;if(window.DigiYarUserProfile){try{savedProfile=window.DigiYarUserProfile.getProfile();}catch(error){savedProfile=null;}}
