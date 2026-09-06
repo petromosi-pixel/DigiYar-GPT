@@ -21,8 +21,25 @@
   const reset=$("resetProfile");if(reset)reset.addEventListener("click",function(){if(window.DigiYarUserProfile)window.DigiYarUserProfile.clear();if($("profileForm"))$("profileForm").reset();renderProfile(null);});
   let deferredInstallPrompt=null;let installPromptShown=false;let installPromptDismissed=false;let installPromptTimer=null;let installPromptDelayTimer=null;let installPromptHideTimer=null;
   const installPrompt=$("installPrompt"),installBtn=$("installBtn"),installDismiss=$("installDismiss");
-  function hideInstallPrompt(){if(!installPrompt)return;window.clearTimeout(installPromptHideTimer);installPrompt.classList.remove("show");installPromptHideTimer=window.setTimeout(function(){installPrompt.classList.add("hidden");},700);}
-  function showInstallPrompt(){if(installPromptShown||installPromptDismissed||!deferredInstallPrompt||!installPrompt)return;window.clearTimeout(installPromptHideTimer);installPromptShown=true;installPrompt.classList.remove("hidden");requestAnimationFrame(function(){requestAnimationFrame(function(){installPrompt.classList.add("show");});});window.clearTimeout(installPromptTimer);installPromptTimer=window.setTimeout(hideInstallPrompt,9000);}
+  function hideInstallPrompt(){
+    if(!installPrompt)return;
+    window.clearTimeout(installPromptHideTimer);
+    installPrompt.classList.remove("show");
+    installPrompt.classList.add("hiding");
+    installPromptHideTimer=window.setTimeout(function(){
+      installPrompt.classList.add("hidden");
+      installPrompt.classList.remove("hiding");
+    },700);
+  }
+  function showInstallPrompt(){
+    if(installPromptShown||installPromptDismissed||!deferredInstallPrompt||!installPrompt)return;
+    window.clearTimeout(installPromptHideTimer);
+    installPromptShown=true;
+    installPrompt.classList.remove("hidden","hiding");
+    requestAnimationFrame(function(){requestAnimationFrame(function(){installPrompt.classList.add("show");});});
+    window.clearTimeout(installPromptTimer);
+    installPromptTimer=window.setTimeout(hideInstallPrompt,9000);
+  }
   /* Splash is 3s. Install notification appears 5s after splash ends. */
   const installEligibleAt=Date.now()+8000;
   window.addEventListener("beforeinstallprompt",function(event){event.preventDefault();deferredInstallPrompt=event;window.clearTimeout(installPromptDelayTimer);installPromptDelayTimer=window.setTimeout(showInstallPrompt,Math.max(0,installEligibleAt-Date.now()));});
