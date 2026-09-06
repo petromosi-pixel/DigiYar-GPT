@@ -43,11 +43,11 @@ function init(){
      });
    }
 
-   /* Preview: remove navigation icons and keep the labels only. */
-   if(!document.getElementById('v6-nav-labels-only-style')){
+   /* Preview: keep navigation icons and hide the labels. */
+   if(!document.getElementById('v6-nav-icons-only-style')){
      const style=document.createElement('style');
-     style.id='v6-nav-labels-only-style';
-     style.textContent='.v6-footer-nav button svg{display:none!important}.v6-footer-nav button{gap:0!important}.v6-footer-nav .v6-menu{height:50px!important}';
+     style.id='v6-nav-icons-only-style';
+     style.textContent='.v6-footer-nav button span{display:none!important}.v6-footer-nav button{gap:0!important}.v6-footer-nav button svg{display:block!important}.v6-footer-nav .v6-menu{height:50px!important;width:50px!important}.v6-footer-nav .v6-menu{background:linear-gradient(135deg,#2a4169,#38547f)!important;color:#fff!important;box-shadow:0 6px 15px rgba(42,65,105,.25)!important}.v6-footer-nav button:not(.v6-menu){background:transparent}.v6-footer-nav button[data-v6-action="menu"]{background:transparent!important;color:#69778d!important;box-shadow:none!important}';
      document.head.appendChild(style);
    }
  }
