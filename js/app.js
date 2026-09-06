@@ -89,20 +89,39 @@
   let deferredInstallPrompt=null;
   let installPromptShown=false;
   let installPromptDismissed=false;
+  let installPromptTimer=null;
   const installPrompt=$("installPrompt"),installBtn=$("installBtn"),installDismiss=$("installDismiss");
+  function hideInstallPrompt(){
+    if(!installPrompt)return;
+    installPrompt.classList.remove("show");
+    window.setTimeout(function(){installPrompt.classList.add("hidden");},350);
+  }
   function showInstallPrompt(){
     if(installPromptShown||installPromptDismissed||!deferredInstallPrompt||!installPrompt)return;
     installPromptShown=true;
     installPrompt.classList.remove("hidden");
     requestAnimationFrame(function(){installPrompt.classList.add("show");});
+    window.clearTimeout(installPromptTimer);
+    installPromptTimer=window.setTimeout(hideInstallPrompt,9000);
   }
   window.addEventListener("beforeinstallprompt",function(event){
     event.preventDefault();
     deferredInstallPrompt=event;
+    window.setTimeout(showInstallPrompt,300);
   });
-  window.setTimeout(showInstallPrompt,5000);
-  if(installBtn)installBtn.addEventListener("click",async function(){if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();try{await deferredInstallPrompt.userChoice;}catch(e){}deferredInstallPrompt=null;if(installPrompt)installPrompt.classList.remove("show");});
-  if(installDismiss)installDismiss.addEventListener("click",function(){installPromptDismissed=true;if(installPrompt)installPrompt.classList.remove("show");});
+  if(installBtn)installBtn.addEventListener("click",async function(){
+    if(!deferredInstallPrompt)return;
+    deferredInstallPrompt.prompt();
+    try{await deferredInstallPrompt.userChoice;}catch(e){}
+    deferredInstallPrompt=null;
+    window.clearTimeout(installPromptTimer);
+    hideInstallPrompt();
+  });
+  if(installDismiss)installDismiss.addEventListener("click",function(){
+    installPromptDismissed=true;
+    window.clearTimeout(installPromptTimer);
+    hideInstallPrompt();
+  });
 
   renderPlatforms();
   let savedProfile=null;if(window.DigiYarUserProfile){try{savedProfile=window.DigiYarUserProfile.getProfile();}catch(error){savedProfile=null;}}
