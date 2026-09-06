@@ -28,7 +28,17 @@ function init(){
      menu.classList.remove('v6-menu');
      home.classList.add('v6-menu');
    }
-   if(recommendations)recommendations.remove();
+   if(recommendations){
+     const replacement=recommendations.cloneNode(true);
+     const label=replacement.querySelector('span');
+     if(label)label.textContent='پیشنهادات';
+     recommendations.replaceWith(replacement);
+     replacement.addEventListener('click',function(){
+       const target=document.getElementById('v5DealViewport');
+       if(!target)return;
+       target.scrollIntoView({behavior:'smooth',block:'center'});
+     });
+   }
 
    /* Icons-only footer navigation. */
    if(!document.getElementById('v6-nav-icons-only-style')){
