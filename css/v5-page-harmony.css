@@ -1,13 +1,13 @@
 /* V5 homepage visual harmony — excludes the deals widget card */
-.v5-profile-card,.v5-popular-card,.v5-profile-completion{box-sizing:border-box}
-.v5-profile-card .section-title,.v5-popular-card .section-title,.v5-profile-completion .section-title{text-align:center;margin:0}
-.v5-profile-card .section-title h2,.v5-popular-card .section-title h2,.v5-profile-completion .section-title h2{margin:0;font-size:19px;line-height:1.25;text-align:center}
-.v5-profile-card .section-title p,.v5-popular-card .section-title p,.v5-profile-completion .section-title p{margin:3px 0 0;font-size:11px;line-height:1.35;color:var(--v5-soft);text-align:center;white-space:nowrap}
-.v5-profile-card,.v5-popular-card,.v5-profile-completion{padding-top:12px;padding-bottom:10px}
+.v5-profile-card,.v5-popular-card,.v5-profile-completion,.v5-result-card{box-sizing:border-box}
+.v5-profile-card .section-title,.v5-popular-card .section-title,.v5-profile-completion .section-title,.v5-result-card .section-title{text-align:center;margin:0}
+.v5-profile-card .section-title h2,.v5-popular-card .section-title h2,.v5-profile-completion .section-title h2,.v5-result-card .section-title h2{margin:0;font-size:19px;line-height:1.25;text-align:center}
+.v5-profile-card .section-title p,.v5-popular-card .section-title p,.v5-profile-completion .section-title p,.v5-result-card .section-title p{margin:3px 0 0;font-size:11px;line-height:1.35;color:var(--v5-soft);text-align:center;white-space:nowrap}
+.v5-profile-card,.v5-popular-card,.v5-profile-completion,.v5-result-card{padding-top:12px;padding-bottom:10px}
 .v5-profile-card:not(.is-open) .v5-profile-completion-form,.v5-profile-card:not(.is-open) #profileForm,.v5-popular-card:not(.is-open) #platforms,.v5-profile-completion:not(.is-open) #v5ProfileCompletionForm{max-height:0!important;opacity:0!important;overflow:hidden!important;visibility:hidden!important;margin-top:0!important;margin-bottom:0!important;pointer-events:none!important;transition:max-height .38s cubic-bezier(.4,0,.2,1),opacity .24s ease,margin .38s ease,visibility 0s linear .38s!important}
 .v5-profile-card.is-open .v5-profile-completion-form,.v5-profile-card.is-open #profileForm,.v5-popular-card.is-open #platforms,.v5-profile-completion.is-open #v5ProfileCompletionForm{max-height:1200px!important;opacity:1!important;overflow:visible!important;visibility:visible!important;pointer-events:auto!important;transition:max-height .48s cubic-bezier(.22,1,.36,1),opacity .28s ease,margin .48s ease,visibility 0s!important}
 .v5-profile-card .v5-profile-completion-form,.v5-profile-card #profileForm,.v5-popular-card #platforms,.v5-profile-completion #v5ProfileCompletionForm{transition:max-height .48s cubic-bezier(.22,1,.36,1),opacity .28s ease,margin .48s ease,visibility 0s!important}
-.v5-profile-card .section-title,.v5-popular-card .section-title,.v5-profile-completion .section-title{position:relative;z-index:1}
+.v5-profile-card .section-title,.v5-popular-card .section-title,.v5-profile-completion .section-title,.v5-result-card .section-title{position:relative;z-index:1}
 .v5-profile-card.is-open #profileForm{display:grid!important}
 .v5-profile-completion.is-open #v5ProfileCompletionForm{display:grid!important}
 .v5-profile-completion .v5-profile-completion-toggle{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:20!important;align-items:center!important;justify-content:center!important;width:48px!important;height:24px!important;margin:1px auto 0!important;padding:0!important;border:0!important;background:transparent!important;color:var(--v5-navy)!important;cursor:pointer!important;overflow:visible!important}
@@ -19,7 +19,24 @@
 .v5-profile-completion #v5ProfileCompletionForm,.v5-profile-completion #v5ProfileCompletionForm .v5-field,.v5-profile-completion #v5ProfileCompletionForm label,.v5-profile-completion #v5ProfileCompletionForm input,.v5-profile-completion #v5ProfileCompletionForm select,.v5-profile-completion #v5ProfileCompletionForm textarea{text-align:center!important}
 .v5-profile-completion #v5ProfileCompletionForm input,.v5-profile-completion #v5ProfileCompletionForm select,.v5-profile-completion #v5ProfileCompletionForm textarea{text-align-last:center!important}
 .v5-profile-completion #v5ProfileCompletionForm option{text-align:center!important}
-/* Only correct the popular-stores toggle direction. Keep logo/layout untouched. */
 .v5-popular-card .v5-popular-toggle[aria-expanded="false"] .v5-popular-toggle-icon{transform:rotate(-90deg)!important}
 .v5-popular-card .v5-popular-toggle[aria-expanded="true"] .v5-popular-toggle-icon{transform:rotate(90deg)!important}
-@media(max-width:760px){.v5-profile-card .section-title h2,.v5-popular-card .section-title h2,.v5-profile-completion .section-title h2{font-size:19px}.v5-profile-card .section-title p,.v5-popular-card .section-title p,.v5-profile-completion .section-title p{font-size:11px}}
+@media(max-width:760px){.v5-profile-card .section-title h2,.v5-popular-card .section-title h2,.v5-profile-completion .section-title h2,.v5-result-card .section-title h2{font-size:19px}.v5-profile-card .section-title p,.v5-popular-card .section-title p,.v5-profile-completion .section-title p,.v5-result-card .section-title p{font-size:11px}}
+
+/* V6 dark mode — selected stores, purchase controls and results */
+body.v6-dark .v5-popular-card,body.v6-dark .v5-result-card{background:#111827!important;color:#e5e7eb!important;border-color:#263449!important;box-shadow:0 8px 26px rgba(0,0,0,.28)!important}
+body.v6-dark .v5-result-card .section-title h2,body.v6-dark .v5-result-card .section-title p{color:#f8fafc!important}
+body.v6-dark .v5-result-card .need-summary,body.v6-dark .v5-result-card .recommendation-loading{background:#172033!important;color:#dbe7f5!important;border-color:#334155!important}
+body.v6-dark .v5-result-card .recommendation{background:#172033!important;color:#f8fafc!important;border-color:#334155!important;box-shadow:0 5px 16px rgba(0,0,0,.22)!important}
+body.v6-dark .v5-result-card .recommendation h3{color:#f8fafc!important}
+body.v6-dark .v5-result-card .recommendation-price{color:#ffb15c!important}
+body.v6-dark .v5-result-card .recommendation-features{color:#aab7ca!important}
+body.v6-dark .v5-result-card .recommendation-rank{color:#b9c8dc!important}
+body.v6-dark .v5-result-card .recommendation-link{background:#243654!important;color:#fff!important;border-color:#425879!important}
+body.v6-dark .v5-popular-card .platform{background:#172033!important;color:#f8fafc!important;border-color:#334155!important;box-shadow:0 4px 14px rgba(0,0,0,.22)!important}
+body.v6-dark .v5-popular-card .platform .platform-name{color:#f8fafc!important}
+body.v6-dark .v5-popular-card .platform .platform-tag{color:#aab7ca!important}
+body.v6-dark .v5-popular-card .platform .platform-btn{background:#243654!important;color:#f8fafc!important;border-color:#425879!important}
+body.v6-dark .v5-popular-card .platform-logo{background:#f8fafc!important;border-color:#475569!important}
+body.v6-dark .v5-popular-card .v5-popular-toggle-icon{color:#f8fafc!important;text-shadow:0 1px 5px rgba(255,255,255,.12)}
+body.v6-dark .v5-profile-card .v5-step4-toggle-icon,body.v6-dark .v5-profile-completion .v5-step4-toggle-icon{color:#f8fafc!important;text-shadow:0 1px 5px rgba(255,255,255,.12)}
