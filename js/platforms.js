@@ -2,7 +2,6 @@
 (function(){
   'use strict';
 
-  /* Stores currently connected to DigiYar's search pipeline. */
   const platforms=[
     {id:'digikala',name:'دیجی‌کالا',tag:'خرید هوشمند',logo:'assets/digikala.png',url:'https://www.digikala.com/'},
     {id:'snappshop',name:'اسنپ‌شاپ',tag:'خرید آنلاین',logo:'assets/snappshop.png',url:'https://snapp.shop/'},
@@ -11,13 +10,11 @@
   ];
 
   /*
-   * Popular affiliate candidates.
-   * These are kept separate from the connected-search list until DigiYar has
-   * an approved affiliate link for each store. For now the card opens the
-   * store's own website, so the owner can register and obtain the affiliate URL.
-   * The list is based on stores publicly documented in Iranian affiliate
-   * networks (especially Deema/Affilio); it is intentionally not presented as
-   * an exhaustive list because merchant programs and availability change.
+   * Popular affiliate candidates. They stay separate from the connected
+   * search list until DigiYar has an approved affiliate URL for each one.
+   * For now each card opens the store's own website for registration.
+   * Programs and merchant availability can change, so this is a verified
+   * working shortlist rather than a claim of an exhaustive market list.
    */
   const popularAffiliateStores=[
     {id:'digikala',name:'دیجی‌کالا',tag:'افیلیت • افیلیو',mark:'DK',url:'https://www.digikala.com/'},
@@ -43,6 +40,12 @@
     const grid=document.getElementById('platforms');
     if(!grid)return;
     grid.innerHTML=popularAffiliateStores.map(store=>`<a class="platform" href="${store.url}" target="_blank" rel="noopener noreferrer" data-store="${store.id}" aria-label="ورود به ${store.name}"><div class="platform-main"><span class="platform-logo" aria-hidden="true"><span class="platform-mark">${store.mark}</span></span><span class="platform-name">${store.name}</span><span class="platform-tag">${store.tag}</span></div><span class="platform-btn">ورود به فروشگاه</span></a>`).join('');
+    if(!document.getElementById('v6-popular-store-mark-style')){
+      const style=document.createElement('style');
+      style.id='v6-popular-store-mark-style';
+      style.textContent='.platform-mark{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:14px;font-weight:900;line-height:1;color:#2a4169;direction:ltr}.v6-dark .platform-mark{color:#172033}.v6-dark .platform-logo{background:#f8fafc!important;border-color:#475569!important}';
+      document.head.appendChild(style);
+    }
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',renderPopularStores,{once:true});
