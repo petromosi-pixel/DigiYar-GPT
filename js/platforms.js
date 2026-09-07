@@ -10,6 +10,7 @@ const platforms=[
 const popularAffiliateStores=[
 {id:'digikala',name:'دیجی‌کالا',tag:'افیلیت • افیلیو',tagline:'لبخند به خانه می‌رسد',logo:'assets/digikala.png',mark:'DK',url:'https://www.digikala.com/'},
 {id:'snappshop',name:'اسنپ‌شاپ',tag:'افیلیت • دیما',tagline:'خرید آنلاین، ساده و سریع',logo:'assets/snappshop.png',mark:'SS',url:'https://snapp.shop/'},
+{id:'torob',name:'ترب',tag:'مقایسه قیمت',tagline:'بهترین قیمت بازار',logo:'assets/torob.png',mark:'TR',url:'https://torob.com/'},
 {id:'basalam',name:'باسلام',tag:'افیلیت • دیما',tagline:'بازار بی‌مرز',logo:'assets/basalam.png',mark:'BS',url:'https://basalam.com/'},
 {id:'khanoumi',name:'خانومی',tag:'افیلیت • دیما',tagline:'به خاطر خودت',logo:'assets/v6-stores/khanoumi.svg',mark:'خ',url:'https://www.khanoumi.com/'},
 {id:'banimode',name:'بانی‌مد',tag:'افیلیت • دیما',tagline:'شعبه رسمی آنلاین برندها',logo:'assets/v6-stores/banimode.svg',mark:'BM',url:'https://www.banimode.com/'},
