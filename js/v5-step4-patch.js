@@ -1,4 +1,4 @@
-/* DigiYar V5 — Step 4 stable interaction/UI bridge */
+/* DigiYar V6 — Step 4 stable interaction/UI bridge */
 (function(){'use strict';
 function init(){
  const card=document.querySelector('.v5-profile-card');
@@ -12,68 +12,33 @@ function init(){
  const reset=document.getElementById('resetProfile');
  if(!card||!form||!grid||!store||!cat||!budget||!dyn)return;
  let result=document.getElementById('resultSection');
- if(!result){
-   result=document.createElement('section');
-   result.id='resultSection';
-   result.className='card v5-result-card';
-   result.innerHTML='<div class="section-title"><h2>پیشنهادات دیجی‌یار</h2><p id="resultHint">بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن</p></div><div id="needSummary" class="need-summary empty" hidden></div><div id="recommendations" class="recommendations"></div>';
-   card.insertAdjacentElement('afterend',result);
- }else if(!document.getElementById('recommendations')){
-   const box=document.createElement('div');box.id='recommendations';box.className='recommendations';result.appendChild(box);
- }
+ if(!result){result=document.createElement('section');result.id='resultSection';result.className='card v5-result-card';result.innerHTML='<div class="section-title"><h2>پیشنهادات دیجی‌یار</h2><p id="resultHint">بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن</p></div><div id="needSummary" class="need-summary empty" hidden></div><div id="recommendations" class="recommendations"></div>';card.insertAdjacentElement('afterend',result)}else if(!document.getElementById('recommendations')){const box=document.createElement('div');box.id='recommendations';box.className='recommendations';result.appendChild(box)}
  result.hidden=true;
  const budgetField=budget.closest('.v5-field'),catField=cat.closest('.v5-field'),subField=sub&&sub.closest('.v5-field');
  card.querySelectorAll('.v5-step4-toggle,.v5-profile-completion-toggle').forEach(el=>el.remove());
- const t=document.createElement('button');
- t.id='v5Step4Toggle';t.type='button';t.className='v5-step4-toggle v5-step4-final-toggle';
- t.setAttribute('aria-expanded','false');t.setAttribute('aria-label','باز کردن جزئیات خرید');
- t.innerHTML='<span class="v5-step4-toggle-icon" aria-hidden="true"><i>⟨</i><i>⟨</i><i>⟨</i></span>';
- card.appendChild(t);
- if(budgetField&&subField)subField.insertAdjacentElement('afterend',budgetField);
- if(budgetField){const label=budgetField.querySelector('span');if(label)label.textContent='چقدر می‌خوای هزینه کنی؟';}
- function moveLabelInside(select,labelText){if(!select)return;let placeholder=select.querySelector('option[data-v5-placeholder="true"]');if(!placeholder){placeholder=document.createElement('option');placeholder.value='';placeholder.dataset.v5Placeholder='true';select.insertBefore(placeholder,select.firstChild);}placeholder.textContent=labelText;select.style.textAlign='center';select.style.textAlignLast='center';Array.from(select.options).forEach(o=>o.style.textAlign='center');}
- function normalizeTopFields(){moveLabelInside(store,'فروشگاهتو انتخاب کن');moveLabelInside(cat,'دسته بندی');moveLabelInside(sub,'انتخاب کالا');[store,cat,sub].forEach(field=>{const wrap=field&&field.closest('.v5-field');const label=wrap&&wrap.querySelector(':scope > span');if(label)label.style.display='none'});const hint=document.getElementById('v5StoreHint');if(hint)hint.style.display='none';}
+ const t=document.createElement('button');t.id='v5Step4Toggle';t.type='button';t.className='v5-step4-toggle v5-step4-final-toggle';t.setAttribute('aria-expanded','false');t.setAttribute('aria-label','باز کردن جزئیات خرید');t.innerHTML='<span class="v5-step4-toggle-icon" aria-hidden="true"><i>⟨</i><i>⟨</i><i>⟨</i></span>';card.appendChild(t);
+ if(budgetField&&subField)subField.insertAdjacentElement('afterend',budgetField);if(budgetField){const label=budgetField.querySelector('span');if(label)label.textContent='چقدر می‌خوای هزینه کنی؟'}
+ function moveLabelInside(select,labelText){if(!select)return;let placeholder=select.querySelector('option[data-v5-placeholder="true"]');if(!placeholder){placeholder=document.createElement('option');placeholder.value='';placeholder.dataset.v5Placeholder='true';select.insertBefore(placeholder,select.firstChild)}placeholder.textContent=labelText;select.style.textAlign='center';select.style.textAlignLast='center';Array.from(select.options).forEach(o=>o.style.textAlign='center')}
+ function normalizeTopFields(){moveLabelInside(store,'فروشگاهتو انتخاب کن');moveLabelInside(cat,'دسته بندی');moveLabelInside(sub,'انتخاب کالا');[store,cat,sub].forEach(field=>{const wrap=field&&field.closest('.v5-field');const label=wrap&&wrap.querySelector(':scope > span');if(label)label.style.display='none'});const hint=document.getElementById('v5StoreHint');if(hint)hint.style.display='none'}
  normalizeTopFields();
- function syncIcon(open){t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید');}
- function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}if(result){result.hidden=true;result.classList.remove('is-open');}}
- function setOpen(open){
-   card.classList.toggle('is-open',open);
-   form.hidden=false;
-   form.setAttribute('aria-hidden',String(!open));
-   form.style.display='block';
-   if(catField)catField.hidden=!open;
-   if(subField)subField.hidden=!open||!cat.value;
-   if(budgetField)budgetField.hidden=!open||cat.value!=='digital';
-   if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none';}
-   if(!open){cat.disabled=true;if(sub)sub.disabled=true}else cat.disabled=!store.value;
-   syncIcon(open);
- }
- function clearInputsOnly(){store.value='';cat.value='';cat.disabled=true;if(sub){sub.value='';sub.disabled=true;sub.innerHTML='<option data-v5-placeholder="true" value="">انتخاب کالا</option>';}budget.value='';dyn.innerHTML='';dyn.hidden=true;dyn.style.display='none';if(catField)catField.hidden=true;if(subField)subField.hidden=true;if(budgetField)budgetField.hidden=true;clearResults();normalizeTopFields();setOpen(false);}
- if(reset){const freshReset=reset.cloneNode(true);reset.replaceWith(freshReset);freshReset.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();clearInputsOnly();},true);}
- t.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();setOpen(t.getAttribute('aria-expanded')!=='true');},true);
- store.addEventListener('change',function(){setOpen(true);normalizeTopFields();});
- cat.addEventListener('change',function(){setOpen(true);if(subField)subField.hidden=false;if(budgetField)budgetField.hidden=cat.value!=='digital';normalizeTopFields();});
- if(sub)sub.addEventListener('change',function(){setOpen(true);if(subField)subField.hidden=false;normalizeTopFields();});
- function normalizeFunctionLabels(){dyn.querySelectorAll('.v5-final-function,.v5-step4-field').forEach(field=>{const title=field.querySelector(':scope > span'),select=field.querySelector('select');if(!select)return;if(title){const text=title.textContent.trim();if(text){const first=select.options[0];if(first)first.textContent=text;else{const o=document.createElement('option');o.value='';o.textContent=text;select.prepend(o);}}title.remove();}select.style.textAlign='center';select.style.textAlignLast='center';Array.from(select.options).forEach(o=>o.style.textAlign='center');});normalizeTopFields();}
+ function syncIcon(open){t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید')}
+ function clearResults(){['digiyar-products','recommendations'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true}if(result){result.hidden=true;result.classList.remove('is-open')}}
+ function setOpen(open){card.classList.toggle('is-open',open);form.hidden=false;form.setAttribute('aria-hidden',String(!open));form.style.display='block';if(catField)catField.hidden=!open;if(subField)subField.hidden=!open||!cat.value;if(budgetField)budgetField.hidden=!open||cat.value!=='digital';if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none'}if(!open){cat.disabled=true;if(sub)sub.disabled=true}else cat.disabled=!store.value;syncIcon(open)}
+ function clearInputsOnly(){store.value='';cat.value='';cat.disabled=true;if(sub){sub.value='';sub.disabled=true;sub.innerHTML='<option data-v5-placeholder="true" value="">انتخاب کالا</option>'}budget.value='';dyn.innerHTML='';dyn.hidden=true;dyn.style.display='none';if(catField)catField.hidden=true;if(subField)subField.hidden=true;if(budgetField)budgetField.hidden=true;clearResults();normalizeTopFields();setOpen(false)}
+ if(reset){const freshReset=reset.cloneNode(true);reset.replaceWith(freshReset);freshReset.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();clearInputsOnly()},true)}
+ t.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();setOpen(t.getAttribute('aria-expanded')!=='true')},true);
+ store.addEventListener('change',function(){setOpen(true);normalizeTopFields()});cat.addEventListener('change',function(){setOpen(true);if(subField)subField.hidden=false;if(budgetField)budgetField.hidden=cat.value!=='digital';normalizeTopFields()});if(sub)sub.addEventListener('change',function(){setOpen(true);if(subField)subField.hidden=false;normalizeTopFields()});
+ function normalizeFunctionLabels(){dyn.querySelectorAll('.v5-final-function,.v5-step4-field').forEach(field=>{const title=field.querySelector(':scope > span'),select=field.querySelector('select');if(!select)return;if(title){const text=title.textContent.trim();if(text){const first=select.options[0];if(first)first.textContent=text;else{const o=document.createElement('option');o.value='';o.textContent=text;select.prepend(o)}}title.remove()}select.style.textAlign='center';select.style.textAlignLast='center';Array.from(select.options).forEach(o=>o.style.textAlign='center')});normalizeTopFields()}
  const observer=new MutationObserver(normalizeFunctionLabels);observer.observe(dyn,{childList:true,subtree:true});normalizeFunctionLabels();
+ async function loadScript(path){return new Promise(function(resolve,reject){if(document.querySelector('script[src$="/'+path+'"]')){resolve();return}const s=document.createElement('script');s.src=new URL(path,document.baseURI).href;s.async=false;s.onload=resolve;s.onerror=function(){reject(Error('Failed to load '+path))};document.head.appendChild(s)})}
+ async function ensureLive(){if(window.DigiYarV5PatchReady)return window.DigiYarV5PatchReady;window.DigiYarV5PatchReady=(async function(){if(!window.DigiYarV5CatalogAdapter)await loadScript('js/v5-catalog-adapter.js');if(!window.DigiYarV5PriceEngine)await loadScript('js/v5-price-engine.js');if(!window.DigiYarV5CandidateRetrieval)await loadScript('js/v5-candidate-retrieval.js');if(!window.DigiYarOfferAffiliate)await loadScript('js/v5-offer-affiliate-engine.js');if(!window.DigiyarProductRetrievalIntegration)await loadScript('js/product-retrieval-integration.js')})().catch(function(e){window.DigiYarV5PatchReady=null;throw e});return window.DigiYarV5PatchReady}
+ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]||c))}
+ function imageOf(p){return p&&(p.image||p.imageUrl||p.thumbnail||p.thumbnailUrl||p.photo||'')}
+ function renderProduct(p,i){const image=imageOf(p),features=Array.isArray(p.features)?p.features:[],price=p.price!=null&&Number(p.price)>0?new Intl.NumberFormat('fa-IR').format(p.price)+' تومان':'قیمت نامشخص',url=p.affiliateUrl||p.productUrl||p.url||'#';return '<article class="recommendation" data-rank="'+(i+1)+'"><div class="recommendation-rank">'+(['اولویت اول','اولویت دوم','اولویت سوم'][i]||('اولویت '+(i+1)))+'</div>'+(image?'<div class="recommendation-product-image"><img src="'+esc(image)+'" alt="'+esc(p.name||'محصول پیشنهادی')+'" loading="lazy"></div>':'')+'<h3>'+esc(p.name||'محصول پیشنهادی')+'</h3><p class="recommendation-price">'+esc(price)+'</p>'+(features.length?'<p class="recommendation-features">'+esc(features.join('، '))+'</p>':'')+'<a class="recommendation-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">مشاهده کالا</a></article>'}
+ async function showResults(ev){ev.preventDefault();ev.stopImmediatePropagation();const hint=document.getElementById('resultHint'),box=document.getElementById('recommendations');if(!result||!hint||!box)return;const usageSelect=dyn.querySelector('select');const usage=usageSelect?usageSelect.value:'';const req=[];if(sub&&sub.value)req.push(sub.value);const profile=window.DigiYarUserProfile?window.DigiYarUserProfile.normalize({category:cat.value||'general',budgetMax:budget.value||'',priorities:'',usage:usage,requirements:req.join('، '),constraints:''}):{declared:{category:cat.value||'general',budget:{min:null,max:Number(budget.value)||null},priorities:[],usage,requirements:req,constraints:[]},learned:{},context:{},history:[],version:'3.0.0'};if(window.DigiYarUserProfile)window.DigiYarUserProfile.save(profile);result.hidden=false;result.classList.add('is-open');hint.textContent='در حال پیدا کردن کالاهای مناسب...';box.innerHTML='<div class="recommendation-loading">در حال جستجوی کالاهای واقعی...</div>';result.scrollIntoView({behavior:'smooth',block:'start'});try{await ensureLive();const need=window.DigiYarNeedEngine&&window.DigiYarNeedEngine.buildNeedFromProfile?window.DigiYarNeedEngine.buildNeedFromProfile(profile):null;let products=[];const live=window.DigiyarProductRetrievalIntegration;if(need&&live&&typeof live.retrieve==='function'){const r=await live.retrieve(need,{limit:3,candidateLimit:10,resolverTimeout:10000});if(r&&Array.isArray(r.products))products=r.products}if(!products.length){const engine=window.DigiYarSmartRecommendation||window.DigiYarSmartRecommendationEngine;if(engine&&typeof engine.recommend==='function'){const r=await engine.recommend(need||profile,{limit:3});products=r&&Array.isArray(r.recommendations)?r.recommendations:[]}}if(products.length){box.innerHTML=products.slice(0,3).map(renderProduct).join('');hint.textContent='بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن'}else{box.innerHTML='<div class="need-summary">برای این نیاز هنوز پیشنهاد مناسبی پیدا نشد.</div>';hint.textContent='اطلاعات خریدت ثبت شد؛ برای این نیاز هنوز محصول مناسبی پیدا نشد.'}}catch(error){console.error('DigiYar Results:',error);box.innerHTML='<div class="need-summary">امکان دریافت پیشنهادها در حال حاضر فراهم نیست؛ اطلاعات خریدت ثبت شد.</div>';hint.textContent='بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن'}}
+ form.addEventListener('submit',showResults,true);
  setOpen(false);
 }
-function initCompletionCardToggle(){
- const card=document.querySelector('.v5-profile-completion');
- const form=document.getElementById('v5ProfileCompletionForm');
- if(!card||!form)return;
- const old=card.querySelector('.v5-profile-completion-toggle');
- if(old)old.remove();
- const toggle=document.createElement('button');
- toggle.type='button';
- toggle.className='v5-step4-toggle v5-profile-completion-toggle v5-step4-final-toggle';
- toggle.setAttribute('aria-expanded','false');
- toggle.setAttribute('aria-label','باز کردن تکمیل پروفایل');
- toggle.innerHTML='<span class="v5-step4-toggle-icon" aria-hidden="true"><i>⟨</i><i>⟨</i><i>⟨</i></span>';
- card.appendChild(toggle);
- const setOpen=open=>{card.classList.toggle('is-open',open);form.hidden=!open;form.setAttribute('aria-hidden',String(!open));form.style.display=open?'grid':'';toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'بستن تکمیل پروفایل':'باز کردن تکمیل پروفایل')};
- toggle.addEventListener('click',()=>setOpen(toggle.getAttribute('aria-expanded')!=='true'));
- setOpen(false);
-}
+function initCompletionCardToggle(){const card=document.querySelector('.v5-profile-completion'),form=document.getElementById('v5ProfileCompletionForm');if(!card||!form)return;const old=card.querySelector('.v5-profile-completion-toggle');if(old)old.remove();const toggle=document.createElement('button');toggle.type='button';toggle.className='v5-step4-toggle v5-profile-completion-toggle v5-step4-final-toggle';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','باز کردن تکمیل پروفایل');toggle.innerHTML='<span class="v5-step4-toggle-icon" aria-hidden="true"><i>⟨</i><i>⟨</i><i>⟨</i></span>';card.appendChild(toggle);const setOpen=open=>{card.classList.toggle('is-open',open);form.hidden=!open;form.setAttribute('aria-hidden',String(!open));form.style.display=open?'grid':'';toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'بستن تکمیل پروفایل':'باز کردن تکمیل پروفایل')};toggle.addEventListener('click',()=>setOpen(toggle.getAttribute('aria-expanded')!=='true'));setOpen(false)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();initCompletionCardToggle()},{once:true});else setTimeout(()=>{init();initCompletionCardToggle()},0);
 })();
