@@ -2,17 +2,17 @@
 (function () {
   'use strict';
 
-  // Actual asset location in main: assets/logos/Splash logo.png
+  // Exact filename currently stored in main.
   var SPLASH_LOGO = './assets/logos/Splash%20logo.png';
 
-  // Use the real filenames/extensions that exist in main.
-  // Do not assume every store logo is WebP.
+  // Exact assets currently stored under assets/store-logos.
+  // Extensions and Persian filenames are intentionally explicit.
   var STORE_LOGOS = {
-    digikala: './assets/store-logos/digikala.png',
-    snappshop: './assets/store-logos/snappshop.png',
-    torob: './assets/store-logos/torob-1.png',
-    basalam: './assets/store-logos/ir.basalam.app-0e50b07e-c466-4c7c-a81e-7bdc9970b43a_512x512.png',
-    khanoumi: null,
+    digikala: './assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%DA%A9%D8%A7%D9%84%D8%A7.webp',
+    snappshop: './assets/store-logos/%D8%A7%D8%B3%D9%86%D9%BE%20%D8%B4%D8%A7%D9%BE.webp',
+    torob: './assets/store-logos/%D8%AA%D8%B1%D8%A8.webp',
+    basalam: './assets/store-logos/%D8%A8%D8%A7%D8%B3%D9%84%D8%A7%D9%85.webp',
+    khanoumi: './assets/store-logos/%D8%AE%D8%A7%D9%86%D9%88%D9%85%DB%8C.webp',
     banimode: './assets/store-logos/%D8%A8%D8%A7%D9%86%DB%8C%20%D9%85%D8%AF.webp',
     modiseh: './assets/store-logos/%D9%85%D8%AF%DB%8C%D8%B3%D9%87.webp',
     esam: './assets/store-logos/%D8%A7%DB%8C%D8%B3%D8%A7%D9%85.webp',
@@ -20,46 +20,36 @@
     darukade: './assets/store-logos/%D8%AF%D8%A7%D8%B1%D9%88%DA%A9%D8%AF%D9%87.webp',
     darmankala: './assets/store-logos/%D8%AF%D8%B1%D9%85%D8%A7%D9%86%20%DA%A9%D8%A7%D9%84%D8%A7.webp',
     digido: './assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%D8%AF%D9%88.png',
-    janebi: null,
+    janebi: './assets/store-logos/%D8%AC%D8%A7%D9%86%D8%A8%DB%8C.webp',
     takhfifan: './assets/store-logos/%D8%AA%D8%AE%D9%81%DB%8C%D9%81%D8%A7%D9%86.webp',
     shab: './assets/store-logos/%D8%B4%D8%A8.webp'
   };
 
-  var STORE_MARKS = {
-    khanoumi: 'خ',
-    janebi: 'JN'
-  };
-
   function setFallbackMark(img, id) {
-    var mark = STORE_MARKS[id];
-    if (!mark || !img.parentElement) return;
+    if (!img || !img.parentElement) return;
     img.style.display = 'none';
     var holder = img.parentElement;
     var existing = holder.querySelector('.platform-mark-fallback');
     if (existing) return;
     var span = document.createElement('span');
     span.className = 'platform-mark platform-mark-fallback';
-    span.textContent = mark;
+    span.textContent = (id === 'khanoumi') ? 'خ' : (id === 'janebi' ? 'JN' : '');
+    if (!span.textContent) return;
     holder.appendChild(span);
   }
 
   function fixStoreLogo(img) {
-    if (!img || img.dataset.digiyarLogoFixed === '1') return;
+    if (!img) return;
     var holder = img.closest('.platform');
     if (!holder) return;
     var id = holder.getAttribute('data-store') || '';
     var asset = STORE_LOGOS[id];
+    if (!asset) return;
 
     img.dataset.digiyarLogoFixed = '1';
     img.removeAttribute('srcset');
     img.loading = 'lazy';
     img.decoding = 'async';
-
-    if (!asset) {
-      setFallbackMark(img, id);
-      return;
-    }
-
     img.onerror = function () {
       img.onerror = null;
       setFallbackMark(img, id);
