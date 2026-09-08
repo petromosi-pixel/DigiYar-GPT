@@ -2,37 +2,45 @@
 (function () {
   'use strict';
 
-  var SPLASH_LOGO = './assets/Splash%20logo.png';
+  // Actual asset location in main: assets/logos/Splash logo.png
+  var SPLASH_LOGO = './assets/logos/Splash%20logo.png';
+
+  // Use the real filenames/extensions that exist in main.
+  // Do not assume every store logo is WebP.
   var STORE_LOGOS = {
-    digikala: 'دیجی‌کالا',
-    snappshop: 'اسنپ‌شاپ',
-    torob: 'ترب',
-    basalam: 'باسلام',
-    khanoumi: 'خانومی',
-    banimode: 'بانی‌مد',
-    modiseh: 'مدیسه',
-    esam: 'ایسام',
-    pinket: 'پینکت',
-    darukade: 'داروکده',
-    darmankala: 'درمان‌کالا',
-    digido: 'دیجی‌دو',
-    janebi: 'جانبی',
-    takhfifan: 'تخفیفان',
-    shab: 'شب'
+    digikala: './assets/store-logos/digikala.png',
+    snappshop: './assets/store-logos/snappshop.png',
+    torob: './assets/store-logos/torob-1.png',
+    basalam: './assets/store-logos/ir.basalam.app-0e50b07e-c466-4c7c-a81e-7bdc9970b43a_512x512.png',
+    khanoumi: null,
+    banimode: './assets/store-logos/%D8%A8%D8%A7%D9%86%DB%8C%20%D9%85%D8%AF.webp',
+    modiseh: './assets/store-logos/%D9%85%D8%AF%DB%8C%D8%B3%D9%87.webp',
+    esam: './assets/store-logos/%D8%A7%DB%8C%D8%B3%D8%A7%D9%85.webp',
+    pinket: './assets/store-logos/%D9%BE%DB%8C%D9%86%DA%A9%D8%AA.webp',
+    darukade: './assets/store-logos/%D8%AF%D8%A7%D8%B1%D9%88%DA%A9%D8%AF%D9%87.webp',
+    darmankala: './assets/store-logos/%D8%AF%D8%B1%D9%85%D8%A7%D9%86%20%DA%A9%D8%A7%D9%84%D8%A7.webp',
+    digido: './assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%D8%AF%D9%88.png',
+    janebi: null,
+    takhfifan: './assets/store-logos/%D8%AA%D8%AE%D9%81%DB%8C%D9%81%D8%A7%D9%86.webp',
+    shab: './assets/store-logos/%D8%B4%D8%A8.webp'
   };
 
-  function encodeLogoName(name) {
-    return 'assets/store-logos/' + encodeURIComponent(name) + '.webp';
-  }
+  var STORE_MARKS = {
+    khanoumi: 'خ',
+    janebi: 'JN'
+  };
 
-  function storeLogoCandidates(id, name) {
-    var candidates = [];
-    if (name) candidates.push(encodeLogoName(name));
-    if (id && STORE_LOGOS[id]) candidates.push(encodeLogoName(STORE_LOGOS[id]));
-    if (id) candidates.push('assets/store-logos/' + encodeURIComponent(id) + '.webp');
-    return candidates.filter(function (value, index, list) {
-      return list.indexOf(value) === index;
-    });
+  function setFallbackMark(img, id) {
+    var mark = STORE_MARKS[id];
+    if (!mark || !img.parentElement) return;
+    img.style.display = 'none';
+    var holder = img.parentElement;
+    var existing = holder.querySelector('.platform-mark-fallback');
+    if (existing) return;
+    var span = document.createElement('span');
+    span.className = 'platform-mark platform-mark-fallback';
+    span.textContent = mark;
+    holder.appendChild(span);
   }
 
   function fixStoreLogo(img) {
@@ -40,19 +48,23 @@
     var holder = img.closest('.platform');
     if (!holder) return;
     var id = holder.getAttribute('data-store') || '';
-    var name = holder.querySelector('.platform-name');
-    name = name ? name.textContent.trim() : '';
-    var candidates = storeLogoCandidates(id, name);
-    if (!candidates.length) return;
+    var asset = STORE_LOGOS[id];
 
     img.dataset.digiyarLogoFixed = '1';
-    var index = 0;
-    function next() {
-      if (index >= candidates.length) return;
-      img.src = candidates[index++];
+    img.removeAttribute('srcset');
+    img.loading = 'lazy';
+    img.decoding = 'async';
+
+    if (!asset) {
+      setFallbackMark(img, id);
+      return;
     }
-    img.onerror = next;
-    next();
+
+    img.onerror = function () {
+      img.onerror = null;
+      setFallbackMark(img, id);
+    };
+    img.src = asset;
   }
 
   function fixAllStoreLogos() {
