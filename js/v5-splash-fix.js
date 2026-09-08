@@ -3,7 +3,7 @@
   'use strict';
 
   var SPLASH_LOGO = './assets/logos/Splash%20logo.png';
-  var INSTALL_LOGO = './assets/logos/Splash%20logo.png';
+  var INSTALL_LOGO = './icon/icon-192.png';
 
   var STORE_LOGOS = {
     digikala: './assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%DA%A9%D8%A7%D9%84%D8%A7.webp',
