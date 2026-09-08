@@ -2,11 +2,9 @@
 (function () {
   'use strict';
 
-  // Exact filename currently stored in main.
   var SPLASH_LOGO = './assets/logos/Splash%20logo.png';
+  var INSTALL_LOGO = './assets/logos/Splash%20logo.png';
 
-  // Exact assets currently stored under assets/store-logos.
-  // Extensions and Persian filenames are intentionally explicit.
   var STORE_LOGOS = {
     digikala: './assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%DA%A9%D8%A7%D9%84%D8%A7.webp',
     snappshop: './assets/store-logos/%D8%A7%D8%B3%D9%86%D9%BE%20%D8%B4%D8%A7%D9%BE.webp',
@@ -46,7 +44,8 @@
     var asset = STORE_LOGOS[id];
     if (!asset) return;
 
-    img.dataset.digiyarLogoFixed = '1';
+    if (img.dataset.digiyarLogoFixed === id && img.getAttribute('src') === asset) return;
+    img.dataset.digiyarLogoFixed = id;
     img.removeAttribute('srcset');
     img.loading = 'lazy';
     img.decoding = 'async';
@@ -69,9 +68,10 @@
   }
 
   function installPromptAnimationFix() {
+    if (document.getElementById('digiyar-install-prompt-animation')) return;
     var style = document.createElement('style');
     style.id = 'digiyar-install-prompt-animation';
-    style.textContent = '@keyframes digiyarInstallPromptIn{from{opacity:0;transform:translate3d(-50%,-130%,0)}to{opacity:1;transform:translate3d(-50%,0,0)}}@keyframes digiyarInstallPromptOut{from{opacity:1;transform:translate3d(-50%,0,0)}to{opacity:0;transform:translate3d(-50%,-130%,0)}}#installPrompt.show{animation:digiyarInstallPromptIn .65s cubic-bezier(.22,1,.36,1) both;}#installPrompt.hiding{animation:digiyarInstallPromptOut .65s cubic-bezier(.22,.8,.25,1) both;}';
+    style.textContent = '@keyframes digiyarInstallPromptIn{from{opacity:0;transform:translate3d(-50%,-130%,0)}to{opacity:1;transform:translate3d(-50%,0,0)}}@keyframes digiyarInstallPromptOut{from{opacity:1;transform:translate3d(-50%,0,0)}to{opacity:0;transform:translate3d(-50%,-130%,0)}}#installPrompt.show{animation:digiyarInstallPromptIn .65s cubic-bezier(.22,1,.36,1) both;}#installPrompt.hiding{animation:digiyarInstallPromptOut .65s cubic-bezier(.22,.8,.25,1) both;}#installPrompt .install-prompt-icon{width:44px;height:44px;flex:0 0 44px;border-radius:10px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;}#installPrompt .install-prompt-icon img{width:100%;height:100%;object-fit:contain;padding:0;display:block;}#platforms .platform[data-store="khanoumi"] .platform-logo,#platforms .platform[data-store="janebi"] .platform-logo{padding:2px;border-radius:11px;}#platforms .platform[data-store="khanoumi"] .platform-logo img,#platforms .platform[data-store="janebi"] .platform-logo img{width:100%;height:100%;object-fit:cover;border-radius:8px;}';
     document.head.appendChild(style);
   }
 
@@ -94,7 +94,7 @@
 
     var installIcon = document.querySelector('#installPrompt .install-prompt-icon img');
     if (installIcon) {
-      installIcon.src = './assets/logos/logo.png';
+      installIcon.src = INSTALL_LOGO;
       installIcon.removeAttribute('srcset');
       installIcon.decoding = 'async';
     }
