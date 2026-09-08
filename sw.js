@@ -1,10 +1,10 @@
 /* =========================================================
    DigiYar V6
    Service Worker
-   Cache Version: 6.0.12
+   Cache Version: 6.0.13
    ========================================================= */
 
-const CACHE_VERSION = "digiyar-v6-6.0.12";
+const CACHE_VERSION = "digiyar-v6-6.0.13";
 
 const APP_SHELL = [
   "./",
@@ -45,6 +45,16 @@ const APP_SHELL = [
   "./js/v5-price-availability-resolver.js",
   "./icon/icon-512.png",
   "./assets/logos/logo.png",
+  "./assets/logos/Splash%20logo.png",
+  "./assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%DA%A9%D8%A7%D9%84%D8%A7.webp",
+  "./assets/store-logos/%D8%A7%D8%B3%D9%86%D9%BE%20%D8%B4%D8%A7%D9%BE.webp",
+  "./assets/store-logos/%D8%AA%D8%B1%D8%A8.webp",
+  "./assets/store-logos/%D8%A8%D8%A7%D8%B3%D9%84%D8%A7%D9%85.webp",
+  "./assets/store-logos/%D8%AE%D8%A7%D9%86%D9%88%D9%85%DB%8C.webp",
+  "./assets/store-logos/%D8%A8%D8%A7%D9%86%DB%8C%20%D9%85%D8%AF.webp",
+  "./assets/store-logos/%D8%AF%D8%B1%D9%85%D8%A7%D9%86%20%DA%A9%D8%A7%D9%84%D8%A7.webp",
+  "./assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%D8%AF%D9%88.png",
+  "./assets/store-logos/%D8%AC%D8%A7%D9%86%D8%A8%DB%8C.webp",
   "./assets/store-logos/store-logos.svg",
   "./assets/store-logos/khanoumi.svg",
   "./assets/store-logos/janebi.svg"
