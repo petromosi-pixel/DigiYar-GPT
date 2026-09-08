@@ -1,10 +1,10 @@
 /* =========================================================
    DigiYar V6
    Service Worker
-   Cache Version: 6.0.11
+   Cache Version: 6.0.12
    ========================================================= */
 
-const CACHE_VERSION = "digiyar-v6-6.0.11";
+const CACHE_VERSION = "digiyar-v6-6.0.12";
 
 const APP_SHELL = [
   "./",
@@ -45,32 +45,10 @@ const APP_SHELL = [
   "./js/v5-price-availability-resolver.js",
   "./icon/icon-512.png",
   "./assets/logos/logo.png",
-  "./assets/v6-stores/khanoumi.svg",
-  "./assets/v6-stores/banimode.svg",
-  "./assets/v6-stores/modiseh.svg",
-  "./assets/v6-stores/esam.svg",
-  "./assets/v6-stores/pinket.svg",
-  "./assets/v6-stores/darukade.svg",
-  "./assets/v6-stores/darmankala.svg",
-  "./assets/v6-stores/digido.svg",
-  "./assets/v6-stores/janebi.svg",
-  "./assets/v6-stores/takhfifan.svg",
-  "./assets/v6-stores/shab.svg"
+  "./assets/store-logos/store-logos.svg",
+  "./assets/store-logos/khanoumi.svg",
+  "./assets/store-logos/janebi.svg"
 ];
-
-const STORE_LOGO_REPLACEMENTS = {
-  "https://www.khanoumi.com/favicon.ico": "./assets/v6-stores/khanoumi.svg",
-  "https://www.banimode.com/favicon.ico": "./assets/v6-stores/banimode.svg",
-  "https://www.modiseh.com/favicon.ico": "./assets/v6-stores/modiseh.svg",
-  "https://esam.ir/favicon.ico": "./assets/v6-stores/esam.svg",
-  "https://pinket.com/favicon.ico": "./assets/v6-stores/pinket.svg",
-  "https://darukade.com/favicon.ico": "./assets/v6-stores/darukade.svg",
-  "https://darmankala.com/favicon.ico": "./assets/v6-stores/darmankala.svg",
-  "https://www.digido.ir/favicon.ico": "./assets/v6-stores/digido.svg",
-  "https://janebi.com/favicon.ico": "./assets/v6-stores/janebi.svg",
-  "https://takhfifan.com/main-logo.svg": "./assets/v6-stores/takhfifan.svg",
-  "https://www.shab.ir/favicon.ico": "./assets/v6-stores/shab.svg"
-};
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
@@ -97,24 +75,6 @@ self.addEventListener("activate", function (event) {
 self.addEventListener("fetch", function (event) {
   const request = event.request;
   if (request.method !== "GET") return;
-
-  const replacement = STORE_LOGO_REPLACEMENTS[request.url];
-  if (replacement) {
-    event.respondWith(
-      fetch(new URL(replacement, self.location.origin))
-        .then(function (response) {
-          return new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: {
-              "Content-Type": "image/svg+xml",
-              "Cache-Control": "public, max-age=31536000, immutable"
-            }
-          });
-        })
-    );
-    return;
-  }
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
