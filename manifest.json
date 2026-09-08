@@ -1,5 +1,5 @@
 {
-  "name": "DigiYar V5",
+  "name": "DigiYar V6",
   "short_name": "DigiYar",
   "description": "پلتفرم هوشمند برای تجربه بهترین خرید اینترنتی",
   "start_url": "./",
@@ -15,7 +15,7 @@
       "src": "icon/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
