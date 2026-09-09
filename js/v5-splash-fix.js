@@ -101,10 +101,13 @@
 
     var logo = splash.querySelector('.v5-splash-logo');
     if (logo) {
+      logo.style.visibility = 'hidden';
       logo.src = SPLASH_LOGO;
       logo.removeAttribute('srcset');
       logo.decoding = 'async';
       logo.loading = 'eager';
+      if (logo.complete && logo.naturalWidth > 0) logo.style.visibility = 'visible';
+      else logo.onload = function () { logo.style.visibility = 'visible'; };
     }
 
     var loader = splash.querySelector('.v5-splash-loader');
