@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var SPLASH_LOGO = './icon/icon-256.webp';
+  var SPLASH_LOGO = './assets/logos/Splash%20logo.png';
   var INSTALL_LOGO = './icon/icon-192.webp';
 
   var STORE_LOGOS = {
