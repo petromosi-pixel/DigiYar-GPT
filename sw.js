@@ -1,10 +1,10 @@
 /* =========================================================
    DigiYar V6
    Service Worker
-   Cache Version: 6.0.21
+   Cache Version: 6.0.22
    ========================================================= */
 
-const CACHE_VERSION = "digiyar-v6-6.0.21";
+const CACHE_VERSION = "digiyar-v6-6.0.22";
 
 const APP_SHELL = [
   "./",
@@ -55,15 +55,25 @@ const APP_SHELL = [
   "./assets/store-logos/%D8%A8%D8%A7%D8%B3%D9%84%D8%A7%D9%85.webp",
   "./assets/store-logos/%D8%AE%D8%A7%D9%86%D9%88%D9%85%DB%8C.webp",
   "./assets/store-logos/%D8%A8%D8%A7%D9%86%DB%8C%20%D9%85%D8%AF.webp",
-  "./assets/store-logos/%D8%AF%D8%B1%D9%85%D8%A7%D9%86%20%D9%83%D8%A7%D9%84%D8%A7.webp",
+  "./assets/store-logos/%D8%AF%D8%B1%D9%85%D8%A7%D9%86%20%DA%A9%D8%A7%D9%84%D8%A7.webp",
   "./assets/store-logos/%D8%AF%DB%8C%D8%AC%DB%8C%20%D8%AF%D9%88.png",
   "./assets/store-logos/%D8%AC%D8%A7%D9%86%D8%A8%DB%8C.webp",
+  "./assets/store-logos/%D8%A7%DB%8C%D8%B3%D8%A7%D9%85.webp",
   "./assets/store-logos/%D8%AA%D8%AE%D9%81%DB%8C%D9%81%D8%A7%D9%86.webp",
   "./assets/store-logos/%D8%B4%D8%A8.webp",
   "./assets/store-logos/%D9%85%D8%AF%DB%8C%D8%B3%D9%87.webp",
   "./assets/store-logos/%D9%BE%DB%8C%D9%86%DA%A9%D8%AA.webp",
-  "./assets/store-logos/%D8%A7%DB%8C%D8%B3%D8%A7%D9%85.webp",
-  "./assets/store-logos/%D8%AF%D8%A7%D8%B1%D9%88%DA%A9%D8%AF%D9%87.webp"
+  "./assets/store-logos/%D8%AF%D8%A7%D8%B1%D9%88%DA%A9%D8%AF%D9%87.webp",
+  "./assets/store-logos/%D9%86%D8%B4%D8%A7%D8%B7%20%D8%B1%D8%AE.webp",
+  "./assets/store-logos/%D8%A7%DB%8C%D8%B3%D9%85%DB%8C%D9%86%D8%A7%D8%B1.webp",
+  "./assets/store-logos/%D8%B3%D9%81%D8%B1%20%D9%85%DB%8C.webp",
+  "./assets/store-logos/%D8%A8%D9%87%20%D8%B1%D9%88%D8%B2%20%DA%A9%D8%A7%D9%84%D8%A7.webp",
+  "./assets/store-logos/%D9%85%DA%A9%D8%AA%D8%A8%20%D8%AE%D9%88%D9%86%D9%87.webp",
+  "./assets/store-logos/%D8%AF%D8%A7%D8%B1%D9%88%D8%AE%D8%A7%D9%86%D9%87%20%D8%A2%D9%86%D9%84%D8%A7%DB%8C%D9%86.webp",
+  "./assets/store-logos/%DA%AF%D9%88%D8%B4%DB%8C%20%D8%B4%D8%A7%D9%BE.webp",
+  "./assets/store-logos/%DA%A9%D8%A7%D8%B1%D9%86%D8%A7%D9%85%D9%87.webp",
+  "./assets/store-logos/%D8%AA%DA%A9%D9%86%D9%88%D9%84%D8%A7%DB%8C%D9%81.webp",
+  "./assets/store-logos/%D8%B3%D9%88%D9%84%D9%88%20%DA%A9%D8%A7%D9%84%D8%A7.webp"
 ];
 
 self.addEventListener("install", function (event) {
