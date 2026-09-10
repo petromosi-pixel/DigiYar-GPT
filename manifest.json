@@ -1,10 +1,11 @@
 {
-  "name": "DigiYar V6",
-  "short_name": "DigiYar",
-  "description": "پلتفرم هوشمند برای تجربه بهترین خرید اینترنتی",
+  "name": "دیجی‌یار",
+  "short_name": "دیجی‌یار",
+  "description": "دیجی‌یار؛ دستیار دنیای دیجیتال برای انتخاب هوشمندانه‌تر",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "portrait",
   "dir": "rtl",
   "lang": "fa",
@@ -12,16 +13,16 @@
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "icon/icon-256.webp",
-      "sizes": "256x256",
-      "type": "image/webp",
+      "src": "assets/logos/Splash logo.png",
+      "sizes": "any",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon/icon-512.webp",
+      "src": "icon/icon-512.png",
       "sizes": "512x512",
-      "type": "image/webp",
-      "purpose": "any"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
