@@ -22,9 +22,10 @@
 .v5-popular-card .v5-popular-toggle[aria-expanded="false"] .v5-popular-toggle-icon{transform:rotate(-90deg)!important}
 .v5-popular-card .v5-popular-toggle[aria-expanded="true"] .v5-popular-toggle-icon{transform:rotate(90deg)!important}
 
-/* V6 definitive selected-store layout: unrestricted when open, native hidden state when closed. */
+/* V6 definitive selected-store layout: unrestricted when open, zero-height when closed. */
 .v5-popular-card{overflow:visible!important;contain:paint!important;height:auto!important;min-height:0!important}
 .v5-popular-card #platforms{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none!important;height:auto!important;min-height:0!important;margin-top:8px!important;margin-bottom:3px!important;overflow:visible!important;pointer-events:auto!important;transition:none!important}
+.v5-popular-card:not(.is-open) #platforms{display:none!important;max-height:0!important;height:0!important;min-height:0!important;margin-top:0!important;margin-bottom:0!important;opacity:0!important;visibility:hidden!important;overflow:hidden!important;pointer-events:none!important}
 .v5-popular-card.is-open #platforms{display:grid!important;opacity:1!important;visibility:visible!important}
 @media(max-width:760px){.v5-profile-card .section-title h2,.v5-popular-card .section-title h2,.v5-profile-completion .section-title h2,.v5-result-card .section-title h2{font-size:19px}.v5-profile-card .section-title p,.v5-popular-card .section-title p,.v5-profile-completion .section-title p,.v5-result-card .section-title p{font-size:11px}.v5-popular-card #platforms{grid-template-columns:1fr!important}}
 
