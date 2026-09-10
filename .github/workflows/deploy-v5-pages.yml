@@ -26,6 +26,29 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Clear stale Pages deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          STALE_DEPLOYMENT="d90c6ea577d3b8d2a3a2483a8ee549709eafc149"
+          API="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments/${STALE_DEPLOYMENT}"
+          STATUS=$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "${API}" | jq -r '.status')
+          echo "Stale Pages deployment status: ${STATUS}"
+          if [ "${STATUS}" = "in_progress" ] || [ "${STATUS}" = "queued" ]; then
+            curl -fsSL -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "${API}/cancel"
+            echo "Stale Pages deployment cancelled."
+          else
+            echo "No cancellation needed."
+          fi
       - name: Upload main artifact
         uses: actions/upload-pages-artifact@v3
         with:
