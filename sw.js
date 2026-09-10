@@ -1,10 +1,10 @@
 /* =========================================================
    DigiYar V6
    Service Worker
-   Cache Version: 6.0.24
+   Cache Version: 6.0.25
    ========================================================= */
 
-const CACHE_VERSION = "digiyar-v6-6.0.24";
+const CACHE_VERSION = "digiyar-v6-6.0.25";
 
 const APP_SHELL = [
   "./",
@@ -24,7 +24,6 @@ const APP_SHELL = [
   "./js/v5-candidate-retrieval.js",
   "./js/v5-offer-affiliate-engine.js",
   "./js/app.js",
-  "./js/platforms.js",
   "./assets/store-logos/%D9%86%D8%B4%D8%A7%D8%B7%20%D8%B1%D8%AE.webp",
   "./assets/store-logos/%D9%85%D8%AB%D8%A8%D8%AA%20%D8%B3%D8%A8%D8%B2.webp",
   "./assets/store-logos/%D8%B4%D8%A7%D9%88%D8%A7%D8%B2.webp",
