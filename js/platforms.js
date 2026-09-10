@@ -22,11 +22,24 @@ const popularAffiliateStores=[
 {id:'digido',name:'دیجی‌دو',tagline:'موبایل و لوازم جانبی',logo:'assets/store-logos/store-logos.svg#digido',mark:'D2',url:'https://www.digido.ir/',accent:'#334155',dealLabel:'پیشنهادهای موبایل',dealText:'موبایل و لوازم جانبی را با پیشنهادهای جذاب ببین',dealIcon:'⌁'},
 {id:'janebi',name:'جانبی',tagline:'فروشگاه اینترنتی لوازم جانبی',logo:'assets/store-logos/janebi.svg',mark:'JN',url:'https://janebi.com/',accent:'#0891b2',dealLabel:'پیشنهادهای لوازم جانبی',dealText:'اکسسوری‌های کاربردی با قیمت‌های جذاب',dealIcon:'✦'},
 {id:'takhfifan',name:'تخفیفان',tagline:'بهترم میشه',logo:'assets/store-logos/store-logos.svg#takhfifan',mark:'TF',url:'https://takhfifan.com/',accent:'#f59e0b',dealLabel:'کد و پیشنهاد تخفیف',dealText:'پیشنهادهای تخفیفی را یک‌جا ببین',dealIcon:'٪'},
-{id:'shab',name:'شب',tagline:'رزرو اقامتگاه در شمال و سراسر ایران',logo:'assets/store-logos/store-logos.svg#shab',mark:'شب',url:'https://www.shab.ir/',accent:'#0f766e',dealLabel:'پیشنهادهای اقامت',dealText:'اقامتگاه‌های منتخب با پیشنهادهای جذاب',dealIcon:'⌂'}
+{id:'shab',name:'شب',tagline:'رزرو اقامتگاه در شمال و سراسر ایران',logo:'assets/store-logos/store-logos.svg#shab',mark:'شب',url:'https://www.shab.ir/',accent:'#0f766e',dealLabel:'پیشنهادهای اقامت',dealText:'اقامتگاه‌های منتخب با پیشنهادهای جذاب',dealIcon:'⌂'},
+{id:'neshatrokh',name:'نشاط رخ',tagline:'فروشگاه آنلاین زیبایی و سلامت',logo:'',mark:'نر',url:'https://neshatrokh.com/',accent:'#db2777',dealLabel:'فروشگاه زیبایی و سلامت',dealText:'محصولات آرایشی و بهداشتی نشاط رخ',dealIcon:'♡'},
+{id:'mosbatesabz',name:'مثبت سبز',tagline:'داروخانه آنلاین و محصولات سلامت',logo:'',mark:'م‌س',url:'https://mosbatesabz.com/',accent:'#16a34a',dealLabel:'محصولات سلامت',dealText:'مکمل‌ها، محصولات بهداشتی و داروخانه‌ای',dealIcon:'+'},
+{id:'shavaz',name:'شاواز',tagline:'فروشگاه آنلاین',logo:'',mark:'ش',url:'https://shavaz.ir/',accent:'#7c3aed',dealLabel:'خرید آنلاین',dealText:'محصولات منتخب فروشگاه شاواز',dealIcon:'◆'},
+{id:'jeanswest',name:'جین وست',tagline:'پوشاک و استایل',logo:'',mark:'JW',url:'https://jeanswest.ir/',accent:'#111827',dealLabel:'فروش ویژه',dealText:'پوشاک زنانه، مردانه و کودک',dealIcon:'◆'},
+{id:'eseminar',name:'ایسمینار',tagline:'وبینار و آموزش آنلاین',logo:'',mark:'ES',url:'https://eseminar.tv/',accent:'#16a34a',dealLabel:'آموزش آنلاین',dealText:'وبینارها و محتوای آموزشی تخصصی',dealIcon:'▶'},
+{id:'safarme',name:'safarme.com',tagline:'جست‌وجو و رزرو بلیط هواپیما',logo:'',mark:'SF',url:'https://www.safarme.ir/',accent:'#0ea5e9',dealLabel:'سفر و بلیط',dealText:'جست‌وجو و رزرو پروازهای داخلی و خارجی',dealIcon:'✈'},
+{id:'berozkala',name:'بروز کالا',tagline:'کالای دیجیتال و ماشین اداری',logo:'',mark:'BK',url:'https://berozkala.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال',dealText:'گوشی، تبلت، تجهیزات و ماشین‌های اداری',dealIcon:'⌁'},
+{id:'maktabkhooneh',name:'مکتب‌خونه',tagline:'آکادمی آنلاین تخصص‌ها',logo:'',mark:'مخ',url:'https://maktabkhooneh.org/',accent:'#f59e0b',dealLabel:'آموزش مهارتی',dealText:'دوره‌های تخصصی و مهارت‌محور آنلاین',dealIcon:'▣'},
+{id:'daroo-online',name:'داروخانه آنلاین',tagline:'فروشگاه اینترنتی دارو و سلامت',logo:'',mark:'دآن',url:'https://daroo-online.com/',accent:'#059669',dealLabel:'سلامت و بهداشت',dealText:'محصولات دارویی، بهداشتی و سلامت',dealIcon:'+'},
+{id:'gooshishop',name:'گوشی شاپ',tagline:'فروشگاه اینترنتی موبایل',logo:'',mark:'GS',url:'https://gooshishop.com/',accent:'#0284c7',dealLabel:'موبایل و لوازم جانبی',dealText:'گوشی موبایل و تجهیزات مرتبط',dealIcon:'⌁'},
+{id:'karnameh',name:'کارنامه',tagline:'پلتفرم آنلاین خدمات خودرو',logo:'',mark:'ک',url:'https://karnameh.com/',accent:'#1d4ed8',dealLabel:'خدمات خودرو',dealText:'خرید و فروش و خدمات کارشناسی خودرو',dealIcon:'🚗'},
+{id:'technolife',name:'تکنولایف',tagline:'فروشگاه آنلاین کالا',logo:'',mark:'TL',url:'https://www.technolife.com/',accent:'#111827',dealLabel:'خرید آنلاین',dealText:'موبایل، لپ‌تاپ، لوازم دیجیتال و بیشتر',dealIcon:'⌁'},
+{id:'solokala',name:'سولوکالا',tagline:'لوازم آرایشی، بهداشتی و اکسسوری',logo:'',mark:'SK',url:'https://solokala.com/',accent:'#e11d48',dealLabel:'آرایشی و بهداشتی',dealText:'محصولات آرایشی، بهداشتی، عطر و اکسسوری',dealIcon:'♡'}
 ];
 const moreStores={name:'فروشگاه‌های بیشتر',tagline:'هر روز انتخاب‌های بیشتری در راه است',dealLabel:'به‌زودی',dealText:'فروشگاه‌های بیشتری به دیجی‌یار اضافه می‌شوند',dealIcon:'＋'};
 const affiliateUrls={digikala:'https://aflo.ir/1GS4wzEjY',snappshop:'https://aflo.ir/13iJlKJaK'};
-const newStoreIds=new Set(['khanoumi','banimode','modiseh','esam','pinket','darukade','darmankala','digido','janebi','takhfifan','shab']);
+const newStoreIds=new Set(['khanoumi','banimode','modiseh','esam','pinket','darukade','darmankala','digido','janebi','takhfifan','shab','neshatrokh','mosbatesabz','shavaz','jeanswest','eseminar','safarme','berozkala','maktabkhooneh','daroo-online','gooshishop','karnameh','technolife','solokala']);
 window.DigiYarPlatforms=platforms;
 window.DigiYarPopularAffiliateStores=popularAffiliateStores;
 function styles(){if(document.getElementById('v6-store-brand-style'))return;const s=document.createElement('style');s.id='v6-store-brand-style';s.textContent=`
