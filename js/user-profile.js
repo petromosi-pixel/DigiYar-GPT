@@ -75,31 +75,84 @@
 
   const ALL_CATEGORIES = Array.from(new Set(Object.keys(STORE_CATEGORIES).reduce(function(all, key){ return all.concat(STORE_CATEGORIES[key]); }, [])));
 
-  function syncStoreCategories() {
-    const storeSelect = document.getElementById("storeSelect");
-    const categorySelect = document.getElementById("v5Category");
-    if (!storeSelect || !categorySelect) return;
+  function uniqueCategories(categories) {
+    return Array.from(new Set((categories || []).map(String).map(function(item){ return item.trim(); }).filter(Boolean)));
+  }
 
-    function render() {
-      const storeId = storeSelect.value || "all";
-      const categories = storeId === "all" ? ALL_CATEGORIES : (STORE_CATEGORIES[storeId] || []);
-      const current = categorySelect.value;
-      categorySelect.innerHTML = "";
-      const first = document.createElement("option");
-      first.value = "";
-      first.textContent = storeId === "all" ? "همه دسته‌بندی‌ها" : "دسته‌بندی را انتخاب کنید";
-      categorySelect.appendChild(first);
-      categories.forEach(function(category){
-        const option = document.createElement("option");
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
-      });
-      if (categories.indexOf(current) !== -1) categorySelect.value = current;
+  function renderStoreCategories(storeSelect, categorySelect) {
+    if (!storeSelect || !categorySelect) return;
+    const storeId = String(storeSelect.value || "all");
+    const categories = storeId === "all" ? ALL_CATEGORIES : uniqueCategories(STORE_CATEGORIES[storeId] || []);
+    const current = categorySelect.value;
+    categorySelect.innerHTML = "";
+
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = storeId === "all" ? "همه دسته‌بندی‌ها" : "دسته‌بندی را انتخاب کنید";
+    categorySelect.appendChild(first);
+
+    categories.forEach(function(category){
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      categorySelect.appendChild(option);
+    });
+
+    if (categories.indexOf(current) !== -1) categorySelect.value = current;
+  }
+
+  function syncStoreSelectWithPopularStores() {
+    const storeSelect = document.getElementById("storeSelect");
+    const stores = window.DigiYarPopularAffiliateStores;
+    if (!storeSelect || !Array.isArray(stores) || !stores.length) return false;
+
+    const current = storeSelect.value || "all";
+    const seen = new Set();
+    storeSelect.innerHTML = "";
+
+    const all = document.createElement("option");
+    all.value = "all";
+    all.textContent = "همه فروشگاه‌های منتخب";
+    storeSelect.appendChild(all);
+
+    stores.forEach(function(store){
+      if (!store || !store.id || !store.name || seen.has(store.id)) return;
+      seen.add(store.id);
+      const option = document.createElement("option");
+      option.value = String(store.id);
+      option.textContent = String(store.name);
+      storeSelect.appendChild(option);
+    });
+
+    storeSelect.value = seen.has(current) || current === "all" ? current : "all";
+    storeSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  }
+
+  function syncStoreCategories() {
+    function renderCurrent() {
+      const storeSelect = document.getElementById("storeSelect");
+      const categorySelect = document.getElementById("v5Category");
+      renderStoreCategories(storeSelect, categorySelect);
     }
 
-    storeSelect.addEventListener("change", render);
-    render();
+    document.addEventListener("change", function(event){
+      if (event.target && event.target.id === "storeSelect") renderCurrent();
+    });
+
+    function boot() {
+      const ready = syncStoreSelectWithPopularStores();
+      renderCurrent();
+      return ready;
+    }
+
+    if (boot()) return;
+
+    let attempts = 0;
+    const timer = setInterval(function(){
+      attempts += 1;
+      if (boot() || attempts >= 50) clearInterval(timer);
+    }, 100);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", syncStoreCategories, { once: true });
