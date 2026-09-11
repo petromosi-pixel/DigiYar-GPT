@@ -1,40 +1,210 @@
 {
-  "schemaVersion": "2.0",
+  "schemaVersion": "3.0",
   "store": "digikala",
-  "generatedAt": "2026-09-11T20:37:06.761Z",
+  "taxonomyScope": "category-to-brand",
+  "generatedAt": "2026-09-11T20:37:23.815Z",
   "source": {
-    "type": "public_snapshot",
-    "url": "https://raw.githubusercontent.com/BaseMax/DigikalaShopCategories/main/categories.json",
-    "status": "historical-fallback",
-    "reason": "fetch failed"
+    "type": "curated_static",
+    "status": "isolated",
+    "runtimeApi": false
   },
-  "notes": "Static, isolated taxonomy data. Runtime UI does not call Digikala APIs.",
+  "notes": "Static V6 taxonomy. Hierarchy intentionally stops at brand. Models, prices, stock and live products belong to Product Index.",
+  "stats": {
+    "nodes": 412,
+    "leaves": 307,
+    "maxDepth": 4
+  },
   "root": [
     {
-      "name": "کالای دیجیتال",
+      "name": "موبایل و کالای دیجیتال",
       "children": [
         {
-          "name": "لوازم جانبی گوشی",
+          "name": "گوشی موبایل",
           "children": [
             {
-              "name": "کیف و کاور گوشی",
+              "name": "اندروید",
+              "children": [
+                {
+                  "name": "سامسونگ",
+                  "children": []
+                },
+                {
+                  "name": "شیائومی",
+                  "children": []
+                },
+                {
+                  "name": "آنر",
+                  "children": []
+                },
+                {
+                  "name": "هواوی",
+                  "children": []
+                },
+                {
+                  "name": "نوکیا",
+                  "children": []
+                },
+                {
+                  "name": "موتورولا",
+                  "children": []
+                },
+                {
+                  "name": "اوپو",
+                  "children": []
+                },
+                {
+                  "name": "وان‌پلاس",
+                  "children": []
+                },
+                {
+                  "name": "ریلمی",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "iOS",
+              "children": [
+                {
+                  "name": "اپل",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "تبلت",
+          "children": [
+            {
+              "name": "اندروید",
+              "children": [
+                {
+                  "name": "سامسونگ",
+                  "children": []
+                },
+                {
+                  "name": "شیائومی",
+                  "children": []
+                },
+                {
+                  "name": "لنوو",
+                  "children": []
+                },
+                {
+                  "name": "هواوی",
+                  "children": []
+                },
+                {
+                  "name": "آنر",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "iPadOS",
+              "children": [
+                {
+                  "name": "اپل",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "لپ‌تاپ",
+          "children": [
+            {
+              "name": "ویندوز",
+              "children": [
+                {
+                  "name": "لنوو",
+                  "children": []
+                },
+                {
+                  "name": "ایسوس",
+                  "children": []
+                },
+                {
+                  "name": "اچ‌پی",
+                  "children": []
+                },
+                {
+                  "name": "ایسر",
+                  "children": []
+                },
+                {
+                  "name": "دل",
+                  "children": []
+                },
+                {
+                  "name": "ام‌اس‌آی",
+                  "children": []
+                },
+                {
+                  "name": "مایکروسافت",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "مک",
+              "children": [
+                {
+                  "name": "اپل",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "مانیتور",
+          "children": [
+            {
+              "name": "سامسونگ",
               "children": []
             },
             {
-              "name": "پاوربانک",
+              "name": "ال‌جی",
               "children": []
             },
             {
-              "name": "پایه نگهدارنده گوشی",
+              "name": "ایسوس",
+              "children": []
+            },
+            {
+              "name": "بنکیو",
+              "children": []
+            },
+            {
+              "name": "ام‌اس‌آی",
+              "children": []
+            },
+            {
+              "name": "ایسر",
               "children": []
             }
           ]
         },
         {
-          "name": "گوشی موبایل",
+          "name": "هدفون، هدست و هندزفری",
           "children": [
             {
-              "name": "سامسونگ هوآوی",
+              "name": "سونی",
+              "children": []
+            },
+            {
+              "name": "جی‌بی‌ال",
+              "children": []
+            },
+            {
+              "name": "انکر",
+              "children": []
+            },
+            {
+              "name": "سامسونگ",
               "children": []
             },
             {
@@ -46,168 +216,286 @@
               "children": []
             },
             {
-              "name": "آنر",
-              "children": []
-            },
-            {
-              "name": "نوکیا",
+              "name": "هایلو",
               "children": []
             }
           ]
         },
         {
-          "name": "واقعیت مجازی",
-          "children": []
-        },
-        {
-          "name": "مچ بند و ساعت هوشمند",
-          "children": []
-        },
-        {
-          "name": "هدفون، هدست، هندزفری",
-          "children": []
-        },
-        {
-          "name": "هارد، فلش و ssd",
-          "children": []
+          "name": "ساعت و مچ‌بند هوشمند",
+          "children": [
+            {
+              "name": "اپل",
+              "children": []
+            },
+            {
+              "name": "سامسونگ",
+              "children": []
+            },
+            {
+              "name": "شیائومی",
+              "children": []
+            },
+            {
+              "name": "هواوی",
+              "children": []
+            },
+            {
+              "name": "امیزفیت",
+              "children": []
+            },
+            {
+              "name": "گارمین",
+              "children": []
+            }
+          ]
         },
         {
           "name": "دوربین",
           "children": [
             {
               "name": "دوربین عکاسی دیجیتال",
-              "children": []
+              "children": [
+                {
+                  "name": "کانن",
+                  "children": []
+                },
+                {
+                  "name": "نیکون",
+                  "children": []
+                },
+                {
+                  "name": "سونی",
+                  "children": []
+                },
+                {
+                  "name": "فوجی‌فیلم",
+                  "children": []
+                },
+                {
+                  "name": "پاناسونیک",
+                  "children": []
+                }
+              ]
             },
             {
-              "name": "دوربین ورزشی و فیلم برداری",
-              "children": []
-            },
-            {
-              "name": "دوربین چاپ سریع",
-              "children": []
+              "name": "دوربین ورزشی",
+              "children": [
+                {
+                  "name": "گوپرو",
+                  "children": []
+                },
+                {
+                  "name": "DJI",
+                  "children": []
+                },
+                {
+                  "name": "اینستا360",
+                  "children": []
+                }
+              ]
             }
           ]
         },
         {
-          "name": "لوازم جانبی دوربین",
+          "name": "دوربین مداربسته",
           "children": [
             {
-              "name": "لنز",
+              "name": "داهوا",
               "children": []
             },
             {
-              "name": "کیف",
+              "name": "هایک‌ویژن",
               "children": []
             },
             {
-              "name": "کارت حافظه",
+              "name": "شیائومی",
               "children": []
             },
             {
-              "name": "کاغذ چاپ عکس",
+              "name": "تی‌پی‌لینک",
               "children": []
             }
           ]
-        },
-        {
-          "name": "دوربین دوچشمی و شکاری",
-          "children": []
-        },
-        {
-          "name": "تلسکوپ",
-          "children": []
-        },
-        {
-          "name": "پلی استیشن، ایکس باکس و بازی",
-          "children": []
-        },
-        {
-          "name": "کامپیوتر و تجهیزات جانبی",
-          "children": [
-            {
-              "name": "تجهیزات مخصوص بازی",
-              "children": []
-            },
-            {
-              "name": "مانیتور",
-              "children": []
-            },
-            {
-              "name": "کیس های اسمبل شده",
-              "children": []
-            },
-            {
-              "name": "قطعات داخلی کامپیوتر",
-              "children": []
-            },
-            {
-              "name": "ماوس",
-              "children": []
-            },
-            {
-              "name": "کیبورد",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "لپ تاپ",
-          "children": []
-        },
-        {
-          "name": "لوازم جانبی لپتاپ",
-          "children": [
-            {
-              "name": "کیف کوله و کاور",
-              "children": []
-            },
-            {
-              "name": "کابل صدا،AUX و HDMI",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "تبلت",
-          "children": []
-        },
-        {
-          "name": "شارژر تبلت و موبایل",
-          "children": []
-        },
-        {
-          "name": "کیف،کاور،لوازم جانبی تبلت",
-          "children": []
-        },
-        {
-          "name": "باتری",
-          "children": []
-        },
-        {
-          "name": "دوربین های تحت شبکه",
-          "children": []
         },
         {
           "name": "مودم و تجهیزات شبکه",
-          "children": []
-        },
-        {
-          "name": "ماشین های اداری",
           "children": [
             {
-              "name": "تلفن، بیسیم و سانترال",
+              "name": "تی‌پی‌لینک",
               "children": []
             },
             {
-              "name": "فکس",
+              "name": "دی‌لینک",
               "children": []
             },
             {
-              "name": "پرینتر",
+              "name": "هواوی",
               "children": []
             },
             {
-              "name": "لوازم جانبی اداری",
+              "name": "ایرانسل",
+              "children": []
+            },
+            {
+              "name": "شاتل موبایل",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "حافظه و ذخیره‌سازی",
+          "children": [
+            {
+              "name": "هارد و SSD",
+              "children": [
+                {
+                  "name": "وسترن دیجیتال",
+                  "children": []
+                },
+                {
+                  "name": "سیگیت",
+                  "children": []
+                },
+                {
+                  "name": "سامسونگ",
+                  "children": []
+                },
+                {
+                  "name": "کینگستون",
+                  "children": []
+                },
+                {
+                  "name": "سن‌دیسک",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "فلش مموری",
+              "children": [
+                {
+                  "name": "سن‌دیسک",
+                  "children": []
+                },
+                {
+                  "name": "کینگستون",
+                  "children": []
+                },
+                {
+                  "name": "اچ‌پی",
+                  "children": []
+                },
+                {
+                  "name": "ای‌دیتا",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "کنسول و بازی",
+          "children": [
+            {
+              "name": "سونی",
+              "children": []
+            },
+            {
+              "name": "مایکروسافت",
+              "children": []
+            },
+            {
+              "name": "نینتندو",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "لوازم جانبی موبایل",
+          "children": [
+            {
+              "name": "شارژر",
+              "children": [
+                {
+                  "name": "انکر",
+                  "children": []
+                },
+                {
+                  "name": "سامسونگ",
+                  "children": []
+                },
+                {
+                  "name": "شیائومی",
+                  "children": []
+                },
+                {
+                  "name": "بیسوس",
+                  "children": []
+                },
+                {
+                  "name": "یوگرین",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "پاوربانک",
+              "children": [
+                {
+                  "name": "انکر",
+                  "children": []
+                },
+                {
+                  "name": "شیائومی",
+                  "children": []
+                },
+                {
+                  "name": "بیسوس",
+                  "children": []
+                },
+                {
+                  "name": "هیسکا",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "کیف و کاور",
+              "children": [
+                {
+                  "name": "نیلکین",
+                  "children": []
+                },
+                {
+                  "name": "اسپیگن",
+                  "children": []
+                },
+                {
+                  "name": "بیسوس",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "پرینتر",
+          "children": [
+            {
+              "name": "اچ‌پی",
+              "children": []
+            },
+            {
+              "name": "کانن",
+              "children": []
+            },
+            {
+              "name": "اپسون",
+              "children": []
+            },
+            {
+              "name": "برادر",
               "children": []
             }
           ]
@@ -215,222 +503,217 @@
       ]
     },
     {
-      "name": "خودرو، ابزار و تجهیزات صنعتی",
+      "name": "لوازم خانگی و مبلمان",
       "children": [
         {
-          "name": "خودروهای ایرانی و خارجی",
-          "children": []
-        },
-        {
-          "name": "موتور سیکلت",
-          "children": []
-        },
-        {
-          "name": "لوازم جانبی خودرو و موتورسیکلت",
+          "name": "یخچال و فریزر",
           "children": [
             {
-              "name": "لوازم تزیینی",
+              "name": "اسنوا",
               "children": []
             },
             {
-              "name": "سیستم صوتی و تصویری",
+              "name": "دوو",
               "children": []
             },
             {
-              "name": "نظافت و نگهداری خودرو",
+              "name": "ال‌جی",
               "children": []
             },
             {
-              "name": "کلاه کاسکت و لوازم جانبی موتور",
+              "name": "سامسونگ",
+              "children": []
+            },
+            {
+              "name": "امرسان",
+              "children": []
+            },
+            {
+              "name": "پاکشوما",
               "children": []
             }
           ]
         },
         {
-          "name": "لوازم یدکی خودرو و موتورسیکلت",
+          "name": "ماشین لباسشویی",
           "children": [
             {
-              "name": "دیسک و صفحع کلاج",
+              "name": "اسنوا",
               "children": []
             },
             {
-              "name": "جلوبندی و تعلیق",
+              "name": "دوو",
               "children": []
             },
             {
-              "name": "چراغ خودرو",
+              "name": "ال‌جی",
               "children": []
             },
             {
-              "name": "تسمه خودرو",
+              "name": "سامسونگ",
               "children": []
             },
             {
-              "name": "کمک فنر",
+              "name": "پاکشوما",
+              "children": []
+            },
+            {
+              "name": "جی‌پلاس",
               "children": []
             }
           ]
         },
         {
-          "name": "لوازم مصرفی خودرو و موتور سیکلت",
+          "name": "ماشین ظرفشویی",
           "children": [
             {
-              "name": "لاستیک و تایر",
+              "name": "اسنوا",
               "children": []
             },
             {
-              "name": "لنت ترمز",
+              "name": "دوو",
               "children": []
             },
             {
-              "name": "روغن موتور و ضدیخ",
+              "name": "ال‌جی",
               "children": []
             },
             {
-              "name": "مکمل سوخت و روغن و انواع فیلتر",
+              "name": "سامسونگ",
+              "children": []
+            },
+            {
+              "name": "پاکشوما",
               "children": []
             }
           ]
         },
         {
-          "name": "ابزار برقی",
+          "name": "تلویزیون",
           "children": [
             {
-              "name": "دریل ، پیچ گوشتی برقی  و شارژی",
+              "name": "اسنوا",
               "children": []
             },
             {
-              "name": "فرز و سنگ رومیزی",
+              "name": "دوو",
               "children": []
             },
             {
-              "name": "موتور برق",
+              "name": "ایکس‌ویژن",
               "children": []
             },
             {
-              "name": "مکنده و دمنده",
+              "name": "جی‌پلاس",
               "children": []
             },
             {
-              "name": "کارواش",
+              "name": "سامسونگ",
               "children": []
             },
             {
-              "name": "کمپرسور و جک خودرو",
+              "name": "ال‌جی",
               "children": []
             },
             {
-              "name": "ابزار همه کاره برقی و شارژری",
+              "name": "سونی",
               "children": []
             }
           ]
         },
         {
-          "name": "ابزار غیربرقی",
+          "name": "جاروبرقی و نظافت",
           "children": [
             {
-              "name": "ابزار دستی",
+              "name": "پارس‌خزر",
               "children": []
             },
             {
-              "name": "مجموعه ابزار",
+              "name": "فیلیپس",
               "children": []
             },
             {
-              "name": "نردبان",
+              "name": "بوش",
               "children": []
             },
             {
-              "name": "پیچ گوشتی و فازمتر",
+              "name": "سامسونگ",
               "children": []
             },
             {
-              "name": "نظم دهنده ابزار",
+              "name": "ال‌جی",
               "children": []
             },
             {
-              "name": "متر، تراز، اندازه گیری دقیق",
-              "children": []
-            },
-            {
-              "name": "لوازم روانکاری",
-              "children": []
-            },
-            {
-              "name": "چسب صنعتی",
+              "name": "شیائومی",
               "children": []
             }
           ]
         },
         {
-          "name": "لوازم و یراق آلات ساختمانی",
+          "name": "آشپزخانه",
           "children": [
             {
-              "name": "شیرآلات",
-              "children": []
+              "name": "اجاق گاز",
+              "children": [
+                {
+                  "name": "اسنوا",
+                  "children": []
+                },
+                {
+                  "name": "دوو",
+                  "children": []
+                },
+                {
+                  "name": "آلتون",
+                  "children": []
+                },
+                {
+                  "name": "اخوان",
+                  "children": []
+                },
+                {
+                  "name": "استیل البرز",
+                  "children": []
+                }
+              ]
             },
             {
-              "name": "رنگ",
-              "children": []
-            },
-            {
-              "name": "دستگیره در",
-              "children": []
+              "name": "هود",
+              "children": [
+                {
+                  "name": "آلتون",
+                  "children": []
+                },
+                {
+                  "name": "اخوان",
+                  "children": []
+                },
+                {
+                  "name": "استیل البرز",
+                  "children": []
+                },
+                {
+                  "name": "کن",
+                  "children": []
+                }
+              ]
             }
           ]
         },
         {
-          "name": "لوازم باغبانی",
+          "name": "مبلمان",
           "children": [
             {
-              "name": "قیچی، چاقو و ابزار باغبانی",
+              "name": "چوبینه",
               "children": []
             },
             {
-              "name": "بذر و تخم گیاهان",
+              "name": "هوم‌کانا",
               "children": []
             },
             {
-              "name": "تبر ، بیل و کلنگ",
-              "children": []
-            },
-            {
-              "name": "خاک، کود وآفت کش",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "نور و روشنایی",
-          "children": [
-            {
-              "name": "لوستر و آباژور",
-              "children": []
-            },
-            {
-              "name": "لامپ",
-              "children": []
-            },
-            {
-              "name": "چندراهی برق و محافظ ولتاژ",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "تجهیزات ایمنی و کار",
-          "children": [
-            {
-              "name": "کفش ایمنی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "حفاظتی و امنیتی",
-          "children": [
-            {
-              "name": "گاوصندوق",
+              "name": "بالسا",
               "children": []
             }
           ]
@@ -441,218 +724,276 @@
       "name": "مد و پوشاک",
       "children": [
         {
-          "name": "مردانه",
-          "children": []
-        },
-        {
-          "name": "لباس مردانه",
+          "name": "پوشاک مردانه",
           "children": [
             {
-              "name": "تی شرت و پولوشرت",
-              "children": []
+              "name": "تی‌شرت و پولوشرت",
+              "children": [
+                {
+                  "name": "جوتی‌جینز",
+                  "children": []
+                },
+                {
+                  "name": "ال‌سی‌وایکیکی",
+                  "children": []
+                },
+                {
+                  "name": "نیکتا",
+                  "children": []
+                }
+              ]
             },
             {
               "name": "پیراهن",
-              "children": []
+              "children": [
+                {
+                  "name": "ال‌سی‌وایکیکی",
+                  "children": []
+                },
+                {
+                  "name": "جوتی‌جینز",
+                  "children": []
+                }
+              ]
             },
             {
               "name": "شلوار",
-              "children": []
-            },
-            {
-              "name": "شلوار",
-              "children": []
-            },
-            {
-              "name": "لباس زیر",
-              "children": []
+              "children": [
+                {
+                  "name": "جوتی‌جینز",
+                  "children": []
+                },
+                {
+                  "name": "ال‌سی‌وایکیکی",
+                  "children": []
+                }
+              ]
             }
           ]
         },
         {
-          "name": "کفش مردانه",
+          "name": "پوشاک زنانه",
           "children": [
             {
-              "name": "کفش روزمره",
-              "children": []
+              "name": "مانتو و پوشش",
+              "children": [
+                {
+                  "name": "تن‌درست",
+                  "children": []
+                },
+                {
+                  "name": "درس‌ایران",
+                  "children": []
+                },
+                {
+                  "name": "ال‌سی‌وایکیکی",
+                  "children": []
+                }
+              ]
             },
             {
-              "name": "کفش رسمی",
-              "children": []
+              "name": "لباس زنانه",
+              "children": [
+                {
+                  "name": "ال‌سی‌وایکیکی",
+                  "children": []
+                },
+                {
+                  "name": "کوک‌ما",
+                  "children": []
+                }
+              ]
             }
           ]
         },
         {
-          "name": "اکسسوری مردانه",
+          "name": "کفش",
           "children": [
             {
-              "name": "ساعت",
-              "children": []
+              "name": "کفش مردانه",
+              "children": [
+                {
+                  "name": "کفش ملی",
+                  "children": []
+                },
+                {
+                  "name": "چرم مشهد",
+                  "children": []
+                },
+                {
+                  "name": "پاما",
+                  "children": []
+                }
+              ]
             },
+            {
+              "name": "کفش زنانه",
+              "children": [
+                {
+                  "name": "کفش ملی",
+                  "children": []
+                },
+                {
+                  "name": "چرم مشهد",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "اکسسوری",
+          "children": [
             {
               "name": "کیف",
-              "children": []
+              "children": [
+                {
+                  "name": "چرم مشهد",
+                  "children": []
+                },
+                {
+                  "name": "نوین‌چرم",
+                  "children": []
+                }
+              ]
             },
-            {
-              "name": "کمربند",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "زنانه",
-          "children": []
-        },
-        {
-          "name": "لباس زنانه",
-          "children": [
-            {
-              "name": "پوشش اسلامی و مانتو",
-              "children": []
-            },
-            {
-              "name": "بلوز و شومیز",
-              "children": []
-            },
-            {
-              "name": "شلوار و سرهمی",
-              "children": []
-            },
-            {
-              "name": "لباس زیر",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "کفش زنانه",
-          "children": [
-            {
-              "name": "کفش روزمره",
-              "children": []
-            },
-            {
-              "name": "کفش تخت",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "اکسسوری زنانه",
-          "children": [
             {
               "name": "ساعت",
+              "children": [
+                {
+                  "name": "کاسیو",
+                  "children": []
+                },
+                {
+                  "name": "سیتیزن",
+                  "children": []
+                },
+                {
+                  "name": "فسیل",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "آرایشی و بهداشتی",
+      "children": [
+        {
+          "name": "آرایش صورت",
+          "children": [
+            {
+              "name": "مک",
               "children": []
             },
             {
-              "name": "کیف",
+              "name": "میبلین",
               "children": []
             },
             {
-              "name": "شال و روسری",
+              "name": "لوریل",
+              "children": []
+            },
+            {
+              "name": "کالیستا",
+              "children": []
+            },
+            {
+              "name": "این‌لی",
               "children": []
             }
           ]
         },
         {
-          "name": "زیورآلات زنانه",
+          "name": "مراقبت پوست",
           "children": [
             {
-              "name": "دستبند",
+              "name": "نیوا",
               "children": []
             },
             {
-              "name": "گوشواره",
+              "name": "اوریاژ",
               "children": []
             },
             {
-              "name": "گردنبند",
+              "name": "لاروش پوزای",
+              "children": []
+            },
+            {
+              "name": "سینره",
+              "children": []
+            },
+            {
+              "name": "درمالیفت",
               "children": []
             }
           ]
         },
         {
-          "name": "زیورآلات طلا زنانه",
+          "name": "مراقبت مو",
           "children": [
             {
-              "name": "دستبند",
+              "name": "لورآل",
               "children": []
             },
             {
-              "name": "گوشواره",
+              "name": "شوارتسکف",
               "children": []
             },
             {
-              "name": "آویز",
+              "name": "لافارر",
               "children": []
             },
             {
-              "name": "گردنبد",
+              "name": "سینره",
               "children": []
             }
           ]
         },
         {
-          "name": "زیورآلات نقره زنانه",
-          "children": []
-        },
-        {
-          "name": "عینک آفتابی زنانه",
-          "children": []
-        },
-        {
-          "name": "عینک آفتابی مردانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی مردانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی زنانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی مردانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی زنانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی پسرانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی دخترانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی پسرانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی دخترانه",
-          "children": []
-        },
-        {
-          "name": "کوله پشتی مردانه",
-          "children": []
-        },
-        {
-          "name": "بچگانه",
+          "name": "عطر و ادکلن",
           "children": [
             {
-              "name": "نوازد",
+              "name": "ورساچه",
               "children": []
             },
             {
-              "name": "پسرانه",
+              "name": "دیور",
               "children": []
             },
             {
-              "name": "دخترانه",
+              "name": "گوچی",
+              "children": []
+            },
+            {
+              "name": "بولگاری",
+              "children": []
+            },
+            {
+              "name": "لالیک",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "بهداشت شخصی",
+          "children": [
+            {
+              "name": "پنبه‌ریز",
+              "children": []
+            },
+            {
+              "name": "مولفیکس",
+              "children": []
+            },
+            {
+              "name": "مای",
+              "children": []
+            },
+            {
+              "name": "داروگر",
               "children": []
             }
           ]
@@ -660,221 +1001,80 @@
       ]
     },
     {
-      "name": "اسباب بازی، کودک و نوزاد",
+      "name": "سلامت و پزشکی",
       "children": [
         {
-          "name": "بهداشت و حمام کودک و نوازد",
+          "name": "تجهیزات پزشکی",
           "children": [
             {
-              "name": "پوشاک",
+              "name": "بیورر",
               "children": []
             },
             {
-              "name": "دستمال مرطوب",
+              "name": "امرون",
               "children": []
             },
             {
-              "name": "حوله",
+              "name": "مدیسان",
               "children": []
             },
             {
-              "name": "وان حمام نوزاد",
-              "children": []
-            },
-            {
-              "name": "مینی واش",
-              "children": []
-            },
-            {
-              "name": "شامپو کودک و نوزاد",
+              "name": "زنیت‌مد",
               "children": []
             }
           ]
         },
         {
-          "name": "پوشاک و کفش کودک و نوازد",
+          "name": "فشارسنج",
           "children": [
             {
-              "name": "لباس کودک و لباس نوزادی",
+              "name": "امرون",
               "children": []
             },
             {
-              "name": "کفش",
+              "name": "بیورر",
               "children": []
             },
             {
-              "name": "کفش ورزشی",
-              "children": []
-            },
-            {
-              "name": "جوراب و پاپوش کودک و نوزاد",
-              "children": []
-            },
-            {
-              "name": "کلاه و پیشبند نوزاد",
+              "name": "زنیت‌مد",
               "children": []
             }
           ]
         },
         {
-          "name": "تبلت",
-          "children": []
-        },
-        {
-          "name": "PS4 ، XBOX و بازی",
-          "children": []
-        },
-        {
-          "name": "اسباب بازی",
+          "name": "ترازو",
           "children": [
             {
-              "name": "فکری  و آموزشی",
+              "name": "بیورر",
               "children": []
             },
             {
-              "name": "پازل، لگو و ساختنی",
+              "name": "شیائومی",
               "children": []
             },
             {
-              "name": "عروسک و فیگور",
-              "children": []
-            },
-            {
-              "name": "اسپینر، ابزار شوخی و سرگرمی",
-              "children": []
-            },
-            {
-              "name": "تفنگ، تیر و لوازم بازی جنگی",
+              "name": "امسیگ",
               "children": []
             }
           ]
         },
         {
-          "name": "بازی و سرگرمی کودک",
+          "name": "مکمل و ویتامین",
           "children": [
             {
-              "name": "ماشین بازی ، موتور، سه چرخه",
+              "name": "یوروویتال",
               "children": []
             },
             {
-              "name": "دوچرخه",
+              "name": "نیچرمید",
               "children": []
             },
             {
-              "name": "تشک بازی و پارک بازی",
+              "name": "ویتالی‌تون",
               "children": []
             },
             {
-              "name": "تاب و سرسره",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "سلامت، ایمنی و مراقبت",
-          "children": [
-            {
-              "name": "تصفیه هوا",
-              "children": []
-            },
-            {
-              "name": "ترازو",
-              "children": []
-            },
-            {
-              "name": "دوربین و پیجر اتاق کودک",
-              "children": []
-            },
-            {
-              "name": "تب سنج و دماسنج",
-              "children": []
-            },
-            {
-              "name": "محافظ و ابزار ایمنی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "خواب کودک",
-          "children": [
-            {
-              "name": "مبلمان اتاق کودک",
-              "children": []
-            },
-            {
-              "name": "چراغ خواب کودک",
-              "children": []
-            },
-            {
-              "name": "تشک کودک",
-              "children": []
-            },
-            {
-              "name": "سرویس خواب",
-              "children": []
-            },
-            {
-              "name": "پتو",
-              "children": []
-            },
-            {
-              "name": "بالش شیردهی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "ملزومات گردش و سفر",
-          "children": [
-            {
-              "name": "کالسکه و کریر",
-              "children": []
-            },
-            {
-              "name": "صندلی خودرو کودک و نوزاد",
-              "children": []
-            },
-            {
-              "name": "ساک لوازم نوزاد",
-              "children": []
-            },
-            {
-              "name": "لوازم جانبی گرش و سفر",
-              "children": []
-            },
-            {
-              "name": "آغوشی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "ملزومات شخصی",
-          "children": [
-            {
-              "name": "پستانک و ملزومات",
-              "children": []
-            },
-            {
-              "name": "شیردوش",
-              "children": []
-            },
-            {
-              "name": "شورت آموزش",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "غذاخوری",
-          "children": [
-            {
-              "name": "صندلی غذاخوری",
-              "children": []
-            },
-            {
-              "name": "شیشه شیر، سرلاک، داروخوری",
+              "name": "دانا",
               "children": []
             }
           ]
@@ -882,400 +1082,93 @@
       ]
     },
     {
-      "name": "کالای عای سوپرمارکتی",
+      "name": "کتاب و لوازم تحریر",
       "children": [
         {
-          "name": "کالای اساسی و خوار و بار",
+          "name": "کتاب",
           "children": [
             {
-              "name": "نان",
+              "name": "کتاب فارسی",
+              "children": [
+                {
+                  "name": "نشر چشمه",
+                  "children": []
+                },
+                {
+                  "name": "نشر نی",
+                  "children": []
+                },
+                {
+                  "name": "امیرکبیر",
+                  "children": []
+                },
+                {
+                  "name": "ققنوس",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "کتاب کودک",
+              "children": [
+                {
+                  "name": "افق",
+                  "children": []
+                },
+                {
+                  "name": "هوپا",
+                  "children": []
+                },
+                {
+                  "name": "پرتقال",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "لوازم تحریر",
+          "children": [
+            {
+              "name": "پاپکو",
               "children": []
             },
             {
-              "name": "برنج",
+              "name": "پنتر",
               "children": []
             },
             {
-              "name": "روغن",
+              "name": "استدلر",
               "children": []
             },
             {
-              "name": "قند",
+              "name": "فابرکاستل",
               "children": []
             },
             {
-              "name": "شکر",
-              "children": []
-            },
-            {
-              "name": "سس",
-              "children": []
-            },
-            {
-              "name": "رب و کنسرو گوجه",
-              "children": []
-            },
-            {
-              "name": "خیارشور و ترشیجات",
-              "children": []
-            },
-            {
-              "name": "آبلیمو، آبغوره و سرکه",
-              "children": []
-            },
-            {
-              "name": "ماکارونی، پاستا و رشته",
-              "children": []
-            },
-            {
-              "name": "زعفران، زرشک و تزئینات عذا",
-              "children": []
-            },
-            {
-              "name": "حبوبات و سویا",
+              "name": "کنکو",
               "children": []
             }
           ]
         },
         {
-          "name": "صبحانه",
+          "name": "نوشت‌افزار",
           "children": [
             {
-              "name": "مربا",
+              "name": "پیکاسو",
               "children": []
             },
             {
-              "name": "عسل",
+              "name": "کنکو",
               "children": []
             },
             {
-              "name": "حلواشکری، ارده و کنجد",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "مواد پروتئینی",
-          "children": [
-            {
-              "name": "سوسیس و کالباس",
+              "name": "استدلر",
               "children": []
             },
             {
-              "name": "گوشت گوسفندی",
-              "children": []
-            },
-            {
-              "name": "گوشت مرغ",
-              "children": []
-            },
-            {
-              "name": "تخم مرغ",
-              "children": []
-            },
-            {
-              "name": "گوشت گاو و گوساله",
-              "children": []
-            },
-            {
-              "name": "میگو",
-              "children": []
-            },
-            {
-              "name": "ماهی",
-              "children": []
-            },
-            {
-              "name": "تن ماهی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "لبنیات",
-          "children": [
-            {
-              "name": "شیر",
-              "children": []
-            },
-            {
-              "name": "ماست",
-              "children": []
-            },
-            {
-              "name": "پنیر",
-              "children": []
-            },
-            {
-              "name": "خامه",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "نوشیدنی ها",
-          "children": [
-            {
-              "name": "چای",
-              "children": []
-            },
-            {
-              "name": "دمنوش",
-              "children": []
-            },
-            {
-              "name": "قهوه",
-              "children": []
-            },
-            {
-              "name": "آب و آب معدنی",
-              "children": []
-            },
-            {
-              "name": "ماالشعیر",
-              "children": []
-            },
-            {
-              "name": "نوشابه",
-              "children": []
-            },
-            {
-              "name": "شربت آبمیوه",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "میوه و سبزی",
-          "children": []
-        },
-        {
-          "name": "غذای آماده و نودل",
-          "children": []
-        },
-        {
-          "name": "فراوردی های منجمد",
-          "children": []
-        },
-        {
-          "name": "کنسرو و کمپوت",
-          "children": []
-        },
-        {
-          "name": "تنقلات",
-          "children": [
-            {
-              "name": "شکلات، تافی و آبنبات",
-              "children": []
-            },
-            {
-              "name": "بیسکوییت و ویفر",
-              "children": []
-            },
-            {
-              "name": "مغز طعم دار خشکبار",
-              "children": []
-            },
-            {
-              "name": "کیک و کلوچه",
-              "children": []
-            },
-            {
-              "name": "چیپس و پاپکورن",
-              "children": []
-            },
-            {
-              "name": "پفک و اسنک",
-              "children": []
-            },
-            {
-              "name": "آدامس و خوشبوکنده",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "خشکبار",
-          "children": []
-        }
-      ]
-    },
-    {
-      "name": "زیبایی و سلامت",
-      "children": [
-        {
-          "name": "لوازم آرایشی",
-          "children": [
-            {
-              "name": "کرم و مراقبت پوست",
-              "children": []
-            },
-            {
-              "name": "شامپو و مراقبت مو",
-              "children": []
-            },
-            {
-              "name": "بهداشت دهان و دندان",
-              "children": []
-            },
-            {
-              "name": "بهداشت و مراقبت بدن",
-              "children": []
-            },
-            {
-              "name": "ضد تعریق",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "لوازم شخصی برقی",
-          "children": [
-            {
-              "name": "ماشین اصلاح صورت",
-              "children": []
-            },
-            {
-              "name": "سشوار",
-              "children": []
-            },
-            {
-              "name": "اصلاح بدن آقایان",
-              "children": []
-            },
-            {
-              "name": "اصلاح بدن بانوان",
-              "children": []
-            },
-            {
-              "name": "اصلاح موی گوش ، بینی و ابرو",
-              "children": []
-            },
-            {
-              "name": "برس پاک سازی",
-              "children": []
-            },
-            {
-              "name": "اتو مو و حالت دهنده",
-              "children": []
-            },
-            {
-              "name": "بیگودی و قرکننده",
-              "children": []
-            },
-            {
-              "name": "مسواک برقی",
-              "children": []
-            },
-            {
-              "name": "لیزر",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "ست هدیه",
-          "children": []
-        },
-        {
-          "name": "عطر ادکلن، اسپری و ست",
-          "children": [
-            {
-              "name": "مردانه",
-              "children": []
-            },
-            {
-              "name": "زنانه",
-              "children": []
-            },
-            {
-              "name": "جیبی",
-              "children": []
-            },
-            {
-              "name": "اسپری",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "طلا، نقره و زیرآلات زنانه",
-          "children": [
-            {
-              "name": "زیرآلات نقره زنانه",
-              "children": []
-            },
-            {
-              "name": "زیورآلات طلا زنانه",
-              "children": []
-            },
-            {
-              "name": "حلقه انگشتر طلای زنانه",
-              "children": []
-            },
-            {
-              "name": "دستبند طلا زنانه",
-              "children": []
-            },
-            {
-              "name": "گردنبد طلا زنانه",
-              "children": []
-            },
-            {
-              "name": "گوشواره طلا زنانه",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "زیورآلات نقره مردانه",
-          "children": []
-        },
-        {
-          "name": "ابزار سلامت و طبی",
-          "children": [
-            {
-              "name": "مچبند و ساعت هوشمند",
-              "children": []
-            },
-            {
-              "name": "ترازو",
-              "children": []
-            },
-            {
-              "name": "کالای خواب و استراحت طبی",
-              "children": []
-            },
-            {
-              "name": "تست قند خون",
-              "children": []
-            },
-            {
-              "name": "تب سنج",
-              "children": []
-            },
-            {
-              "name": "فشارسنج",
-              "children": []
-            },
-            {
-              "name": "ابزار مراقبت پا",
-              "children": []
-            },
-            {
-              "name": "نمایشگر ضربان قلب",
-              "children": []
-            },
-            {
-              "name": "ماساژور",
-              "children": []
-            },
-            {
-              "name": "تشک و پتوی برقی",
-              "children": []
-            },
-            {
-              "name": "ویلچر",
+              "name": "فابرکاستل",
               "children": []
             }
           ]
@@ -1283,427 +1176,153 @@
       ]
     },
     {
-      "name": "خانه و آشپزخانه",
+      "name": "کودک و نوزاد",
       "children": [
         {
-          "name": "صوتی و تصویری",
+          "name": "پوشاک کودک",
           "children": [
             {
-              "name": "تلویزیون",
+              "name": "ال‌سی‌وایکیکی",
               "children": []
             },
             {
-              "name": "سینمای خانگی و ساندبار",
+              "name": "جونیور",
               "children": []
             },
             {
-              "name": "گیرنده دیجیتال تلویزیون",
+              "name": "چیکو",
               "children": []
             }
           ]
         },
         {
-          "name": "دکوراتیو",
+          "name": "پوشک و بهداشت نوزاد",
           "children": [
             {
-              "name": "مبلمان خانگی",
+              "name": "مولفیکس",
               "children": []
             },
             {
-              "name": "دکوراسیون اداری",
+              "name": "مای‌بیبی",
               "children": []
             },
             {
-              "name": "آینه",
+              "name": "پنبه‌ریز",
               "children": []
             },
             {
-              "name": "پرده",
-              "children": []
-            },
-            {
-              "name": "تابلو",
-              "children": []
-            },
-            {
-              "name": "ساعت دیواری و رومیزی",
-              "children": []
-            },
-            {
-              "name": "شمع، گل و گلدون",
+              "name": "پمپرز",
               "children": []
             }
           ]
         },
         {
-          "name": "فرش ماشینی، دستبافت ، تابلو",
-          "children": []
-        },
-        {
-          "name": "لوازم برقی خانگی",
+          "name": "کالسکه و حمل کودک",
           "children": [
             {
-              "name": "یخچال و فریزر",
+              "name": "چیکو",
               "children": []
             },
             {
-              "name": "ماشین لباسشویی",
+              "name": "دلیجان",
               "children": []
             },
             {
-              "name": "ماشین ظرفشویی",
-              "children": []
-            },
-            {
-              "name": "جاروبرقی",
-              "children": []
-            },
-            {
-              "name": "جارو شارژی",
-              "children": []
-            },
-            {
-              "name": "تلفن ، بیسیم و سناترال",
-              "children": []
-            },
-            {
-              "name": "کولر ، پنکه و تصفیه هوا",
-              "children": []
-            },
-            {
-              "name": "قهوه و چای ساز، آب میوه گیر",
-              "children": []
-            },
-            {
-              "name": "ترازوی آشپرخانه",
-              "children": []
-            },
-            {
-              "name": "اتو بخاری پرسی",
+              "name": "بیبی‌کیر",
               "children": []
             }
           ]
         },
         {
-          "name": "حیوانات خانگی، غذا و لوازم",
+          "name": "شیشه و لوازم تغذیه",
           "children": [
             {
-              "name": "آکواریوم، غذا و لوازم آبزیان",
+              "name": "اونت",
+              "children": []
+            },
+            {
+              "name": "دکتر براون",
+              "children": []
+            },
+            {
+              "name": "چیکو",
+              "children": []
+            },
+            {
+              "name": "بیبی‌لند",
               "children": []
             }
           ]
-        },
-        {
-          "name": "سرو و پذیرایی",
-          "children": [
-            {
-              "name": "سرویس غذاخوری",
-              "children": []
-            },
-            {
-              "name": "قاشق، چنگال و کارد",
-              "children": []
-            },
-            {
-              "name": "پارچ، بطری، لیوان وماگ",
-              "children": []
-            },
-            {
-              "name": "ظروف پذیرایی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "نور و روشنایی",
-          "children": [
-            {
-              "name": "لامپ، چراغ و ریسه",
-              "children": []
-            },
-            {
-              "name": "لوستر  چراغ تزیینی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "آشپزخانه",
-          "children": [
-            {
-              "name": "سوریس ظروف پخت و پز",
-              "children": []
-            },
-            {
-              "name": "فلاسک و کلمن",
-              "children": []
-            },
-            {
-              "name": "کتری، قوری، لوازم سرو چای",
-              "children": []
-            },
-            {
-              "name": "ظروف یکبار مصرف",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "مواد شوینده",
-          "children": [
-            {
-              "name": "شوینده ظروف",
-              "children": []
-            },
-            {
-              "name": "شوینده لباس",
-              "children": []
-            },
-            {
-              "name": "تمیزکننده سطوح",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "دستمال کاغذی",
-          "children": []
-        },
-        {
-          "name": "ملحفه، سرویس، لوازم خواب",
-          "children": []
-        },
-        {
-          "name": "حوله و وسایل حمام",
-          "children": []
-        },
-        {
-          "name": "پادری، کمد، لوازم اتاق خواب",
-          "children": []
-        },
-        {
-          "name": "لوازم دستشویی و روشیی",
-          "children": []
-        },
-        {
-          "name": "فندک و لوازم جانبی",
-          "children": []
-        },
-        {
-          "name": "گل، خاک، کود و لوازن باغبانی",
-          "children": []
         }
       ]
     },
     {
-      "name": "کتاب، لوازم تحریر و هنر",
+      "name": "اسباب‌بازی و سرگرمی",
       "children": [
         {
-          "name": "کتاب و مجله",
+          "name": "اسباب‌بازی فکری",
           "children": [
             {
-              "name": "کتاب چاپی",
+              "name": "فکرآوران",
               "children": []
             },
             {
-              "name": "مجلات خارجی و داخلی",
+              "name": "هوپا",
+              "children": []
+            },
+            {
+              "name": "زرین‌توپ",
               "children": []
             }
           ]
         },
         {
-          "name": "کتاب صوتی",
-          "children": []
-        },
-        {
-          "name": "محتوای آموزشی",
+          "name": "لگو و ساختنی",
           "children": [
             {
-              "name": "آموزش موسیقی",
+              "name": "لگو",
               "children": []
             },
             {
-              "name": "آموزش ورزش و سرگرمی",
+              "name": "مگنت‌بوک",
               "children": []
             },
             {
-              "name": "آموزش زبان",
-              "children": []
-            },
-            {
-              "name": "آموزش نرم افزار و کامپیوتر",
+              "name": "دسینی",
               "children": []
             }
           ]
         },
         {
-          "name": "نرم افزار",
-          "children": []
-        },
-        {
-          "name": "بازی کنسول و کامپیوتر",
-          "children": []
-        },
-        {
-          "name": "فیلم، سینمایی ، سریال و مستند",
-          "children": []
-        },
-        {
-          "name": "آلبوم موسیقی",
-          "children": []
-        },
-        {
-          "name": "لوازم التحریر",
+          "name": "عروسک",
           "children": [
             {
-              "name": "لوازم اداری و اقلام مصرفی",
+              "name": "باربی",
               "children": []
             },
             {
-              "name": "کیف، کوله پشتی و جامدادی",
+              "name": "پلی‌دوه",
               "children": []
             },
             {
-              "name": "چراغ مطالعه",
-              "children": []
-            },
-            {
-              "name": "کاغذ کادو، پاکت و کارت هدیه",
-              "children": []
-            },
-            {
-              "name": "نوش افزار",
-              "children": []
-            },
-            {
-              "name": "دفتر و کاغذ",
-              "children": []
-            },
-            {
-              "name": "خودکار و روان نویس",
-              "children": []
-            },
-            {
-              "name": "ابزار نقاشی و رنگ آمیزی",
-              "children": []
-            },
-            {
-              "name": "میز تحریر",
-              "children": []
-            },
-            {
-              "name": "آلبوم عکس",
-              "children": []
-            },
-            {
-              "name": "کاغذ چاپ و پرینتر",
-              "children": []
-            },
-            {
-              "name": "مداد و مداد رنگی",
+              "name": "موزیکال",
               "children": []
             }
           ]
         },
         {
-          "name": "آلان موسیقی",
+          "name": "بازی‌های کنسولی",
           "children": [
             {
-              "name": "لوازم جانبی ادوات موسیقی",
+              "name": "سونی",
               "children": []
             },
             {
-              "name": "گیتار",
+              "name": "مایکروسافت",
               "children": []
             },
             {
-              "name": "کیبورد و ارگ",
-              "children": []
-            },
-            {
-              "name": "پیانو دیحیتال",
-              "children": []
-            },
-            {
-              "name": "دران، پرکاشن و دف",
-              "children": []
-            },
-            {
-              "name": "تجهیزات استودیویی",
-              "children": []
-            },
-            {
-              "name": "ویلون",
-              "children": []
-            },
-            {
-              "name": "سازهای ایرانی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "فرش ماشینی، دستبافت، تابلو",
-          "children": [
-            {
-              "name": "فرش ماشینی",
-              "children": []
-            },
-            {
-              "name": "فرش دستباف",
-              "children": []
-            },
-            {
-              "name": "تابلو فرش",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "صنایع دستی",
-          "children": [
-            {
-              "name": "کالاهای مسی",
-              "children": []
-            },
-            {
-              "name": "سفال، سرامیک و چینی",
-              "children": []
-            },
-            {
-              "name": "کیف چرمی",
-              "children": []
-            },
-            {
-              "name": "ترمه ، قلمکار و دستبافت",
-              "children": []
-            },
-            {
-              "name": "خاتم ، منبت، حصیری و چوبی",
-              "children": []
-            },
-            {
-              "name": "تابلو و ساعت",
-              "children": []
-            },
-            {
-              "name": "میناکاری",
-              "children": []
-            },
-            {
-              "name": "فیروزه کوبی",
-              "children": []
-            },
-            {
-              "name": "سوزن دوزی",
-              "children": []
-            },
-            {
-              "name": "محصولات استخوانی",
-              "children": []
-            },
-            {
-              "name": "جعبه و دست سازه های هنری",
+              "name": "نینتندو",
               "children": []
             }
           ]
@@ -1714,46 +1333,64 @@
       "name": "ورزش و سفر",
       "children": [
         {
-          "name": "پوشاک ورزشی مردانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی زنانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی مردانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی زنانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی پسرانه",
-          "children": []
-        },
-        {
-          "name": "پوشاک ورزشی دخترانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی پسرانه",
-          "children": []
-        },
-        {
-          "name": "کفش ورزشی دخترانه",
-          "children": []
-        },
-        {
-          "name": "تجهیزات سفر",
+          "name": "پوشاک ورزشی",
           "children": [
             {
-              "name": "چمدان و ساک",
+              "name": "نایک",
               "children": []
             },
             {
-              "name": "کیف و کوله پشتی",
+              "name": "آدیداس",
+              "children": []
+            },
+            {
+              "name": "پوما",
+              "children": []
+            },
+            {
+              "name": "361°",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "کفش ورزشی",
+          "children": [
+            {
+              "name": "نایک",
+              "children": []
+            },
+            {
+              "name": "آدیداس",
+              "children": []
+            },
+            {
+              "name": "اسکیچرز",
+              "children": []
+            },
+            {
+              "name": "پوما",
+              "children": []
+            },
+            {
+              "name": "ریباک",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "تجهیزات بدنسازی",
+          "children": [
+            {
+              "name": "تکنوجیم",
+              "children": []
+            },
+            {
+              "name": "پروفرم",
+              "children": []
+            },
+            {
+              "name": "دی‌کی‌ان",
               "children": []
             }
           ]
@@ -1762,125 +1399,273 @@
           "name": "دوچرخه",
           "children": [
             {
-              "name": "لوازم جانبی دوچرخه",
+              "name": "جاینت",
+              "children": []
+            },
+            {
+              "name": "اسکات",
+              "children": []
+            },
+            {
+              "name": "المپیا",
+              "children": []
+            },
+            {
+              "name": "ویوا",
               "children": []
             }
           ]
         },
         {
-          "name": "کوهنوردی و کمپینگ",
+          "name": "کمپینگ و سفر",
           "children": [
             {
-              "name": "کفش کوهنوردی",
+              "name": "کچوا",
               "children": []
             },
             {
-              "name": "عصای کوهنوردی",
+              "name": "کلمبیا",
               "children": []
             },
             {
-              "name": "چراغ قوه و چراغ پیشانی",
+              "name": "نورث‌فیس",
               "children": []
             },
             {
-              "name": "چافو و ابزار چندکاره",
-              "children": []
-            },
-            {
-              "name": "قمقمه و فلاسک",
-              "children": []
-            },
-            {
-              "name": "چادر",
-              "children": []
-            },
-            {
-              "name": "کیسه خواب",
-              "children": []
-            },
-            {
-              "name": "زیرانداز سفری",
+              "name": "نیچرهایک",
               "children": []
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "ابزارآلات و تجهیزات",
+      "children": [
         {
-          "name": "لوازم جانبی کوهنوردی و سفر",
-          "children": []
-        },
-        {
-          "name": "چتر",
-          "children": []
-        },
-        {
-          "name": "ساک ورزشی",
-          "children": []
-        },
-        {
-          "name": "قمقمه و شیکر",
-          "children": []
-        },
-        {
-          "name": "لوازم ورزشی",
-          "children": []
-        },
-        {
-          "name": "ورزش های هوازی و بدنسازی",
+          "name": "ابزار برقی",
           "children": [
             {
-              "name": "تجهیزات جانبی و ایروبیک و تناسب اندام",
+              "name": "بوش",
               "children": []
             },
             {
-              "name": "دمبل",
+              "name": "ماکیتا",
               "children": []
             },
             {
-              "name": "طناب",
+              "name": "دیوالت",
               "children": []
             },
             {
-              "name": "بارفیکس",
+              "name": "میلواکی",
               "children": []
             },
             {
-              "name": "تردمیل",
+              "name": "رونیکس",
               "children": []
             },
             {
-              "name": "لوازم پوششی و محافظتی ورزشی",
+              "name": "توسن",
               "children": []
             }
           ]
         },
         {
-          "name": "ورزشی های توپی",
+          "name": "ابزار دستی",
           "children": [
             {
-              "name": "توپ",
+              "name": "جنیوس",
               "children": []
             },
             {
-              "name": "راکت",
+              "name": "استنلی",
+              "children": []
+            },
+            {
+              "name": "ایران‌پتک",
+              "children": []
+            },
+            {
+              "name": "رونیکس",
               "children": []
             }
           ]
         },
         {
-          "name": "ورزشی های آّبی",
-          "children": []
+          "name": "ابزار باغبانی",
+          "children": [
+            {
+              "name": "اشتیل",
+              "children": []
+            },
+            {
+              "name": "بوش",
+              "children": []
+            },
+            {
+              "name": "ماکیتا",
+              "children": []
+            }
+          ]
         },
         {
-          "name": "ورزش های رزمی",
-          "children": []
+          "name": "تجهیزات ایمنی",
+          "children": [
+            {
+              "name": "ایمن‌گستران",
+              "children": []
+            },
+            {
+              "name": "هترمن",
+              "children": []
+            },
+            {
+              "name": "پاتن",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "خوراکی و سوپرمارکت",
+      "children": [
+        {
+          "name": "مواد غذایی",
+          "children": [
+            {
+              "name": "یک و یک",
+              "children": []
+            },
+            {
+              "name": "چین‌چین",
+              "children": []
+            },
+            {
+              "name": "تبرک",
+              "children": []
+            },
+            {
+              "name": "مهرام",
+              "children": []
+            }
+          ]
         },
         {
-          "name": "اسکوتر برقی",
-          "children": []
+          "name": "نوشیدنی",
+          "children": [
+            {
+              "name": "سن‌ایچ",
+              "children": []
+            },
+            {
+              "name": "کوکاکولا",
+              "children": []
+            },
+            {
+              "name": "پپسی",
+              "children": []
+            }
+          ]
         },
         {
-          "name": "اسکیت و اسکوتر",
-          "children": []
+          "name": "تنقلات",
+          "children": [
+            {
+              "name": "چی‌توز",
+              "children": []
+            },
+            {
+              "name": "مزمز",
+              "children": []
+            },
+            {
+              "name": "مینو",
+              "children": []
+            },
+            {
+              "name": "شیرین‌عسل",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "شوینده و مصرفی",
+          "children": [
+            {
+              "name": "پریل",
+              "children": []
+            },
+            {
+              "name": "فینیش",
+              "children": []
+            },
+            {
+              "name": "تاژ",
+              "children": []
+            },
+            {
+              "name": "گلرنگ",
+              "children": []
+            },
+            {
+              "name": "اکتیو",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "طلا و جواهرات",
+      "children": [
+        {
+          "name": "طلا",
+          "children": [
+            {
+              "name": "گالری پرسته",
+              "children": []
+            },
+            {
+              "name": "گالری روبی",
+              "children": []
+            },
+            {
+              "name": "گالری حقانی",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "نقره",
+          "children": [
+            {
+              "name": "رزا",
+              "children": []
+            },
+            {
+              "name": "نقره‌جات",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "ساعت و زیورآلات",
+          "children": [
+            {
+              "name": "سیتیزن",
+              "children": []
+            },
+            {
+              "name": "کاسیو",
+              "children": []
+            },
+            {
+              "name": "سواچ",
+              "children": []
+            }
+          ]
         }
       ]
     },
@@ -1888,160 +1673,95 @@
       "name": "محصولات بومی و محلی",
       "children": [
         {
-          "name": "خوراکی های بومی و محلی",
+          "name": "صنایع دستی",
           "children": [
             {
-              "name": "حلوا شکری، ارده و کنجد",
+              "name": "گلیم ایران",
               "children": []
             },
             {
-              "name": "خرمای محلی",
+              "name": "میناکاری اصفهان",
               "children": []
             },
             {
-              "name": "عسل محلی",
-              "children": []
-            },
-            {
-              "name": "عرقیات و گلاب اصیل",
-              "children": []
-            },
-            {
-              "name": "ادویه و چاشنی محلی",
-              "children": []
-            },
-            {
-              "name": "چای محلی",
-              "children": []
-            },
-            {
-              "name": "زعفران، زرشک و تزئینات غذا",
-              "children": []
-            },
-            {
-              "name": "سبزی خشک محلی",
-              "children": []
-            },
-            {
-              "name": "حبوبات و سویا محلی",
-              "children": []
-            },
-            {
-              "name": "قند و نبات محلی",
-              "children": []
-            },
-            {
-              "name": "ماهی تازه",
-              "children": []
-            },
-            {
-              "name": "روغن محلی",
+              "name": "خاتم شیراز",
               "children": []
             }
           ]
         },
         {
-          "name": "خانه  و کاشانه بومی محلی",
-          "children": []
-        },
-        {
-          "name": "ظروف سنتی",
+          "name": "خوراکی محلی",
           "children": [
             {
-              "name": "کاسه و کاسه بشقاب سنتی",
+              "name": "برتر",
               "children": []
             },
             {
-              "name": "بشقاب سنتی",
+              "name": "رضوی",
               "children": []
             },
             {
-              "name": "پارچ سنتی",
-              "children": []
-            },
-            {
-              "name": "لیوان سنتی قندان سنتی",
-              "children": []
-            },
-            {
-              "name": "دیگ و قابلمه سنتی",
-              "children": []
-            },
-            {
-              "name": "شکلات خوری دست ساز",
+              "name": "سحر",
               "children": []
             }
           ]
         },
         {
-          "name": "ابزار آشپزخانه سنتی",
+          "name": "پوشاک محلی",
           "children": [
             {
-              "name": "دیس و سیینی سنتی",
+              "name": "بومی‌دوز",
               "children": []
             },
             {
-              "name": "تخته سرو سنتی",
+              "name": "ترمه‌سرا",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "کارت هدیه",
+      "children": [
+        {
+          "name": "کارت هدیه فروشگاه",
+          "children": [
+            {
+              "name": "دیجی‌کالا",
               "children": []
             },
             {
-              "name": "سبد دستبافت سنتی",
+              "name": "اسنپ",
+              "children": []
+            },
+            {
+              "name": "ترب",
               "children": []
             }
           ]
         },
         {
-          "name": "دکوراتیو سنتی",
+          "name": "کارت هدیه دیجیتال",
           "children": [
             {
-              "name": "آویز سرپرده سنتی",
+              "name": "اپل",
               "children": []
             },
             {
-              "name": "کیس و کاور های سنتی",
+              "name": "گوگل",
               "children": []
             },
             {
-              "name": "گلدان سنتی",
+              "name": "استیم",
               "children": []
             },
             {
-              "name": "مجسمه سنتی",
+              "name": "پلی‌استیشن",
               "children": []
             },
             {
-              "name": "چراغ خواب و آباژور",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "خواب و حمام",
-          "children": [
-            {
-              "name": "کوسن سنتی",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "انواع قالی و قالیچه",
-          "children": [
-            {
-              "name": "گلیم",
-              "children": []
-            }
-          ]
-        },
-        {
-          "name": "پوشیدنی های بومی محلی",
-          "children": [
-            {
-              "name": "پوشاک بومی و محلی",
-              "children": []
-            },
-            {
-              "name": "اکسسوری بومی و محلی",
+              "name": "ایکس‌باکس",
               "children": []
             }
           ]
