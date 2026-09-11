@@ -1,0 +1,13 @@
+/* DigiYar V6 — Affilio widget: automatic + user-controlled carousel */
+(function(){'use strict';
+const ID='affilio-widget-cc87472c-40f0-4844-ab85-cbf1eb4cb3cc';
+const INTERVAL=3600;
+const RESUME_DELAY=4200;
+let state=null;
+function root(){return document.getElementById(ID)}
+function candidates(r){const all=[r,...r.querySelectorAll('*')];return all.filter(el=>el instanceof HTMLElement && el.scrollWidth>el.clientWidth+8).sort((a,b)=>a.clientWidth-b.clientWidth)}
+function cards(r,scroller){const selectors=['[class*="product-card"]','[class*="product-item"]','[class*="ProductCard"]','[class*="ProductItem"]'];let found=[];for(const s of selectors)found.push(...r.querySelectorAll(s));found=[...new Set(found)].filter(el=>el instanceof HTMLElement && el.offsetWidth>20);if(found.length>1)return found;return [...scroller.children].filter(el=>el instanceof HTMLElement&&el.offsetWidth>20)}
+function setup(){const r=root();if(!r)return false;const scroller=candidates(r)[0];if(!scroller)return false;const items=cards(r,scroller);if(items.length<2)return false;scroller.style.overflowX='auto';scroller.style.overflowY='hidden';scroller.style.scrollBehavior='smooth';scroller.style.scrollSnapType='x proximity';scroller.style.webkitOverflowScrolling='touch';items.forEach(x=>{x.style.scrollSnapAlign='start'});if(state&&state.scroller===scroller)return true;if(state)clearTimeout(state.resume);const s={scroller,items,timer:null,resume:null,manual:false};state=s;const restart=()=>{clearInterval(s.timer);clearTimeout(s.resume);s.timer=setInterval(()=>{if(s.manual)return;const current=scroller.scrollLeft;let next=items.find(el=>Math.abs(el.offsetLeft-current)>Math.max(12,el.offsetWidth*.35));if(!next){scroller.scrollTo({left:0,behavior:'smooth'});return}scroller.scrollTo({left:Math.max(0,next.offsetLeft-(scroller.clientWidth<next.offsetWidth?0:2)),behavior:'smooth'})},INTERVAL)};const pause=()=>{s.manual=true;clearInterval(s.timer);clearTimeout(s.resume);s.resume=setTimeout(()=>{s.manual=false;restart()},RESUME_DELAY)};['pointerdown','touchstart','mouseenter','focusin'].forEach(ev=>scroller.addEventListener(ev,pause,{passive:true}));['touchend','pointerup','mouseleave','focusout'].forEach(ev=>scroller.addEventListener(ev,()=>{clearTimeout(s.resume);s.resume=setTimeout(()=>{s.manual=false;restart()},RESUME_DELAY),{passive:true}));scroller.addEventListener('wheel',pause,{passive:true});restart();return true}
+function boot(){let tries=0;const observer=new MutationObserver(()=>{if(tries++<40)setup()});observer.observe(document.body,{childList:true,subtree:true});const tick=()=>{if(!setup()&&tries++<40)setTimeout(tick,500)};tick()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
