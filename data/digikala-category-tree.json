@@ -1,0 +1,245 @@
+{
+  "schemaVersion": "1.0",
+  "store": "digikala",
+  "source": {
+    "type": "public_snapshot",
+    "repository": "BaseMax/DigikalaShopCategories",
+    "file": "categories.json",
+    "sourceUrl": "https://github.com/BaseMax/DigikalaShopCategories/blob/main/categories.json",
+    "sourceModified": "2022-02-22",
+    "status": "historical-baseline-not-current-live-taxonomy"
+  },
+  "notes": "این فایل عمداً از مسیر اجرای فرم اصلی جداست. ساختار داده node-based است و موتور نمایش باید فقط در صورت وجود children از آن استفاده کند.",
+  "root": [
+    {
+      "name": "کالای دیجیتال",
+      "children": [
+        {
+          "name": "لوازم جانبی گوشی",
+          "children": [
+            {"name": "کیف و کاور گوشی", "children": []},
+            {"name": "پاوربانک", "children": []},
+            {"name": "پایه نگهدارنده گوشی", "children": []}
+          ]
+        },
+        {
+          "name": "گوشی موبایل",
+          "children": [
+            {"name": "سامسونگ هوآوی", "children": []},
+            {"name": "اپل", "children": []},
+            {"name": "شیائومی", "children": []},
+            {"name": "آنر", "children": []},
+            {"name": "نوکیا", "children": []}
+          ]
+        },
+        {"name": "واقعیت مجازی", "children": []},
+        {"name": "مچ بند و ساعت هوشمند", "children": []},
+        {"name": "هدفون، هدست، هندزفری", "children": []},
+        {"name": "هارد، فلش و ssd", "children": []},
+        {
+          "name": "دوربین",
+          "children": [
+            {"name": "دوربین عکاسی دیجیتال", "children": []},
+            {"name": "دوربین ورزشی و فیلم برداری", "children": []},
+            {"name": "دوربین چاپ سریع", "children": []}
+          ]
+        },
+        {
+          "name": "لوازم جانبی دوربین",
+          "children": [
+            {"name": "لنز", "children": []},
+            {"name": "کیف", "children": []},
+            {"name": "کارت حافظه", "children": []},
+            {"name": "کاغذ چاپ عکس", "children": []}
+          ]
+        },
+        {
+          "name": "کامپیوتر و تجهیزات جانبی",
+          "children": [
+            {"name": "تجهیزات مخصوص بازی", "children": []},
+            {"name": "مانیتور", "children": []},
+            {"name": "کیس های اسمبل شده", "children": []},
+            {"name": "قطعات داخلی کامپیوتر", "children": []},
+            {"name": "ماوس", "children": []},
+            {"name": "کیبورد", "children": []}
+          ]
+        },
+        {"name": "لپ تاپ", "children": []},
+        {
+          "name": "لوازم جانبی لپ تاپ",
+          "children": [
+            {"name": "کیف کوله و کاور", "children": []},
+            {"name": "کابل صدا، AUX و HDMI", "children": []}
+          ]
+        },
+        {"name": "تبلت", "children": []},
+        {"name": "شارژر تبلت و موبایل", "children": []},
+        {"name": "کیف، کاور، لوازم جانبی تبلت", "children": []},
+        {"name": "باتری", "children": []},
+        {"name": "دوربین های تحت شبکه", "children": []},
+        {"name": "مودم و تجهیزات شبکه", "children": []},
+        {
+          "name": "ماشین های اداری",
+          "children": [
+            {"name": "تلفن، بیسیم و سانترال", "children": []},
+            {"name": "فکس", "children": []},
+            {"name": "پرینتر", "children": []},
+            {"name": "لوازم جانبی اداری", "children": []}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "مد و پوشاک",
+      "children": [
+        {"name": "مردانه", "children": []},
+        {
+          "name": "لباس مردانه",
+          "children": [
+            {"name": "تی شرت و پولوشرت", "children": []},
+            {"name": "پیراهن", "children": []},
+            {"name": "شلوار", "children": []},
+            {"name": "لباس زیر", "children": []}
+          ]
+        },
+        {
+          "name": "کفش مردانه",
+          "children": [
+            {"name": "کفش روزمره", "children": []},
+            {"name": "کفش رسمی", "children": []}
+          ]
+        },
+        {
+          "name": "اکسسوری مردانه",
+          "children": [
+            {"name": "ساعت", "children": []},
+            {"name": "کیف", "children": []},
+            {"name": "کمربند", "children": []}
+          ]
+        },
+        {"name": "زنانه", "children": []},
+        {
+          "name": "لباس زنانه",
+          "children": [
+            {"name": "پوشش اسلامی و مانتو", "children": []},
+            {"name": "بلوز و شومیز", "children": []},
+            {"name": "شلوار و سرهمی", "children": []},
+            {"name": "لباس زیر", "children": []}
+          ]
+        },
+        {
+          "name": "کفش زنانه",
+          "children": [
+            {"name": "کفش روزمره", "children": []},
+            {"name": "کفش تخت", "children": []}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "اسباب بازی، کودک و نوزاد",
+      "children": [
+        {
+          "name": "بهداشت و حمام کودک و نوزاد",
+          "children": [
+            {"name": "پوشاک", "children": []},
+            {"name": "دستمال مرطوب", "children": []},
+            {"name": "حوله", "children": []},
+            {"name": "وان حمام نوزاد", "children": []},
+            {"name": "مینی واش", "children": []},
+            {"name": "شامپو کودک و نوزاد", "children": []}
+          ]
+        },
+        {
+          "name": "پوشاک و کفش کودک و نوزاد",
+          "children": [
+            {"name": "لباس کودک و لباس نوزادی", "children": []},
+            {"name": "کفش", "children": []},
+            {"name": "کفش ورزشی", "children": []},
+            {"name": "جوراب و پاپوش کودک و نوزاد", "children": []},
+            {"name": "کلاه و پیشبند نوزاد", "children": []}
+          ]
+        },
+        {"name": "تبلت", "children": []},
+        {"name": "PS4 ، XBOX و بازی", "children": []},
+        {
+          "name": "اسباب بازی",
+          "children": [
+            {"name": "فکری و آموزشی", "children": []},
+            {"name": "پازل، لگو و ساختنی", "children": []},
+            {"name": "عروسک و فیگور", "children": []},
+            {"name": "اسپینر، ابزار شوخی و سرگرمی", "children": []}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ورزش و سفر",
+      "children": [
+        {"name": "پوشاک ورزشی مردانه", "children": []},
+        {"name": "پوشاک ورزشی زنانه", "children": []},
+        {"name": "کفش ورزشی مردانه", "children": []},
+        {"name": "کفش ورزشی زنانه", "children": []},
+        {
+          "name": "تجهیزات سفر",
+          "children": [
+            {"name": "چمدان و ساک", "children": []},
+            {"name": "کیف و کوله پشتی", "children": []}
+          ]
+        },
+        {
+          "name": "دوچرخه",
+          "children": [
+            {"name": "لوازم جانبی دوچرخه", "children": []}
+          ]
+        },
+        {
+          "name": "کوه نوردی و کمپینگ",
+          "children": [
+            {"name": "کفش کوه نوردی", "children": []},
+            {"name": "عصای کوه نوردی", "children": []},
+            {"name": "چراغ قوه و چراغ پیشانی", "children": []},
+            {"name": "چادر", "children": []},
+            {"name": "کیسه خواب", "children": []}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "محصولات بومی و محلی",
+      "children": [
+        {
+          "name": "خوراکی های بومی و محلی",
+          "children": [
+            {"name": "حلوا شکری، ارده و کنجد", "children": []},
+            {"name": "خرمای محلی", "children": []},
+            {"name": "عسل محلی", "children": []},
+            {"name": "عرقیات و گلاب اصیل", "children": []},
+            {"name": "ادویه و چاشنی محلی", "children": []},
+            {"name": "چای محلی", "children": []},
+            {"name": "زعفران، زرشک و تزئینات غذا", "children": []}
+          ]
+        },
+        {"name": "خانه و کاشانه بومی محلی", "children": []},
+        {
+          "name": "ظروف سنتی",
+          "children": [
+            {"name": "کاسه و کاسه بشقاب سنتی", "children": []},
+            {"name": "بشقاب سنتی", "children": []},
+            {"name": "پارچ سنتی", "children": []}
+          ]
+        },
+        {
+          "name": "صنایع دستی",
+          "children": [
+            {"name": "کالاهای مسی", "children": []},
+            {"name": "سفال، سرامیک و چینی", "children": []},
+            {"name": "کیف چرمی", "children": []},
+            {"name": "ترمه، قلمکار و دستبافت", "children": []},
+            {"name": "خاتم، منبت، حصیری و چوبی", "children": []}
+          ]
+        }
+      ]
+    }
+  ]
+}
