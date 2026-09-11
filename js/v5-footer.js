@@ -35,7 +35,7 @@ function init(){
  }
  const theme=document.querySelector('meta[name="theme-color"]');if(theme&&!document.body.classList.contains('v6-dark'))theme.setAttribute('content','#ffffff');
  /* V6 Affilio controller: cache-busted so the live page cannot keep the previous controller. */
- if(!document.getElementById('v6-affilio-controller')){const script=document.createElement('script');script.id='v6-affilio-controller';script.src='js/v6-affilio-widget.js?v=20260911-4';script.defer=true;document.head.appendChild(script);}
+ if(!document.getElementById('v6-affilio-controller')){const script=document.createElement('script');script.id='v6-affilio-controller';script.src='js/v6-affilio-widget.js?v=20260911-5';script.defer=true;document.head.appendChild(script);}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
