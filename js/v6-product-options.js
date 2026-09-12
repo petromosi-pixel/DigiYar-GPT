@@ -103,9 +103,7 @@
     if(!store||!cat)return;
     var list=EXTRA_CATEGORIES[store.value]||[];
     list.forEach(function(pair){
-      if(!cat.querySelector('option[value="'+pair[0]+'"]')){
-        cat.appendChild(new Option(pair[1],pair[0]));
-      }
+      if(!cat.querySelector('option[value="'+pair[0]+'"]'))cat.appendChild(new Option(pair[1],pair[0]));
     });
   }
 
@@ -153,8 +151,7 @@
   function ensureBrand(){
     var sub=$('v5Subcategory'),dyn=$('v5DynamicFields'),budget=$('budgetMax');
     if(!sub||!dyn)return;
-    var key=sub.value;
-    var brands=BRAND_MAP[key];
+    var brands=BRAND_MAP[sub.value];
     var old=$('v6UnifiedBrandField');
     if(old)old.remove();
     if(!brands||!brands.length)return;
@@ -163,24 +160,24 @@
     field.className='v5-field v5-final-function full';
     field.innerHTML='<span>برند</span><select id="v6UnifiedBrand"><option value="">برند</option>'+brands.map(function(b,i){return '<option value="'+i+'">'+esc(b)+'</option>'}).join('')+'</select>';
     var budgetField=selectField(budget);
-    if(budgetField&&budgetField.parentNode){
-      budgetField.parentNode.insertBefore(field,budgetField);
-    }else{
-      dyn.appendChild(field);
-    }
+    if(budgetField&&budgetField.parentNode)budgetField.parentNode.insertBefore(field,budgetField);
+    else dyn.appendChild(field);
   }
 
   function bind(){
     ensureBudget();
+    var store=$('storeSelect'),cat=$('v5Category'),sub=$('v5Subcategory');
+    if(store&&store.dataset.v6CategoryBound!=='1'){
+      store.dataset.v6CategoryBound='1';
+      store.addEventListener('change',function(){
+        window.setTimeout(function(){addExtraCategories()},0);
+      });
+    }
     addExtraCategories();
-    var cat=$('v5Category'),sub=$('v5Subcategory');
     if(cat&&cat.dataset.v6ExtraBound!=='1'){
       cat.dataset.v6ExtraBound='1';
       cat.addEventListener('change',function(){
-        window.setTimeout(function(){
-          ensureExtraSubcategories();
-          ensureBrand();
-        },0);
+        window.setTimeout(function(){ensureExtraSubcategories();ensureBrand()},0);
       });
     }
     if(sub&&sub.dataset.v6ProductOptionsBound!=='1'){
