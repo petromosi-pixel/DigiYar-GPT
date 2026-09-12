@@ -23,12 +23,15 @@
     digital=document.createElement('option');digital.value='digital';digital.textContent=DIGITAL;cat.insertBefore(digital,cat.options[1]||null);
   }
   function loadProductOptions(){
-    if(window.DigiYarV6ProductOptionsReady||document.querySelector('script[src$="/js/v6-product-options.js"]'))return;
+    if(window.DigiYarV6ProductOptionsReady||document.querySelector('script[src$="/js/v6-product-options.js"]')){
+      loadScript('js/v6-store-taxonomy-overrides.js');
+      return;
+    }
     var s=document.createElement('script');
     s.src=new URL('js/v6-product-options.js',document.baseURI).href;
     s.async=false;
-    s.onload=function(){window.DigiYarV6ProductOptionsReady=true;loadScript('js/v6-category-budget-brand-fix.js')};
-    s.onerror=function(){loadScript('js/v6-category-budget-brand-fix.js')};
+    s.onload=function(){window.DigiYarV6ProductOptionsReady=true;loadScript('js/v6-store-taxonomy-overrides.js');loadScript('js/v6-category-budget-brand-fix.js')};
+    s.onerror=function(){loadScript('js/v6-store-taxonomy-overrides.js');loadScript('js/v6-category-budget-brand-fix.js')};
     document.head.appendChild(s);
   }
   function bind(){
@@ -37,7 +40,7 @@
     if(!store.dataset.v6UnifiedBound){store.dataset.v6UnifiedBound='1';store.addEventListener('change',function(){setTimeout(normalizeCategory,0)})}
     if(!cat.dataset.v6UnifiedBound){cat.dataset.v6UnifiedBound='1';cat.addEventListener('change',function(){setTimeout(normalizeCategory,0)})}
     cleanSelect(cat);normalizeCategory();loadProductOptions();
-    if(window.DigiYarV6ProductOptionsReady)loadScript('js/v6-category-budget-brand-fix.js');
+    if(window.DigiYarV6ProductOptionsReady){loadScript('js/v6-store-taxonomy-overrides.js');loadScript('js/v6-category-budget-brand-fix.js')}
     return true;
   }
   function boot(){if(bind())return;setTimeout(boot,100)}
