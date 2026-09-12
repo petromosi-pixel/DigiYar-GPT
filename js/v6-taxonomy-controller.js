@@ -1,7 +1,7 @@
 /* DigiYar V6 — Unified taxonomy guard */
 (function(){
   'use strict';
-  var STORES=['digikala','snappshop','torob','basalam','banimode','modiseh','technolife','meghdadit'];
+  var STORES=['digikala','snappshop','torob','basalam','banimode','modiseh','technolife','meghdadit','janebi'];
   var LEGACY=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
   var DIGITAL='کالای دیجیتال';
   var MEGHDAD={id:'meghdadit',name:'مقداد آی‌تی',tagline:'فروشگاه تخصصی کالای دیجیتال و قطعات',logo:'assets/store-logos/meghdadit-temp.svg',mark:'MI',url:'https://meghdadit.com/',accent:'#1f3b68',dealLabel:'خرید کالای دیجیتال',dealText:'لپ‌تاپ، کامپیوتر، قطعات و تجهیزات دیجیتال',dealIcon:'⌁'};
@@ -39,12 +39,13 @@
     loadScript('js/v6-store-taxonomy-overrides.js');
     loadScript('js/v6-technolife-taxonomy.js');
     loadScript('js/v6-meghdadit-taxonomy.js');
+    loadScript('js/v6-janebi-taxonomy.js');
   }
   function normalizeCategory(){
     var store=$('storeSelect'),cat=$('v5Category');
     if(!store||!cat||!store.value||STORES.indexOf(store.value)<0)return;
     cleanSelect(cat);
-    if(store.value==='technolife'||store.value==='meghdadit')return;
+    if(store.value==='technolife'||store.value==='meghdadit'||store.value==='janebi')return;
     var digital=Array.from(cat.options).find(function(o){return o.value==='digital'});
     if(digital){digital.textContent=DIGITAL;return}
     digital=document.createElement('option');digital.value='digital';digital.textContent=DIGITAL;cat.insertBefore(digital,cat.options[1]||null);
