@@ -43,15 +43,36 @@ function initCompletionCardToggle(){const card=document.querySelector('.v5-profi
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();initCompletionCardToggle()},{once:true});else setTimeout(()=>{init();initCompletionCardToggle()},0);
 })();
 
-/* V6 Digikala taxonomy bridge: load after the stable Step-4 controller. */
+/* V6 Digikala taxonomy bridge: deterministic runtime guard.
+ * The visible taxonomy is owned by v5-step4-final.js. Legacy taxonomy modules
+ * are never allowed to inject their own category tree. The Digikala mobile
+ * brand bridge is loaded only after the controller has created the fields.
+ */
 (function(){
   'use strict';
-  function load(){
+  var LEGACY_ROOTS=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
+  function cleanLegacyNodes(){
+    document.querySelectorAll('[data-digikala-taxonomy],.digikala-taxonomy,.v6-digikala-taxonomy').forEach(function(el){el.remove();});
+    var selects=document.querySelectorAll('select');
+    selects.forEach(function(select){
+      Array.from(select.options).forEach(function(option){
+        if(LEGACY_ROOTS.indexOf((option.textContent||'').trim())>=0)option.remove();
+      });
+    });
+  }
+  function loadBrandBridge(){
     if(document.querySelector('script[src$="/js/digikala-mobile-brand.js"]'))return;
     var s=document.createElement('script');
-    s.src=new URL('js/digikala-mobile-brand.js',document.baseURI).href;
+    s.src=new URL('js/digikala-mobile-brand.js?v=6.0.28',document.baseURI).href;
     s.async=false;
     document.head.appendChild(s);
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else setTimeout(load,0);
+  function boot(){
+    cleanLegacyNodes();
+    loadBrandBridge();
+    window.setTimeout(cleanLegacyNodes,50);
+    window.setTimeout(cleanLegacyNodes,250);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else setTimeout(boot,0);
 })();
