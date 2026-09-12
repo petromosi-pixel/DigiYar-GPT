@@ -1,5 +1,5 @@
-const CACHE_VERSION="digiyar-v6-6.0.27";
+const CACHE_VERSION="digiyar-v6-6.0.28";
 const APP_SHELL=["./","./index.html","./manifest.json","./css/style.css","./css/v5-splash.css","./css/v5-step2-header.css","./css/v5-ui.css","./css/v5-step4.css","./css/v5-step4-toggle-direction.css","./css/v5-smart-search.css","./js/product-data.js","./js/product-retrieval-integration.js","./js/v5-catalog-adapter.js","./js/v5-price-engine.js","./js/v5-candidate-retrieval.js","./js/v5-offer-affiliate-engine.js","./js/app.js","./js/platforms.js","./css/v5-page-harmony.css","./js/v5-ui.js"];
-self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_VERSION).then(c=>c.addAll(APP_SHELL).catch(()=>{})));self.skipWaiting()});
+self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_VERSION).then(c=>c.addAll(APP_SHELL).catch(()=>{})).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{const r=e.request;if(r.method!=="GET")return;e.respondWith(fetch(r).then(res=>{if(res&&res.status===200&&res.type==="basic"){const c=res.clone();caches.open(CACHE_VERSION).then(cache=>cache.put(r,c)).catch(()=>{})}return res}).catch(()=>caches.match(r)))})
