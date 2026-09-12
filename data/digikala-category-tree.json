@@ -2,74 +2,64 @@
   "schemaVersion": "3.0",
   "store": "digikala",
   "taxonomyScope": "category-to-brand",
-  "generatedAt": "2026-09-11T21:20:49.172Z",
+  "generatedAt": "2026-09-12T05:04:27.183175Z",
   "source": {
     "type": "curated_static",
-    "status": "isolated",
+    "status": "main-normalized",
     "runtimeApi": false
   },
   "notes": "Static V6 taxonomy. Hierarchy intentionally stops at brand. Models, prices, stock and live products belong to Product Index.",
   "stats": {
-    "nodes": 412,
+    "nodes": 410,
     "leaves": 307,
     "maxDepth": 4
   },
   "root": [
     {
-      "name": "موبایل و کالای دیجیتال",
+      "name": "کالای دیجیتال",
       "children": [
         {
-          "name": "گوشی موبایل",
+          "name": "موبایل",
           "children": [
             {
-              "name": "اندروید",
-              "children": [
-                {
-                  "name": "سامسونگ",
-                  "children": []
-                },
-                {
-                  "name": "شیائومی",
-                  "children": []
-                },
-                {
-                  "name": "آنر",
-                  "children": []
-                },
-                {
-                  "name": "هواوی",
-                  "children": []
-                },
-                {
-                  "name": "نوکیا",
-                  "children": []
-                },
-                {
-                  "name": "موتورولا",
-                  "children": []
-                },
-                {
-                  "name": "اوپو",
-                  "children": []
-                },
-                {
-                  "name": "وان‌پلاس",
-                  "children": []
-                },
-                {
-                  "name": "ریلمی",
-                  "children": []
-                }
-              ]
+              "name": "سامسونگ",
+              "children": []
             },
             {
-              "name": "iOS",
-              "children": [
-                {
-                  "name": "اپل",
-                  "children": []
-                }
-              ]
+              "name": "شیائومی",
+              "children": []
+            },
+            {
+              "name": "اپل",
+              "children": []
+            },
+            {
+              "name": "آنر",
+              "children": []
+            },
+            {
+              "name": "هواوی",
+              "children": []
+            },
+            {
+              "name": "نوکیا",
+              "children": []
+            },
+            {
+              "name": "موتورولا",
+              "children": []
+            },
+            {
+              "name": "اوپو",
+              "children": []
+            },
+            {
+              "name": "وان‌پلاس",
+              "children": []
+            },
+            {
+              "name": "ریلمی",
+              "children": []
             }
           ]
         },
