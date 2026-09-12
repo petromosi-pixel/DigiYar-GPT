@@ -1,0 +1,92 @@
+name: Normalize Digikala taxonomy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/digikala-category-tree.json'
+      - '.github/workflows/normalize-digikala-taxonomy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: "!contains(github.event.head_commit.message, '[taxonomy-normalized]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Normalize mobile hierarchy
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          path = Path('data/digikala-category-tree.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          roots = data.get('root', [])
+
+          digital = next((r for r in roots if r.get('name') in {'موبایل و کالای دیجیتال', 'کالای دیجیتال'}), None)
+          if digital is None:
+              raise SystemExit('Digikala digital root not found')
+          digital['name'] = 'کالای دیجیتال'
+
+          mobile = next((c for c in digital.get('children', []) if c.get('name') in {'گوشی موبایل', 'موبایل'}), None)
+          if mobile is None:
+              raise SystemExit('Digikala mobile branch not found')
+
+          brand_nodes = []
+          for child in mobile.get('children', []):
+              if child.get('name') in {'اندروید', 'iOS'}:
+                  brand_nodes.extend(child.get('children', []))
+              else:
+                  brand_nodes.append(child)
+
+          seen = set()
+          brands = []
+          for node in brand_nodes:
+              name = node.get('name')
+              if name and name not in seen:
+                  seen.add(name)
+                  brands.append({'name': name, 'children': []})
+
+          preferred = ['سامسونگ', 'شیائومی', 'اپل', 'آنر', 'هواوی', 'نوکیا', 'موتورولا', 'اوپو', 'وان‌پلاس', 'ریلمی']
+          order = {name: i for i, name in enumerate(preferred)}
+          brands.sort(key=lambda n: (order.get(n['name'], 999), n['name']))
+          mobile['name'] = 'موبایل'
+          mobile['children'] = brands
+
+          def count(node):
+              children = node.get('children') or []
+              total = 1
+              leaves = 1 if not children else 0
+              depth = 1
+              for child in children:
+                  n, l, d = count(child)
+                  total += n
+                  leaves += l
+                  depth = max(depth, 1 + d)
+              return total, leaves, depth
+
+          totals = [count(root) for root in roots]
+          data['stats'] = {
+              'nodes': sum(x[0] for x in totals),
+              'leaves': sum(x[1] for x in totals),
+              'maxDepth': max(x[2] for x in totals),
+          }
+          data['source']['status'] = 'main-normalized'
+          data['generatedAt'] = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
+
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Commit normalized taxonomy
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/digikala-category-tree.json
+          git diff --cached --quiet || git commit -m 'fix: normalize Digikala mobile hierarchy [taxonomy-normalized]'
+          git push
