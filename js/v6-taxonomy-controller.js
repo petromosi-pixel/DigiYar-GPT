@@ -10,16 +10,22 @@
   function cleanSelect(select){if(!select)return;Array.from(select.options).forEach(function(o){if(LEGACY.indexOf(text(o))>=0)o.remove()})}
   function ensureMeghdadStore(){
     var stores=window.DigiYarPopularAffiliateStores;
-    if(Array.isArray(stores)&&!stores.some(function(s){return s&&s.id==='meghdadit'}))stores.push(Object.assign({},MEGHDAD));
+    if(Array.isArray(stores)&&!stores.some(function(s){return s&&s.id==='meghdadit'})){
+      var item=Object.assign({},MEGHDAD),techIndex=stores.findIndex(function(s){return s&&s.id==='technolife'});
+      if(techIndex>=0)stores.splice(techIndex+1,0,item);else stores.push(item);
+    }
     var select=$('storeSelect');
     if(select&&!Array.from(select.options).some(function(o){return o.value==='meghdadit'})){
-      var option=document.createElement('option');option.value='meghdadit';option.textContent='مقداد آی‌تی';select.appendChild(option);
+      var option=document.createElement('option');option.value='meghdadit';option.textContent='مقداد آی‌تی';
+      var tech=Array.from(select.options).find(function(o){return o.value==='technolife'});
+      if(tech&&tech.nextSibling)select.insertBefore(option,tech.nextSibling);else if(tech)select.appendChild(option);else select.appendChild(option);
     }
     var grid=$('platforms');
     if(grid&&!grid.querySelector('[data-store="meghdadit"]')){
       var a=document.createElement('a');a.className='platform';a.href=MEGHDAD.url;a.target='_blank';a.rel='noopener noreferrer';a.dataset.store='meghdadit';a.setAttribute('aria-label','ورود به مقداد آی‌تی');
       a.innerHTML='<div class="platform-main"><span class="platform-logo platform-logo-new" aria-hidden="true"><img src="'+MEGHDAD.logo+'" alt="" loading="lazy" decoding="async"><span class="platform-mark" style="display:none">MI</span></span><span class="platform-name">مقداد آی‌تی</span><span class="platform-tag">'+MEGHDAD.tagline+'</span></div><span class="platform-btn">ورود به فروشگاه</span>';
-      grid.appendChild(a);
+      var techCard=grid.querySelector('[data-store="technolife"]');
+      if(techCard&&techCard.nextSibling)grid.insertBefore(a,techCard.nextSibling);else if(techCard)grid.appendChild(a);else grid.appendChild(a);
     }
   }
   function loadScript(path){
