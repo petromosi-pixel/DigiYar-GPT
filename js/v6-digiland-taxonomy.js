@@ -1,22 +1,14 @@
 /* DigiYar V6 — Store #10: DigiLand (دیجی‌لند)
-   Dedicated taxonomy extracted from DigiLand's current category structure.
+   Dedicated taxonomy from DigiLand's current category structure.
    Flow: category → subcategory → brand → budget.
 */
 (function(){
 'use strict';
 var STORE='digiland';
 var ROOTS=[
- ['stock','سیستم استوک'],
- ['console','کنسول بازی'],
- ['laptop','لپ‌تاپ'],
- ['monitor','مانیتور'],
- ['computer-peripherals','تجهیزات جانبی کامپیوتر'],
- ['gaming','تجهیزات گیمینگ'],
- ['case','کیس'],
- ['accessories','لوازم جانبی'],
- ['mobile','موبایل و تبلت'],
- ['audio-video','صوتی و تصویری'],
- ['smart','ساعت و گجت هوشمند']
+ ['stock','سیستم استوک'],['console','کنسول بازی'],['laptop','لپ‌تاپ'],['monitor','مانیتور'],
+ ['computer-peripherals','تجهیزات جانبی کامپیوتر'],['gaming','تجهیزات گیمینگ'],['case','کیس'],['accessories','لوازم جانبی'],
+ ['mobile','موبایل و تبلت'],['audio-video','صوتی و تصویری'],['smart','ساعت و گجت هوشمند']
 ];
 var SUBS={
  stock:[['stock-case','کیس استوک'],['stock-laptop','لپ‌تاپ استوک'],['stock-monitor','مانیتور استوک']],
@@ -32,29 +24,24 @@ var SUBS={
  smart:[['smartwatch','ساعت هوشمند'],['smartband','مچ‌بند هوشمند'],['smart-gadget','گجت هوشمند']]
 };
 var BRANDS={
- 'stock-case':['Acer','Dell','HP','Lenovo'],
- 'stock-laptop':['Dell','HP','Lenovo'],
- 'stock-monitor':['Dell','HP','Lenovo','LG','Samsung'],
- xbox:['مایکروسافت'], 'xbox-one':['مایکروسافت'], playstation:['سونی'], 'console-games':['سونی','مایکروسافت'], 'console-accessories':['سونی','مایکروسافت'],
- 'laptop-use':['ایسوس','لنوو','HP','ایسر','MSI','اپل','دل'],
- 'laptop-acer':['Acer'], 'laptop-macbook':['Apple'], 'laptop-asus':['ASUS'], 'laptop-dell':['Dell'], 'laptop-hp':['HP'], 'laptop-msi':['MSI'], 'laptop-lenovo':['Lenovo'],
- 'monitor-use':['ASUS','LG','MSI','Samsung','AOC','BenQ'], 'monitor-asus':['ASUS'], 'monitor-lg':['LG'], 'monitor-msi':['MSI'], 'monitor-samsung':['Samsung'],
- keyboard:['تسکو','لاجیتک','ای‌فورتک','ردراگون','ریزر','گرین'], mouse:['لاجیتک','ای‌فورتک','تسکو','ردراگون','ریزر'], microphone:['Rode','Shure','Fifine','Maono'], headset:['سونی','JBL','لاجیتک','ریزر','ردراگون'], speaker:['JBL','سونی','انکر','تسکو','هویت'],
- controller:['Sony','Microsoft','Nintendo','8BitDo','Razer','Logitech'], 'gaming-chair':['Green','DXRacer','Redragon','TSCO'], 'gaming-wheel':['Logitech','Thrustmaster','PXN'], 'gaming-desk':['Green','TSCO','Cooler Master'],
- 'computer-case':['Green','DeepCool','Cooler Master','Thermaltake','MSI','ASUS'],
- 'computer-accessories':['تسکو','لاجیتک','بیسوس','یوگرین','گرین'], cable:['بیسوس','انکر','یوگرین','مک‌دودو'], charger:['بیسوس','انکر','سامسونگ','اپل','شیائومی'], holder:['بیسوس','مک‌دودو','جویروم'], 'storage-accessories':['Kingston','SanDisk','ADATA'],
- phone:['اپل','سامسونگ','شیائومی','آنر','هواوی','موتورولا','نوکیا','وان‌پلاس','اوپو','ریلمی'], tablet:['سامسونگ','اپل','شیائومی','لنوو','هواوی'], 'mobile-accessories':['بیسوس','انکر','شیائومی','سامسونگ','اپل','یوگرین','مک‌دودو'],
- earbuds:['اپل','سامسونگ','JBL','انکر','شیائومی','QCY','هایلو'], headphone:['سونی','JBL','انکر','شیائومی','تسکو'], soundbar:['سامسونگ','LG','سونی','JBL'], tv:['سامسونگ','LG','سونی','TCL'],
- smartwatch:['اپل','سامسونگ','شیائومی','هواوی','آمازفیت','گارمین','آنر'], smartband:['شیائومی','هواوی','آمازفیت'], 'smart-gadget':['شیائومی','سامسونگ','اپل']
+ 'stock-case':['Acer','Dell','HP','Lenovo'],'stock-laptop':['Dell','HP','Lenovo'],'stock-monitor':['Dell','HP','Lenovo','LG','Samsung'],
+ xbox:['مایکروسافت'],'xbox-one':['مایکروسافت'],playstation:['سونی'],'console-games':['سونی','مایکروسافت'],'console-accessories':['سونی','مایکروسافت'],
+ 'laptop-use':['ایسوس','لنوو','HP','ایسر','MSI','اپل','دل'],'laptop-acer':['Acer'],'laptop-macbook':['Apple'],'laptop-asus':['ASUS'],'laptop-dell':['Dell'],'laptop-hp':['HP'],'laptop-msi':['MSI'],'laptop-lenovo':['Lenovo'],
+ 'monitor-use':['ASUS','LG','MSI','Samsung','AOC','BenQ'],'monitor-asus':['ASUS'],'monitor-lg':['LG'],'monitor-msi':['MSI'],'monitor-samsung':['Samsung'],
+ keyboard:['تسکو','لاجیتک','ای‌فورتک','ردراگون','ریزر','گرین'],mouse:['لاجیتک','ای‌فورتک','تسکو','ردراگون','ریزر'],microphone:['Rode','Shure','Fifine','Maono'],headset:['سونی','JBL','لاجیتک','ریزر','ردراگون'],speaker:['JBL','سونی','انکر','تسکو','هویت'],
+ controller:['Sony','Microsoft','Nintendo','8BitDo','Razer','Logitech'],'gaming-chair':['Green','DXRacer','Redragon','TSCO'],'gaming-wheel':['Logitech','Thrustmaster','PXN'],'gaming-desk':['Green','TSCO','Cooler Master'],
+ 'computer-case':['Green','DeepCool','Cooler Master','Thermaltake','MSI','ASUS'],'computer-accessories':['تسکو','لاجیتک','بیسوس','یوگرین','گرین'],cable:['بیسوس','انکر','یوگرین','مک‌دودو'],charger:['بیسوس','انکر','سامسونگ','اپل','شیائومی'],holder:['بیسوس','مک‌دودو','جویروم'],'storage-accessories':['Kingston','SanDisk','ADATA'],
+ phone:['اپل','سامسونگ','شیائومی','آنر','هواوی','موتورولا','نوکیا','وان‌پلاس','اوپو','ریلمی'],tablet:['سامسونگ','اپل','شیائومی','لنوو','هواوی'],'mobile-accessories':['بیسوس','انکر','شیائومی','سامسونگ','اپل','یوگرین','مک‌دودو'],
+ earbuds:['اپل','سامسونگ','JBL','انکر','شیائومی','QCY','هایلو'],headphone:['سونی','JBL','انکر','شیائومی','تسکو'],soundbar:['سامسونگ','LG','سونی','JBL'],tv:['سامسونگ','LG','سونی','TCL'],
+ smartwatch:['اپل','سامسونگ','شیائومی','هواوی','آمازفیت','گارمین','آنر'],smartband:['شیائومی','هواوی','آمازفیت'],'smart-gadget':['شیائومی','سامسونگ','اپل']
 };
-function selected(){var e=document.getElementById('storeSelect');return !!(e&&e.value===STORE)}
-function removeBrand(){var b=document.getElementById('v6BrandField');if(b)b.remove()}
-function setCats(){if(!selected())return;var c=document.getElementById('v5Category');if(!c)return;c.innerHTML='<option value="">انتخاب دسته‌بندی</option>'+ROOTS.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');c.disabled=false;var s=document.getElementById('v5Subcategory');if(s){s.innerHTML='<option value="">انتخاب زیر دسته</option>';s.value='';s.disabled=true}removeBrand()}
-function setSubs(){if(!selected())return;var c=document.getElementById('v5Category'),s=document.getElementById('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];s.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');s.disabled=!list.length;removeBrand()}
-function setBrand(){if(!selected())return;var s=document.getElementById('v5Subcategory');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<span>برند</span><select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('')+'</select>';var dyn=document.getElementById('v5DynamicFields');if(dyn)dyn.appendChild(f);else s.parentNode.appendChild(f);if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget()}
-function bind(){var store=document.getElementById('storeSelect'),cat=document.getElementById('v5Category'),sub=document.getElementById('v5Subcategory');if(!store||!cat)return false;if(!store.dataset.digilandTaxBound){store.dataset.digilandTaxBound='1';store.addEventListener('change',function(){if(selected())setTimeout(setCats,30)})}if(cat&&!cat.dataset.digilandTaxBound){cat.dataset.digilandTaxBound='1';cat.addEventListener('change',function(){if(selected())setTimeout(setSubs,30)})}if(sub&&!sub.dataset.digilandTaxBound){sub.dataset.digilandTaxBound='1';sub.addEventListener('change',function(){if(selected())setTimeout(setBrand,30)})}if(selected())setTimeout(setCats,30);return true}
-function mount(){if(bind()){var n=0,t=setInterval(function(){if(selected()){setCats();clearInterval(t)}if(++n>80)clearInterval(t)},250);var f=function(){if(selected()){setCats()}};var c=document.getElementById('v5Category');var s=document.getElementById('v5Subcategory');if(c){new MutationObserver(f).observe(c,{childList:true})}if(s){new MutationObserver(function(){if(selected()&&s.value) setBrand()}).observe(s,{childList:true})}}
-}
+function selected(){var s=document.getElementById('storeSelect');return !!(s&&s.value===STORE)}
+function remove(id){var e=document.getElementById(id);if(e)e.remove()}
+function setCats(){if(!selected())return;var c=document.getElementById('v5Category');if(!c)return;c.innerHTML='<option value="">انتخاب دسته‌بندی</option>'+ROOTS.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');c.disabled=false;var s=document.getElementById('v5Subcategory');if(s){s.innerHTML='<option value="">انتخاب زیر دسته</option>';s.value='';s.disabled=true}remove('v6BrandField')}
+function setSubs(){if(!selected())return;var c=document.getElementById('v5Category'),s=document.getElementById('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];s.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');s.disabled=!list.length;remove('v6BrandField')}
+function setBrand(){if(!selected())return;var s=document.getElementById('v5Subcategory');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];remove('v6BrandField');var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<span>برند</span><select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('')+'</select>';var dyn=document.getElementById('v5DynamicFields');if(dyn)dyn.appendChild(f);else s.parentNode.appendChild(f);if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget()}
+function bind(){var store=document.getElementById('storeSelect'),cat=document.getElementById('v5Category'),sub=document.getElementById('v5Subcategory');if(!store||!cat)return false;if(!store.dataset.digilandTaxBound){store.dataset.digilandTaxBound='1';store.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setCats() }},true)}if(!cat.dataset.digilandTaxBound){cat.dataset.digilandTaxBound='1';cat.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setSubs()}},true)}if(sub&&!sub.dataset.digilandTaxBound){sub.dataset.digilandTaxBound='1';sub.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setBrand()}},true)}if(selected())setCats();return true}
+function mount(){if(!bind())return;var tries=0;var timer=setInterval(function(){if(selected()){setCats()}if(++tries>40)clearInterval(timer)},500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else setTimeout(mount,0);
 window.DigiYarDigilandTaxonomy={bind:bind,mount:mount,roots:ROOTS,subcategories:SUBS,brands:BRANDS};
 })();
