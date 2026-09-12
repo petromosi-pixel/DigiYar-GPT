@@ -71,7 +71,11 @@
     if(window.DigiYarV6ProductOptionsReady){loadTaxonomies();loadScript('js/v6-category-budget-brand-fix.js')}
     return true;
   }
-  function boot(){if(bind())return;setTimeout(boot,100)}
+  function boot(){if(bind()){
+    var attempts=0;
+    var syncTimer=setInterval(function(){ensureMeghdadStore();if(++attempts>=20)clearInterval(syncTimer)},250);
+    return;
+  }setTimeout(boot,100)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else setTimeout(boot,0);
   window.DigiYarV6Taxonomy={normalizeCategory:normalizeCategory};
 })();
