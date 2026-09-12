@@ -5,7 +5,7 @@
   var LEGACY=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
   var DIGITAL='کالای دیجیتال';
   var MEGHDAD={id:'meghdadit',name:'مقداد آی‌تی',tagline:'فروشگاه تخصصی کالای دیجیتال و قطعات',logo:'assets/store-logos/meghdadit-temp.svg',mark:'MI',url:'https://meghdadit.com/',accent:'#1f3b68',dealLabel:'خرید کالای دیجیتال',dealText:'لپ‌تاپ، کامپیوتر، قطعات و تجهیزات دیجیتال',dealIcon:'⌁'};
-  var DIGILAND={id:'digiland',name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالاهای دیجیتال',logo:'assets/store-logos/digiland-temp.svg',mark:'DL',url:'https://dgland.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال',dealText:'موبایل، لپ‌تاپ، گیمینگ و تجهیزات دیجیتال',dealIcon:'⌁'};
+  var DIGILAND={id:'digiland',name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',logo:'assets/store-logos/digiland-temp.svg',mark:'DL',url:'https://dgland.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال و گیمینگ',dealText:'لپ‌تاپ، مانیتور، کامپیوتر، کنسول و تجهیزات گیمینگ',dealIcon:'⌁'};
   function $(id){return document.getElementById(id)}
   function text(o){return (o&&o.textContent||'').trim()}
   function cleanSelect(select){if(!select)return;Array.from(select.options).forEach(function(o){if(LEGACY.indexOf(text(o))>=0)o.remove()})}
@@ -15,11 +15,13 @@
       var copy=Object.assign({},item),idx=stores.findIndex(function(s){return s&&s.id===afterId});
       if(idx>=0)stores.splice(idx+1,0,copy);else stores.push(copy);
     }
+    var base=window.DigiYarPlatforms;
+    if(Array.isArray(base)&&!base.some(function(s){return s&&s.id===item.id}))base.push({id:item.id,name:item.name,tag:item.tagline,logo:item.logo,url:item.url});
     var select=$('storeSelect');
     if(select&&!Array.from(select.options).some(function(o){return o.value===item.id})){
       var option=document.createElement('option');option.value=item.id;option.textContent=item.name;
       var after=Array.from(select.options).find(function(o){return o.value===afterId});
-      if(after&&after.nextSibling)select.insertBefore(option,after.nextSibling);else if(after)select.appendChild(option);else select.appendChild(option);
+      if(after&&after.nextSibling)select.insertBefore(option,after.nextSibling);else select.appendChild(option);
     }
     var grid=$('platforms');
     if(grid&&!grid.querySelector('[data-store="'+item.id+'"]')){
@@ -66,8 +68,15 @@
     if(window.DigiYarV6ProductOptionsReady){loadTaxonomies();loadScript('js/v6-category-budget-brand-fix.js')}
     return true;
   }
+  function syncStores(){ensureMeghdadStore();ensureDigilandStore()}
   function boot(){if(bind()){
-    var attempts=0;var syncTimer=setInterval(function(){ensureMeghdadStore();ensureDigilandStore();if(++attempts>=20)clearInterval(syncTimer)},250);return;
+    syncStores();
+    var attempts=0;var syncTimer=setInterval(function(){syncStores();if(++attempts>=120)clearInterval(syncTimer)},250);
+    var observer=new MutationObserver(function(){syncStores()});
+    var select=$('storeSelect'),grid=$('platforms');
+    if(select)observer.observe(select,{childList:true});
+    if(grid)observer.observe(grid,{childList:true});
+    return;
   }setTimeout(boot,100)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else setTimeout(boot,0);
   window.DigiYarV6Taxonomy={normalizeCategory:normalizeCategory};
