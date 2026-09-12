@@ -1,4 +1,4 @@
-/* DigiYar V6 — category budget/brand presentation fix */
+/* DigiYar V6 — category budget/brand presentation + reset fix */
 (function(){
   'use strict';
   function $(id){return document.getElementById(id)}
@@ -8,10 +8,36 @@
     select.style.textAlignLast='center';
     Array.from(select.options||[]).forEach(function(o){o.style.textAlign='center'});
   }
+  function clearSelect(select){
+    if(!select)return;
+    select.value='';
+    if(select.selectedIndex>0)select.selectedIndex=0;
+    select.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function clearPurchaseOptions(){
+    clearSelect($('v6Brand'));
+    clearSelect($('v6BudgetRange'));
+    var budget=$('budgetMax');
+    if(budget)budget.value='';
+    var budgetMin=$('budgetMin');
+    if(budgetMin)budgetMin.value='';
+  }
+  function bindReset(){
+    var reset=$('resetProfile');
+    if(!reset||reset.dataset.v6ResetFix)return false;
+    reset.dataset.v6ResetFix='1';
+    reset.addEventListener('click',function(){
+      clearPurchaseOptions();
+      setTimeout(clearPurchaseOptions,0);
+      setTimeout(clearPurchaseOptions,100);
+    });
+    return true;
+  }
   function fix(){
     var card=document.querySelector('.v5-profile-card');
     var cat=$('v5Category');
     var budget=$('budgetMax');
+    bindReset();
     if(!card||!cat||!budget)return false;
 
     var budgetField=budget.closest('.v5-field');
@@ -52,6 +78,7 @@
       store.dataset.v6BudgetBrandFix='1';
       store.addEventListener('change',function(){setTimeout(fix,50)});
     }
+    bindReset();
     fix();
     return true;
   }
