@@ -1,15 +1,15 @@
 /* DigiYar V6 — Unified taxonomy guard
- * One taxonomy policy for all four stores.
- * The existing Step-4 controller remains responsible for rendering its
- * native category trees; this controller only normalizes the shared
- * digital root and blocks legacy taxonomy from returning.
+ * The Step-4 FINAL controller owns category rendering.
+ * This guard only removes legacy taxonomy and restores the shared digital root.
+ * No MutationObserver is used: DOM self-observation here caused a feedback loop
+ * that could lock the page after store selection.
  */
 (function(){
   'use strict';
 
   var STORES=['digikala','snappshop','torob','basalam'];
   var LEGACY=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
-  var DIGITAL=['کالای دیجیتال'];
+  var DIGITAL='کالای دیجیتال';
   var BRAND_NAMES=['سامسونگ','شیائومی','اپل','نوکیا','ریلمی','آنر','موتورولا','هواوی','گوگل پیکسل','پوکو','وان‌پلاس','ناتینگ فون','تکنو'];
 
   function $(id){return document.getElementById(id)}
@@ -17,8 +17,12 @@
   function isLegacy(o){return LEGACY.indexOf(text(o))>=0}
 
   function cleanSelect(select){
-    if(!select)return;
-    Array.from(select.options).forEach(function(o){if(isLegacy(o))o.remove()});
+    if(!select)return false;
+    var changed=false;
+    Array.from(select.options).forEach(function(o){
+      if(isLegacy(o)){o.remove();changed=true}
+    });
+    return changed;
   }
 
   function normalizeCategory(){
@@ -27,14 +31,15 @@
 
     cleanSelect(cat);
     var digital=Array.from(cat.options).find(function(o){return o.value==='digital'});
-    if(!digital){
-      digital=document.createElement('option');
-      digital.value='digital';
-      digital.textContent=DIGITAL[0];
-      cat.insertBefore(digital,cat.options[1]||null);
-    }else{
-      digital.textContent=DIGITAL[0];
+    if(digital){
+      if(digital.textContent!==DIGITAL)digital.textContent=DIGITAL;
+      return;
     }
+
+    digital=document.createElement('option');
+    digital.value='digital';
+    digital.textContent=DIGITAL;
+    cat.insertBefore(digital,cat.options[1]||null);
   }
 
   function cleanLegacyDOM(){
@@ -60,11 +65,15 @@
 
     if(!store.dataset.v6UnifiedBound){
       store.dataset.v6UnifiedBound='1';
-      store.addEventListener('change',function(){window.setTimeout(function(){cleanLegacyDOM();normalizeCategory()},0)});
+      store.addEventListener('change',function(){
+        window.setTimeout(function(){cleanLegacyDOM();normalizeCategory()},0);
+      });
     }
     if(!cat.dataset.v6UnifiedBound){
       cat.dataset.v6UnifiedBound='1';
-      cat.addEventListener('change',function(){window.setTimeout(function(){cleanLegacyDOM();normalizeCategory()},0)});
+      cat.addEventListener('change',function(){
+        window.setTimeout(function(){cleanLegacyDOM();normalizeCategory()},0);
+      });
     }
     sub=$('v5Subcategory');
     if(sub&&!sub.dataset.v6UnifiedBound){
@@ -81,13 +90,9 @@
   function boot(){
     cleanLegacyDOM();
     if(bind()){
-      var root=document.querySelector('.v5-profile-card')||document.body;
-      var observer=new MutationObserver(function(){
-        cleanLegacyDOM();
-        normalizeCategory();
+      [50,300,1000].forEach(function(ms){
+        window.setTimeout(function(){cleanLegacyDOM();bind()},ms);
       });
-      observer.observe(root,{childList:true,subtree:true});
-      [50,300,1000].forEach(function(ms){window.setTimeout(function(){cleanLegacyDOM();bind()},ms)});
     }else window.setTimeout(boot,100);
   }
 
