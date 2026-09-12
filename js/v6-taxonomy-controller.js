@@ -6,7 +6,6 @@
   var DIGITAL='کالای دیجیتال';
   function $(id){return document.getElementById(id)}
   function text(o){return (o&&o.textContent||'').trim()}
-  function isLegacy(o){return LEGACY.indexOf(text(o)>=0)}
   function cleanSelect(select){if(!select)return;Array.from(select.options).forEach(function(o){if(LEGACY.indexOf(text(o))>=0)o.remove()})}
   function normalizeCategory(){var store=$('storeSelect'),cat=$('v5Category');if(!store||!cat||!store.value||STORES.indexOf(store.value)<0)return;cleanSelect(cat);var digital=Array.from(cat.options).find(function(o){return o.value==='digital'});if(digital){digital.textContent=DIGITAL;return}digital=document.createElement('option');digital.value='digital';digital.textContent=DIGITAL;cat.insertBefore(digital,cat.options[1]||null)}
   function loadProductOptions(){if(window.DigiYarV6ProductOptionsReady||document.querySelector('script[src$="/js/v6-product-options.js"]'))return;var s=document.createElement('script');s.src=new URL('js/v6-product-options.js',document.baseURI).href;s.async=false;s.onload=function(){window.DigiYarV6ProductOptionsReady=true};document.head.appendChild(s)}
