@@ -1,5 +1,6 @@
 /* DigiYar V6 — Per-store taxonomy overrides
    Store #4: Basalam
+   Store #5: Banimode
    Taxonomy: category → subcategory → brand → budget.
 */
 (function(){
@@ -26,7 +27,7 @@
     appliance:['سامسونگ','ال‌جی','بوش','دوو','اسنوا','پاکشوما','جی‌پلاس','فیلیپس'],kitchen:['فیلیپس','بوش','مولینکس','تفال','کنوود','پارس‌خزر','گوسونیک'],decoration:['ایکیا','چشمه‌نور','بلانتون'],cleaning:['فیلیپس','بوش','کرشر','پارس‌خزر','پاکشوما'],sleep:['رویا','خوشخواب','ایکیا'],
     women:['جین‌وست','مانگو','ال‌سی‌وایکیکی','دورس'],men:['جین‌وست','ال‌سی‌من','تن‌درست','RNS'],kids:['ال‌سی‌وایکیکی','چیکو','نیلی'],shoes:['نایک','آدیداس','پوما','اسکیچرز'],bags:['دیوید جونز','آدیداس','نایک','چرم مشهد'],traditional:['تن‌درست','چرم مشهد'],
     skin:['لورآل','نیوا','اوریاژ','لاروش پوزای','سینره','مای','کامان'],hair:['لورآل','شوارتسکف','پنتن','OGX','مای','سینره'],makeup:['مک','میبلین','لورآل','بورژوا','کالیستا','مای'],personal:['نیوا','داو','ژیلت','فیلیپس','مای','کامان'],perfume:['لورآل','آرماف','دیویدوف','بولگاری','لالیک'],health:['سینره','کامان','مای','فیروز'],
-    staples:['گلستان','یک‌ویک','چین‌چین','کاله'],sweets:['شیرین‌عسل','مزمز','چی‌توز','تبرک'],traditional:['گلستان','یک‌ویک','کاله'],beverage:['سن‌ایچ','رانی','کاله','میهن'],organic:['رضوان','گلستان'],
+    staples:['گلستان','یک‌ویک','چین‌چین','کاله'],sweets:['شیرین‌عسل','مزمز','چی‌توز','تبرک'],beverage:['سن‌ایچ','رانی','کاله','میهن'],organic:['رضوان','گلستان'],
     wood:['منبت‌کاری ایرانی','گلیم سیرجان'],textile:['ترمه رضایی','گلیم سیرجان'],pottery:['لالجین','میبد'],metal:['اصفهان'],decor:['سفال لالجین','میناکاری اصفهان'],
     book:['نشر چشمه','افق','امیرکبیر','ققنوس','نشر نی'],stationery:['پاپکو','پنتر','استدلر','فابرکاستل'],music:['سونی','پایونیر','جی‌بی‌ال'],game:['لگو','هاسبرو','متل'],
     baby:['چیکو','فیلیپس اونت','مولفیکس','مای بیبی'],mother:['چیکو','فیلیپس اونت','بیبی‌لند','مای بیبی'],toy:['لگو','مگا بلاکس','هاسبرو','متل'],school:['پاپکو','پنتر','فابرکاستل','استدلر'],
@@ -42,4 +43,50 @@
   function bind(){var store=$('storeSelect'),cat=$('v5Category'),sub=$('v5Subcategory');if(!store||!cat)return false;if(!store.dataset.v6BasalamTaxonomy){store.dataset.v6BasalamTaxonomy='1';store.addEventListener('change',function(){if(selectedStore())setTimeout(setCategoryOptions,30)})}if(!cat.dataset.v6BasalamTaxonomy){cat.dataset.v6BasalamTaxonomy='1';cat.addEventListener('change',function(){setTimeout(updateSub,30)})}if(sub&&!sub.dataset.v6BasalamBrand){sub.dataset.v6BasalamBrand='1';sub.addEventListener('change',function(){setTimeout(updateBrand,30)})}if(selectedStore())setCategoryOptions();return true}
   function boot(){if(bind())return;setTimeout(boot,100)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else setTimeout(boot,0);
+})();
+
+/* Store #5: Banimode — category tree based on the store's fashion-led catalog and current indexed category references. */
+(function(){
+  'use strict';
+  var STORE='banimode';
+  var ROOTS=[
+    ['fashion','مد و پوشاک'],['shoes-bags','کیف و کفش'],['beauty','زیبایی و سلامت'],['accessories','اکسسوری و زیورآلات'],['sports','ورزش و سفر'],['home','لوازم خانه و آشپزخانه'],['watch','ساعت و عینک'],['digital','کالای دیجیتال'],['stationery','لوازم تحریر'],['kids','مادر و کودک و اسباب‌بازی'],['food','خوراکی و کالاهای روزمره']
+  ];
+  var SUBS={
+    fashion:[['women','پوشاک زنانه'],['men','پوشاک مردانه'],['girls','پوشاک دخترانه'],['boys','پوشاک پسرانه'],['underwear','لباس زیر و راحتی'],['outerwear','کاپشن، پالتو و بارانی']],
+    'shoes-bags':[['women-shoes','کفش زنانه'],['men-shoes','کفش مردانه'],['kids-shoes','کفش بچگانه'],['women-bags','کیف زنانه'],['men-bags','کیف مردانه'],['backpack','کوله و چمدان']],
+    beauty:[['perfume','عطر و ادکلن'],['makeup','لوازم آرایشی'],['skin','مراقبت پوست'],['hair','مراقبت مو'],['personal','بهداشت و مراقبت شخصی'],['electric-care','لوازم شخصی برقی']],
+    accessories:[['jewelry','زیورآلات'],['eyewear','عینک و اکسسوری عینک'],['belts','کمربند'],['scarves','شال و روسری'],['hats-gloves','کلاه و دستکش'],['umbrellas','چتر']],
+    sports:[['clothing','پوشاک ورزشی'],['shoes','کفش ورزشی'],['equipment','تجهیزات ورزشی'],['travel','سفر و کمپینگ']],
+    home:[['appliance','لوازم خانگی'],['kitchen','لوازم آشپزخانه'],['sleep','کالای خواب'],['decoration','دکور و خانه'],['cleaning','نظافت']],
+    watch:[['wristwatch','ساعت مچی'],['smartwatch','ساعت و دستبند هوشمند'],['sunglasses','عینک آفتابی']],
+    digital:[['mobile','موبایل و تبلت'],['laptop','لپ‌تاپ و کامپیوتر'],['audio','هدفون و هندزفری'],['accessoriesDigital','لوازم جانبی دیجیتال']],
+    stationery:[['writing','نوشت‌افزار'],['school','لوازم مدرسه'],['office','لوازم اداری'],['art','لوازم هنری']],
+    kids:[['baby','نوزاد و کودک'],['toy','اسباب‌بازی'],['kids-accessories','اکسسوری کودک'],['mother','مادر و بارداری']],
+    food:[['snacks','تنقلات'],['beverage','نوشیدنی'],['food','مواد غذایی'],['household','کالاهای مصرفی خانه']]
+  };
+  var BRANDS={
+    women:['جین‌وست','جوتی جینز','ال‌سی‌وایکیکی','کوتون','بالنو','ناریان','مل اند موژ','سرژه','اونلی','ورومدا'],
+    men:['جین‌وست','ال‌سی‌من','جوتی جینز','RNS','تن‌درست','سوپردرای','جامه‌پوش‌آرا','پیانو'],
+    girls:['ال‌سی‌وایکیکی','نیلی','فیورلا','چیکو','کوتون'], boys:['ال‌سی‌وایکیکی','نیلی','فیورلا','چیکو'], underwear:['پنتی','مای','ناریان','ان‌بی‌بی'], outerwear:['جین‌وست','جوتی جینز','کوتون','بالنو'],
+    'women-shoes':['دلفارد','چرم مشهد','چرم نفیس','دنیلی','ساکونی','آلشپرت'], 'men-shoes':['دلفارد','چرم مشهد','دنیلی','ساکونی','ریبوک','آلشپرت'], 'kids-shoes':['ال‌سی‌وایکیکی','چیکو','فیورلا'],
+    'women-bags':['چرم مشهد','دلفارد','دراسا','دنیلی'], 'men-bags':['چرم مشهد','دلفارد','دنیلی'], backpack:['رونکاتو','دلسی','آلشپرت','جین‌وست'],
+    perfume:['دیور','شانل','ورساچه','بولگاری','دیویدوف','لالیک','کلین','مون بلان'], makeup:['مای','کالیستا','لورآل','بورژوا','میبلین','مک'], skin:['ایوروشه','لورآل','نیوا','سینره','کامان','مای'], hair:['لورآل','پنتن','شوارتسکف','مای','سینره'], personal:['رکسونا','نیوا','داو','مای','کامان'], 'electric-care':['فیلیپس','براون','پاناسونیک','رمینگتون'],
+    jewelry:['سواروسکی','دیوید جونز','چرم مشهد'], eyewear:['ری‌بن','آیسول','کاسیو'], belts:['چرم مشهد','دنیلی','دلفارد'], scarves:['جین‌وست','ناریان','دورس'], 'hats-gloves':['جین‌وست','کوتون','ال‌سی‌وایکیکی'], umbrellas:['دلفارد','چرم مشهد'],
+    clothing:['آلشپرت','ریباک','نایک','آدیداس'], shoes:['آلشپرت','ریباک','نایک','آدیداس'], equipment:['نایک','آدیداس','ریبوک'], travel:['رونکاتو','دلسی','کچوا'],
+    appliance:['ال‌جی','سامسونگ','بوش','دوو','اسنوا','تاپکو'], kitchen:['فیلیپس','بوش','مولینکس','تفال','پارس‌خزر'], sleep:['لایکو','رویا','خوشخواب'], decoration:['ایکیا','بلانتون'], cleaning:['فیلیپس','بوش','پارس‌خزر'],
+    wristwatch:['کاسیو','سیتیزن','سیکو','تایمکس'], smartwatch:['اپل','سامسونگ','شیائومی','هواوی','امیزفیت'], sunglasses:['ری‌بن','اوکلی','پولاروید'],
+    mobile:['سامسونگ','شیائومی','اپل','پوکو','آنر','هواوی'], laptop:['لنوو','ایسوس','اچ‌پی','ایسر','اپل'], audio:['جی‌بی‌ال','انکر','سونی','اپل','سامسونگ'], accessoriesDigital:['بیسوس','انکر','یوگرین','شیائومی','تسکو'],
+    writing:['پاپکو','پنتر','استدلر','فابرکاستل'], school:['پاپکو','پنتر','استدلر'], office:['پاپکو','پنتر','استدلر'], art:['فابرکاستل','استدلر','پنتل','روترینگ'],
+    baby:['چیکو','فیلیپس اونت','مولفیکس','مای بیبی','جانسون'], toy:['لگو','مگا بلاکس','هاسبرو','متل'], 'kids-accessories':['چیکو','فیورلا','نیلی'], mother:['چیکو','فیلیپس اونت','بیبی‌لند'],
+    snacks:['چی‌توز','مزمز','شیرین‌عسل'], beverage:['سن‌ایچ','رانی','میهن'], food:['کاله','یک‌ویک','گلستان','چین‌چین'], household:['گلرنگ','تاژ','اکتیو'], other:['جین‌وست','ال‌سی‌وایکیکی','چرم مشهد','مای']
+  };
+  var $=function(id){return document.getElementById(id)};
+  function selected(){return $('storeSelect')&&$('storeSelect').value===STORE}
+  function roots(){var c=$('v5Category');if(!c||!selected())return;c.innerHTML='<option value="">انتخاب دسته‌بندی</option>'+ROOTS.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');c.disabled=false;var s=$('v5Subcategory');if(s){s.value='';s.disabled=true;s.innerHTML='<option value="">انتخاب زیر دسته</option>'}var b=$('v6BrandField');if(b)b.remove()}
+  function subs(){if(!selected())return;var c=$('v5Category'),s=$('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];s.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');s.disabled=!list.length;var b=$('v6BrandField');if(b)b.remove()}
+  function brand(){if(!selected())return;var s=$('v5Subcategory'),dyn=$('v5DynamicFields');if(!s||!s.value)return;var list=BRANDS[s.value]||BRANDS.other;var old=$('v6BrandField');if(old)old.remove();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<span>برند</span><select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(b){return '<option value="'+b+'">'+b+'</option>'}).join('')+'</select>';var budget=$('v6BudgetRange'),bf=budget&&budget.closest('.v5-field');if(bf&&bf.parentNode)bf.parentNode.insertBefore(f,bf);else if(dyn&&dyn.parentNode)dyn.parentNode.insertBefore(f,dyn)}
+  function bind(){var st=$('storeSelect'),c=$('v5Category'),s=$('v5Subcategory');if(!st||!c)return false;if(!st.dataset.v6BanimodeTaxonomy){st.dataset.v6BanimodeTaxonomy='1';st.addEventListener('change',function(){if(selected())setTimeout(roots,30)})}if(!c.dataset.v6BanimodeTaxonomy){c.dataset.v6BanimodeTaxonomy='1';c.addEventListener('change',function(){setTimeout(subs,30)})}if(s&&!s.dataset.v6BanimodeBrand){s.dataset.v6BanimodeBrand='1';s.addEventListener('change',function(){setTimeout(brand,30)})}if(selected())roots();return true}
+  function boot(){if(bind())return;setTimeout(boot,100)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else setTimeout(boot,0)
 })();
