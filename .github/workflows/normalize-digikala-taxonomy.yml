@@ -72,14 +72,9 @@ jobs:
               return total, leaves, depth
 
           totals = [count(root) for root in roots]
-          data['stats'] = {
-              'nodes': sum(x[0] for x in totals),
-              'leaves': sum(x[1] for x in totals),
-              'maxDepth': max(x[2] for x in totals),
-          }
+          data['stats'] = {'nodes': sum(x[0] for x in totals), 'leaves': sum(x[1] for x in totals), 'maxDepth': max(x[2] for x in totals)}
           data['source']['status'] = 'main-normalized'
           data['generatedAt'] = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
-
           path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
           PY
 
