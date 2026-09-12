@@ -11,10 +11,26 @@ function init(){
  const dyn=document.getElementById('v5DynamicFields');
  const reset=document.getElementById('resetProfile');
  if(!card||!form||!grid||!store||!cat||!budget||!dyn)return;
+ const budgetField=budget.closest('.v5-field'),catField=cat.closest('.v5-field'),subField=sub&&sub.closest('.v5-field');
+ function clearPurchaseFields(){
+   const brand=document.getElementById('v6Brand');
+   const range=document.getElementById('v6BudgetRange');
+   if(brand){brand.value='';brand.selectedIndex=0;}
+   if(range){range.value='';range.selectedIndex=0;}
+   budget.value='';
+   const budgetMin=document.getElementById('budgetMin');
+   if(budgetMin)budgetMin.value='';
+ }
+ function clearResults(){
+   const ids=['digiyar-products','recommendations','v6ResultRecommendations'];
+   ids.forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=''});
+   const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;
+   const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true}
+   const result=document.getElementById('resultSection');if(result){result.hidden=true;result.classList.remove('is-open')}
+ }
  let result=document.getElementById('resultSection');
  if(!result){result=document.createElement('section');result.id='resultSection';result.className='card v5-result-card';result.innerHTML='<div class="section-title"><h2>پیشنهادات دیجی‌یار</h2><p id="resultHint">بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن</p></div><div id="needSummary" class="need-summary empty" hidden></div><div id="v6ResultRecommendations" class="recommendations"></div>';card.insertAdjacentElement('afterend',result)}else if(!document.getElementById('v6ResultRecommendations')){const box=document.createElement('div');box.id='v6ResultRecommendations';box.className='recommendations';result.appendChild(box)}
  result.hidden=true;
- const budgetField=budget.closest('.v5-field'),catField=cat.closest('.v5-field'),subField=sub&&sub.closest('.v5-field');
  card.querySelectorAll('.v5-step4-toggle,.v5-profile-completion-toggle').forEach(el=>el.remove());
  const t=document.createElement('button');t.id='v5Step4Toggle';t.type='button';t.className='v5-step4-toggle v5-step4-final-toggle';t.setAttribute('aria-expanded','false');t.setAttribute('aria-label','باز کردن جزئیات خرید');t.innerHTML='<span class="v5-step4-toggle-icon" aria-hidden="true"><i>⟨</i><i>⟨</i><i>⟨</i></span>';card.appendChild(t);
  if(budgetField&&subField)subField.insertAdjacentElement('afterend',budgetField);if(budgetField){const label=budgetField.querySelector('span');if(label)label.textContent='چقدر می‌خوای هزینه کنی؟'}
@@ -22,10 +38,9 @@ function init(){
  function normalizeTopFields(){moveLabelInside(store,'فروشگاهتو انتخاب کن');moveLabelInside(cat,'دسته بندی');moveLabelInside(sub,'انتخاب کالا');[store,cat,sub].forEach(field=>{const wrap=field&&field.closest('.v5-field');const label=wrap&&wrap.querySelector(':scope > span');if(label)label.style.display='none'});const hint=document.getElementById('v5StoreHint');if(hint)hint.style.display='none'}
  normalizeTopFields();
  function syncIcon(open){t.setAttribute('aria-expanded',String(open));t.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید')}
- function clearResults(){const chatProducts=document.getElementById('digiyar-products');const chatRecommendations=document.getElementById('recommendations');if(chatProducts)chatProducts.innerHTML='';if(chatRecommendations)chatRecommendations.innerHTML='';const resultBox=document.getElementById('v6ResultRecommendations');if(resultBox)resultBox.innerHTML='';const inline=document.getElementById('v5InlineResults');if(inline)inline.hidden=true;const summary=document.getElementById('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true}if(result){result.hidden=true;result.classList.remove('is-open')}}
  function setOpen(open){card.classList.toggle('is-open',open);form.hidden=false;form.setAttribute('aria-hidden',String(!open));form.style.display='block';if(catField)catField.hidden=!open;if(subField)subField.hidden=!open||!cat.value;if(budgetField)budgetField.hidden=!open||cat.value!=='digital';if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none'}if(!open){cat.disabled=true;if(sub)sub.disabled=true}else cat.disabled=!store.value;syncIcon(open)}
- function clearInputsOnly(){store.value='';cat.value='';cat.disabled=true;if(sub){sub.value='';sub.disabled=true;sub.innerHTML='<option data-v5-placeholder="true" value="">انتخاب کالا</option>'}budget.value='';dyn.innerHTML='';dyn.hidden=true;dyn.style.display='none';if(catField)catField.hidden=true;if(subField)subField.hidden=true;if(budgetField)budgetField.hidden=true;clearResults();normalizeTopFields();setOpen(false)}
- if(reset){const freshReset=reset.cloneNode(true);reset.replaceWith(freshReset);freshReset.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();clearInputsOnly()},true)}
+ function clearInputsOnly(){store.value='';cat.value='';cat.disabled=true;if(sub){sub.value='';sub.disabled=true;sub.innerHTML='<option data-v5-placeholder="true" value="">انتخاب کالا</option>'}clearPurchaseFields();dyn.innerHTML='';dyn.hidden=true;dyn.style.display='none';if(catField)catField.hidden=true;if(subField)subField.hidden=true;if(budgetField)budgetField.hidden=true;clearResults();normalizeTopFields();setOpen(false);clearPurchaseFields()}
+ if(reset){const freshReset=reset.cloneNode(true);reset.replaceWith(freshReset);freshReset.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();clearInputsOnly();requestAnimationFrame(clearPurchaseFields);setTimeout(clearPurchaseFields,50);setTimeout(clearPurchaseFields,150)},true)}
  t.addEventListener('click',function(ev){ev.preventDefault();ev.stopImmediatePropagation();setOpen(t.getAttribute('aria-expanded')!=='true')},true);
  store.addEventListener('change',function(){setOpen(true);normalizeTopFields()});cat.addEventListener('change',function(){setOpen(true);if(subField)subField.hidden=false;if(budgetField)budgetField.hidden=cat.value!=='digital';normalizeTopFields()});if(sub)sub.addEventListener('change',function(){setOpen(true);if(subField)subField.hidden=false;normalizeTopFields()});
  function normalizeFunctionLabels(){dyn.querySelectorAll('.v5-final-function,.v5-step4-field').forEach(field=>{const title=field.querySelector(':scope > span'),select=field.querySelector('select');if(!select)return;if(title){const text=title.textContent.trim();if(text){const first=select.options[0];if(first)first.textContent=text;else{const o=document.createElement('option');o.value='';o.textContent=text;select.prepend(o)}}title.remove()}select.style.textAlign='center';select.style.textAlignLast='center';Array.from(select.options).forEach(o=>o.style.textAlign='center')});normalizeTopFields()}
