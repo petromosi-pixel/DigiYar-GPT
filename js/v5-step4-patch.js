@@ -42,37 +42,3 @@ function init(){
 function initCompletionCardToggle(){const card=document.querySelector('.v5-profile-completion'),form=document.getElementById('v5ProfileCompletionForm');if(!card||!form)return;const old=card.querySelector('.v5-profile-completion-toggle');if(old)old.remove();const toggle=document.createElement('button');toggle.type='button';toggle.className='v5-step4-toggle v5-profile-completion-toggle v5-step4-final-toggle';toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','باز کردن تکمیل پروفایل');toggle.innerHTML='<span class="v5-step4-toggle-icon" aria-hidden="true"><i>⟨</i><i>⟨</i><i>⟨</i></span>';card.appendChild(toggle);const setOpen=open=>{card.classList.toggle('is-open',open);form.hidden=!open;form.setAttribute('aria-hidden',String(!open));form.style.display=open?'grid':'';toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'بستن تکمیل پروفایل':'باز کردن تکمیل پروفایل')};toggle.addEventListener('click',()=>setOpen(toggle.getAttribute('aria-expanded')!=='true'));setOpen(false)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();initCompletionCardToggle()},{once:true});else setTimeout(()=>{init();initCompletionCardToggle()},0);
 })();
-
-/* V6 Digikala taxonomy bridge: deterministic runtime guard.
- * The visible taxonomy is owned by v5-step4-final.js. Legacy taxonomy modules
- * are never allowed to inject their own category tree. The Digikala mobile
- * brand bridge is loaded only after the controller has created the fields.
- */
-(function(){
-  'use strict';
-  var LEGACY_ROOTS=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
-  function cleanLegacyNodes(){
-    document.querySelectorAll('[data-digikala-taxonomy],.digikala-taxonomy,.v6-digikala-taxonomy').forEach(function(el){el.remove();});
-    var selects=document.querySelectorAll('select');
-    selects.forEach(function(select){
-      Array.from(select.options).forEach(function(option){
-        if(LEGACY_ROOTS.indexOf((option.textContent||'').trim())>=0)option.remove();
-      });
-    });
-  }
-  function loadBrandBridge(){
-    if(document.querySelector('script[src$="/js/digikala-mobile-brand.js"]'))return;
-    var s=document.createElement('script');
-    s.src=new URL('js/digikala-mobile-brand.js?v=6.0.28',document.baseURI).href;
-    s.async=false;
-    document.head.appendChild(s);
-  }
-  function boot(){
-    cleanLegacyNodes();
-    loadBrandBridge();
-    window.setTimeout(cleanLegacyNodes,50);
-    window.setTimeout(cleanLegacyNodes,250);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
-  else setTimeout(boot,0);
-})();
