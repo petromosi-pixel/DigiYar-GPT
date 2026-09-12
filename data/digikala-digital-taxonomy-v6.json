@@ -1,0 +1,54 @@
+{
+  "store": "digikala",
+  "scope": "کالای دیجیتال",
+  "source": "Digikala public category/menu references cross-checked in September 2026",
+  "maxDepth": 3,
+  "categories": [
+    {"name":"موبایل","children":[
+      {"name":"سامسونگ","children":[]},{"name":"شیائومی","children":[]},{"name":"اپل","children":[]},{"name":"نوکیا","children":[]},{"name":"ریلمی","children":[]},{"name":"آنر","children":[]},{"name":"ناتینگ فون","children":[]},{"name":"وِکال","children":[]},{"name":"موتورولا","children":[]},{"name":"هواوی","children":[]},{"name":"داریا","children":[]},{"name":"گوگل پیکسل","children":[]},{"name":"جی‌ال‌ایکس","children":[]},{"name":"آلکاتل","children":[]},{"name":"وان‌پلاس","children":[]},{"name":"پوکو","children":[]},{"name":"دوجی","children":[]},{"name":"HMD","children":[]},{"name":"TCL","children":[]},{"name":"TCH","children":[]}
+    ]},
+    {"name":"لوازم جانبی موبایل","children":[
+      {"name":"شارژر","children":[{"name":"انکر","children":[]},{"name":"سامسونگ","children":[]},{"name":"شیائومی","children":[]},{"name":"بیسوس","children":[]},{"name":"یوگرین","children":[]}]},
+      {"name":"شارژر وایرلس","children":[{"name":"سامسونگ","children":[]},{"name":"اپل","children":[]},{"name":"انکر","children":[]},{"name":"بیسوس","children":[]}]},
+      {"name":"کابل شارژ و مبدل","children":[{"name":"بیسوس","children":[]},{"name":"یوگرین","children":[]},{"name":"انکر","children":[]},{"name":"شیائومی","children":[]}]},
+      {"name":"کیف و کاور گوشی","children":[{"name":"نیلکین","children":[]},{"name":"اسپیگن","children":[]},{"name":"بیسوس","children":[]}]},
+      {"name":"گلس گوشی","children":[{"name":"اپل","children":[]},{"name":"سامسونگ","children":[]},{"name":"شیائومی","children":[]},{"name":"نوکیا","children":[]},{"name":"ریلمی","children":[]},{"name":"آنر","children":[]},{"name":"موتورولا","children":[]},{"name":"ناتینگ فون","children":[]}]},
+      {"name":"پاوربانک","children":[{"name":"انکر","children":[]},{"name":"شیائومی","children":[]},{"name":"بیسوس","children":[]},{"name":"هیسکا","children":[]}]},
+      {"name":"پایه و هولدر گوشی","children":[{"name":"بیسوس","children":[]},{"name":"شیائومی","children":[]},{"name":"یوگرین","children":[]}]},
+      {"name":"هولدر گردنی","children":[]},{"name":"مونوپاد","children":[]},{"name":"فن خنک‌کننده گوشی","children":[]},{"name":"دسته بازی موبایل","children":[]}
+    ]},
+    {"name":"هدفون، هدست و هندزفری","children":[{"name":"اپل","children":[]},{"name":"سامسونگ","children":[]},{"name":"انکر","children":[]},{"name":"کیو‌سی‌وای","children":[]},{"name":"هایلو","children":[]},{"name":"شیائومی","children":[]},{"name":"بیسوس","children":[]},{"name":"سونی","children":[]},{"name":"جی‌بی‌ال","children":[]},{"name":"تسکو","children":[]}]},
+    {"name":"مچ‌بند و ساعت هوشمند","children":[{"name":"سامسونگ","children":[]},{"name":"شیائومی","children":[]},{"name":"اپل","children":[]},{"name":"هواوی","children":[]},{"name":"امیزفیت","children":[]},{"name":"گارمین","children":[]}]},
+    {"name":"اسپیکر بلوتوث و با سیم","children":[{"name":"جی‌بی‌ال","children":[]},{"name":"سونی","children":[]},{"name":"انکر","children":[]},{"name":"شیائومی","children":[]},{"name":"تسکو","children":[]}]},
+    {"name":"هارد، فلش و SSD","children":[
+      {"name":"هارد و SSD","children":[{"name":"وسترن دیجیتال","children":[]},{"name":"سیگیت","children":[]},{"name":"سامسونگ","children":[]},{"name":"کینگستون","children":[]},{"name":"سن‌دیسک","children":[]}]},
+      {"name":"فلش مموری","children":[{"name":"سن‌دیسک","children":[]},{"name":"کینگستون","children":[]},{"name":"اچ‌پی","children":[]},{"name":"ای‌دیتا","children":[]}]},
+      {"name":"کارت حافظه","children":[{"name":"سن‌دیسک","children":[]},{"name":"سامسونگ","children":[]},{"name":"کینگستون","children":[]},{"name":"ای‌دیتا","children":[]}]}
+    ]},
+    {"name":"دوربین","children":[
+      {"name":"دوربین عکاسی دیجیتال","children":[{"name":"کانن","children":[]},{"name":"نیکون","children":[]},{"name":"سونی","children":[]},{"name":"فوجی‌فیلم","children":[]},{"name":"پاناسونیک","children":[]}]},
+      {"name":"دوربین ورزشی و فیلمبرداری","children":[{"name":"گوپرو","children":[]},{"name":"DJI","children":[]},{"name":"اینستا360","children":[]}]},
+      {"name":"دوربین چاپ سریع","children":[{"name":"فوجی‌فیلم","children":[]},{"name":"کداک","children":[]}]},
+      {"name":"دوربین دوچشمی و شکاری","children":[]},{"name":"تلسکوپ","children":[]}
+    ]},
+    {"name":"لوازم جانبی دوربین","children":[{"name":"لنز","children":[{"name":"کانن","children":[]},{"name":"نیکون","children":[]},{"name":"سونی","children":[]},{"name":"سیگما","children":[]}]},{"name":"کیف","children":[]},{"name":"کارت حافظه","children":[{"name":"سن‌دیسک","children":[]},{"name":"سامسونگ","children":[]},{"name":"کینگستون","children":[]}]},{"name":"کاغذ چاپ عکس","children":[]}]},
+    {"name":"واقعیت مجازی","children":[{"name":"متا","children":[]},{"name":"HTC","children":[]},{"name":"سونی","children":[]}]},
+    {"name":"کنسول و بازی","children":[{"name":"پلی‌استیشن","children":[]},{"name":"ایکس‌باکس","children":[]},{"name":"نینتندو","children":[]}]},
+    {"name":"کامپیوتر و تجهیزات جانبی","children":[
+      {"name":"تجهیزات مخصوص بازی","children":[{"name":"لاجیتک","children":[]},{"name":"ریزر","children":[]},{"name":"ردراگون","children":[]},{"name":"کورسیر","children":[]}]},
+      {"name":"مانیتور","children":[{"name":"سامسونگ","children":[]},{"name":"ال‌جی","children":[]},{"name":"ایسوس","children":[]},{"name":"بنکیو","children":[]},{"name":"ام‌اس‌آی","children":[]},{"name":"ایسر","children":[]}]},
+      {"name":"کیس‌های اسمبل شده","children":[]},{"name":"قطعات داخلی کامپیوتر","children":[{"name":"ایسوس","children":[]},{"name":"ام‌اس‌آی","children":[]},{"name":"گیگابایت","children":[]},{"name":"ای‌اس‌راک","children":[]}]},{"name":"ماوس","children":[{"name":"لاجیتک","children":[]},{"name":"ریزر","children":[]},{"name":"ردراگون","children":[]}]},{"name":"کیبورد","children":[{"name":"لاجیتک","children":[]},{"name":"ریزر","children":[]},{"name":"ردراگون","children":[]}]}
+    ]},
+    {"name":"لپ‌تاپ","children":[{"name":"لنوو","children":[]},{"name":"ایسوس","children":[]},{"name":"اچ‌پی","children":[]},{"name":"ایسر","children":[]},{"name":"دل","children":[]},{"name":"ام‌اس‌آی","children":[]},{"name":"مایکروسافت","children":[]},{"name":"اپل","children":[]}]},
+    {"name":"لوازم جانبی لپ‌تاپ","children":[{"name":"کیف، کوله و کاور","children":[]},{"name":"کابل صدا، AUX و HDMI","children":[]},{"name":"ماوس","children":[{"name":"لاجیتک","children":[]},{"name":"ریزر","children":[]},{"name":"ردراگون","children":[]}]},{"name":"کیبورد","children":[{"name":"لاجیتک","children":[]},{"name":"ریزر","children":[]}]},{"name":"پایه خنک‌کننده","children":[{"name":"کولر مستر","children":[]},{"name":"دیپ‌کول","children":[]}]}]},
+    {"name":"تبلت","children":[{"name":"سامسونگ","children":[]},{"name":"اپل","children":[]},{"name":"شیائومی","children":[]},{"name":"لنوو","children":[]},{"name":"هواوی","children":[]},{"name":"آنر","children":[]}]},
+    {"name":"شارژر تبلت و موبایل","children":[{"name":"سامسونگ","children":[]},{"name":"اپل","children":[]},{"name":"شیائومی","children":[]},{"name":"انکر","children":[]},{"name":"بیسوس","children":[]},{"name":"یوگرین","children":[]}]},
+    {"name":"کیف، کاور و لوازم جانبی تبلت","children":[{"name":"اپل","children":[]},{"name":"سامسونگ","children":[]},{"name":"شیائومی","children":[]},{"name":"لنوو","children":[]}]},
+    {"name":"باتری","children":[{"name":"سامسونگ","children":[]},{"name":"شیائومی","children":[]},{"name":"اپل","children":[]},{"name":"انکر","children":[]}]},
+    {"name":"دوربین تحت شبکه","children":[{"name":"داهوا","children":[]},{"name":"هایک‌ویژن","children":[]},{"name":"شیائومی","children":[]},{"name":"تی‌پی‌لینک","children":[]}]},
+    {"name":"مودم و تجهیزات شبکه","children":[{"name":"تی‌پی‌لینک","children":[]},{"name":"دی‌لینک","children":[]},{"name":"هواوی","children":[]},{"name":"ایرانسل","children":[]},{"name":"شاتل موبایل","children":[]}]},
+    {"name":"ماشین‌های اداری","children":[{"name":"تلفن، بی‌سیم و سانترال","children":[]},{"name":"فکس","children":[]},{"name":"پرینتر","children":[{"name":"اچ‌پی","children":[]},{"name":"کانن","children":[]},{"name":"اپسون","children":[]},{"name":"برادر","children":[]}]},{"name":"لوازم جانبی اداری","children":[]}]},
+    {"name":"کتابخوان فیدیبوک","children":[{"name":"فیدیبوک","children":[]}]},
+    {"name":"کارت هدیه و خرید از دیجی‌کالا","children":[]}
+  ]
+}
