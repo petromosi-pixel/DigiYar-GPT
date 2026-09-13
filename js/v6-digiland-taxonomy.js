@@ -1,5 +1,5 @@
 /* DigiYar V6 — Store #10: DigiLand
-   Dedicated taxonomy: category → subcategory → brand → budget.
+   Dedicated taxonomy: category → subcategory → budget → brand.
 */
 (function(){
 'use strict';
@@ -11,7 +11,9 @@ function selected(){var s=document.getElementById('storeSelect');return !!(s&&s.
 function removeBrand(){var b=document.getElementById('v6BrandField');if(b)b.remove()}
 function setCats(){if(!selected())return;var c=document.getElementById('v5Category');if(!c)return;c.innerHTML='<option value="">انتخاب دسته‌بندی</option>'+ROOTS.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');c.disabled=false;var s=document.getElementById('v5Subcategory');if(s){s.innerHTML='<option value="">انتخاب زیر دسته</option>';s.value='';s.disabled=true}removeBrand()}
 function setSubs(){if(!selected())return;var c=document.getElementById('v5Category'),s=document.getElementById('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];s.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');s.disabled=!list.length;removeBrand()}
-function setBrand(){if(!selected())return;var s=document.getElementById('v5Subcategory');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('')+'</select>';var dyn=document.getElementById('v5DynamicFields');if(dyn){dyn.insertBefore(f,dyn.firstChild)}else{s.parentNode.insertBefore(f,s.nextSibling)}if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget()}
+function setBrand(){if(!selected())return;var s=document.getElementById('v5Subcategory');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('')+'</select>';var dyn=document.getElementById('v5DynamicFields');if(dyn){dyn.insertBefore(f,dyn.firstChild)}else{s.parentNode.insertBefore(f,s.nextSibling)}if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget();
+// DigiLand order: category → subcategory → budget → brand.
+var budget=document.getElementById('v6BudgetRange');if(budget&&f.parentNode)f.parentNode.insertBefore(budget,f);}
 function bind(){var store=document.getElementById('storeSelect'),cat=document.getElementById('v5Category'),sub=document.getElementById('v5Subcategory');if(!store||!cat)return false;if(!store.dataset.digilandTaxBound){store.dataset.digilandTaxBound='1';store.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setCats()}},true)}if(!cat.dataset.digilandTaxBound){cat.dataset.digilandTaxBound='1';cat.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setSubs()}},true)}if(sub&&!sub.dataset.digilandTaxBound){sub.dataset.digilandTaxBound='1';sub.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setBrand()}},true)}return true}
 function mount(){bind();if(selected())setCats()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else setTimeout(mount,0);
