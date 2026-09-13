@@ -1,16 +1,10 @@
-/* DigiYar V6 — درمان کالا taxonomy */
+/* DigiYar V6 — Store #15: درمان کالا taxonomy
+   Structure: category → subcategory → brand → budget
+*/
 (function(){
 'use strict';
-var ID='darmankala';
-var ROOTS=[
- {id:'medical',name:'تجهیزات پزشکی'},
- {id:'orthopedic',name:'ارتوپدی و توانبخشی'},
- {id:'home-health',name:'سلامت و مراقبت در منزل'},
- {id:'beauty-hygiene',name:'آرایشی و بهداشتی'},
- {id:'mother-child',name:'مادر و کودک'},
- {id:'dental',name:'تجهیزات و ملزومات دندانپزشکی'},
- {id:'fitness',name:'تناسب اندام و زیبایی'}
-];
+var STORE='darmankala';
+var ROOTS=[['medical','تجهیزات پزشکی'],['orthopedic','ارتوپدی و توانبخشی'],['home-health','سلامت و مراقبت در منزل'],['beauty-hygiene','آرایشی و بهداشتی'],['mother-child','مادر و کودک'],['dental','تجهیزات و ملزومات دندانپزشکی'],['fitness','تناسب اندام و زیبایی']];
 var SUBS={
  medical:[['diagnostic','تجهیزات تشخیصی و اندازه‌گیری'],['respiratory','تجهیزات تنفسی'],['hospital','تجهیزات بیمارستانی و کلینیکی'],['home-medical','تجهیزات پزشکی خانگی'],['consumable','ملزومات مصرفی پزشکی']],
  orthopedic:[['mobility','وسایل کمک حرکتی'],['support','بریس و ساپورت‌های طبی'],['compression','جوراب و محصولات فشاری'],['rehab','توانبخشی و فیزیوتراپی'],['cushion','بالش و تشک طبی']],
@@ -21,22 +15,23 @@ var SUBS={
  fitness:[['exercise','لوازم ورزشی و تناسب اندام'],['weight-loss','لاغری و کنترل وزن'],['beauty-equipment','تجهیزات زیبایی و مراقبت تخصصی']]
 };
 var BRANDS={
- medical:['Beurer','زنیت‌مد','Zenithmed','Rossmax','Omron','Yuwell'],
- orthopedic:['طب و صنعت','Tynor','Orliman','OPPO','Verna'],
- 'home-health':['Beurer','Omron','Rossmax','Yuwell','زنیت‌مد'],
- 'beauty-hygiene':['لافارر','مای','پریم','کامان','سریتا','الارو','آردن','ویتالیر','سان‌سیف','هیدرودرم'],
- 'mother-child':['Nestlé','PediaBest','Fisher Kinder','Aptamil','Nan','Humana'],
- dental:['Woodpecker','NSK','Dentsply Sirona','Coltene','3M'],
- fitness:['Beurer','Aptonia','Powertec','Reebok','Technogym']
+ diagnostic:['Beurer','Omron','Rossmax','Yuwell','زنیت‌مد','امسیگ'],respiratory:['Beurer','Yuwell','زنیت‌مد','امسیگ'],hospital:['زنیت‌مد','امسیگ','طب و صنعت'], 'home-medical':['Beurer','Omron','Rossmax','Yuwell'],consumable:['آوا پزشک','طب و صنعت','سایر'],
+ mobility:['طب و صنعت','Tynor','Orliman','OPPO','Verna'],support:['طب و صنعت','Tynor','Orliman','Verna'],compression:['Sigvaris','Tynor','Verna','طب و صنعت'],rehab:['طب و صنعت','Tynor','Orliman'],cushion:['طب و صنعت','Tynor','Verna'],
+ 'blood-pressure':['Beurer','Omron','Rossmax','Yuwell','زنیت‌مد'],thermometer:['Beurer','Omron','Rossmax','امسیگ'],oxygen:['Beurer','Yuwell','زنیت‌مد','امسیگ'],'air-care':['Beurer','Philips','Honeywell'],massage:['Beurer','Medisana','Zenithmed'],
+ skin:['لافارر','پریم','آردن','ویتالیر','سان‌سیف','هیدرودرم','مای'],hair:['سریتا','لافارر','پریم','آردن','هیدرودرم'],sun:['سان‌سیف','آردن سولاریس','ساین اسکین','ویتالیر','ژوت'],oral:['میسویک','سیگنال','اورال‌بی','کرست'],personal:['کامان','مای','دافی','نیوا'],cosmetic:['مای','کالیستا','پریم'],body:['کامان','داو','هیدرودرم'],
+ 'baby-food':['آپتامیل','نان','هیپ','بیومیل'], 'baby-care':['چیکو','فیلیپس اونت','جانسون','پدیابست'],pregnancy:['یوروویتال','پدیابست','دانا'], 'baby-medical':['فیلیپس اونت','چیکو','زنیت‌مد'],
+ 'dental-equipment':['Woodpecker','NSK','Dentsply Sirona','Coltene'], 'dental-consumable':['3M','Dentsply Sirona','Coltene'], 'oral-care':['میسویک','سیگنال','اورال‌بی'],
+ exercise:['Reebok','Aptonia','Powertec','Technogym'], 'weight-loss':['Beurer','Aptonia','کارن','نوتریمد'], 'beauty-equipment':['Beurer','Medisana','Philips']
 };
-function norm(v){return String(v||'').trim()}
-function fill(select,items,placeholder){if(!select)return;select.innerHTML='';if(placeholder){var p=document.createElement('option');p.value='';p.textContent=placeholder;select.appendChild(p)}(items||[]).forEach(function(x){var o=document.createElement('option');o.value=x[0]||x.id;o.textContent=x[1]||x.name;select.appendChild(o)})}
-function find(id){return document.getElementById(id)}
-function rootList(){return ROOTS.map(function(x){return [x.id,x.name]})}
-function apply(){var store=find('storeSelect');if(!store||store.value!==ID)return false;var cat=find('v5Category'),sub=find('v5Subcategory'),brand=find('v6BrandField');fill(cat,rootList(),'انتخاب دسته‌بندی');if(!cat.dataset.dkBound){cat.dataset.dkBound='1';cat.addEventListener('change',function(){applySub();})}if(!sub.dataset.dkBound){sub.dataset.dkBound='1';sub.addEventListener('change',applyBrand)}applySub();return true}
-function applySub(){var cat=find('v5Category'),sub=find('v5Subcategory');if(!cat||!sub)return;fill(sub,SUBS[cat.value]||[],'انتخاب زیردسته');applyBrand()}
-function applyBrand(){var cat=find('v5Category'),sub=find('v5Subcategory'),brand=find('v6BrandField');if(!brand)return;var brands=BRANDS[cat&&cat.value]||[];if(brands.length){fill(brand,brands.map(function(x){return [x,x]}),'انتخاب برند')}else fill(brand,[],'انتخاب برند')}
-function boot(){if(apply())return;setTimeout(boot,150)}
-window.DigiYarDarmankalaTaxonomy={apply:apply,roots:ROOTS,subcategories:SUBS,brands:BRANDS};
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+function $(id){return document.getElementById(id)}
+function selected(){var s=$('storeSelect');return s&&s.value===STORE}
+function setOptions(el,items,placeholder){if(!el)return;el.innerHTML='';var p=document.createElement('option');p.value='';p.textContent=placeholder;el.appendChild(p);(items||[]).forEach(function(x){var o=document.createElement('option');o.value=x[0];o.textContent=x[1];el.appendChild(o)})}
+function roots(){if(!selected())return;var c=$('v5Category'),s=$('v5Subcategory');if(!c||!s)return;setOptions(c,ROOTS,'انتخاب دسته‌بندی');c.disabled=false;setOptions(s,[],'انتخاب زیردسته');s.disabled=true;removeBrand()}
+function subs(){if(!selected())return;var c=$('v5Category'),s=$('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];setOptions(s,list,'انتخاب زیردسته');s.disabled=!list.length;removeBrand()}
+function brand(){if(!selected())return;var s=$('v5Subcategory'),dyn=$('v5DynamicFields');if(!s||!s.value)return;var list=BRANDS[s.value]||['سایر'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<span>برند</span><select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(b){return '<option value="'+b+'">'+b+'</option>'}).join('')+'</select>';var budget=$('v6BudgetRange'),bf=budget&&budget.closest('.v5-field');if(bf&&bf.parentNode)bf.parentNode.insertBefore(f,bf);else if(dyn&&dyn.parentNode)dyn.parentNode.insertBefore(f,dyn)}
+function removeBrand(){var b=$('v6BrandField');if(b)b.remove()}
+function bind(){var st=$('storeSelect'),c=$('v5Category'),s=$('v5Subcategory');if(!st||!c||!s)return false;if(!st.dataset.v6Darmankala){st.dataset.v6Darmankala='1';st.addEventListener('change',function(){setTimeout(function(){if(selected())roots()},20)})}if(!c.dataset.v6Darmankala){c.dataset.v6Darmankala='1';c.addEventListener('change',function(){setTimeout(subs,20)})}if(!s.dataset.v6Darmankala){s.dataset.v6Darmankala='1';s.addEventListener('change',function(){setTimeout(brand,20)})}if(selected())roots();return true}
+function boot(){if(bind())return;setTimeout(boot,100)}
+window.DigiYarDarmankalaTaxonomy={apply:roots,roots:ROOTS,subcategories:SUBS,brands:BRANDS};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else setTimeout(boot,0);
 })();
