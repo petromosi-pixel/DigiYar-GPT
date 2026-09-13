@@ -34,11 +34,13 @@
   function fix(){
     var card=document.querySelector('.v5-profile-card');
     var cat=$('v5Category');
+    var sub=$('v5Subcategory');
     var budget=$('budgetMax');
     bindReset();
     if(!card||!cat||!budget)return false;
     var budgetField=budget.closest('.v5-field');
-    if(budgetField && cat.value && card.classList.contains('is-open')){
+    /* Budget belongs immediately after subcategory for every store. */
+    if(budgetField && sub && sub.value && card.classList.contains('is-open')){
       budgetField.hidden=false;
       budgetField.style.display='flex';
     }
