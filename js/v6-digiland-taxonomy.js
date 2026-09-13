@@ -26,9 +26,35 @@ var BRANDS={
 function $(id){return document.getElementById(id)}
 function selected(){var s=$('storeSelect');return !!(s&&s.value===STORE)}
 function removeBrand(){var b=$('v6BrandField');if(b)b.remove()}
+function hideDigiLandDuplicateLabels(){
+ var card=document.querySelector('.v5-profile-card');
+ if(!card)return;
+ var texts=['برند','چقدر می‌خوای هزینه کنی؟','چقدر می خوای هزینه کنی؟'];
+ Array.from(card.querySelectorAll('label,span,p,div')).forEach(function(el){
+   if(el.querySelector('select,input,button'))return;
+   var t=(el.textContent||'').trim();
+   if(texts.indexOf(t)!==-1)el.style.display='none';
+ });
+}
+function placeDigiLandFields(){
+ var sub=$('v5Subcategory'),brandField=$('v6BrandField'),range=$('v6BudgetRange');
+ if(!sub)return;
+ var subField=sub.closest('.v5-field')||sub.parentNode;
+ var budgetField=range&&range.closest('.v5-field');
+ var parent=subField&&subField.parentNode;
+ if(!parent)return;
+ if(brandField)parent.insertBefore(brandField,subField.nextSibling);
+ if(budgetField){
+   var anchor=brandField||subField;
+   parent.insertBefore(budgetField,anchor.nextSibling);
+   budgetField.hidden=false;
+   budgetField.style.display='flex';
+ }
+ hideDigiLandDuplicateLabels();
+}
 function setRoots(){if(!selected())return;var c=$('v5Category');if(!c)return;c.innerHTML='<option value="">انتخاب دسته‌بندی</option>'+ROOTS.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');c.disabled=false;var s=$('v5Subcategory');if(s){s.innerHTML='<option value="">انتخاب زیر دسته</option>';s.value='';s.disabled=true}removeBrand()}
 function setSubs(){if(!selected())return;var c=$('v5Category'),s=$('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];s.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');s.value='';s.disabled=!list.length;removeBrand()}
-function setBrand(){if(!selected())return;var s=$('v5Subcategory'),dyn=$('v5DynamicFields');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(b){return '<option value="'+b+'">'+b+'</option>'}).join('')+'</select>';if(dyn)dyn.appendChild(f);else s.parentNode.insertBefore(f,s.nextSibling);if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget();var budget=$('v6BudgetRange'),budgetField=budget&&budget.closest('.v5-field');if(dyn&&budgetField)dyn.appendChild(budgetField);if(dyn)dyn.appendChild(f);}
+function setBrand(){if(!selected())return;var s=$('v5Subcategory'),dyn=$('v5DynamicFields');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(b){return '<option value="'+b+'">'+b+'</option>'}).join('');if(dyn)dyn.appendChild(f);else s.parentNode.insertBefore(f,s.nextSibling);if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget();placeDigiLandFields();}
 function bind(){var st=$('storeSelect'),c=$('v5Category'),s=$('v5Subcategory');if(!st||!c)return false;if(!st.dataset.digilandCleanTaxonomy){st.dataset.digilandCleanTaxonomy='1';st.addEventListener('change',function(){if(selected())setTimeout(setRoots,20)},true)}if(!c.dataset.digilandCleanTaxonomy){c.dataset.digilandCleanTaxonomy='1';c.addEventListener('change',function(){if(selected())setTimeout(setSubs,20)},true)}if(s&&!s.dataset.digilandCleanTaxonomy){s.dataset.digilandCleanTaxonomy='1';s.addEventListener('change',function(){if(selected())setTimeout(setBrand,20)},true)}if(selected())setRoots();return true}
 function boot(){if(bind())return;setTimeout(boot,100)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else setTimeout(boot,0)
