@@ -4,7 +4,7 @@
 var STORES=['digikala','snappshop','torob','basalam','banimode','modiseh','technolife','meghdadit','janebi','digiland','khanoumi','esam','pinket','darukade','darmankala','digido','takhfifan','shab','neshatrokh','mosbatesabz','shavaz','jeanswest','iseminar','safarme','beruzkala','maktabkhooneh','darooonline','gooshishop','karnameh','solokala'];
 var LEGACY=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
 var DIGITAL='کالای دیجیتال';
-var TAX_VERSION='6.0.34';
+var TAX_VERSION='6.0.35';
 var STORE_21_30=[['shavaz','شاواز'],['jeanswest','جین وست'],['iseminar','ایسمینار'],['safarme','سفرمی'],['beruzkala','بروز کالا'],['maktabkhooneh','مکتب‌خونه'],['darooonline','داروخانه آنلاین'],['gooshishop','گوشی شاپ'],['karnameh','کارنامه'],['solokala','سولوکالا']];
 var MEGHDAD={id:'meghdadit',name:'مقداد آی‌تی',tagline:'فروشگاه تخصصی کالای دیجیتال و قطعات',logo:'assets/store-logos/meghdadit-temp.svg',mark:'MI',url:'https://meghdadit.com/',accent:'#1f3b68',dealLabel:'خرید کالای دیجیتال',dealText:'لپ‌تاپ، کامپیوتر، قطعات و تجهیزات دیجیتال',dealIcon:'⌁'};
 var DIGILAND={id:'digiland',name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',logo:'assets/store-logos/digiland-temp.svg',mark:'DL',url:'https://dgland.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال و گیمینگ',dealText:'لپ‌تاپ، مانیتور، کامپیوتر، کنسول و تجهیزات گیمینگ',dealIcon:'⌁'};
