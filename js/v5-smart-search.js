@@ -1,7 +1,20 @@
-/* DigiYar V5.1 — Housh Yar internal Product Search UI */
+/* DigiYar V6 — Hooshyar internal Product Search UI */
 (function(){'use strict';
 const hints=['چی می‌خوای بخری؟','مثلاً: گوشی سامسونگ تا ۱۵ میلیون','دنبال لپ‌تاپ مناسب می‌گردی؟','اسم محصولت رو بنویس...'];
-let i=0,timer,retrievalReady=null;
+let i=0,timer,retrievalReady=null,parserReady=null;
+function ensureParser(){
+ if(window.DigiYarHooshyarQueryParser)return Promise.resolve();
+ if(parserReady)return parserReady;
+ parserReady=new Promise((resolve,reject)=>{
+  const s=document.createElement('script');
+  s.src=new URL('js/v6-hooshyar-query-parser.js',document.baseURI).href;
+  s.async=false;
+  s.onload=()=>window.DigiYarHooshyarQueryParser?resolve():reject(Error('Hooshyar query parser unavailable'));
+  s.onerror=()=>reject(Error('Hooshyar query parser failed to load: '+s.src));
+  document.head.appendChild(s);
+ });
+ return parserReady;
+}
 function ensureRetrieval(){
  if(window.DigiYarProductRetrieval)return Promise.resolve();
  if(retrievalReady)return retrievalReady;
@@ -31,6 +44,20 @@ function priceValue(product){
  const fallback=Number(product&&product.price);
  return Number.isFinite(fallback)&&fallback>0?fallback:0;
 }
+function canonicalLabel(query){
+ if(!query)return'';
+ const parts=[];
+ const cat=query.taxonomy&&query.taxonomy.categoryLabel;
+ const sub=query.taxonomy&&query.taxonomy.subcategoryLabel;
+ const brand=query.taxonomy&&query.taxonomy.brandLabel;
+ if(sub||cat)parts.push(sub||cat);
+ if(brand)parts.push(brand);
+ if(query.budget&&query.budget.max){
+  const max=query.budget.max;
+  parts.push('تا '+(max/1000000).toLocaleString('fa-IR')+' میلیون');
+ }
+ return parts.join(' · ')||'درخواست خرید';
+}
 function init(){
  const form=document.getElementById('v5SmartSearchForm'),input=document.getElementById('v5SmartSearchInput'),hint=document.getElementById('v5SmartSearchHint');
  if(!form||!input||!hint)return;
@@ -45,14 +72,18 @@ function init(){
   let box=document.getElementById('v5SmartSearchResults');if(!box){box=document.createElement('div');box.id='v5SmartSearchResults';box.className='v5-smart-search-results';form.parentElement.appendChild(box)}
   box.innerHTML='<div class="v5-smart-search-loading">🔎 در حال بررسی نتایج زنده بازار...</div>';
   try{
+   await ensureParser();
+   const parser=window.DigiYarHooshyarQueryParser;
+   const query=parser.parse(q);
+   window.DigiYarHooshyarLastQuery=query;
    await ensureRetrieval();
-   const products=await DigiYarProductRetrieval.search(q,{remote:true});
+   const products=await DigiYarProductRetrieval.search(q,{remote:true,hooshyarQuery:query});
    if(!products.length){box.innerHTML='<div class="v5-smart-search-empty">برای «'+esc(q)+'» فعلاً نتیجه قابل استفاده‌ای پیدا نشد.</div>';return}
    const usable=products.filter(p=>priceValue(p)>0&&purchaseUrl(p));
    if(!usable.length){box.innerHTML='<div class="v5-smart-search-empty">برای «'+esc(q)+'» محصول قابل خرید با قیمت و لینک مستقیم پیدا نشد.</div>';return}
-   box.innerHTML='<div class="v5-smart-search-result-head">نتایج هوش‌یار برای «'+esc(q)+'»</div>'+usable.slice(0,8).map(renderProduct).join('');
+   box.innerHTML='<div class="v5-smart-search-result-head">نتایج هوش‌یار برای «'+esc(q)+'»<small class="v5-smart-search-canonical">درخواست تشخیص‌داده‌شده: '+esc(canonicalLabel(query))+'</small></div>'+usable.slice(0,8).map(renderProduct).join('');
   }catch(err){
-   console.error('DigiYar live smart search:',err);
+   console.error('DigiYar Hooshyar live smart search:',err);
    box.innerHTML='<div class="v5-smart-search-empty">اتصال به جستجوی هوش‌یار برقرار نشد. دوباره امتحان کن.</div>';
   }finally{input.disabled=false;input.placeholder=old;syncHint()}
  });
