@@ -1,5 +1,5 @@
 /* DigiYar V6 — Store #10: DigiLand
-   Dedicated taxonomy: category → subcategory → budget → brand.
+   Dedicated taxonomy: category → subcategory → brand → budget.
 */
 (function(){
 'use strict';
@@ -11,11 +11,10 @@ function selected(){var s=document.getElementById('storeSelect');return !!(s&&s.
 function removeBrand(){var b=document.getElementById('v6BrandField');if(b)b.remove()}
 function setCats(){if(!selected())return;var c=document.getElementById('v5Category');if(!c)return;c.innerHTML='<option value="">انتخاب دسته‌بندی</option>'+ROOTS.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');c.disabled=false;var s=document.getElementById('v5Subcategory');if(s){s.innerHTML='<option value="">انتخاب زیر دسته</option>';s.value='';s.disabled=true}removeBrand()}
 function setSubs(){if(!selected())return;var c=document.getElementById('v5Category'),s=document.getElementById('v5Subcategory');if(!c||!s)return;var list=SUBS[c.value]||[];s.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');s.disabled=!list.length;removeBrand()}
-function setBrand(){if(!selected())return;var s=document.getElementById('v5Subcategory');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('')+'</select>';var dyn=document.getElementById('v5DynamicFields');if(dyn){dyn.insertBefore(f,dyn.firstChild)}else{s.parentNode.insertBefore(f,s.nextSibling)}if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget();
-// DigiLand order: category → subcategory → budget → brand.
-var budget=document.getElementById('v6BudgetRange');if(budget&&f.parentNode)f.parentNode.insertBefore(budget,f);}
+function orderBrandBudget(){var dyn=document.getElementById('v5DynamicFields'),brand=document.getElementById('v6BrandField'),budget=document.getElementById('v6BudgetRange');if(!dyn||!brand||!budget)return;if(brand.parentNode!==dyn)dyn.appendChild(brand);if(budget.parentNode!==dyn)dyn.appendChild(budget);dyn.insertBefore(brand,budget)}
+function setBrand(){if(!selected())return;var s=document.getElementById('v5Subcategory');if(!s||!s.value)return;var list=BRANDS[s.value]||['سامسونگ','شیائومی','اپل'];removeBrand();var f=document.createElement('label');f.id='v6BrandField';f.className='v5-field full';f.innerHTML='<select id="v6Brand"><option value="">انتخاب برند</option>'+list.map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('');var dyn=document.getElementById('v5DynamicFields');if(dyn)dyn.appendChild(f);else s.parentNode.insertBefore(f,s.nextSibling);if(typeof window.DigiYarV6EnsureBudget==='function')window.DigiYarV6EnsureBudget();orderBrandBudget();requestAnimationFrame(orderBrandBudget)}
 function bind(){var store=document.getElementById('storeSelect'),cat=document.getElementById('v5Category'),sub=document.getElementById('v5Subcategory');if(!store||!cat)return false;if(!store.dataset.digilandTaxBound){store.dataset.digilandTaxBound='1';store.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setCats()}},true)}if(!cat.dataset.digilandTaxBound){cat.dataset.digilandTaxBound='1';cat.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setSubs()}},true)}if(sub&&!sub.dataset.digilandTaxBound){sub.dataset.digilandTaxBound='1';sub.addEventListener('change',function(e){if(selected()){e.stopImmediatePropagation();setBrand()}},true)}return true}
-function mount(){bind();if(selected())setCats()}
+function mount(){bind();if(selected()){var c=document.getElementById('v5Category');var ready=c&&c.options.length>1&&ROOTS.some(function(x){return x[0]===c.options[1].value});if(!ready)setCats()}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else setTimeout(mount,0);
 window.DigiYarDigilandTaxonomy={bind:bind,mount:mount,roots:ROOTS,subcategories:SUBS,brands:BRANDS};
 })();
