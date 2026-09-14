@@ -1,0 +1,27 @@
+name: V6 Hooshyar Search Core
+
+on:
+  push:
+    branches:
+      - main
+      - hooshyar-search-core
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  search-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run parser contract
+        run: npm run test:v6:hooshyar
+      - name: Run Search Core against real indexes
+        run: npm run test:v6:search-core
