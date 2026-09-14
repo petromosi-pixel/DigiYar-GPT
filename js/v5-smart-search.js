@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar internal Product Search UI */
 (function(){'use strict';
 const hints=['چی می‌خوای بخری؟','مثلاً: گوشی سامسونگ تا ۱۵ میلیون','دنبال لپ‌تاپ مناسب می‌گردی؟','اسم محصولت رو بنویس...'];
-const ASSET_VERSIONS={parser:'6.1.1',core:'6.2.2',resolver:'6.4.2'};
+const ASSET_VERSIONS={parser:'6.1.1',core:'6.2.2',resolver:'6.4.3'};
 let i=0,timer,retrievalReady=null,parserReady=null,coreReady=null,resolverReady=null;
 function loadScript(path,version,readyCheck,label){return new Promise((resolve,reject)=>{const base=new URL(path,document.baseURI).href;const s=document.createElement('script');s.src=base+'?v='+encodeURIComponent(version)+'&r='+Date.now();s.async=false;s.onload=()=>readyCheck()?resolve():reject(Error(label+' unavailable or stale: '+s.src));s.onerror=()=>reject(Error(label+' failed to load: '+s.src));document.head.appendChild(s);});}
 function ensureParser(){if(window.DigiYarHooshyarQueryParser&&window.DigiYarHooshyarQueryParser.version===ASSET_VERSIONS.parser)return Promise.resolve();if(parserReady)return parserReady;parserReady=loadScript('js/v6-hooshyar-query-parser.js',ASSET_VERSIONS.parser,()=>!!(window.DigiYarHooshyarQueryParser&&window.DigiYarHooshyarQueryParser.version===ASSET_VERSIONS.parser),'Hooshyar query parser');return parserReady;}
