@@ -2,7 +2,7 @@ name: Deploy DigiYar V6 Worker
 
 on:
   push:
-    branches: [V6]
+    branches: [main]
     paths:
       - 'worker.js'
       - 'js/data-ingestion-v5.1.js'
@@ -25,10 +25,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout V6
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: V6
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -64,6 +64,16 @@ jobs:
           done
           echo 'Live V6 Worker did not become ready after deployment.'
           exit 1
+
+      - name: Smoke-test Worker resolver proxy
+        shell: bash
+        run: |
+          set -euo pipefail
+          PRODUCT_URL='https://torobshop.com/products/MEDION-Beast-18-QHD-Core-Ultra-9-275HX-9-9-%D9%86%D9%88%D8%AA-%D8%A8%D9%88%DA%A9-Core-Ultra-9-30039675'
+          curl --fail --silent --show-error --max-time 45 \
+            -G 'https://digiyar-v6.petromosi.workers.dev/api/resolve' \
+            --data-urlencode "url=${PRODUCT_URL}" \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const d=JSON.parse(s); console.log(JSON.stringify({success:d.success,resolved:d.resolved,priceToman:d.priceToman,availability:d.availability,extraction:d.extraction},null,2)); if(!d.success||!d.resolved||!(Number(d.priceToman)>0)) process.exit(1);})'
 
       - name: Inspect live V6 smart-search payload
         shell: bash
