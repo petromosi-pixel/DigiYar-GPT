@@ -5,11 +5,7 @@
 (function(root){
 'use strict';
 var VERSION='6.2.2';
-var INDEX_FILES={
- mobile:'js/mobile-product-index-v5.1.js',
- laptop:'js/laptop-computer-product-index-v5.1.js',
- digital:'js/digital-product-index-v5.1.js'
-};
+var INDEX_FILES={mobile:'js/mobile-product-index-v5.1.js',laptop:'js/laptop-computer-product-index-v5.1.js',digital:'js/digital-product-index-v5.1.js'};
 var INDEX_EXPORTS={mobile:'MOBILE_PRODUCTS',laptop:'LAPTOP_COMPUTER_PRODUCTS',digital:'DIGITAL_PRODUCTS'};
 var cache={};
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();}
@@ -27,6 +23,6 @@ function parseIndexSource(source,exportName){var text=String(source||'').replace
 async function loadIndex(type,base){var key=type||'digital';if(cache[key])return cache[key];var path=INDEX_FILES[key];if(!path)throw Error('Unknown index: '+key);var url=new URL(path,base||root.document&&root.document.baseURI||'/').href;var response=await fetch(url,{cache:'no-store'});if(!response.ok)throw Error('Index HTTP '+response.status+': '+url);var source=await response.text();cache[key]=parseIndexSource(source,INDEX_EXPORTS[key]);return cache[key];}
 async function searchIndexes(query,options){var type=sourceCategory(query||{}),types=type==='digital'?['digital']:type==='mobile'?['mobile','digital']:['laptop','digital'],all=[];for(var i=0;i<types.length;i++){var data=await loadIndex(types[i],options&&options.baseUrl);all=all.concat(data);}return search(all,query,options);}
 function clearCache(){cache={};}
-var api={version:VERSION,indexFiles:INDEX_FILES,priceToman:priceToman,hardFilter:hardFilter,search:search,loadIndex:loadIndex,searchIndexes:searchIndexes,clearCache:clearCache};
+var api={version:VERSION,indexFiles:INDEX_FILES,priceToman:priceToman,hardFilter:hardFilter,search:search,parseIndexSource:parseIndexSource,loadIndex:loadIndex,searchIndexes:searchIndexes,clearCache:clearCache};
 root.DigiYarHooshyarSearchCore=api;if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
