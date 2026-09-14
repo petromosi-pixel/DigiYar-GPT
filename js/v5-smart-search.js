@@ -24,7 +24,7 @@ function ensureResolver(){
  if(window.DigiYarHooshyarLiveResolver)return Promise.resolve();
  if(resolverReady)return resolverReady;
  resolverReady=new Promise((resolve,reject)=>{
-  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js',document.baseURI).href;s.async=false;
+  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js?v=6.4.1',document.baseURI).href;s.async=false;
   s.onload=()=>window.DigiYarHooshyarLiveResolver?resolve():reject(Error('Hooshyar Live Resolver unavailable'));
   s.onerror=()=>reject(Error('Hooshyar Live Resolver failed to load: '+s.src));document.head.appendChild(s);
  });return resolverReady;
