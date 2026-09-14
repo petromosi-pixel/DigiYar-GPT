@@ -27,3 +27,5 @@ jobs:
         run: npm run test:v6:search-core
       - name: Run Live Resolver contract
         run: npm run test:v6:live-resolver
+      - name: Run Live Resolver against real product pages
+        run: npm run test:v6:live-resolver:real
