@@ -25,3 +25,5 @@ jobs:
         run: npm run test:v6:hooshyar
       - name: Run Search Core against real indexes
         run: npm run test:v6:search-core
+      - name: Run Live Resolver contract
+        run: npm run test:v6:live-resolver
