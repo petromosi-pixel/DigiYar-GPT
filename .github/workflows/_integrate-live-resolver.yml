@@ -1,0 +1,54 @@
+name: One-time V6 live resolver integration
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  integrate:
+    if: ${{ !contains(github.event.head_commit.message, 'connect live resolver to Hooshyar results') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch Hooshyar smart search
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('js/v5-smart-search.js')
+          s=p.read_text(encoding='utf-8')
+          marker="let i=0,timer,retrievalReady=null,parserReady=null,coreReady=null;"
+          repl="let i=0,timer,retrievalReady=null,parserReady=null,coreReady=null,resolverReady=null;\nfunction ensureResolver(){\n if(window.DigiYarHooshyarLiveResolver)return Promise.resolve();\n if(resolverReady)return resolverReady;\n resolverReady=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js',document.baseURI).href;s.async=false;s.onload=()=>window.DigiYarHooshyarLiveResolver?resolve():reject(Error('Hooshyar Live Resolver unavailable'));s.onerror=()=>reject(Error('Hooshyar Live Resolver failed to load: '+s.src));document.head.appendChild(s)});\n return resolverReady;\n}"
+          if marker not in s: raise SystemExit('resolver declaration marker not found')
+          s=s.replace(marker,repl,1)
+          old="if(!products.length){box.innerHTML='<div class=\"v5-smart-search-empty\">برای «'+esc(q)+'» فعلاً نتیجه قابل استفاده‌ای پیدا نشد.</div>';return;}\n   const usable=products.filter(p=>priceValue(p)>0&&purchaseUrl(p));"
+          new="if(!products.length){box.innerHTML='<div class=\"v5-smart-search-empty\">برای «'+esc(q)+'» فعلاً نتیجه قابل استفاده‌ای پیدا نشد.</div>';return;}\n   await ensureResolver();\n   try{products=await window.DigiYarHooshyarLiveResolver.resolveProducts(products,{limit:8});}catch(resolveErr){console.warn('DigiYar Hooshyar Live Resolver:',resolveErr);}\n   const usable=products.filter(p=>priceValue(p)>0&&purchaseUrl(p));"
+          if old not in s: raise SystemExit('search integration marker not found')
+          s=s.replace(old,new,1)
+          old2="function priceValue(product){const value=Number(product&&product.priceToman);"
+          new2="function priceValue(product){const live=Number(product&&product.live&&product.live.priceToman);if(Number.isFinite(live)&&live>0)return live;const value=Number(product&&product.priceToman);"
+          if old2 not in s: raise SystemExit('price marker not found')
+          s=s.replace(old2,new2,1)
+          old3="const url=purchaseUrl(p),price=priceValue(p);const storeName="
+          new3="const url=purchaseUrl(p),price=priceValue(p),liveOk=!!(p.live&&p.live.ok),availability=liveOk?p.live.availability:'unknown';const storeName="
+          if old3 not in s: raise SystemExit('render marker not found')
+          s=s.replace(old3,new3,1)
+          old4="</div><div class=\"v5-smart-result-meta\">'+(attrs||'اطلاعات محصول موجود است')+'</div>"
+          new4="</div><div class=\"v5-smart-result-meta\">'+(liveOk?'قیمت زنده':'قیمت ایندکس')+' · '+(availability==='in_stock'?'موجود':availability==='out_of_stock'?'ناموجود':'موجودی نامشخص')+'</div><div class=\"v5-smart-result-meta\">'+(attrs||'اطلاعات محصول موجود است')+'</div>"
+          if old4 not in s: raise SystemExit('render availability marker not found')
+          s=s.replace(old4,new4,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify
+        run: |
+          node --check js/v5-smart-search.js
+          npm run test:v6:hooshyar
+          npm run test:v6:search-core
+          npm run test:v6:live-resolver
+      - name: Commit integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/v5-smart-search.js
+          git diff --cached --quiet && exit 0
+          git commit -m "feat(v6): connect live resolver to Hooshyar results"
+          git push
