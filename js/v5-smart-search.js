@@ -1,49 +1,46 @@
 /* DigiYar V6 — Hooshyar internal Product Search UI */
 (function(){'use strict';
 const hints=['چی می‌خوای بخری؟','مثلاً: گوشی سامسونگ تا ۱۵ میلیون','دنبال لپ‌تاپ مناسب می‌گردی؟','اسم محصولت رو بنویس...'];
+const ASSET_VERSIONS={parser:'6.1.1',core:'6.2.2',resolver:'6.4.1'};
 let i=0,timer,retrievalReady=null,parserReady=null,coreReady=null,resolverReady=null;
+function loadScript(path,version,readyCheck,label){
+ return new Promise((resolve,reject)=>{
+  const base=new URL(path,document.baseURI).href;
+  const s=document.createElement('script');
+  s.src=base+'?v='+encodeURIComponent(version)+'&r='+Date.now();s.async=false;
+  s.onload=()=>readyCheck()?resolve():reject(Error(label+' unavailable or stale: '+s.src));
+  s.onerror=()=>reject(Error(label+' failed to load: '+s.src));
+  document.head.appendChild(s);
+ });
+}
 function ensureParser(){
- if(window.DigiYarHooshyarQueryParser)return Promise.resolve();
+ if(window.DigiYarHooshyarQueryParser&&window.DigiYarHooshyarQueryParser.version===ASSET_VERSIONS.parser)return Promise.resolve();
  if(parserReady)return parserReady;
- parserReady=new Promise((resolve,reject)=>{
-  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-query-parser.js',document.baseURI).href;s.async=false;
-  s.onload=()=>window.DigiYarHooshyarQueryParser?resolve():reject(Error('Hooshyar query parser unavailable'));
-  s.onerror=()=>reject(Error('Hooshyar query parser failed to load: '+s.src));document.head.appendChild(s);
- });return parserReady;
+ parserReady=loadScript('js/v6-hooshyar-query-parser.js',ASSET_VERSIONS.parser,()=>!!(window.DigiYarHooshyarQueryParser&&window.DigiYarHooshyarQueryParser.version===ASSET_VERSIONS.parser),'Hooshyar query parser');
+ return parserReady;
 }
 function ensureCore(){
- if(window.DigiYarHooshyarSearchCore)return Promise.resolve();
+ if(window.DigiYarHooshyarSearchCore&&window.DigiYarHooshyarSearchCore.version===ASSET_VERSIONS.core)return Promise.resolve();
  if(coreReady)return coreReady;
- coreReady=new Promise((resolve,reject)=>{
-  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-search-core.js',document.baseURI).href;s.async=false;
-  s.onload=()=>window.DigiYarHooshyarSearchCore?resolve():reject(Error('Hooshyar Search Core unavailable'));
-  s.onerror=()=>reject(Error('Hooshyar Search Core failed to load: '+s.src));document.head.appendChild(s);
- });return coreReady;
+ coreReady=loadScript('js/v6-hooshyar-search-core.js',ASSET_VERSIONS.core,()=>!!(window.DigiYarHooshyarSearchCore&&window.DigiYarHooshyarSearchCore.version===ASSET_VERSIONS.core),'Hooshyar Search Core');
+ return coreReady;
 }
 function ensureResolver(){
- const version='6.4.1';
- if(window.DigiYarHooshyarLiveResolver&&window.DigiYarHooshyarLiveResolver.version===version)return Promise.resolve();
+ if(window.DigiYarHooshyarLiveResolver&&window.DigiYarHooshyarLiveResolver.version===ASSET_VERSIONS.resolver)return Promise.resolve();
  if(resolverReady)return resolverReady;
  resolverReady=new Promise((resolve,reject)=>{
   document.querySelectorAll('script[src*="js/v6-hooshyar-live-resolver.js"]').forEach(el=>el.remove());
-  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js?v='+version+'&r='+Date.now(),document.baseURI).href;s.async=false;
-  s.onload=()=>window.DigiYarHooshyarLiveResolver&&window.DigiYarHooshyarLiveResolver.version===version?resolve():reject(Error('Hooshyar Live Resolver unavailable or stale'));
+  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js',document.baseURI).href+'?v='+ASSET_VERSIONS.resolver+'&r='+Date.now();s.async=false;
+  s.onload=()=>window.DigiYarHooshyarLiveResolver&&window.DigiYarHooshyarLiveResolver.version===ASSET_VERSIONS.resolver?resolve():reject(Error('Hooshyar Live Resolver unavailable or stale'));
   s.onerror=()=>reject(Error('Hooshyar Live Resolver failed to load: '+s.src));document.head.appendChild(s);
  });return resolverReady;
 }
 function ensureRetrieval(){
  if(window.DigiYarProductRetrieval)return Promise.resolve();
  if(retrievalReady)return retrievalReady;
- retrievalReady=new Promise((resolve,reject)=>{
-  const s=document.createElement('script');s.src=new URL('js/product-retrieval.js',document.baseURI).href;s.async=false;
-  s.onload=()=>window.DigiYarProductRetrieval?resolve():reject(Error('Product Retrieval engine unavailable'));
-  s.onerror=()=>reject(Error('Product Retrieval engine failed to load: '+s.src));document.head.appendChild(s);
- });return retrievalReady;
+ retrievalReady=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('js/product-retrieval.js',document.baseURI).href;s.async=false;s.onload=()=>window.DigiYarProductRetrieval?resolve():reject(Error('Product Retrieval engine unavailable'));s.onerror=()=>reject(Error('Product Retrieval engine failed to load: '+s.src));document.head.appendChild(s);});return retrievalReady;
 }
-function isDirectProductUrl(url){
- const engine=window.DigiYarOfferAffiliate;if(engine&&typeof engine.isDirectProductUrl==='function')return engine.isDirectProductUrl(url);
- return /^https:\/\/(?:www\.)?(?:digikala\.com|snappshop\.ir|torobshop\.com|technolife\.com|digizo\.shop|mobile\.ir|bprshop\.com|basalam\.com|elecamp\.ir)\/(?!search(?:\/|\?|$)|category(?:\/|\?|$))/i.test(String(url||''));
-}
+function isDirectProductUrl(url){const engine=window.DigiYarOfferAffiliate;if(engine&&typeof engine.isDirectProductUrl==='function')return engine.isDirectProductUrl(url);return /^https:\/\/(?:www\.)?(?:digikala\.com|snappshop\.ir|torobshop\.com|technolife\.com|digizo\.shop|mobile\.ir|bprshop\.com|basalam\.com|elecamp\.ir)\/(?!search(?:\/|\?|$)|category(?:\/|\?|$))/i.test(String(url||''));}
 function purchaseUrl(product){const affiliate=String(product&&product.affiliateUrl||'').trim();const direct=String(product&&product.productUrl||'').trim();return affiliate||(isDirectProductUrl(direct)?direct:'');}
 function priceValue(product){const live=Number(product&&product.live&&product.live.priceToman);if(Number.isFinite(live)&&live>0)return live;const value=Number(product&&product.priceToman);if(Number.isFinite(value)&&value>0)return value;const fallback=Number(product&&product.price);return Number.isFinite(fallback)&&fallback>0?fallback:0;}
 function canonicalLabel(query){if(!query)return'';const parts=[];const cat=query.taxonomy&&query.taxonomy.categoryLabel;const sub=query.taxonomy&&query.taxonomy.subcategoryLabel;const brand=query.taxonomy&&query.taxonomy.brandLabel;if(sub||cat)parts.push(sub||cat);if(brand)parts.push(brand);if(query.budget&&query.budget.max)parts.push('تا '+(query.budget.max/1000000).toLocaleString('fa-IR')+' میلیون');return parts.join(' · ')||'درخواست خرید';}
@@ -57,15 +54,14 @@ function init(){
   let box=document.getElementById('v5SmartSearchResults');if(!box){box=document.createElement('div');box.id='v5SmartSearchResults';box.className='v5-smart-search-results';form.parentElement.appendChild(box)}box.innerHTML='<div class="v5-smart-search-loading">🔎 در حال جستجو در ایندکس داخلی دیجی‌یار...</div>';
   try{
    await ensureParser();const parser=window.DigiYarHooshyarQueryParser;const query=parser.parse(q);window.DigiYarHooshyarLastQuery=query;
-   await ensureCore();let products=[];try{products=await window.DigiYarHooshyarSearchCore.searchIndexes(query,{limit:8});}catch(coreErr){console.warn('DigiYar Hooshyar Search Core:',coreErr);}
-   if(!products.length){await ensureRetrieval();products=await DigiYarProductRetrieval.search(q,{remote:true,hooshyarQuery:query});}
+   await ensureCore();let products=[];try{products=await window.DigiYarHooshyarSearchCore.searchIndexes(query,{limit:8});}catch(coreErr){console.error('DigiYar Hooshyar Search Core:',coreErr);}
+   if(!products.length){try{await ensureRetrieval();products=await DigiYarProductRetrieval.search(q,{remote:true,hooshyarQuery:query});}catch(retrievalErr){console.warn('DigiYar legacy retrieval unavailable:',retrievalErr);}}
    if(!products.length){box.innerHTML='<div class="v5-smart-search-empty">برای «'+esc(q)+'» فعلاً نتیجه قابل استفاده‌ای پیدا نشد.</div>';return}
-   await ensureResolver();
-   try{products=await window.DigiYarHooshyarLiveResolver.resolveProducts(products,{limit:8});}catch(resolveErr){console.warn('DigiYar Hooshyar Live Resolver:',resolveErr);}
+   try{await ensureResolver();products=await window.DigiYarHooshyarLiveResolver.resolveProducts(products,{limit:8});}catch(resolveErr){console.warn('DigiYar Hooshyar Live Resolver unavailable; showing index results:',resolveErr);}
    const usable=products.filter(p=>purchaseUrl(p));
    if(!usable.length){box.innerHTML='<div class="v5-smart-search-empty">برای «'+esc(q)+'» لینک مستقیم محصول پیدا نشد.</div>';return}
    box.innerHTML='<div class="v5-smart-search-result-head">نتایج هوش‌یار برای «'+esc(q)+'»<small class="v5-smart-search-canonical">درخواست تشخیص‌داده‌شده: '+esc(canonicalLabel(query))+'</small></div>'+usable.slice(0,8).map(renderProduct).join('');
-  }catch(err){console.error('DigiYar Hooshyar smart search:',err);box.innerHTML='<div class="v5-smart-search-empty">اتصال به جستجوی هوش‌یار برقرار نشد. دوباره امتحان کن.</div>';
+  }catch(err){console.error('DigiYar Hooshyar smart search:',err);box.innerHTML='<div class="v5-smart-search-empty">خطا در اجرای جستجوی هوش‌یار. جزئیات خطا در کنسول ثبت شد.</div>';
   }finally{input.disabled=false;input.placeholder=old;syncHint();}
  });
 }
