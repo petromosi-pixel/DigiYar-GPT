@@ -21,11 +21,13 @@ function ensureCore(){
  });return coreReady;
 }
 function ensureResolver(){
- if(window.DigiYarHooshyarLiveResolver)return Promise.resolve();
+ const version='6.4.1';
+ if(window.DigiYarHooshyarLiveResolver&&window.DigiYarHooshyarLiveResolver.version===version)return Promise.resolve();
  if(resolverReady)return resolverReady;
  resolverReady=new Promise((resolve,reject)=>{
-  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js?v=6.4.1',document.baseURI).href;s.async=false;
-  s.onload=()=>window.DigiYarHooshyarLiveResolver?resolve():reject(Error('Hooshyar Live Resolver unavailable'));
+  document.querySelectorAll('script[src*="js/v6-hooshyar-live-resolver.js"]').forEach(el=>el.remove());
+  const s=document.createElement('script');s.src=new URL('js/v6-hooshyar-live-resolver.js?v='+version+'&r='+Date.now(),document.baseURI).href;s.async=false;
+  s.onload=()=>window.DigiYarHooshyarLiveResolver&&window.DigiYarHooshyarLiveResolver.version===version?resolve():reject(Error('Hooshyar Live Resolver unavailable or stale'));
   s.onerror=()=>reject(Error('Hooshyar Live Resolver failed to load: '+s.src));document.head.appendChild(s);
  });return resolverReady;
 }
