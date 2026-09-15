@@ -25,9 +25,15 @@ const STORES = [
     id: 'torobshop',
     name: 'ترب شاپ',
     seeds: [
-      'https://torobshop.com/products/category-products/%DA%AF%D9%88%D8%B4%DB%8C-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84'
+      'https://torobshop.com/fa/products/category-products/%DA%AF%D9%88%D8%B4%DB%8C-%D9%85%D9%88%D8%A8%D8%A7%DB%8C%D9%84'
     ],
     productLink: /\/products\/(?!category)/i
+  },
+  {
+    id: 'digikala',
+    name: 'دیجی‌کالا',
+    seeds: ['https://www.digikala.com/'],
+    productLink: /\/product\/dkp-[^/?#]+/i
   }
 ];
 
@@ -116,7 +122,8 @@ async function fetchPage(url) {
     redirect: 'follow',
     headers: {
       'user-agent': 'DigiYar-LiveStoreAdapter/1.0 (+public-product-index)',
-      'accept': 'text/html,application/xhtml+xml'
+      'accept': 'text/html,application/xhtml+xml',
+      'accept-language': 'fa-IR,fa;q=0.9,en;q=0.7'
     },
     signal: AbortSignal.timeout(20000)
   });
@@ -150,12 +157,10 @@ async function crawlStore(store) {
 }
 
 const results = [];
-for (const store of STORES) {
-  results.push(await crawlStore(store));
-}
+for (const store of STORES) results.push(await crawlStore(store));
 const products = results.flatMap(x => x.products).slice(0, MAX_PRODUCTS_TOTAL);
 const report = {
-  version: 'v6-live-store-adapter-1.0',
+  version: 'v6-live-store-adapter-1.1',
   observedAt: NOW,
   query: 'کالای دیجیتال → موبایل → شیائومی',
   policy: 'public-product-pages-only; no marketplace/API calls; no price/image ingestion',
