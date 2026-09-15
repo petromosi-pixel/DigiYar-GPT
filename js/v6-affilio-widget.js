@@ -1,33 +1,27 @@
-/* DigiYar V6 — single Affilio home widget */
+/* DigiYar V6 — Affilio widgets: two independent home cards */
 (function(){'use strict';
-const OLD_ID='affilio-widget-cc87472c-40f0-4844-ab85-cbf1eb4cb3cc';
-const WIDGET_ID='a8433d31-25ee-4567-b4a2-36493e660dd0';
-function init(){
- const host=document.getElementById('affilioWidgetCard');
- if(!host)return;
- document.querySelectorAll('script[data-widget-id="'+OLD_ID+'"]').forEach(s=>s.remove());
- document.getElementById(OLD_ID)?.remove();
- document.getElementById('affilioWidgetCardSecondary')?.remove();
- host.innerHTML='';
- host.className='card v6-affilio-widget-card';
- const section=document.createElement('section');
- section.className='v6-affilio-widget-section';
- const title=document.createElement('h2');
- title.className='v6-affilio-widget-title';
- title.textContent='بوی ماهِ مدرسه';
- const box=document.createElement('div');
- box.id='affilio-widget-'+WIDGET_ID;
- const script=document.createElement('script');
- script.async=true;
- script.src='https://static.affilio.ir/static/loader.js';
- script.dataset.widgetId=WIDGET_ID;
- script.dataset.containerId=box.id;
- section.append(title,box,script);
- host.appendChild(section);
- const style=document.createElement('style');
- style.id='v6-affilio-single-style';
- style.textContent='.v6-affilio-widget-card{box-sizing:border-box!important;width:100%!important;margin:0 0 18px!important;padding:9px 14px!important;min-height:0!important;height:auto!important;overflow:hidden!important;background:#fff!important;border:1px solid #e3e8f0!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(16,28,53,.08)!important;text-align:center!important}.v6-affilio-widget-section{display:block!important;width:100%!important;margin:0!important;padding:0!important;box-sizing:border-box!important}.v6-affilio-widget-title{display:block!important;margin:0!important;padding:0!important;color:#000!important;font-size:19px!important;font-weight:800!important;line-height:1.15!important;text-align:center!important}.v6-affilio-widget-section>div[id^="affilio-widget-"]{width:100%!important;max-width:100%!important;box-sizing:border-box!important;overflow-x:auto!important;overflow-y:hidden!important}.v6-affilio-widget-card [class*="product-card"],.v6-affilio-widget-card [class*="product-item"],.v6-affilio-widget-card [class*="ProductCard"],.v6-affilio-widget-card [class*="ProductItem"],.v6-affilio-widget-card [data-product-id],.v6-affilio-widget-card [data-product]{box-sizing:border-box!important;flex:0 0 auto!important}@media(max-width:430px){.v6-affilio-widget-card{padding:8px 11px!important}.v6-affilio-widget-title{font-size:19px!important}}body.v6-dark .v6-affilio-widget-card{background:#111827!important;border-color:#334155!important;color:#f8fafc!important}body.v6-dark .v6-affilio-widget-title{color:#fff!important}';
- document.head.appendChild(style);
-}
+const PRIMARY_ID='affilio-widget-06db7440-629f-407d-b01e-063c5067d341';
+const SECONDARY_ID='affilio-widget-a8433d31-25ee-4567-b4a2-36493e660dd0';
+const PRIMARY_MORE='https://aflo.ir/g746KjMA';
+const SECONDARY_MORE='https://aflo.ir/60QfyVuQ';
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function makeMore(url){const a=document.createElement('a');a.className='v6-affilio-more';a.href=url;a.target='_blank';a.rel='noopener noreferrer sponsored';a.textContent='نمایش محصولات بیشتر ⬅️';a.setAttribute('aria-label','نمایش محصولات بیشتر');return a;}
+function injectLoader(box,widgetId){if(!box||box.dataset.v6Loaded==='1')return;box.dataset.v6Loaded='1';const s=document.createElement('script');s.async=true;s.src='https://static.affilio.ir/static/loader.js';s.dataset.widgetId=widgetId;s.dataset.containerId=box.id;box.appendChild(s);}
+function makeSection(id,title,widgetId,moreUrl){const section=document.createElement('section');section.className='v6-affilio-widget-section';const h=document.createElement('h2');h.className='v6-affilio-widget-title';h.textContent=title;const box=document.createElement('div');box.id=id;const more=makeMore(moreUrl);section.append(h,box,more);return{section,box,more};}
+function style(){document.getElementById('v6-affilio-restored-style')?.remove();const s=document.createElement('style');s.id='v6-affilio-restored-style';s.textContent=`
+.v6-affilio-widget-card{box-sizing:border-box!important;width:100%!important;margin:0 0 18px!important;padding:9px 14px!important;min-height:0!important;height:auto!important;overflow:hidden!important;background:#fff!important;border:1px solid #e3e8f0!important;border-radius:18px!important;box-shadow:0 8px 25px rgba(16,28,53,.08)!important;text-align:center!important}
+.v6-affilio-widget-card.v6-affilio-secondary-card{margin-top:0!important}
+.v6-affilio-widget-section{display:block!important;width:100%!important;margin:0!important;padding:0!important;box-sizing:border-box!important;overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.v6-affilio-widget-title{display:block!important;visibility:visible!important;opacity:1!important;margin:0!important;padding:0!important;color:#000!important;font-family:inherit!important;font-size:19px!important;font-weight:800!important;line-height:1.25!important;text-align:center!important}
+.v6-affilio-widget-section>div[id^="affilio-widget-"]{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:4px 2px 6px!important;box-sizing:border-box!important;overflow-x:auto!important;overflow-y:hidden!important;flex-wrap:nowrap!important;align-items:stretch!important;gap:6px!important;-webkit-overflow-scrolling:touch!important;scroll-snap-type:x proximity!important;touch-action:pan-x!important}
+.v6-affilio-widget-section>div[id^="affilio-widget-"]>*{flex:0 0 auto!important;box-sizing:border-box!important;scroll-snap-align:start!important}
+.v6-affilio-widget-card .v6-affilio-more{display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;min-height:42px!important;margin:4px 2px 0!important;padding:9px 12px!important;border:1px solid #dbe3ee!important;border-radius:12px!important;background:#f7f9fc!important;color:#2a4169!important;font-family:inherit!important;font-size:12px!important;font-weight:800!important;line-height:1.35!important;text-align:center!important;text-decoration:none!important;cursor:pointer!important}
+.v6-affilio-widget-card .v6-affilio-more:hover{background:#eef3fa!important}
+body.v6-dark .v6-affilio-widget-card{background:#111827!important;border-color:#334155!important;box-shadow:0 8px 22px rgba(0,0,0,.28)!important;color:#f8fafc!important}
+body.v6-dark .v6-affilio-widget-title{color:#fff!important}
+body.v6-dark .v6-affilio-widget-card .v6-affilio-more{background:#172033!important;border-color:#334155!important;color:#fff!important}
+@media(max-width:430px){.v6-affilio-widget-card{padding:8px 11px!important}.v6-affilio-widget-title{font-size:19px!important}.v6-affilio-widget-card .v6-affilio-more{font-size:11px!important}}
+`;document.head.appendChild(s);}
+function init(){const host=document.getElementById('affilioWidgetCard');if(!host)return;document.querySelectorAll('script[data-widget-id="cc87472c-40f0-4844-ab85-cbf1eb4cb3cc"]').forEach(s=>s.remove());document.getElementById('affilio-widget-cc87472c-40f0-4844-ab85-cbf1eb4cb3cc')?.remove();document.getElementById('affilioWidgetCardSecondary')?.remove();host.innerHTML='';host.className='card v6-affilio-widget-card';host.removeAttribute('aria-hidden');const primary=makeSection(PRIMARY_ID,'بوی ماهِ مدرسه',PRIMARY_ID.replace(/^affilio-widget-/,'') ,PRIMARY_MORE);host.appendChild(primary.section);const secondary=document.createElement('section');secondary.id='affilioWidgetCardSecondary';secondary.className='card v6-affilio-widget-card v6-affilio-secondary-card';const second=makeSection(SECONDARY_ID,'بیشترین تخفیف دخترانه و پسرانه',SECONDARY_ID.replace(/^affilio-widget-/,'') ,SECONDARY_MORE);secondary.appendChild(second.section);host.insertAdjacentElement('afterend',secondary);style();injectLoader(primary.box,'06db7440-629f-407d-b01e-063c5067d341');injectLoader(second.box,'a8433d31-25ee-4567-b4a2-36493e660dd0');}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
