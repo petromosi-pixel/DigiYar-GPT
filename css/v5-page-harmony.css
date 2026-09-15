@@ -45,4 +45,17 @@ body.v6-dark .v5-popular-card .platform .platform-tag{color:#aab7ca!important}
 body.v6-dark .v5-popular-card .platform .platform-btn{background:#243654!important;color:#f8fafc!important;border-color:#425879!important}
 body.v6-dark .v5-popular-card .platform-logo{background:#f8fafc!important;border-color:#475569!important}
 body.v6-dark .v5-popular-card .v5-popular-toggle-icon{color:#f8fafc!important;text-shadow:0 1px 5px rgba(255,255,255,.12)}
-body.v6-dark .v5-profile-card .v5-step4-toggle-icon,body.v6-dark .v5-profile-completion .v5-step4-toggle-icon{color:#f8fafc!important;text-shadow:0 1px 5px rgba(255,255,255,.12)}
+body.v6-dark .v5-profile-card,body.v6-dark .v5-profile-completion{background:#111827!important;color:#e5e7eb!important;border-color:#263449!important;box-shadow:0 8px 26px rgba(0,0,0,.28)!important}
+body.v6-dark .v5-profile-card .section-title h2,body.v6-dark .v5-profile-completion .section-title h2{color:#f8fafc!important}
+body.v6-dark .v5-profile-card .section-title p,body.v6-dark .v5-profile-completion .section-title p{color:#aab7ca!important}
+body.v6-dark .v5-profile-card .v5-field,body.v6-dark .v5-profile-card .form-grid label,body.v6-dark .v5-profile-completion-form label{color:#e5e7eb!important}
+body.v6-dark .v5-profile-card .v5-field select,body.v6-dark .v5-profile-card .v5-field input,body.v6-dark .v5-profile-completion-form input{background:#172033!important;color:#f8fafc!important;border-color:#334155!important}
+body.v6-dark .v5-profile-card .v5-field select:focus,body.v6-dark .v5-profile-card .v5-field input:focus,body.v6-dark .v5-profile-completion-form input:focus{background:#1e293b!important;border-color:#f7941d!important;box-shadow:0 0 0 3px rgba(247,148,29,.14)!important}
+body.v6-dark .v5-profile-card .input-hint,body.v6-dark .v5-profile-card .v5-storage-note,body.v6-dark .v5-profile-completion .v5-save-status{color:#94a3b8!important}
+body.v6-dark .v5-profile-completion .v5-profile-completion-toggle,body.v6-dark .v5-profile-completion .v5-profile-completion-toggle-icon{color:#f8fafc!important;text-shadow:none!important}
+body.v6-dark .v5-profile-completion .v5-save-profile{background:#243654!important;color:#fff!important;border:1px solid #425879!important}
+body.v6-dark .v5-profile-card .v5-primary{background:linear-gradient(135deg,#2a4169,#38547f)!important;color:#fff!important}
+body.v6-dark .v5-profile-card .v5-danger{background:linear-gradient(135deg,#c75a3a,#a9462c)!important;color:#fff!important}
+body.v6-dark .v5-profile-card .select-wrap::after{border-left-color:#94a3b8!important;border-bottom-color:#94a3b8!important}
+body.v6-dark .v5-profile-card .v5-field select option{background:#172033!important;color:#f8fafc!important}
+body.v6-dark .v5-profile-card .v5-step4-toggle-icon,body.v6-dark .v5-profile-completion .v5-step4-toggle-icon{color:#f8fafc!important;text-shadow:none!important}
