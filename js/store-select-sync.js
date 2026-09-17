@@ -2,22 +2,34 @@
 (function(){
   'use strict';
 
-  function loadStoreBrowser(){
-    if(window.DigiYarStoreBrowser || document.querySelector('script[data-digiyar-store-browser]')) return;
+  function value(id){
+    var el=document.getElementById(id);
+    return el ? String(el.value||'').trim() : '';
+  }
+
+  function loadStoreBrowser(callback){
+    if(window.DigiYarStoreBrowser){
+      callback(window.DigiYarStoreBrowser);
+      return;
+    }
+    var existing=document.querySelector('script[data-digiyar-store-browser]');
+    if(existing){
+      existing.addEventListener('load',function(){callback(window.DigiYarStoreBrowser);},{once:true});
+      return;
+    }
     var script=document.createElement('script');
     script.src='js/v6-store-browser.js?v=6.0.0-store-browser.6';
     script.async=false;
     script.dataset.digiyarStoreBrowser='1';
+    script.onload=function(){callback(window.DigiYarStoreBrowser);};
+    script.onerror=function(){console.error('DigiYar Hooshyar: failed to load store browser');};
     document.head.appendChild(script);
   }
 
   function syncStores(){
     var select=document.getElementById('storeSelect');
     var stores=window.DigiYarPopularAffiliateStores;
-    if(!select || !Array.isArray(stores) || !stores.length){
-      loadStoreBrowser();
-      return false;
-    }
+    if(!select || !Array.isArray(stores) || !stores.length) return false;
 
     var current=select.value || 'all';
     var desired=[{id:'all',name:'همه فروشگاه‌های منتخب'}];
@@ -47,13 +59,7 @@
 
     var valid=desired.some(function(store){return store.id===current;});
     select.value=valid ? current : 'all';
-    loadStoreBrowser();
     return true;
-  }
-
-  function value(id){
-    var el=document.getElementById(id);
-    return el ? String(el.value||'').trim() : '';
   }
 
   function profileQuery(){
@@ -65,30 +71,56 @@
     return parts.join(' ').replace(/\s+/g,' ').trim();
   }
 
+  function persistProfile(){
+    if(!window.DigiYarUserProfile || typeof window.DigiYarUserProfile.save!=='function') return;
+    try{
+      window.DigiYarUserProfile.save(window.DigiYarUserProfile.normalize({
+        category:value('v5Category'),
+        budgetMax:value('budgetMax'),
+        priorities:'',
+        usage:'',
+        requirements:'',
+        constraints:''
+      }));
+    }catch(error){
+      console.warn('DigiYar Profile save:',error);
+    }
+  }
+
+  function launchHooshyar(){
+    var smartInput=document.getElementById('v5SmartSearchInput');
+    var typed=String(smartInput&&smartInput.value||'').trim();
+    var query=typed || profileQuery();
+    if(!query) return false;
+
+    if(smartInput) smartInput.value=query;
+
+    loadStoreBrowser(function(browser){
+      if(!browser || typeof browser.open!=='function') return;
+      browser.open(query,(function(){
+        var stores=window.DigiYarPopularAffiliateStores;
+        if(Array.isArray(stores) && stores.length) return stores.filter(function(x){return x&&x.id&&x.name;});
+        var select=document.getElementById('storeSelect');
+        return select ? Array.from(select.options).filter(function(o){return o.value&&o.value!=='all';}).map(function(o){return {id:o.value,name:o.textContent.trim()};}) : [];
+      })());
+      var resultHost=document.getElementById('v5SmartSearchResults');
+      if(resultHost) resultHost.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    return true;
+  }
+
   function connectProfileToHooshyar(){
     var form=document.getElementById('profileForm');
-    if(!form || form.dataset.v6HooshyarSync==='1') return false;
-    form.dataset.v6HooshyarSync='1';
+    if(!form || form.dataset.v6HooshyarSync==='2') return false;
+    form.dataset.v6HooshyarSync='2';
 
-    /* Bubble phase: the purchase card keeps its native submit behavior. */
-    form.addEventListener('submit',function(){
-      setTimeout(function(){
-        var smartForm=document.getElementById('v5SmartSearchForm');
-        var smartInput=document.getElementById('v5SmartSearchInput');
-        if(!smartForm || !smartInput) return;
-
-        var typed=String(smartInput.value||'').trim();
-        var query=typed || profileQuery();
-        if(!query) return;
-
-        smartInput.value=query;
-        if(typeof smartForm.requestSubmit==='function'){
-          smartForm.requestSubmit();
-        }else{
-          smartForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
-        }
-      },0);
-    },false);
+    /* Capture the purchase action before legacy profile handlers can swallow it. */
+    form.addEventListener('submit',function(event){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      persistProfile();
+      launchHooshyar();
+    },true);
     return true;
   }
 
@@ -103,7 +135,7 @@
     boot();
   }
 
-  /* Some store lists are populated asynchronously by the selected-stores layer. */
+  /* The selected-store layer may populate its list asynchronously. */
   var attempts=0;
   var retry=setInterval(function(){
     attempts+=1;
