@@ -25,7 +25,7 @@
       return;
     }
     var script=document.createElement('script');
-    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.8';
+    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.9';
     script.async=false;
     script.dataset.digiyarStoreBrowser='1';
     script.onload=function(){ callback(window.DigiYarStoreBrowser); };
