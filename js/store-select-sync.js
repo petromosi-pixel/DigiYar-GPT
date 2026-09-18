@@ -25,7 +25,7 @@
       return;
     }
     var script=document.createElement('script');
-    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.7';
+    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.8';
     script.async=false;
     script.dataset.digiyarStoreBrowser='1';
     script.onload=function(){ callback(window.DigiYarStoreBrowser); };
@@ -116,7 +116,6 @@
 
   function launchHooshyar(){
     var smartInput=el('v5SmartSearchInput');
-    var smartForm=el('v5SmartSearchForm');
     var query=profileQuery();
     if(!profileComplete()){
       var missing=[];
@@ -131,7 +130,7 @@
       }
       return false;
     }
-    if(!query || !smartInput || !smartForm) return false;
+    if(!query || !smartInput) return false;
 
     var oldResults=el('v5SmartSearchResults');
     if(oldResults) oldResults.remove();
@@ -140,14 +139,10 @@
     smartInput.value=query;
     syncHooshyarHint();
 
-    loadStoreBrowser(function(){
+    loadStoreBrowser(function(browser){
       try{
-        if(typeof smartForm.requestSubmit==='function') smartForm.requestSubmit();
-        else {
-          var submitter=smartForm.querySelector('button[type="submit"]');
-          if(submitter) submitter.click();
-        }
-      }catch(error){ console.error('DigiYar Hooshyar submit:',error); }
+        browser.open(query);
+      }catch(error){ console.error('DigiYar Hooshyar browser:',error); }
     });
     return true;
   }
