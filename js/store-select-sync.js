@@ -192,6 +192,8 @@
     var target=event.target;
     var button=target&&target.closest ? target.closest('#resetProfile') : null;
     if(!button) return;
+    var usage=el('v6Usage');
+    if(usage) usage.value='';
     setTimeout(clearResultsAndQuery,0);
   }
 
