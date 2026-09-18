@@ -14,7 +14,8 @@
     "test:v6:hooshyar": "node tests/v6-hooshyar-query-parser.test.mjs",
     "test:v6:search-core": "node tests/v6-hooshyar-search-core.test.mjs",
     "test:v6:live-resolver": "node tests/v6-hooshyar-live-resolver.test.mjs",
-    "test:v6:live-resolver:real": "node tests/v6-hooshyar-live-resolver-real-smoke.test.mjs"
+    "test:v6:live-resolver:real": "node tests/v6-hooshyar-live-resolver-real-smoke.test.mjs",
+    "test:v6:profile-flow": "node tests/v6-hooshyar-profile-flow.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0"
