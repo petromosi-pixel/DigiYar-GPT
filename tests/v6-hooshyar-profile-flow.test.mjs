@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const sync = fs.readFileSync('js/store-select-sync.js', 'utf8');
+const browser = fs.readFileSync('js/v6-store-browser.js', 'utf8');
 const index = fs.readFileSync('index.html', 'utf8');
 const options = fs.readFileSync('js/v6-product-options.js', 'utf8');
 
@@ -13,13 +14,32 @@ assert.deepEqual(
 );
 assert.ok(!profileBlock.includes('storeSelect'), 'store selector must not enter Hooshyar query');
 assert.ok(!profileBlock.includes('v5Category'), 'category must not enter Hooshyar query');
-assert.match(sync, /function ensureUsageField\(\)[\s\S]*?id="v6Usage"/);
-assert.match(sync, /smartForm\.requestSubmit\(\)/);
-assert.match(sync, /function clearResultsAndQuery\(\)[\s\S]*?v5SmartSearchResults/);
-assert.match(sync, /function clearResultsAndQuery\(\)[\s\S]*?v6StoreSimulatorResults/);
+
+assert.match(sync, /function profileQuery\(\)[\s\S]*?profileParts\(\)\.join\(' '\)/);
+assert.match(sync, /function profileComplete\(\)[\s\S]*?v5Subcategory[\s\S]*?v6Brand[\s\S]*?v6BudgetRange[\s\S]*?v6Usage/);
+assert.match(sync, /function launchHooshyar\(\)[\s\S]*?var query=profileQuery\(\)/);
+assert.match(sync, /loadStoreBrowser\(function\(browser\)\{[\s\S]*?browser\.open\(query\)/);
+assert.match(sync, /browser\.open\(query\)/);
+assert.ok(!sync.includes('fetch('), 'profile flow must not call Search Core or an API directly');
+assert.ok(!sync.includes('/api/search'), 'profile flow must not depend on the Search Core API');
+assert.match(sync, /oldResults\.remove\(\)/);
+assert.match(sync, /oldSimulator\.remove\(\)/);
+assert.match(sync, /scrollIntoView\(\{behavior:'smooth',block:'start'\}\)/);
+
+assert.match(browser, /function openBrowser\(query,list\)/);
+assert.match(browser, /list=Array\.isArray\(list\)\?list:stores\(\)/);
+assert.match(browser, /window\.DigiYarStoreBrowser=\{version:VERSION,open:openBrowser\}/);
+assert.match(browser, /id='v6StoreSimulatorResults'/);
+assert.match(browser, /iframe class="v6-auto-frame"/);
+assert.ok(browser.includes('SEARCH['), 'Store Browser must map the query to store search URLs');
+assert.ok(browser.includes('encodeURIComponent(q)'), 'Store Browser must encode the Hooshyar query for store URLs');
+
+assert.match(index, /id="profileForm"/);
+assert.match(index, /id="v5SmartSearchInput"/);
 assert.match(index, /js\/store-select-sync\.js\?v=/);
 assert.match(options, /id=['"]v5Subcategory['"]/);
 assert.match(options, /id=['"]v6Brand['"]/);
 assert.match(options, /id=['"]v6BudgetRange['"]/);
+assert.match(options, /id=['"]v6Usage['"]/);
 
-console.log('V6 Hooshyar profile-flow contract passed: four fields, simulator lifecycle, hint isolation');
+console.log('V6 Hooshyar profile-flow contract passed: Profile → Query → Store Browser → Simulator');
