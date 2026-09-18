@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  search-core:
+  parser:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -23,9 +23,45 @@ jobs:
           node-version: 20
       - name: Run parser contract
         run: npm run test:v6:hooshyar
+
+  search-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: parser
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Run Search Core against real indexes
         run: npm run test:v6:search-core
+
+  live-resolver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: search-core
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Run Live Resolver contract
         run: npm run test:v6:live-resolver
+
+  real-product-resolver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: live-resolver
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Run Live Resolver against real product pages
         run: npm run test:v6:live-resolver:real
