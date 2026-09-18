@@ -34,6 +34,10 @@ const qMobile = parser.parse('گوشی شیائومی تا ۲۰ میلیون', t
 const qLaptop = parser.parse('لپ‌تاپ ایسوس تا ۵۰ میلیون', taxonomy);
 const qTv = parser.parse('تلویزیون سامسونگ', taxonomy);
 
+assert.equal(qMobile.subcategory, 'mobile', 'mobile query must resolve to mobile: '+JSON.stringify(qMobile));
+assert.equal(qMobile.brand, 'شیائومی', 'mobile query must resolve brand: '+JSON.stringify(qMobile));
+const pollutedMobile = mobile.find((p) => String(p.name).includes('پلوپز دسته‌دار شیشه‌ای WMF'));
+if (pollutedMobile) assert.equal(core.hardFilter([pollutedMobile], qMobile).length, 0, 'polluted mobile index item leaked: '+JSON.stringify({query:qMobile,product:pollutedMobile}));
 const mobileResults = core.search(mobile.concat(digital), qMobile, { limit: 8 });
 assert.ok(mobileResults.length > 0, 'mobile results must exist');
 const laptopResults = core.search(laptop.concat(digital), qLaptop, { limit: 8 });
