@@ -13,13 +13,13 @@ assert.deepEqual(
 );
 assert.ok(!profileBlock.includes('storeSelect'), 'store selector must not enter Hooshyar query');
 assert.ok(!profileBlock.includes('v5Category'), 'category must not enter Hooshyar query');
-assert.match(sync, /function ensureUsageField\(\)[\s\S]*?id='v6Usage'/);
+assert.match(sync, /function ensureUsageField\(\)[\s\S]*?id="v6Usage"/);
 assert.match(sync, /smartForm\.requestSubmit\(\)/);
 assert.match(sync, /function clearResultsAndQuery\(\)[\s\S]*?v5SmartSearchResults/);
 assert.match(sync, /function clearResultsAndQuery\(\)[\s\S]*?v6StoreSimulatorResults/);
 assert.match(index, /js\/store-select-sync\.js\?v=/);
-assert.match(options, /id='v5Subcategory'/);
-assert.match(options, /id='v6Brand'/);
-assert.match(options, /id='v6BudgetRange'/);
+assert.match(options, /id="v5Subcategory"/);
+assert.match(options, /id="v6Brand"/);
+assert.match(options, /id="v6BudgetRange"/);
 
 console.log('V6 Hooshyar profile-flow contract passed: four fields, simulator lifecycle, hint isolation');
