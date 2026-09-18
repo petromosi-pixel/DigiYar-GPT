@@ -65,21 +65,6 @@
     return true;
   }
 
-  function ensureUsageField(){
-    if(el('v6Usage')) return el('v6Usage');
-    var dynamic=el('v5DynamicFields');
-    var budget=el('v6BudgetRange');
-    var budgetField=budget&&budget.closest ? budget.closest('.v5-field') : null;
-    if(!dynamic && !budgetField) return null;
-    var field=document.createElement('label');
-    field.id='v6UsageField';
-    field.className='v5-field full';
-    field.innerHTML='<span>نوع استفاده</span><select id="v6Usage" aria-label="نوع استفاده"><option value="">انتخاب نوع استفاده</option><option value="gaming">بازی و گیمینگ</option><option value="work">کار و برنامه‌نویسی</option><option value="study">درس و مطالعه</option><option value="content">تولید محتوا و طراحی</option><option value="photo-video">عکاسی و فیلمبرداری</option><option value="daily">استفاده روزمره</option><option value="travel">سفر</option></select>';
-    if(budgetField&&budgetField.parentNode) budgetField.parentNode.insertBefore(field,budgetField.nextSibling);
-    else if(dynamic&&dynamic.parentNode) dynamic.parentNode.appendChild(field);
-    return el('v6Usage');
-  }
-
   function profileParts(){
     var parts=[];
     var sub=optionText('v5Subcategory');
@@ -190,7 +175,6 @@
     if(!button) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    ensureUsageField();
     persistProfile();
     launchHooshyar();
   }
@@ -200,7 +184,6 @@
     if(!form || form.id!=='profileForm') return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    ensureUsageField();
     persistProfile();
     launchHooshyar();
   }
@@ -223,7 +206,6 @@
 
   function boot(){
     syncStores();
-    ensureUsageField();
     connectProfileToHooshyar();
   }
 
@@ -234,7 +216,6 @@
   var retry=setInterval(function(){
     attempts+=1;
     syncStores();
-    ensureUsageField();
     connectProfileToHooshyar();
     if(attempts>=40) clearInterval(retry);
   },250);
