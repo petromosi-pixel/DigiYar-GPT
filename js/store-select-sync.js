@@ -25,7 +25,7 @@
       return;
     }
     var script=document.createElement('script');
-    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.6';
+    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.7';
     script.async=false;
     script.dataset.digiyarStoreBrowser='1';
     script.onload=function(){ callback(window.DigiYarStoreBrowser); };
@@ -120,6 +120,7 @@
     if(!button) return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    ensureUsageField();
     persistProfile();
     launchHooshyar();
   }
@@ -133,16 +134,25 @@
     launchHooshyar();
   }
 
+  function handleResetClick(event){
+    var target=event.target;
+    var button=target&&target.closest ? target.closest('#resetProfile') : null;
+    if(!button) return;
+    setTimeout(clearResultsAndQuery,0);
+  }
+
   function connectProfileToHooshyar(){
     if(document.documentElement.dataset.v6HooshyarDelegated==='1') return true;
     document.documentElement.dataset.v6HooshyarDelegated='1';
     document.addEventListener('click',handlePurchaseAction,true);
     document.addEventListener('submit',handleProfileSubmit,true);
+    document.addEventListener('click',handleResetClick,true);
     return true;
   }
 
   function boot(){
     syncStores();
+    ensureUsageField();
     connectProfileToHooshyar();
   }
 
@@ -153,6 +163,7 @@
   var retry=setInterval(function(){
     attempts+=1;
     syncStores();
+    ensureUsageField();
     connectProfileToHooshyar();
     if(attempts>=40) clearInterval(retry);
   },250);
