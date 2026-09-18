@@ -228,7 +228,7 @@ function renderUsage(sub){
  var list=USAGE[sub]||USAGE.general;
  var dyn=$('v5DynamicFields'),budget=$('v6BudgetRange'),budgetField=budget&&budget.closest?budget.closest('.v5-field'):null;
  var field=document.createElement('label');field.id='v6UsageField';field.className='v5-field full';
- field.innerHTML='<span>نوع استفاده</span><select id="v6Usage" aria-label="نوع استفاده"><option value="">انتخاب نوع استفاده</option>'+list.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join('')+'</select>';
+ field.innerHTML='<span>نوع استفاده</span><select id="v6Usage" aria-label="نوع استفاده"><option value="">نوع استفاده</option>'+list.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join('')+'</select>';
  var select=field.querySelector('select');select.style.textAlign='center';select.style.textAlignLast='center';
  if(budgetField&&budgetField.parentNode)budgetField.parentNode.insertBefore(field,budgetField.nextSibling);else if(dyn&&dyn.parentNode)dyn.parentNode.appendChild(field);
  return select;
