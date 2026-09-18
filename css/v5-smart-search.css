@@ -39,22 +39,22 @@ html.dark .v5-smart-search-field span.v6-hooshyar-brand,body.dark .v5-smart-sear
 html.dark .v5-smart-search-clear,body.dark .v5-smart-search-clear,[data-theme="dark"] .v5-smart-search-clear{border-color:rgba(255,91,97,.48)!important}
 html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[data-theme="dark"] .v5-smart-search-clear:hover{border-color:rgba(255,91,97,.72)!important}
 
-/* V6 Hooshyar — final field/clear alignment */
-.v5-smart-search-field{background:#fff!important}
+/*/* V6 Hooshyar — final field/clear alignment */
+.v5-smart-search-field{background:#fff!important;border-color:#d9e1ec!important}
 .v5-smart-search-clear{
-left:6px!important;top:50%!important;transform:translateY(-50%)!important;
-width:30px!important;height:30px!important;padding:0!important;border:0!important;
-border-radius:10px!important;background:#f1f4f8!important;color:#dc2626!important;
+left:0!important;right:auto!important;top:0!important;transform:none!important;
+width:50px!important;height:50px!important;padding:0!important;
+border:0!important;border-radius:16px 0 0 16px!important;
+background:#fff!important;color:#dc2626!important;
 font-size:15px!important;line-height:1!important;display:grid!important;place-items:center!important;
-box-shadow:none!important
+box-shadow:none!important;z-index:3!important
 }
-.v5-smart-search-clear:hover{background:#e8edf3!important;color:#b91c1c!important;transform:translateY(-50%)!important}
+.v5-smart-search-clear:hover{background:#f7f9fc!important;color:#b91c1c!important;transform:none!important}
+.v5-smart-search-clear:focus-visible{outline:2px solid rgba(220,38,38,.3)!important;outline-offset:-2px}
 .v5-smart-search-field .v5-smart-search-submit{top:50%!important;transform:translateY(-50%)!important;right:6px!important}
-@media(prefers-color-scheme:dark){
-.v5-smart-search-field{background:#172033!important}
-.v5-smart-search-clear{background:#263146!important;color:#ff6b70!important}
-.v5-smart-search-clear:hover{background:#303c53!important;color:#ff8589!important}
-}
-html.dark .v5-smart-search-field,body.dark .v5-smart-search-field,[data-theme="dark"] .v5-smart-search-field{background:#172033!important}
-html.dark .v5-smart-search-clear,body.dark .v5-smart-search-clear,[data-theme="dark"] .v5-smart-search-clear{background:#263146!important;color:#ff6b70!important}
-html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[data-theme="dark"] .v5-smart-search-clear:hover{background:#303c53!important;color:#ff8589!important}
+/* Dark mode is driven by the app theme; OS dark mode alone must not turn the light field black. */
+html.dark .v5-smart-search-field,body.dark .v5-smart-search-field,[data-theme="dark"] .v5-smart-search-field{background:#172033!important;border-color:rgba(255,255,255,.16)!important;box-shadow:0 5px 18px rgba(0,0,0,.34)!important}
+html.dark .v5-smart-search-field input,body.dark .v5-smart-search-field input,[data-theme="dark"] .v5-smart-search-field input{color:#f8fafc!important}
+html.dark .v5-smart-search-clear,body.dark .v5-smart-search-clear,[data-theme="dark"] .v5-smart-search-clear{background:#172033!important;color:#ff6b70!important}
+html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[data-theme="dark"] .v5-smart-search-clear:hover{background:#172033!important;color:#ff8589!important}
+html.dark .v5-smart-search-field .v5-smart-search-submit,body.dark .v5-smart-search-field .v5-smart-search-submit,[data-theme="dark"] .v5-smart-search-field .v5-smart-search-submit{color:#cbd5e1!important}
