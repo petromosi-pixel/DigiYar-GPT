@@ -82,7 +82,7 @@ html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[d
   transform:translateY(-50%)!important;
   right:6px!important;
 }
-/* Dark mode: only an explicit app theme changes the field, so OS dark mode cannot force it black. */
+/* Dark mode: the clear control always follows the exact field surface. */
 html.dark .v5-smart-search-field,
 body.dark .v5-smart-search-field,
 [data-theme="dark"] .v5-smart-search-field{
@@ -99,6 +99,7 @@ html.dark .v5-smart-search-clear,
 body.dark .v5-smart-search-clear,
 [data-theme="dark"] .v5-smart-search-clear{
   background:#172033!important;
+  border-color:transparent!important;
   color:#ff6b70!important;
 }
 html.dark .v5-smart-search-clear:hover,
