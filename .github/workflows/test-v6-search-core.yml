@@ -11,6 +11,19 @@ permissions:
   contents: read
 
 jobs:
+  profile-flow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run four-field profile flow contract
+        run: npm run test:v6:profile-flow
+
   parser:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -27,7 +40,7 @@ jobs:
   search-core:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: parser
+    needs: [profile-flow, parser]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
