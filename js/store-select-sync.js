@@ -141,7 +141,11 @@
 
     loadStoreBrowser(function(browser){
       try{
-        browser.open(query);
+        var host=browser.open(query);
+        requestAnimationFrame(function(){
+          var target=host||el('v6StoreSimulatorResults');
+          if(target && typeof target.scrollIntoView==='function') target.scrollIntoView({behavior:'smooth',block:'start'});
+        });
       }catch(error){ console.error('DigiYar Hooshyar browser:',error); }
     });
     return true;
