@@ -35,9 +35,11 @@ const qLaptop = parser.parse('لپ‌تاپ ایسوس تا ۵۰ میلیون', 
 const qTv = parser.parse('تلویزیون سامسونگ', taxonomy);
 
 const mobileResults = core.search(mobile.concat(digital), qMobile, { limit: 8 });
+assert.ok(mobileResults.length > 0, 'mobile results must exist');
 const laptopResults = core.search(laptop.concat(digital), qLaptop, { limit: 8 });
 const tvResults = core.search(digital, qTv, { limit: 8 });
 
+assert.ok(mobileResults.every((p) => /موبایل|گوشی|phone|mobile/i.test(String(p.name))), 'mobile hard filter must exclude unrelated digital products');
 for (const p of mobileResults) {
   assert.ok(core.priceToman(p) <= 20_000_000, `mobile result over budget: ${p.name}`);
   assert.match(String(p.name), /شیائومی|xiaomi/i, `mobile result is not Xiaomi: ${p.name}`);
