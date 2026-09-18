@@ -102,6 +102,71 @@ var ROOTS={
  basalam:[['digital','کالای دیجیتال'],['food','مواد غذایی'],['herbal','عطاری'],['beauty','آرایشی و بهداشتی'],['health','سلامت و پزشکی'],['handmade','صنایع دستی'],['fashion','پوشاک'],['culture','محصولات فرهنگی'],['home','لوازم خانگی'],['furniture','مبلمان'],['sports','ورزش و سفر'],['local','محصولات محلی و سنتی'],['other','سایر']]
 };
 
+var USAGE={
+ mobile:[['daily','برای استفاده روزمره'],['photo-video','برای عکاسی و فیلمبرداری'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['work','برای کار و برنامه‌نویسی'],['study','برای درس و مطالعه'],['travel','برای سفر'],['communication','برای تماس و ارتباط'],['outdoor','برای استفاده در فضای باز']],
+ laptop:[['work','برای کار و برنامه‌نویسی'],['study','برای درس و مطالعه'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['office','برای کار اداری'],['daily','برای استفاده روزمره'],['travel','برای سفر'],['education','برای آموزش']],
+ tablet:[['study','برای درس و مطالعه'],['work','برای کار و مطالعه'],['content','برای طراحی و یادداشت‌برداری'],['entertainment','برای فیلم و سرگرمی'],['daily','برای استفاده روزمره'],['travel','برای سفر'],['reading','برای مطالعه و کتاب‌خوانی']],
+ headphones:[['music','برای موسیقی و شنیدن صدا'],['daily','برای استفاده روزمره'],['gaming','برای بازی و گیمینگ'],['work','برای کار و تماس'],['sport','برای ورزش'],['travel','برای سفر'],['study','برای درس و مطالعه']],
+ tv:[['movie','برای فیلم و سریال'],['gaming','برای بازی و گیمینگ'],['daily','برای استفاده روزمره'],['family','برای استفاده خانوادگی'],['sport','برای تماشای ورزش'],['streaming','برای تماشای محتوای آنلاین']],
+ camera:[['photo-video','برای عکاسی و فیلمبرداری'],['content','برای تولید محتوا'],['travel','برای سفر'],['work','برای کار حرفه‌ای'],['family','برای ثبت خاطرات خانوادگی'],['sport','برای عکاسی ورزشی'],['nature','برای عکاسی طبیعت']],
+ accessories:[['daily','برای استفاده روزمره'],['work','برای کار و مطالعه'],['travel','برای سفر'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['charging','برای شارژ و برق‌رسانی'],['protection','برای محافظت از دستگاه']],
+ gaming:[['gaming','برای بازی و گیمینگ'],['competitive','برای بازی رقابتی'],['content','برای تولید محتوا و استریم'],['family','برای بازی خانوادگی'],['daily','برای استفاده روزمره'],['online','برای بازی آنلاین']],
+ 'smart-home':[['home','برای هوشمندسازی خانه'],['security','برای امنیت خانه'],['energy','برای مدیریت مصرف انرژی'],['comfort','برای آسایش و کنترل محیط'],['daily','برای استفاده روزمره'],['lighting','برای نورپردازی هوشمند']],
+ appliance:[['family','برای استفاده خانوادگی'],['daily','برای استفاده روزمره'],['cooking','برای آشپزی و پخت‌وپز'],['cleaning','برای شست‌وشو و نظافت'],['energy','برای کاهش مصرف انرژی'],['professional','برای استفاده حرفه‌ای']],
+ kitchen:[['daily','برای آشپزی روزمره'],['baking','برای پخت شیرینی و کیک'],['family','برای استفاده خانوادگی'],['beverage','برای تهیه نوشیدنی'],['professional','برای آشپزی حرفه‌ای'],['quick','برای آماده‌سازی سریع غذا']],
+ decoration:[['home','برای دکوراسیون منزل'],['office','برای دکوراسیون محل کار'],['gift','برای هدیه'],['seasonal','برای دکور مناسبتی'],['minimal','برای دکور مینیمال']],
+ cleaning:[['home','برای نظافت منزل'],['office','برای نظافت محل کار'],['professional','برای نظافت حرفه‌ای'],['daily','برای نظافت روزانه'],['car','برای نظافت خودرو']],
+ furniture:[['home','برای منزل'],['office','برای محل کار'],['family','برای استفاده خانوادگی'],['sleep','برای استراحت و خواب'],['storage','برای نظم و نگهداری وسایل']],
+ office:[['work','برای کار اداری'],['study','برای مطالعه'],['professional','برای استفاده حرفه‌ای'],['home','برای دفتر کار خانگی'],['meeting','برای جلسه و ارائه']],
+ sleep:[['sleep','برای خواب و استراحت'],['home','برای اتاق خواب'],['comfort','برای آسایش و استراحت'],['health','برای بهبود کیفیت خواب']],
+ men:[['daily','برای استفاده روزمره'],['work','برای محل کار'],['formal','برای استفاده رسمی'],['sport','برای ورزش'],['party','برای مهمانی'],['travel','برای سفر']],
+ women:[['daily','برای استفاده روزمره'],['work','برای محل کار'],['formal','برای استفاده رسمی'],['sport','برای ورزش'],['party','برای مهمانی'],['travel','برای سفر']],
+ kids:[['daily','برای استفاده روزمره'],['school','برای مدرسه'],['sport','برای ورزش'],['play','برای بازی و سرگرمی'],['travel','برای سفر']],
+ shoes:[['daily','برای استفاده روزمره'],['sport','برای ورزش'],['formal','برای استفاده رسمی'],['work','برای محیط کار'],['travel','برای سفر'],['outdoor','برای طبیعت‌گردی']],
+ bags:[['daily','برای استفاده روزمره'],['work','برای کار'],['travel','برای سفر'],['school','برای مدرسه'],['sport','برای ورزش'],['formal','برای استفاده رسمی']],
+ skin:[['daily','برای مراقبت روزانه'],['beauty','برای زیبایی'],['sensitive','برای پوست حساس'],['hydration','برای آبرسانی'],['anti-aging','برای مراقبت ضدپیری']],
+ hair:[['daily','برای مراقبت روزانه'],['beauty','برای زیبایی و حالت‌دهی'],['damage','برای موهای آسیب‌دیده'],['color','برای موهای رنگ‌شده'],['repair','برای ترمیم مو']],
+ makeup:[['daily','برای آرایش روزانه'],['party','برای مهمانی'],['professional','برای آرایش حرفه‌ای'],['formal','برای آرایش مجلسی'],['natural','برای آرایش طبیعی']],
+ personal:[['daily','برای استفاده روزمره'],['travel','برای سفر'],['gift','برای هدیه'],['family','برای استفاده خانوادگی'],['sport','برای ورزش']],
+ health:[['daily','برای مصرف روزانه'],['fitness','برای ورزش و تناسب اندام'],['wellness','برای سلامت و تندرستی'],['family','برای استفاده خانوادگی'],['sport','برای فعالیت ورزشی']],
+ medical:[['home','برای استفاده در منزل'],['professional','برای استفاده حرفه‌ای'],['care','برای مراقبت و پایش سلامت'],['rehab','برای توانبخشی'],['elderly','برای مراقبت از سالمندان']],
+ fitness:[['fitness','برای ورزش و بدنسازی'],['home','برای تمرین در خانه'],['outdoor','برای ورزش در فضای باز'],['professional','برای تمرین حرفه‌ای'],['rehab','برای تمرین توانبخشی']],
+ outdoor:[['travel','برای سفر و کمپ'],['sport','برای ورزش در فضای باز'],['daily','برای استفاده روزمره'],['camping','برای کمپینگ'],['hiking','برای کوهنوردی و طبیعت‌گردی']],
+ clothing:[['sport','برای ورزش'],['daily','برای استفاده روزمره'],['travel','برای سفر'],['outdoor','برای فضای باز'],['work','برای محیط کار']],
+ equipment:[['fitness','برای ورزش و بدنسازی'],['professional','برای استفاده حرفه‌ای'],['home','برای تمرین در خانه'],['outdoor','برای ورزش در فضای باز'],['rehab','برای توانبخشی']],
+ book:[['study','برای درس و مطالعه'],['leisure','برای مطالعه آزاد'],['gift','برای هدیه'],['education','برای آموزش'],['professional','برای مطالعه تخصصی']],
+ stationery:[['school','برای مدرسه'],['study','برای درس و مطالعه'],['office','برای کار اداری'],['art','برای طراحی و هنر'],['home','برای استفاده در خانه']],
+ art:[['art','برای طراحی و هنر'],['study','برای آموزش و تمرین'],['professional','برای کار حرفه‌ای'],['hobby','برای سرگرمی و هنر'],['school','برای مدرسه']],
+ baby:[['daily','برای استفاده روزمره نوزاد'],['care','برای مراقبت از نوزاد'],['gift','برای هدیه'],['feeding','برای تغذیه نوزاد'],['travel','برای سفر با نوزاد']],
+ toy:[['play','برای بازی و سرگرمی'],['education','برای آموزش'],['gift','برای هدیه'],['creative','برای خلاقیت و ساخت‌وساز'],['outdoor','برای بازی در فضای باز']],
+ school:[['school','برای مدرسه'],['study','برای درس و مطالعه'],['art','برای هنر و خلاقیت'],['office','برای لوازم آموزشی و اداری'],['gift','برای هدیه']],
+ auto:[['daily','برای استفاده روزمره خودرو'],['maintenance','برای نگهداری خودرو'],['travel','برای سفر'],['safety','برای ایمنی خودرو'],['performance','برای بهبود عملکرد خودرو']],
+ car:[['daily','برای استفاده روزمره'],['family','برای استفاده خانوادگی'],['travel','برای سفر'],['sport','برای رانندگی اسپرت'],['work','برای کار و جابه‌جایی']],
+ tools:[['home','برای کارهای خانه'],['professional','برای کار حرفه‌ای'],['auto','برای تعمیر و نگهداری خودرو'],['workshop','برای کارگاه'],['maintenance','برای تعمیر و نگهداری']],
+ motorcycle:[['daily','برای استفاده روزمره'],['travel','برای سفر'],['sport','برای تفریح و ورزش'],['delivery','برای پیک و جابه‌جایی'],['maintenance','برای نگهداری و تعمیر']],
+ care:[['maintenance','برای نگهداری خودرو'],['daily','برای استفاده روزمره'],['professional','برای استفاده حرفه‌ای'],['safety','برای ایمنی خودرو'],['repair','برای تعمیر خودرو']],
+ food:[['daily','برای مصرف روزانه'],['family','برای مصرف خانوادگی'],['gift','برای هدیه'],['party','برای مهمانی'],['travel','برای سفر']],
+ beverage:[['daily','برای مصرف روزانه'],['family','برای مصرف خانوادگی'],['party','برای مهمانی'],['travel','برای سفر'],['gift','برای هدیه']],
+ household:[['daily','برای مصرف روزانه'],['family','برای استفاده خانوادگی'],['cleaning','برای نظافت خانه'],['kitchen','برای آشپزخانه'],['office','برای محل کار']],
+ rice:[['daily','برای مصرف روزانه'],['family','برای مصرف خانوادگی'],['party','برای مهمانی'],['gift','برای هدیه']],
+ oil:[['daily','برای مصرف روزانه'],['family','برای مصرف خانوادگی'],['cooking','برای آشپزی'],['gift','برای هدیه']],
+ snacks:[['daily','برای مصرف روزانه'],['party','برای مهمانی'],['gift','برای هدیه'],['school','برای مدرسه و میان‌وعده'],['travel','برای سفر']],
+ drinks:[['daily','برای مصرف روزانه'],['family','برای مصرف خانوادگی'],['party','برای مهمانی'],['travel','برای سفر'],['gift','برای هدیه']],
+ herbal:[['wellness','برای سلامت و تندرستی'],['daily','برای مصرف روزانه'],['gift','برای هدیه'],['care','برای مراقبت شخصی'],['relaxation','برای آرامش و ریلکسیشن']],
+ tea:[['daily','برای مصرف روزانه'],['family','برای مصرف خانوادگی'],['gift','برای هدیه'],['relaxation','برای آرامش و پذیرایی'],['party','برای مهمانی']],
+ natural:[['daily','برای مراقبت روزانه'],['wellness','برای سلامت و تندرستی'],['gift','برای هدیه'],['beauty','برای زیبایی'],['care','برای مراقبت شخصی']],
+ craft:[['home','برای خانه'],['gift','برای هدیه'],['decoration','برای دکوراسیون'],['hobby','برای سرگرمی و هنر'],['professional','برای کار هنری']],
+ gift:[['gift','برای هدیه'],['home','برای خانه'],['personal','برای استفاده شخصی'],['formal','برای هدیه رسمی'],['family','برای هدیه خانوادگی']],
+ traditional:[['gift','برای هدیه'],['home','برای خانه'],['decoration','برای دکوراسیون'],['collection','برای کلکسیون'],['cultural','برای استفاده فرهنگی']],
+ desktop:[['work','برای کار و برنامه‌نویسی'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['office','برای کار اداری'],['professional','برای کار حرفه‌ای'],['study','برای درس و مطالعه']],
+ parts:[['gaming','برای بازی و گیمینگ'],['work','برای کار و برنامه‌نویسی'],['upgrade','برای ارتقای سیستم'],['professional','برای کار حرفه‌ای'],['office','برای کار اداری']],
+ audio:[['music','برای موسیقی و شنیدن صدا'],['movie','برای فیلم و سریال'],['gaming','برای بازی و گیمینگ'],['party','برای مهمانی'],['professional','برای کار صوتی حرفه‌ای']],
+ projector:[['movie','برای فیلم و سریال'],['presentation','برای ارائه و آموزش'],['gaming','برای بازی و گیمینگ'],['office','برای جلسات و کار اداری'],['education','برای آموزش']],
+ mother:[['care','برای مراقبت از مادر و نوزاد'],['daily','برای استفاده روزمره'],['gift','برای هدیه'],['feeding','برای تغذیه'],['travel','برای سفر']],
+ general:[['daily','برای استفاده روزمره'],['work','برای کار و مطالعه'],['family','برای استفاده خانوادگی'],['gift','برای هدیه'],['travel','برای سفر']],
+ other:[['daily','برای استفاده روزمره'],['work','برای کار و مطالعه'],['family','برای استفاده خانوادگی'],['gift','برای هدیه'],['travel','برای سفر']]
+};
+
 var BUDGETS=[[0,20000000,'تا ۲۰ میلیون تومان'],[20000000,40000000,'۲۰ تا ۴۰ میلیون تومان'],[40000000,60000000,'۴۰ تا ۶۰ میلیون تومان'],[60000000,80000000,'۶۰ تا ۸۰ میلیون تومان'],[80000000,120000000,'۸۰ تا ۱۲۰ میلیون تومان'],[120000000,200000000,'۱۲۰ تا ۲۰۰ میلیون تومان'],[200000000,300000000,'۲۰۰ تا ۳۰۰ میلیون تومان'],[300000000,400000000,'۳۰۰ تا ۴۰۰ میلیون تومان'],[400000000,600000000,'۴۰۰ تا ۶۰۰ میلیون تومان'],[600000000,800000000,'۶۰۰ تا ۸۰۰ میلیون تومان'],[800000000,1000000000,'۸۰۰ میلیون تا ۱ میلیارد تومان']];
 
 function $(id){return document.getElementById(id)}
@@ -147,12 +212,35 @@ function ensureBudget(){
  select.onchange=function(){var o=select.options[select.selectedIndex];input.value=o&&o.value||'';min.value=o&&o.dataset.min||'';input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}))};
  return select;
 }
+function removeLegacyUsageFields(){
+ var card=document.querySelector('.v5-profile-card');if(!card)return;
+ Array.from(card.querySelectorAll('label')).forEach(function(field){
+  if(field.id==='v6UsageField')return;
+  var select=field.querySelector('select');
+  var labelText=(field.querySelector('span')&&field.querySelector('span').textContent||field.textContent||'').trim();
+  if((select&&(select.id==='usage'||select.name==='usage')) || labelText.indexOf('نوع استفاده')>=0) field.remove();
+ });
+}
+function renderUsage(sub){
+ removeLegacyUsageFields();
+ var existing=$('v6UsageField');if(existing)existing.remove();
+ if(!sub)return null;
+ var list=USAGE[sub]||USAGE.general;
+ var dyn=$('v5DynamicFields'),budget=$('v6BudgetRange'),budgetField=budget&&budget.closest?budget.closest('.v5-field'):null;
+ var field=document.createElement('label');field.id='v6UsageField';field.className='v5-field full';
+ field.innerHTML='<span>نوع استفاده</span><select id="v6Usage" aria-label="نوع استفاده"><option value="">انتخاب نوع استفاده</option>'+list.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join('')+'</select>';
+ var select=field.querySelector('select');select.style.textAlign='center';select.style.textAlignLast='center';
+ if(budgetField&&budgetField.parentNode)budgetField.parentNode.insertBefore(field,budgetField.nextSibling);else if(dyn&&dyn.parentNode)dyn.parentNode.appendChild(field);
+ return select;
+}
 function updateSub(cat){
+ removeLegacyUsageFields();
  var sub=ensureSubField();if(!sub)return;
  var list=unique(SUBS[cat.value]||[]);
  sub.innerHTML='<option value="">انتخاب زیر دسته</option>'+list.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join('');
  sub.disabled=!list.length;sub.value='';
  var old=$('v6BrandField');if(old)old.remove();
+ var oldUsage=$('v6UsageField');if(oldUsage)oldUsage.remove();
 }
 function bind(){
  var store=$('storeSelect'),cat=$('v5Category');if(!store||!cat)return false;
@@ -166,7 +254,7 @@ function bind(){
   cat.addEventListener('change',function(){updateSub(cat)});
  }
  var sub=ensureSubField();
- if(sub&&!sub.dataset.v6BrandBound){sub.dataset.v6BrandBound='1';sub.addEventListener('change',function(){if(sub.value)renderBrand(sub.value);else {var b=$('v6BrandField');if(b)b.remove()}})}
+ if(sub&&!sub.dataset.v6BrandBound){sub.dataset.v6BrandBound='1';sub.addEventListener('change',function(){if(sub.value){renderBrand(sub.value);renderUsage(sub.value)}else {var br=$('v6BrandField');if(br)br.remove();var u=$('v6UsageField');if(u)u.remove()}})}
  if(store.value){setRoots(cat,store.value)}
  updateSub(cat);
  return true;
