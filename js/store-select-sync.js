@@ -65,50 +65,115 @@
     return true;
   }
 
-  function profileQuery(){
+  function ensureUsageField(){
+    if(el('v6Usage')) return el('v6Usage');
+    var dynamic=el('v5DynamicFields');
+    var budget=el('v6BudgetRange');
+    var budgetField=budget&&budget.closest ? budget.closest('.v5-field') : null;
+    if(!dynamic && !budgetField) return null;
+    var field=document.createElement('label');
+    field.id='v6UsageField';
+    field.className='v5-field full';
+    field.innerHTML='<span>نوع استفاده</span><select id="v6Usage" aria-label="نوع استفاده"><option value="">انتخاب نوع استفاده</option><option value="gaming">بازی و گیمینگ</option><option value="work">کار و برنامه‌نویسی</option><option value="study">درس و مطالعه</option><option value="content">تولید محتوا و طراحی</option><option value="photo-video">عکاسی و فیلمبرداری</option><option value="daily">استفاده روزمره</option><option value="travel">سفر</option></select>';
+    if(budgetField&&budgetField.parentNode) budgetField.parentNode.insertBefore(field,budgetField.nextSibling);
+    else if(dynamic&&dynamic.parentNode) dynamic.parentNode.appendChild(field);
+    return el('v6Usage');
+  }
+
+  function profileParts(){
     var parts=[];
-    ['v5Category','v5Subcategory','v6Brand'].forEach(function(id){
-      var text=optionText(id);
-      if(text && !/^انتخاب|^ابتدا دسته/.test(text) && parts.indexOf(text)<0) parts.push(text);
+    var sub=optionText('v5Subcategory');
+    var brand=optionText('v6Brand');
+    var budget=optionText('v6BudgetRange');
+    var usage=optionText('v6Usage');
+    if(sub && !/^انتخاب/.test(sub)) parts.push(sub);
+    if(brand && !/^انتخاب/.test(brand)) parts.push(brand);
+    if(budget && !/^چقدر/.test(budget)) parts.push(budget);
+    if(usage && !/^انتخاب/.test(usage)) parts.push(usage);
+    return parts;
+  }
+
+  function profileQuery(){
+    return profileParts().join(' ').replace(/\s+/g,' ').trim();
+  }
+
+  function profileComplete(){
+    return ['v5Subcategory','v6Brand','v6BudgetRange','v6Usage'].every(function(id){
+      var v=value(id);
+      return !!v && !/^انتخاب/.test(v);
     });
-    return parts.join(' ').replace(/\s+/g,' ').trim();
   }
 
   function persistProfile(){
     if(!window.DigiYarUserProfile || typeof window.DigiYarUserProfile.save!=='function') return;
     try{
       window.DigiYarUserProfile.save(window.DigiYarUserProfile.normalize({
-        category:value('v5Category'),
+        category:'',
         budgetMax:value('budgetMax'),
         priorities:'',
-        usage:'',
+        usage:value('v6Usage'),
         requirements:'',
         constraints:''
       }));
     }catch(error){ console.warn('DigiYar Profile save:',error); }
   }
 
+  function syncHooshyarHint(){
+    var input=el('v5SmartSearchInput');
+    var hint=el('v5SmartSearchHint');
+    if(!input||!hint) return;
+    var hasText=!!String(input.value||'').trim();
+    hint.style.opacity=hasText?'0':'1';
+    hint.style.visibility=hasText?'hidden':'visible';
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+
   function launchHooshyar(){
     var smartInput=el('v5SmartSearchInput');
-    var typed=String(smartInput&&smartInput.value||'').trim();
-    var query=typed || profileQuery();
-    if(!query){
-      console.warn('DigiYar Hooshyar: no purchase-profile query found');
+    var smartForm=el('v5SmartSearchForm');
+    var query=profileQuery();
+    if(!profileComplete()){
+      var missing=[];
+      [['v5Subcategory','زیر دسته'],['v6Brand','برند'],['v6BudgetRange','بودجه'],['v6Usage','نوع استفاده']].forEach(function(pair){
+        if(!value(pair[0])) missing.push(pair[1]);
+      });
+      if(smartInput){
+        smartInput.value='';
+        smartInput.placeholder='ابتدا '+missing.join('، ')+' را کامل کن';
+        syncHooshyarHint();
+        setTimeout(function(){smartInput.placeholder='';},2600);
+      }
       return false;
     }
-    if(smartInput) smartInput.value=query;
-    loadStoreBrowser(function(browser){
-      if(!browser || typeof browser.open!=='function') return;
-      var stores=window.DigiYarPopularAffiliateStores;
-      if(!Array.isArray(stores) || !stores.length){
-        var select=el('storeSelect');
-        stores=select ? Array.from(select.options).filter(function(o){return o.value&&o.value!=='all';}).map(function(o){return {id:o.value,name:o.textContent.trim()};}) : [];
-      }
-      browser.open(query,stores.filter(function(x){return x&&x.id&&x.name;}));
-      var resultHost=el('v5SmartSearchResults');
-      if(resultHost) resultHost.scrollIntoView({behavior:'smooth',block:'start'});
+    if(!query || !smartInput || !smartForm) return false;
+
+    smartInput.value=query;
+    syncHooshyarHint();
+
+    loadStoreBrowser(function(){
+      try{
+        if(typeof smartForm.requestSubmit==='function') smartForm.requestSubmit();
+        else {
+          var submitter=smartForm.querySelector('button[type="submit"]');
+          if(submitter) submitter.click();
+        }
+      }catch(error){ console.error('DigiYar Hooshyar submit:',error); }
     });
     return true;
+  }
+
+  function clearResultsAndQuery(){
+    var input=el('v5SmartSearchInput');
+    if(input){
+      input.value='';
+      input.disabled=false;
+      input.placeholder='';
+      syncHooshyarHint();
+    }
+    var result=el('v5SmartSearchResults');
+    if(result) result.remove();
+    var simulator=el('v6StoreSimulatorResults');
+    if(simulator) simulator.remove();
   }
 
   function handlePurchaseAction(event){
@@ -130,6 +195,7 @@
     if(!form || form.id!=='profileForm') return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    ensureUsageField();
     persistProfile();
     launchHooshyar();
   }
