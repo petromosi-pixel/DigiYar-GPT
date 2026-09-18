@@ -125,6 +125,7 @@
     var hasText=!!String(input.value||'').trim();
     hint.style.opacity=hasText?'0':'1';
     hint.style.visibility=hasText?'hidden':'visible';
+    hint.style.display=hasText?'none':'';
     input.dispatchEvent(new Event('input',{bubbles:true}));
   }
 
@@ -147,6 +148,10 @@
     }
     if(!query || !smartInput || !smartForm) return false;
 
+    var oldResults=el('v5SmartSearchResults');
+    if(oldResults) oldResults.remove();
+    var oldSimulator=el('v6StoreSimulatorResults');
+    if(oldSimulator) oldSimulator.remove();
     smartInput.value=query;
     syncHooshyarHint();
 
