@@ -38,3 +38,23 @@ html.dark .v5-smart-search-field input,body.dark .v5-smart-search-field input,[d
 html.dark .v5-smart-search-field span.v6-hooshyar-brand,body.dark .v5-smart-search-field span.v6-hooshyar-brand,[data-theme="dark"] .v5-smart-search-field span.v6-hooshyar-brand{color:#e5e7eb!important}
 html.dark .v5-smart-search-clear,body.dark .v5-smart-search-clear,[data-theme="dark"] .v5-smart-search-clear{border-color:rgba(255,91,97,.48)!important}
 html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[data-theme="dark"] .v5-smart-search-clear:hover{border-color:rgba(255,91,97,.72)!important}
+
+/* V6 Hooshyar — final field/clear alignment */
+.v5-smart-search-field{background:#fff!important}
+.v5-smart-search-clear{
+left:6px!important;top:50%!important;transform:translateY(-50%)!important;
+width:30px!important;height:30px!important;padding:0!important;border:0!important;
+border-radius:10px!important;background:#f1f4f8!important;color:#dc2626!important;
+font-size:15px!important;line-height:1!important;display:grid!important;place-items:center!important;
+box-shadow:none!important
+}
+.v5-smart-search-clear:hover{background:#e8edf3!important;color:#b91c1c!important;transform:translateY(-50%)!important}
+.v5-smart-search-field .v5-smart-search-submit{top:50%!important;transform:translateY(-50%)!important;right:6px!important}
+@media(prefers-color-scheme:dark){
+.v5-smart-search-field{background:#172033!important}
+.v5-smart-search-clear{background:#263146!important;color:#ff6b70!important}
+.v5-smart-search-clear:hover{background:#303c53!important;color:#ff8589!important}
+}
+html.dark .v5-smart-search-field,body.dark .v5-smart-search-field,[data-theme="dark"] .v5-smart-search-field{background:#172033!important}
+html.dark .v5-smart-search-clear,body.dark .v5-smart-search-clear,[data-theme="dark"] .v5-smart-search-clear{background:#263146!important;color:#ff6b70!important}
+html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[data-theme="dark"] .v5-smart-search-clear:hover{background:#303c53!important;color:#ff8589!important}
