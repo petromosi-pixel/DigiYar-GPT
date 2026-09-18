@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar UI bridge to the simulated store browser */
 (function(){
 'use strict';
-const hints=['چی می‌خوای بخری؟','مثلاً گوشی سامسونگ، شیائومی یا آیفون','دنبال لپ‌تاپ مناسب می‌گردی؟','اسم محصولت رو بنویس...','هر چی می‌خوای بنویس تا هوش یار برات پیدا کنه'];
+const hints=['هوش‌یار: چی می‌خوای بخری؟','هوش‌یار: مثلاً گوشی سامسونگ، شیائومی یا آیفون','هوش‌یار: دنبال لپ‌تاپ مناسب می‌گردی؟','هوش‌یار: اسم محصولت رو بنویس...','هوش‌یار: هر چی می‌خوای بنویس تا برات پیدا کنه'];
 let i=0,timer;
 
 function installCardStyle(){if(document.getElementById('v6-hooshyar-card-style'))return;const s=document.createElement('style');s.id='v6-hooshyar-card-style';s.textContent=`
