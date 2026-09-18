@@ -24,6 +24,7 @@ const cases = [
   ['لپ‌تاپ ایسوس تا ۵۰ میلیون', 'digital', 'laptop', 'ایسوس', 50_000_000],
   ['تلویزیون سامسونگ', 'digital', 'tv', 'سامسونگ', null],
   ['هدفون بی‌سیم', 'digital', 'headphones', null, null],
+  ['موبایل شیائومی تا ۲۰ میلیون بازی و گیمینگ', 'digital', 'mobile', 'شیائومی', 20_000_000],
 ];
 
 for (const [input, category, subcategory, brand, budget] of cases) {
@@ -32,6 +33,7 @@ for (const [input, category, subcategory, brand, budget] of cases) {
   assert.equal(q.subcategory, subcategory, input);
   assert.equal(q.brand, brand, input);
   assert.equal(q.budget?.max ?? null, budget, input);
+  if (input.includes('بازی و گیمینگ')) assert.equal(q.usage, 'gaming', input);
 }
 
 assert.equal(parser.parseBudget('تا ۲۰ میلیون').max, 20_000_000);
