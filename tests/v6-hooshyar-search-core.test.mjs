@@ -41,7 +41,7 @@ const tvResults = core.search(digital, qTv, { limit: 8 });
 
 for (const p of mobileResults) {
   assert.ok(core.priceToman(p) <= 20_000_000, `mobile result over budget: ${p.name}`);
-  assert.match(String(p.name), /شیائومی|xiaomi/i, `mobile result is not Xiaomi: ${p.name}`);
+  assert.match(String(p.name), /شیائومی|xiaomi/i, `mobile result is not Xiaomi: ${JSON.stringify({query:qMobile,product:p})}`);
 }
 for (const p of laptopResults) {
   assert.ok(core.priceToman(p) <= 50_000_000, `laptop result over budget: ${p.name}`);
