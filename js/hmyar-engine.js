@@ -1,64 +1,172 @@
-/* DigiYar V7 — Hamyar live store-page engines (Path A) */
+/* DigiYar V7 — Hamyar Path A: live store-page extraction (multi-layer) */
 const STORES=[
-  {id:'digikala',name:'دیجی‌کالا',url:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q)},
-  {id:'snappshop',name:'اسنپ‌شاپ',url:q=>'https://snappshop.ir/search?q='+encodeURIComponent(q)},
-  {id:'technolife',name:'تکنولایف',url:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q)},
-  {id:'digido',name:'دیجیدو',url:q=>'https://digido.ir/search?q='+encodeURIComponent(q)}
+  {id:'digikala',name:'دیجی‌کالا',url:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),hosts:['digikala.com']},
+  {id:'snappshop',name:'اسنپ‌شاپ',url:q=>'https://snappshop.ir/search?q='+encodeURIComponent(q),hosts:['snappshop.ir']},
+  {id:'technolife',name:'تکنولایف',url:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),hosts:['technolife.ir']},
+  {id:'digido',name:'دیجیدو',url:q=>'https://digido.ir/search?q='+encodeURIComponent(q),hosts:['digido.ir']}
 ];
 
-const norm=s=>String(s??'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/[٬,]/g,'').replace(/\s+/g,' ').trim();
-const money=s=>{const x=Number(String(s??'').replace(/[^0-9.]/g,''));return Number.isFinite(x)?x:0};
-const toToman=(n,c='IRT')=>{const x=money(n);return /IRR|ریال/i.test(String(c))?Math.round(x/10):Math.round(x)};
-const absUrl=(u,base)=>{try{return new URL(u,base).href}catch{return ''}};
-function walk(x,out,base){
-  if(!x)return;
-  if(Array.isArray(x)){x.forEach(v=>walk(v,out,base));return}
+const norm=s=>String(s??'').toLowerCase()
+  .replace(/[يى]/g,'ی').replace(/ك/g,'ک')
+  .replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+  .replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+  .replace(/[٬,]/g,'').replace(/\s+/g,' ').trim();
+
+const money=s=>{
+  const x=Number(String(s??'').replace(/[^0-9.]/g,''));
+  return Number.isFinite(x)?x:0;
+};
+const toToman=(n,c='IRT')=>{
+  const x=money(n);
+  return /IRR|ریال/i.test(String(c))?Math.round(x/10):Math.round(x);
+};
+const absUrl=(u,base)=>{
+  try{
+    const x=new URL(String(u||''),base);
+    if(!/^https?:$/.test(x.protocol))return '';
+    return x.href;
+  }catch{return ''}
+};
+const cleanText=s=>String(s??'').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ')
+  .replace(/&quot;/gi,'"').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim();
+
+function pushProduct(out,p,base,source){
+  if(!p||typeof p!=='object')return;
+  const name=cleanText(p.name||p.title||p.productName||p.title_fa||p.titleFa||'');
+  const rawUrl=p.url||p.productUrl||p.link||p.href||p.productLink||'';
+  const productUrl=absUrl(rawUrl,base);
+  const offers=Array.isArray(p.offers)?p.offers[0]:(p.offers||p.offer||{});
+  const rawPrice=p.price??p.sellingPrice??p.salePrice??p.finalPrice??p.currentPrice??offers.price??offers.selling_price??offers.sellingPrice??0;
+  const currency=p.priceCurrency||p.currency||offers.priceCurrency||'IRT';
+  const priceToman=toToman(rawPrice,currency);
+  if(name && productUrl && /product|dkp-|item|sku|p\//i.test(productUrl)){
+    out.push({name,productUrl,price:Number(money(rawPrice))||0,priceToman,currency,
+      availability:p.availability||offers.availability||'unknown',source});
+  }
+}
+
+function walkObject(x,out,base,source,depth=0){
+  if(!x||depth>8)return;
+  if(Array.isArray(x)){for(const v of x)walkObject(v,out,base,source,depth+1);return}
   if(typeof x!=='object')return;
   const type=String(x['@type']||'').toLowerCase();
-  const offers=Array.isArray(x.offers)?x.offers[0]:x.offers||{};
-  if(type.includes('product') && (x.name||x.url||x.sku)){
-    const price=offers.price||x.price||x.lowPrice||0;
-    const currency=offers.priceCurrency||x.priceCurrency||'IRT';
-    const url=absUrl(x.url||x['@id']||'',base);
-    out.push({name:String(x.name||'').trim(),productUrl:url,price:Number(price)||0,priceToman:toToman(price,currency),currency,availability:offers.availability||'unknown',source:'json-ld'});
+  if(type.includes('product')||x.productId||x.product_id||x.productName)pushProduct(out,x,base,source);
+  for(const [k,v] of Object.entries(x)){
+    if(k==='offers'||k==='product'||k==='products'||k==='items'||k==='data'||k==='results'||k==='props'||k==='pageProps'||typeof v==='object'){
+      walkObject(v,out,base,source,depth+1);
+    }
   }
-  Object.keys(x).forEach(k=>{if(k!=='offers'&&x[k]&&typeof x[k]==='object')walk(x[k],out,base)});
 }
+
+function parseJsonScripts(html,out,base){
+  const re=/<script([^>]*)>([\\s\\S]*?)<\\/script>/gi; let m;
+  while((m=re.exec(html))){
+    const attrs=m[1]||'', body=m[2]||'';
+    if(!body.trim())continue;
+    const type=(attrs.match(/type=["']([^"']+)["']/i)||[])[1]||'';
+    const id=(attrs.match(/id=["']([^"']+)["']/i)||[])[1]||'';
+    if(!/json|ld\+json/i.test(type) && !/__next_data__|initial|state|apollo|nuxt|redux|preloaded/i.test(id+body.slice(0,500)))continue;
+    try{
+      let s=body.trim();
+      if(type.toLowerCase().includes('ld+json'))s=s.replace(/<!--|-->/g,'');
+      const data=JSON.parse(s);
+      walkObject(data,out,base,type||id||'embedded-json');
+    }catch{}
+  }
+}
+
+function parseLdJson(html,out,base){
+  const re=/<script[^>]*type=["']application\\/ld\\+json["'][^>]*>([\\s\\S]*?)<\\/script>/gi; let m;
+  while((m=re.exec(html))){
+    try{walkObject(JSON.parse(m[1].replace(/<!--|-->/g,'')),out,base,'json-ld')}catch{}
+  }
+}
+
+function parseProductAnchors(html,out,base){
+  const re=/<a([^>]+)href=["']([^"']+)["']([^>]*)>([\\s\\S]{0,2500}?)<\\/a>/gi; let m;
+  while((m=re.exec(html))){
+    const href=absUrl(m[2],base), block=cleanText(m[4]);
+    if(!href||!block||!(/product|dkp-|item|sku|p\\//i.test(href)))continue;
+    const nums=[...block.matchAll(/(?:تومان|تومن|ریال)?\\s*([0-9۰-۹]{4,3}(?:[٬,][0-9۰-۹]{3})*(?:\\.[0-9]+)?)/g)]
+      .map(x=>money(x[1])).filter(Boolean);
+    const price=nums.length?nums[nums.length-1]:0;
+    const name=block.replace(/[0-9۰-۹٬,.]+/g,' ').replace(/تومان|تومن|ریال/g,' ').replace(/\\s+/g,' ').trim();
+    if(name.length>=4)out.push({name,productUrl:href,price,priceToman:price,currency:'TOMAN',availability:'unknown',source:'product-anchor'});
+  }
+}
+
+function parseMeta(html,out,base){
+  const metas={};
+  const re=/<meta\\s+[^>]*?(?:property|name)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*>/gi; let m;
+  while((m=re.exec(html)))metas[m[1].toLowerCase()]=m[2];
+  const name=metas['og:title']||metas['twitter:title']||'';
+  const url=absUrl(metas['og:url']||'',base);
+  const price=metas['product:price:amount']||metas['og:price:amount']||'';
+  if(name&&url)out.push({name:cleanText(name),productUrl:url,price:money(price),priceToman:toToman(price,metas['product:price:currency']||'IRT'),currency:metas['product:price:currency']||'IRT',availability:'unknown',source:'meta'});
+}
+
 function parseHtml(html,base){
   const out=[];
-  const re=/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\\s\\S]*?)<\/script>/gi;
-  let m;
-  while((m=re.exec(html))){
-    try{walk(JSON.parse(m[1]),out,base)}catch{}
-  }
+  parseLdJson(html,out,base);
+  parseJsonScripts(html,out,base);
+  parseProductAnchors(html,out,base);
+  parseMeta(html,out,base);
   const seen=new Set();
-  return out.filter(p=>p.name&&p.productUrl&&!seen.has(p.productUrl)&&seen.add(p.productUrl)).slice(0,30);
+  return out.filter(p=>p.name&&p.productUrl&&!seen.has(p.productUrl)&&seen.add(p.productUrl)).slice(0,60);
 }
+
 function scoreProduct(p,q){
-  const text=norm(p.name), words=norm(q).split(' ').filter(x=>x.length>1);
+  const text=norm(p.name), words=norm(q).split(' ').filter(x=>x.length>1&&!/^\\d/.test(x));
   const hits=words.reduce((n,w)=>n+(text.includes(w)?1:0),0);
-  return hits*20+(p.priceToman>0?4:0)+(p.productUrl?5:0);
+  const brand=words.some(w=>['سامسونگ','شیائومی','اپل','آیفون','هواوی','آنر','لنوو','ایسوس'].includes(w)&&text.includes(w))?25:0;
+  return hits*20+brand+(p.priceToman>0?6:0)+(p.productUrl?5:0);
 }
+
+function inPriceRange(p,q){
+  const n=norm(q), m=n.match(/(?:تا|زیر|کمتر از|حداکثر)\\s*([0-9.]+)\\s*(میلیون|میلیارد|هزار|تومان|تومن)?/);
+  if(!m)return true;
+  const unit=m[2]||'تومان', max=unit==='میلیون'?Number(m[1])*1e6:unit==='میلیارد'?Number(m[1])*1e9:unit==='هزار'?Number(m[1])*1e3:Number(m[1]);
+  return !p.priceToman||p.priceToman<=max;
+}
+
 async function fetchStore(store,q){
   const url=store.url(q);
   try{
-    const r=await fetch(url,{redirect:'follow',headers:{Accept:'text/html,application/xhtml+xml','Accept-Language':'fa-IR,fa;q=0.9,en;q=0.7','User-Agent':'Mozilla/5.0 (compatible; DigiYar-Hamyar/7.0; +https://digiyar.ir)'}});
+    const r=await fetch(url,{redirect:'follow',headers:{
+      Accept:'text/html,application/xhtml+xml,application/json',
+      'Accept-Language':'fa-IR,fa;q=0.9,en-US;q=0.8,en;q=0.7',
+      'Cache-Control':'no-cache',
+      Pragma:'no-cache',
+      Referer:'https://www.google.com/',
+      'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36'
+    }});
+    const finalUrl=r.url||url;
     if(!r.ok)throw new Error('HTTP '+r.status);
     const html=await r.text();
-    const products=parseHtml(html,url).map(p=>({...p,storeId:store.id,storeName:store.name,score:scoreProduct(p,q),availability:/outofstock|unavailable/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
+    if(!html||html.length<200)throw new Error('Empty response');
+    if(/cf-chl-|just a moment|access denied|captcha|robot check/i.test(html))throw new Error('Anti-bot/challenge page');
+    const products=parseHtml(html,finalUrl)
+      .filter(p=>inPriceRange(p,q))
+      .map(p=>({...p,storeId:store.id,storeName:store.name,score:scoreProduct(p,q),
+        availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
     return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',count:products.length},products};
   }catch(error){
     return {store:{id:store.id,name:store.name,status:'error',count:0,error:String(error?.message||error)},products:[]};
   }
 }
+
 export async function hmyarSearch(q){
   const settled=await Promise.all(STORES.map(s=>fetchStore(s,q)));
   const products=settled.flatMap(x=>x.products).sort((a,b)=>b.score-a.score||(a.priceToman||Infinity)-(b.priceToman||Infinity));
   const seen=new Set();
-  const unique=products.filter(p=>{const k=norm(p.name)+'|'+String(p.priceToman||'');if(seen.has(k))return false;seen.add(k);return true});
-  const results=unique.slice(0,3).map((p,i)=>({...p,rank:i+1,reason:
-    i===0?'بیشترین تطابق با عبارت جست‌وجو و داده زنده استخراج‌شده.':
-    p.priceToman>0?'تطابق مناسب با جست‌وجو و قیمت قابل‌استخراج.':
-    'تطابق مناسب با عبارت جست‌وجو.'}));
-  return {success:true,engine:'hamyar-path-a',version:'7.0.0-alpha.1',query:q,stores:settled.map(x=>x.store),results,total:results.length};
+  const unique=products.filter(p=>{
+    const k=norm(p.name)+'|'+String(p.priceToman||'')+'|'+p.storeId;
+    if(seen.has(k))return false; seen.add(k); return true;
+  });
+  const results=unique.slice(0,3).map((p,i)=>({...p,rank:i+1,
+    reason:i===0?'بیشترین تطابق از داده زنده صفحه فروشگاه.':p.priceToman>0?'تطابق مناسب با نام و قیمت استخراج‌شده از صفحه فروشگاه.':'تطابق مناسب با داده محصول استخراج‌شده از صفحه فروشگاه.'
+  }));
+  return {success:true,engine:'hamyar-path-a',version:'7.0.0-alpha.2',query:q,
+    stores:settled.map(x=>x.store),results,total:results.length,
+    extraction:['json-ld','embedded-json','product-links','meta']};
 }
