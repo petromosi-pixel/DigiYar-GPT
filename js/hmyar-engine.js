@@ -116,7 +116,12 @@ function parseTechnolifeProductPage(html,productUrl,q){
   const structuredPrices=exactStructured.map(p=>Number(p.priceToman)||0).filter(n=>n>=10000&&n<=10000000000);
   const priceMatches=[...mainBlock.matchAll(/([0-9۰-۹][0-9۰-۹٬,. ]{2,})\s*تومان/g)]
     .map(m=>money(m[1])).filter(n=>n>=10000&&n<=10000000000);
-  const priceToman=priceMatches.length?priceMatches[priceMatches.length-1]:(structuredPrices.length?structuredPrices[structuredPrices.length-1]:0);
+  const offerBlock=mainBlock.slice(Math.max(0,mainBlock.length-900));
+  const offerPrices=[...offerBlock.matchAll(/([0-9۰-۹][0-9۰-۹٬,. ]{2,})\s*تومان/g)]
+    .map(m=>money(m[1])).filter(n=>n>=10000&&n<=10000000000);
+  const priceToman=offerPrices.length?offerPrices[offerPrices.length-1]:
+    priceMatches.length?priceMatches[priceMatches.length-1]:
+    (structuredPrices.length?structuredPrices[structuredPrices.length-1]:0);
   const available=/موجود در انبار|موجود است|افزودن به سبد خرید/i.test(mainBlock);
   const unavailable=/ناموجود|نا موجود|در انبار موجود نیست/i.test(mainBlock);
   out.push({
