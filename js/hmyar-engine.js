@@ -87,7 +87,7 @@ function parseProductAnchors(html,out,base){
   while((m=re.exec(html))){
     const href=absUrl(m[2],base), block=cleanText(m[4]);
     if(!href||!block||!(/product|dkp-|item|sku|p\//i.test(href)))continue;
-    const nums=[...block.matchAll(/(?:تومان|تومن|ریال)?\s*([0-9۰-۹]{4,3}(?:[٬,][0-9۰-۹]{3})*(?:\.[0-9]+)?)/g)]
+    const nums=[...block.matchAll(/(?:تومان|تومن|ریال)?\s*([0-9۰-۹]{3,4}(?:[٬,][0-9۰-۹]{3})*(?:\.[0-9]+)?)/g)]
       .map(x=>money(x[1])).filter(Boolean);
     const price=nums.length?nums[nums.length-1]:0;
     const name=block.replace(/[0-9۰-۹٬,.]+/g,' ').replace(/تومان|تومن|ریال/g,' ').replace(/\s+/g,' ').trim();
