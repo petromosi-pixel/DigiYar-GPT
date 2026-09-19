@@ -96,18 +96,21 @@ function parseProductAnchors(html,out,base){
 }
 
 
-function parseTechnolifeProductPage(html,base,q){
+function parseTechnolifeProductPage(html,productUrl,q){
   const out=[];
-  const titleMatch=html.match(/<h1[^>]*>([\\s\\S]*?)<\\/h1>/i);
-  const name=cleanText(titleMatch?.[1]||'').replace(/\\s*[-|]\\s*تکنولایف.*$/,'').trim();
-  if(!name)return out;
-  const productUrl=absUrl(base,base);
+  const titleMatch=html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  const name=cleanText(titleMatch?.[1]||'').replace(/\s*[-|]\s*تکنولایف.*$/,'').trim();
+  if(!name||!productUrl)return out;
   const text=cleanText(html);
   const cartIndex=text.indexOf('افزودن به سبد خرید');
-  const mainBlock=cartIndex>0?text.slice(Math.max(0,cartIndex-1800),cartIndex):text.slice(0,5000);
-  const priceMatches=[...mainBlock.matchAll(/([0-9۰-۹][0-9۰-۹٬,. ]{2,})\\s*تومان/g)]
+  const mainBlock=cartIndex>0?text.slice(Math.max(0,cartIndex-2200),cartIndex):text.slice(0,7000);
+  const structured=[];
+  parseLdJson(html,structured,productUrl);
+  parseJsonScripts(html,structured,productUrl);
+  const structuredPrice=structured.map(p=>Number(p.priceToman)||0).find(n=>n>=10000&&n<=10000000000)||0;
+  const priceMatches=[...mainBlock.matchAll(/([0-9۰-۹][0-9۰-۹٬,. ]{2,})\s*تومان/g)]
     .map(m=>money(m[1])).filter(n=>n>=10000&&n<=10000000000);
-  const priceToman=priceMatches.length?priceMatches[priceMatches.length-1]:0;
+  const priceToman=structuredPrice|| (priceMatches.length?priceMatches[priceMatches.length-1]:0);
   const available=/موجود در انبار|موجود است|افزودن به سبد خرید/i.test(mainBlock);
   const unavailable=/ناموجود|نا موجود|در انبار موجود نیست/i.test(mainBlock);
   out.push({
@@ -242,7 +245,7 @@ async function fetchStore(store,q){
       const settled=await Promise.all(links.slice(0,6).map(async link=>{
         try{
           const page=await fetchHtml(link.productUrl);
-          return parseTechnolifeProductPage(page.html,page.url,q)
+          return parseTechnolifeProductPage(page.html,link.productUrl||page.url,q)
             .map(p=>({...p,storeId:store.id,storeName:store.name,
               score:scoreProduct(p,q)+12,
               availability:p.availability}));
