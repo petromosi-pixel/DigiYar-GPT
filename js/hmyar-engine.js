@@ -123,12 +123,12 @@ function parseTechnolifeProductPage(html,productUrl,q){
 
 function parseTechnolifeLinks(html,base){
   const out=[];
-  const re=/<a([^>]+)href=["']([^"']*product-[^"']+)["']([^>]*)>([\\s\\S]{0,1800}?)<\\/a>/gi; let m;
+  const re=/<a([^>]+)href=["']([^"']*product-[^"']+)["']([^>]*)>([\s\S]{0,1800}?)<\/a>/gi; let m;
   while((m=re.exec(html))){
     const href=absUrl(m[2],base);
     if(!href||!href.includes('/product-'))continue;
     const block=cleanText(m[4]);
-    const name=block.replace(/\\s+/g,' ').trim();
+    const name=block.replace(/\s+/g,' ').trim();
     if(name.length<8)continue;
     if(!out.some(x=>x.productUrl===href))out.push({name,productUrl:href});
     if(out.length>=8)break;
