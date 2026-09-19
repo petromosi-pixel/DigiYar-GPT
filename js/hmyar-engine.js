@@ -83,21 +83,21 @@ function parseLdJson(html,out,base){
 }
 
 function parseProductAnchors(html,out,base){
-  const re=/<a([^>]+)href=["']([^"']+)["']([^>]*)>([\\s\\S]{0,2500}?)<\\/a>/gi; let m;
+  const re=/<a([^>]+)href=["']([^"']+)["']([^>]*)>([\s\S]{0,2500}?)<\/a>/gi; let m;
   while((m=re.exec(html))){
     const href=absUrl(m[2],base), block=cleanText(m[4]);
-    if(!href||!block||!(/product|dkp-|item|sku|p\\//i.test(href)))continue;
-    const nums=[...block.matchAll(/(?:تومان|تومن|ریال)?\\s*([0-9۰-۹]{4,3}(?:[٬,][0-9۰-۹]{3})*(?:\\.[0-9]+)?)/g)]
+    if(!href||!block||!(/product|dkp-|item|sku|p\//i.test(href)))continue;
+    const nums=[...block.matchAll(/(?:تومان|تومن|ریال)?\s*([0-9۰-۹]{4,3}(?:[٬,][0-9۰-۹]{3})*(?:\.[0-9]+)?)/g)]
       .map(x=>money(x[1])).filter(Boolean);
     const price=nums.length?nums[nums.length-1]:0;
-    const name=block.replace(/[0-9۰-۹٬,.]+/g,' ').replace(/تومان|تومن|ریال/g,' ').replace(/\\s+/g,' ').trim();
+    const name=block.replace(/[0-9۰-۹٬,.]+/g,' ').replace(/تومان|تومن|ریال/g,' ').replace(/\s+/g,' ').trim();
     if(name.length>=4)out.push({name,productUrl:href,price,priceToman:price,currency:'TOMAN',availability:'unknown',source:'product-anchor'});
   }
 }
 
 function parseMeta(html,out,base){
   const metas={};
-  const re=/<meta\\s+[^>]*?(?:property|name)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*>/gi; let m;
+  const re=/<meta\s+[^>]*?(?:property|name)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*>/gi; let m;
   while((m=re.exec(html)))metas[m[1].toLowerCase()]=m[2];
   const name=metas['og:title']||metas['twitter:title']||'';
   const url=absUrl(metas['og:url']||'',base);
@@ -116,14 +116,14 @@ function parseHtml(html,base){
 }
 
 function scoreProduct(p,q){
-  const text=norm(p.name), words=norm(q).split(' ').filter(x=>x.length>1&&!/^\\d/.test(x));
+  const text=norm(p.name), words=norm(q).split(' ').filter(x=>x.length>1&&!/^\d/.test(x));
   const hits=words.reduce((n,w)=>n+(text.includes(w)?1:0),0);
   const brand=words.some(w=>['سامسونگ','شیائومی','اپل','آیفون','هواوی','آنر','لنوو','ایسوس'].includes(w)&&text.includes(w))?25:0;
   return hits*20+brand+(p.priceToman>0?6:0)+(p.productUrl?5:0);
 }
 
 function inPriceRange(p,q){
-  const n=norm(q), m=n.match(/(?:تا|زیر|کمتر از|حداکثر)\\s*([0-9.]+)\\s*(میلیون|میلیارد|هزار|تومان|تومن)?/);
+  const n=norm(q), m=n.match(/(?:تا|زیر|کمتر از|حداکثر)\s*([0-9.]+)\s*(میلیون|میلیارد|هزار|تومان|تومن)?/);
   if(!m)return true;
   const unit=m[2]||'تومان', max=unit==='میلیون'?Number(m[1])*1e6:unit==='میلیارد'?Number(m[1])*1e9:unit==='هزار'?Number(m[1])*1e3:Number(m[1]);
   return !p.priceToman||p.priceToman<=max;
@@ -155,7 +155,7 @@ function discoverUrlsFromSearch(html,store){
       else if(u.startsWith('/'))continue;
       const x=new URL(u);
       if(!store.hosts.some(h=>x.hostname===h||x.hostname.endsWith('.'+h)))continue;
-      if(!/product|dkp-|item|sku|p\\//i.test(x.pathname))continue;
+      if(!/product|dkp-|item|sku|p\//i.test(x.pathname))continue;
       if(!out.includes(x.href))out.push(x.href);
     }catch{}
     if(out.length>=8)break;
