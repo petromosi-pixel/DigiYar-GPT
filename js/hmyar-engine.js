@@ -95,6 +95,44 @@ function parseProductAnchors(html,out,base){
   }
 }
 
+
+function parseTechnolifeProductPage(html,base,q){
+  const out=[];
+  const titleMatch=html.match(/<h1[^>]*>([\\s\\S]*?)<\\/h1>/i);
+  const name=cleanText(titleMatch?.[1]||'').replace(/\\s*[-|]\\s*تکنولایف.*$/,'').trim();
+  if(!name)return out;
+  const productUrl=absUrl(base,base);
+  const text=cleanText(html);
+  const cartIndex=text.indexOf('افزودن به سبد خرید');
+  const mainBlock=cartIndex>0?text.slice(Math.max(0,cartIndex-1800),cartIndex):text.slice(0,5000);
+  const priceMatches=[...mainBlock.matchAll(/([0-9۰-۹][0-9۰-۹٬,. ]{2,})\\s*تومان/g)]
+    .map(m=>money(m[1])).filter(n=>n>=10000&&n<=10000000000);
+  const priceToman=priceMatches.length?priceMatches[priceMatches.length-1]:0;
+  const available=/موجود در انبار|موجود است|افزودن به سبد خرید/i.test(mainBlock);
+  const unavailable=/ناموجود|نا موجود|در انبار موجود نیست/i.test(mainBlock);
+  out.push({
+    name,productUrl,price:priceToman,priceToman,currency:'TOMAN',
+    availability:unavailable?'out_of_stock':available?'in_stock':'unknown',
+    source:'technolife-product-page'
+  });
+  return out.filter(p=>inPriceRange(p,q));
+}
+
+function parseTechnolifeLinks(html,base){
+  const out=[];
+  const re=/<a([^>]+)href=["']([^"']*product-[^"']+)["']([^>]*)>([\\s\\S]{0,1800}?)<\\/a>/gi; let m;
+  while((m=re.exec(html))){
+    const href=absUrl(m[2],base);
+    if(!href||!href.includes('/product-'))continue;
+    const block=cleanText(m[4]);
+    const name=block.replace(/\\s+/g,' ').trim();
+    if(name.length<8)continue;
+    if(!out.some(x=>x.productUrl===href))out.push({name,productUrl:href});
+    if(out.length>=8)break;
+  }
+  return out;
+}
+
 function parseMeta(html,out,base){
   const metas={};
   const re=/<meta\s+[^>]*?(?:property|name)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*>/gi; let m;
@@ -198,6 +236,26 @@ async function fetchStore(store,q){
   const url=store.url(q);
   try{
     const {html:directHtml,url:finalUrl}=await fetchHtml(url);
+
+    if(store.id==='technolife'){
+      const links=parseTechnolifeLinks(directHtml,finalUrl);
+      const settled=await Promise.all(links.slice(0,6).map(async link=>{
+        try{
+          const page=await fetchHtml(link.productUrl);
+          return parseTechnolifeProductPage(page.html,page.url,q)
+            .map(p=>({...p,storeId:store.id,storeName:store.name,
+              score:scoreProduct(p,q)+12,
+              availability:p.availability}));
+        }catch{return []}
+      }));
+      const products=settled.flat();
+      return {
+        store:{id:store.id,name:store.name,status:products.length?'ok':'empty',
+          count:products.length,mode:products.length?'technolife-product-pages':'technolife-links'},
+        products
+      };
+    }
+
     let products=parseHtml(directHtml,finalUrl)
       .filter(p=>inPriceRange(p,q))
       .map(p=>({...p,storeId:store.id,storeName:store.name,score:scoreProduct(p,q),
@@ -211,6 +269,16 @@ async function fetchStore(store,q){
     }
     return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',count:products.length,mode},products};
   }catch(error){
+    if(store.id==='technolife'){
+      try{
+        const discovered=await searchEngineFallback(store,q);
+        const pageProducts=await extractProductPages(discovered,store,q);
+        if(pageProducts.length)return {
+          store:{id:store.id,name:store.name,status:'ok',count:pageProducts.length,mode:'search-discovery'},
+          products:pageProducts
+        };
+      }catch{}
+    }
     const discovered=await searchEngineFallback(store,q);
     const pageProducts=await extractProductPages(discovered,store,q);
     if(pageProducts.length){
