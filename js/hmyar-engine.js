@@ -76,7 +76,7 @@ function parseJsonScripts(html,out,base){
 }
 
 function parseLdJson(html,out,base){
-  const re=/<script[^>]*type=["']application\\/ld\\+json["'][^>]*>([\\s\\S]*?)<\\/script>/gi; let m;
+  const re=/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi; let m;
   while((m=re.exec(html))){
     try{walkObject(JSON.parse(m[1].replace(/<!--|-->/g,'')),out,base,'json-ld')}catch{}
   }
