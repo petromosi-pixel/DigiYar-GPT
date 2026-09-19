@@ -1,9 +1,33 @@
 /* DigiYar V7 — Hamyar Path A: live store-page extraction (multi-layer) */
 const STORES=[
-  {id:'digikala',name:'دیجی‌کالا',url:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),hosts:['digikala.com']},
-  {id:'snappshop',name:'اسنپ‌شاپ',url:q=>'https://snappshop.ir/search?q='+encodeURIComponent(q),hosts:['snappshop.ir']},
-  {id:'technolife',name:'تکنولایف',url:q=>'https://www.technolife.com/search?q='+encodeURIComponent(q),hosts:['technolife.com']},
-  {id:'digido',name:'دیجیدو',url:q=>'https://digido.ir/search?q='+encodeURIComponent(q),hosts:['digido.ir']}
+  {id:'digikala',name:'دیجی‌کالا',host:'digikala.com',url:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),kind:'product'},
+  {id:'snappshop',name:'اسنپ‌شاپ',host:'snappshop.ir',url:q=>'https://snappshop.ir/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'torob',name:'ترب',host:'torob.com',url:q=>'https://torob.com/search/?query='+encodeURIComponent(q),kind:'product'},
+  {id:'basalam',name:'باسلام',host:'basalam.com',url:q=>'https://basalam.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'khanoumi',name:'خانومی',host:'khanoumi.com',url:q=>'https://www.khanoumi.com/search?search='+encodeURIComponent(q),kind:'product'},
+  {id:'banimode',name:'بانی‌مد',host:'banimode.com',url:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'modiseh',name:'مدیسه',host:'modiseh.com',url:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'esam',name:'ایسام',host:'esam.ir',url:q=>'https://www.esam.ir/search/?q='+encodeURIComponent(q),kind:'product'},
+  {id:'pinket',name:'پینکت',host:'pinket.com',url:q=>'https://pinket.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'darukade',name:'داروکده',host:'darukade.com',url:q=>'https://darukade.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'darmankala',name:'درمان‌کالا',host:'darmankala.com',url:q=>'https://www.darmankala.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'digido',name:'دیجیدو',host:'digido.ir',url:q=>'https://digido.ir/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'janebi',name:'جانبی',host:'janebi.com',url:q=>'https://janebi.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'takhfifan',name:'تخفیفان',host:'takhfifan.com',url:q=>'https://takhfifan.com/search?q='+encodeURIComponent(q),kind:'service'},
+  {id:'shab',name:'شب',host:'shab.ir',url:q=>'https://shab.ir/search?q='+encodeURIComponent(q),kind:'stay'},
+  {id:'neshatrokh',name:'نشاط رخ',host:'neshatrokh.com',url:q=>'https://www.neshatrokh.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'mosbatesabz',name:'مثبت سبز',host:'mosbatesabz.com',url:q=>'https://mosbatesabz.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'shavaz',name:'شواز',host:'shavaz.com',url:q=>'https://shavaz.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'jeanswest',name:'جین‌وست',host:'jeanswest.ir',url:q=>'https://www.jeanswest.ir/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'eseminar',name:'ایسمینار',host:'eseminar.tv',url:q=>'https://eseminar.tv/search?q='+encodeURIComponent(q),kind:'course'},
+  {id:'safarme',name:'سفرمی',host:'safarme.com',url:q=>'https://safarme.com/search?q='+encodeURIComponent(q),kind:'travel'},
+  {id:'berozkala',name:'بروزکالا',host:'berozkala.com',url:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'maktabkhooneh',name:'مکتب‌خونه',host:'maktabkhooneh.org',url:q=>'https://maktabkhooneh.org/search/?q='+encodeURIComponent(q),kind:'course'},
+  {id:'daroo-online',name:'دارو آنلاین',host:'daroo-online.com',url:q=>'https://daroo-online.com/?s='+encodeURIComponent(q),kind:'product'},
+  {id:'gooshishop',name:'گوشی‌شاپ',host:'gooshishop.com',url:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'karnameh',name:'کارنامه',host:'karnameh.com',url:q=>'https://karnameh.com/search?q='+encodeURIComponent(q),kind:'vehicle'},
+  {id:'technolife',name:'تکنولایف',host:'technolife.com',url:q=>'https://www.technolife.com/search?q='+encodeURIComponent(q),kind:'product'},
+  {id:'solokala',name:'سولوکالا',host:'solokala.com',url:q=>'https://solokala.com/search?q='+encodeURIComponent(q),kind:'product'}
 ];
 
 const norm=s=>String(s??'').toLowerCase()
@@ -82,11 +106,22 @@ function parseLdJson(html,out,base){
   }
 }
 
-function parseProductAnchors(html,out,base){
+function isProductUrl(url,store){
+  const path=String(url||'').toLowerCase();
+  if(!store)return /product|product-|item|sku|\/p\/|\/products?\/|\/catalog\/|\/course\/|\/villa\/|\/property\/|\/car\//i.test(path);
+  const hints=store.kind==='course'?/course|event|seminar|class|product/i:
+    store.kind==='stay'?/villa|stay|hotel|room|property|accommodation|listing/i:
+    store.kind==='travel'?/flight|ticket|hotel|tour|travel|listing/i:
+    store.kind==='vehicle'?/car|vehicle|auto|price|listing/i:
+    /product|product-|item|sku|\/p\/|\/products?\/|\/catalog\/|\/shop\//i;
+  return hints.test(path)||path.includes('/search/');
+}
+
+function parseProductAnchors(html,out,base,store){
   const re=/<a([^>]+)href=["']([^"']+)["']([^>]*)>([\s\S]{0,2500}?)<\/a>/gi; let m;
   while((m=re.exec(html))){
     const href=absUrl(m[2],base), block=cleanText(m[4]);
-    if(!href||!block||!(/product|dkp-|item|sku|p\//i.test(href)))continue;
+    if(!href||!block||!isProductUrl(href,store))continue;
     const nums=[...block.matchAll(/(?:تومان|تومن|ریال)?\s*([0-9۰-۹]{3,4}(?:[٬,][0-9۰-۹]{3})*(?:\.[0-9]+)?)/g)]
       .map(x=>money(x[1])).filter(Boolean);
     const price=nums.length?nums[nums.length-1]:0;
@@ -94,7 +129,6 @@ function parseProductAnchors(html,out,base){
     if(name.length>=4)out.push({name,productUrl:href,price,priceToman:price,currency:'TOMAN',availability:'unknown',source:'product-anchor'});
   }
 }
-
 
 function parseTechnolifeProductPage(html,productUrl,q){
   const out=[];
@@ -171,11 +205,11 @@ function parseMeta(html,out,base){
   if(name&&url)out.push({name:cleanText(name),productUrl:url,price:money(price),priceToman:toToman(price,metas['product:price:currency']||'IRT'),currency:metas['product:price:currency']||'IRT',availability:'unknown',source:'meta'});
 }
 
-function parseHtml(html,base){
+function parseHtml(html,base,store){
   const out=[];
   parseLdJson(html,out,base);
   parseJsonScripts(html,out,base);
-  parseProductAnchors(html,out,base);
+  parseProductAnchors(html,out,base,store);
   parseMeta(html,out,base);
   const seen=new Set();
   return out.filter(p=>p.name&&p.productUrl&&!seen.has(p.productUrl)&&seen.add(p.productUrl)).slice(0,60);
@@ -239,8 +273,8 @@ function discoverUrlsFromSearch(html,store){
       if(u.startsWith('/url?q='))u=decodeURIComponent(u.slice(7).split('&')[0]);
       else if(u.startsWith('/'))continue;
       const x=new URL(u);
-      if(!store.hosts.some(h=>x.hostname===h||x.hostname.endsWith('.'+h)))continue;
-      if(!/product|dkp-|item|sku|p\//i.test(x.pathname))continue;
+      if(!(x.hostname===store.host||x.hostname.endsWith('.'+store.host)))continue;
+      if(!isProductUrl(x.href,store))continue;
       if(!out.includes(x.href))out.push(x.href);
     }catch{}
     if(out.length>=8)break;
@@ -249,7 +283,7 @@ function discoverUrlsFromSearch(html,store){
 }
 
 async function searchEngineFallback(store,q){
-  const query=encodeURIComponent('site:'+store.hosts[0]+' '+q);
+  const query=encodeURIComponent('site:'+store.host+' '+q);
   const engines=[
     'https://www.google.com/search?q='+query+'&num=8',
     'https://www.bing.com/search?q='+query
@@ -268,7 +302,7 @@ async function extractProductPages(urls,store,q){
   const settled=await Promise.all(urls.slice(0,6).map(async url=>{
     try{
       const {html,url:finalUrl}=await fetchHtml(url);
-      const products=parseHtml(html,finalUrl)
+      const products=parseHtml(html,finalUrl,store)
         .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
         .map(p=>({...p,storeId:store.id,storeName:store.name,
           score:scoreProduct(p,q)+8,
@@ -280,6 +314,7 @@ async function extractProductPages(urls,store,q){
 }
 
 async function fetchStore(store,q){
+  const started=Date.now();
   const url=store.url(q);
   try{
     const {html:directHtml,url:finalUrl}=await fetchHtml(url);
@@ -293,78 +328,109 @@ async function fetchStore(store,q){
             const page=await fetchHtml(link.productUrl);
             return parseTechnolifeProductPage(page.html,link.productUrl||page.url,q)
               .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
-              .map(p=>({...p,storeId:store.id,storeName:store.name,
-                score:scoreProduct(p,q)+12,
-                availability:p.availability}));
+              .map(p=>({...p,storeId:store.id,storeName:store.name,kind:store.kind,
+                adapter:'technolife-adapter',score:scoreProduct(p,q)+12,availability:p.availability}));
           }catch{return []}
         }));
         products=settled.flat();
       }
       if(!products.length){
         const discovered=await searchEngineFallback(store,q);
-        const settled=await Promise.all(discovered.slice(0,6).map(async productUrl=>{
+        const settled=await Promise.all(discovered.slice(0,4).map(async productUrl=>{
           try{
             const page=await fetchHtml(productUrl);
             return parseTechnolifeProductPage(page.html,productUrl||page.url,q)
               .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
-              .map(p=>({...p,storeId:store.id,storeName:store.name,
-                score:scoreProduct(p,q)+12,
-                availability:p.availability}));
+              .map(p=>({...p,storeId:store.id,storeName:store.name,kind:store.kind,
+                adapter:'technolife-adapter',score:scoreProduct(p,q)+12,availability:p.availability}));
           }catch{return []}
         }));
         products=settled.flat();
       }
-      return {
-        store:{id:store.id,name:store.name,status:products.length?'ok':'empty',
-          count:products.length,mode:products.length?(links.length?'technolife-product-pages':'technolife-search-discovery'):'technolife-empty'},
-        products
-      };
+      return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',
+        count:products.length,mode:products.length?(links.length?'product-pages':'search-discovery'):'direct-empty',
+        adapter:'technolife-adapter',ms:Date.now()-started},products};
     }
 
-    let products=parseHtml(directHtml,finalUrl)
+    let products=parseHtml(directHtml,finalUrl,store)
       .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
-      .map(p=>({...p,storeId:store.id,storeName:store.name,score:scoreProduct(p,q),
+      .map(p=>({...p,storeId:store.id,storeName:store.name,kind:store.kind,
+        adapter:store.id+'-adapter',score:scoreProduct(p,q),
         availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
     let mode='direct';
+
     if(!products.length){
       const discovered=await searchEngineFallback(store,q);
       const pageProducts=await extractProductPages(discovered,store,q);
-      products=pageProducts;
+      products=pageProducts.map(p=>({...p,adapter:store.id+'-adapter'}));
       mode=pageProducts.length?'search-discovery':'direct-empty';
     }
-    return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',count:products.length,mode},products};
+
+    return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',
+      count:products.length,mode,adapter:store.id+'-adapter',ms:Date.now()-started},products};
   }catch(error){
-    if(store.id==='technolife'){
-      try{
-        const discovered=await searchEngineFallback(store,q);
-        const pageProducts=await extractProductPages(discovered,store,q);
-        if(pageProducts.length)return {
-          store:{id:store.id,name:store.name,status:'ok',count:pageProducts.length,mode:'search-discovery'},
-          products:pageProducts
-        };
-      }catch{}
-    }
-    const discovered=await searchEngineFallback(store,q);
-    const pageProducts=await extractProductPages(discovered,store,q);
-    if(pageProducts.length){
-      return {store:{id:store.id,name:store.name,status:'ok',count:pageProducts.length,mode:'search-discovery'},products:pageProducts};
-    }
-    return {store:{id:store.id,name:store.name,status:'error',count:0,error:String(error?.message||error),mode:'failed'},products:[]};
+    try{
+      const discovered=await searchEngineFallback(store,q);
+      const pageProducts=await extractProductPages(discovered,store,q);
+      if(pageProducts.length)return {
+        store:{id:store.id,name:store.name,status:'ok',count:pageProducts.length,
+          mode:'search-discovery',adapter:store.id+'-adapter',ms:Date.now()-started},
+        products:pageProducts.map(p=>({...p,adapter:store.id+'-adapter'}))
+      };
+    }catch{}
+    return {store:{id:store.id,name:store.name,status:'error',count:0,
+      error:String(error?.message||error),mode:'failed',adapter:store.id+'-adapter',ms:Date.now()-started},products:[]};
   }
 }
 
+async function runPool(items,limit,worker){
+  const results=new Array(items.length);
+  let cursor=0;
+  async function runner(){
+    while(true){
+      const i=cursor++;
+      if(i>=items.length)return;
+      try{results[i]=await worker(items[i],i)}catch(error){
+        results[i]={store:{id:items[i].id,name:items[i].name,status:'error',count:0,
+          error:String(error?.message||error),mode:'pool-failed',adapter:items[i].id+'-adapter'},products:[]};
+      }
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(limit,items.length)},runner));
+  return results;
+}
+
 export async function hmyarSearch(q){
-  const settled=await Promise.all(STORES.map(s=>fetchStore(s,q)));
-  const products=settled.flatMap(x=>x.products).sort((a,b)=>b.score-a.score||(a.availability==='in_stock'?1:0)-(b.availability==='in_stock'?1:0));
+  const started=Date.now();
+  const settled=await runPool(STORES,6,s=>fetchStore(s,q));
+  const products=settled.flatMap(x=>x.products).sort((a,b)=>
+    b.score-a.score||
+    (a.availability==='in_stock'?1:0)-(b.availability==='in_stock'?1:0)
+  );
   const seen=new Set();
   const unique=products.filter(p=>{
     const k=norm(p.name)+'|'+String(p.priceToman||'')+'|'+p.storeId;
-    if(seen.has(k))return false; seen.add(k); return true;
+    if(seen.has(k))return false;
+    seen.add(k);
+    return true;
   });
   const results=unique.slice(0,3).map((p,i)=>({...p,rank:i+1,
-    reason:i===0?'بیشترین تطابق از داده زنده صفحه فروشگاه.':p.priceToman>0?'تطابق مناسب با نام و قیمت استخراج‌شده از صفحه فروشگاه.':'تطابق مناسب با داده محصول استخراج‌شده از صفحه فروشگاه.'
+    reason:i===0?'بیشترین تطابق از داده زنده صفحه فروشگاه.':
+      p.priceToman>0?'تطابق مناسب با نام و قیمت استخراج‌شده از صفحه فروشگاه.':
+      'تطابق مناسب با داده محصول استخراج‌شده از صفحه فروشگاه.'
   }));
-  return {success:true,engine:'hamyar-path-a',version:'7.0.0-alpha.2',query:q,
-    stores:settled.map(x=>x.store),results,total:results.length,
-    extraction:['json-ld','embedded-json','product-links','meta']};
+  return {
+    success:true,
+    engine:'hamyar-path-a',
+    version:'7.0.0-alpha.3',
+    query:q,
+    stores:settled.map(x=>x.store),
+    results,
+    total:results.length,
+    storeCount:STORES.length,
+    adapters:STORES.map(s=>({id:s.id,name:s.name,kind:s.kind,adapter:s.id+'-adapter'})),
+    elapsedMs:Date.now()-started,
+    extraction:['json-ld','embedded-json','product-links','meta','search-discovery'],
+    orchestration:{concurrency:6,centralRanking:true}
+  };
 }
