@@ -129,29 +129,94 @@ function inPriceRange(p,q){
   return !p.priceToman||p.priceToman<=max;
 }
 
+async function fetchHtml(url){
+  const r=await fetch(url,{redirect:'follow',headers:{
+    Accept:'text/html,application/xhtml+xml,application/json',
+    'Accept-Language':'fa-IR,fa;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Cache-Control':'no-cache',
+    Pragma:'no-cache',
+    Referer:'https://www.google.com/',
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36'
+  }});
+  const html=await r.text();
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  if(!html||html.length<200)throw new Error('Empty response');
+  if(/cf-chl-|just a moment|access denied|captcha|robot check/i.test(html))throw new Error('Anti-bot/challenge page');
+  return {html,url:r.url||url};
+}
+
+function discoverUrlsFromSearch(html,store){
+  const out=[];
+  const re=/<a[^>]+href=["']([^"']+)["'][^>]*>/gi; let m;
+  while((m=re.exec(html))){
+    let u=m[1].replace(/&amp;/g,'&');
+    try{
+      if(u.startsWith('/url?q='))u=decodeURIComponent(u.slice(7).split('&')[0]);
+      else if(u.startsWith('/'))continue;
+      const x=new URL(u);
+      if(!store.hosts.some(h=>x.hostname===h||x.hostname.endsWith('.'+h)))continue;
+      if(!/product|dkp-|item|sku|p\\//i.test(x.pathname))continue;
+      if(!out.includes(x.href))out.push(x.href);
+    }catch{}
+    if(out.length>=8)break;
+  }
+  return out;
+}
+
+async function searchEngineFallback(store,q){
+  const query=encodeURIComponent('site:'+store.hosts[0]+' '+q);
+  const engines=[
+    'https://www.google.com/search?q='+query+'&num=8',
+    'https://www.bing.com/search?q='+query
+  ];
+  for(const u of engines){
+    try{
+      const {html}=await fetchHtml(u);
+      const urls=discoverUrlsFromSearch(html,store);
+      if(urls.length)return urls;
+    }catch{}
+  }
+  return [];
+}
+
+async function extractProductPages(urls,store,q){
+  const settled=await Promise.all(urls.slice(0,6).map(async url=>{
+    try{
+      const {html,url:finalUrl}=await fetchHtml(url);
+      const products=parseHtml(html,finalUrl)
+        .filter(p=>inPriceRange(p,q))
+        .map(p=>({...p,storeId:store.id,storeName:store.name,
+          score:scoreProduct(p,q)+8,
+          availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
+      return products;
+    }catch{return []}
+  }));
+  return settled.flat();
+}
+
 async function fetchStore(store,q){
   const url=store.url(q);
   try{
-    const r=await fetch(url,{redirect:'follow',headers:{
-      Accept:'text/html,application/xhtml+xml,application/json',
-      'Accept-Language':'fa-IR,fa;q=0.9,en-US;q=0.8,en;q=0.7',
-      'Cache-Control':'no-cache',
-      Pragma:'no-cache',
-      Referer:'https://www.google.com/',
-      'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36'
-    }});
-    const finalUrl=r.url||url;
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const html=await r.text();
-    if(!html||html.length<200)throw new Error('Empty response');
-    if(/cf-chl-|just a moment|access denied|captcha|robot check/i.test(html))throw new Error('Anti-bot/challenge page');
-    const products=parseHtml(html,finalUrl)
+    const {html:directHtml,url:finalUrl}=await fetchHtml(url);
+    let products=parseHtml(directHtml,finalUrl)
       .filter(p=>inPriceRange(p,q))
       .map(p=>({...p,storeId:store.id,storeName:store.name,score:scoreProduct(p,q),
         availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
-    return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',count:products.length},products};
+    let mode='direct';
+    if(!products.length){
+      const discovered=await searchEngineFallback(store,q);
+      const pageProducts=await extractProductPages(discovered,store,q);
+      products=pageProducts;
+      mode=pageProducts.length?'search-discovery':'direct-empty';
+    }
+    return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',count:products.length,mode},products};
   }catch(error){
-    return {store:{id:store.id,name:store.name,status:'error',count:0,error:String(error?.message||error)},products:[]};
+    const discovered=await searchEngineFallback(store,q);
+    const pageProducts=await extractProductPages(discovered,store,q);
+    if(pageProducts.length){
+      return {store:{id:store.id,name:store.name,status:'ok',count:pageProducts.length,mode:'search-discovery'},products:pageProducts};
+    }
+    return {store:{id:store.id,name:store.name,status:'error',count:0,error:String(error?.message||error),mode:'failed'},products:[]};
   }
 }
 
