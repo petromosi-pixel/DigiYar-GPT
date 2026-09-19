@@ -8,6 +8,7 @@ on:
       - 'js/data-ingestion-v5.1.js'
       - 'js/search-core-v5.1.js'
       - 'js/v5-price-availability-resolver.js'
+      - 'js/hmyar-engine.js'
       - 'js/v5-offer-affiliate-engine.js'
       - 'js/product-index-generated-v5.1.js'
       - 'js/*-product-index-v5.1.js'
