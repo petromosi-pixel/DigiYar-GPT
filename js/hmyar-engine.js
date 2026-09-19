@@ -156,11 +156,30 @@ function parseHtml(html,base){
   return out.filter(p=>p.name&&p.productUrl&&!seen.has(p.productUrl)&&seen.add(p.productUrl)).slice(0,60);
 }
 
+function queryConstraints(q){
+  const n=norm(q);
+  const brands=['سامسونگ','شیائومی','اپل','آیفون','هواوی','آنر','لنوو','ایسوس','موتورولا','نوکیا','وان پلاس','ریلمی','گوگل پیکسل'];
+  const brand=brands.find(b=>n.includes(norm(b)))||'';
+  const phoneTerms=['گوشی','موبایل','تلفن همراه','smartphone'];
+  const wantsPhone=phoneTerms.some(t=>n.includes(norm(t)));
+  return {brand,wantsPhone};
+}
+
+function isRelevantProduct(p,q){
+  const text=norm(p.name);
+  const c=queryConstraints(q);
+  if(c.brand && !text.includes(norm(c.brand)))return false;
+  if(c.wantsPhone && !/(گوشی|موبایل|تلفن همراه|smartphone|phone)/i.test(text))return false;
+  return true;
+}
+
 function scoreProduct(p,q){
   const text=norm(p.name), words=norm(q).split(' ').filter(x=>x.length>1&&!/^\d/.test(x));
   const hits=words.reduce((n,w)=>n+(text.includes(w)?1:0),0);
-  const brand=words.some(w=>['سامسونگ','شیائومی','اپل','آیفون','هواوی','آنر','لنوو','ایسوس'].includes(w)&&text.includes(w))?25:0;
-  return hits*20+brand+(p.priceToman>0?6:0)+(p.productUrl?5:0);
+  const c=queryConstraints(q);
+  const brand=c.brand&&text.includes(norm(c.brand))?35:0;
+  const category=c.wantsPhone&&/(گوشی|موبایل|تلفن همراه|smartphone|phone)/i.test(text)?25:0;
+  return hits*20+brand+category+(p.priceToman>0?6:0)+(p.productUrl?5:0);
 }
 
 function inPriceRange(p,q){
@@ -225,7 +244,7 @@ async function extractProductPages(urls,store,q){
     try{
       const {html,url:finalUrl}=await fetchHtml(url);
       const products=parseHtml(html,finalUrl)
-        .filter(p=>inPriceRange(p,q))
+        .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
         .map(p=>({...p,storeId:store.id,storeName:store.name,
           score:scoreProduct(p,q)+8,
           availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
@@ -260,7 +279,7 @@ async function fetchStore(store,q){
     }
 
     let products=parseHtml(directHtml,finalUrl)
-      .filter(p=>inPriceRange(p,q))
+      .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
       .map(p=>({...p,storeId:store.id,storeName:store.name,score:scoreProduct(p,q),
         availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
     let mode='direct';
