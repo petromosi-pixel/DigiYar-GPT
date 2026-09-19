@@ -125,9 +125,16 @@ function parseTechnolifeProductPage(html,productUrl,q){
     .map(m=>money(m[1])).filter(n=>n>=10000&&n<=10000000000);
   // In the primary seller block the sequence is: discount -> original -> current.
   // The current/sale price is the final price in that block.
-  const priceToman=sellerPrices.length?sellerPrices[sellerPrices.length-1]:
-    priceMatches.length?priceMatches[priceMatches.length-1]:
-    (structuredPrices.length?structuredPrices[structuredPrices.length-1]:0);
+  // Technolife primary offer order: discount -> original -> final sale price.
+  // Never treat the discount amount as the product price.
+  const offerTriple=[...mainBlock.matchAll(/([0-9۰-۹][0-9۰-۹٬,. ]{2,})\s*تومان\s*تخفیف[\s\S]{0,120}?([0-9۰-۹][0-9۰-۹٬,. ]{4,})\s+([0-9۰-۹][0-9۰-۹٬,. ]{4,})\s*تومان/g)]
+    .map(m=>({discount:money(m[1]),original:money(m[2]),sale:money(m[3])}))
+    .filter(x=>x.original>=10000000&&x.sale>=10000000&&x.sale<=x.original);
+  const largeSellerPrices=sellerPrices.filter(n=>n>=10000000);
+  const priceToman=offerTriple.length?offerTriple[offerTriple.length-1].sale:
+    (largeSellerPrices.length?largeSellerPrices[largeSellerPrices.length-1]:
+    (structuredPrices.filter(n=>n>=10000000).length?structuredPrices.filter(n=>n>=10000000).slice(-1)[0]:
+    (priceMatches.filter(n=>n>=10000000).length?priceMatches.filter(n=>n>=10000000).slice(-1)[0]:0)));
   const available=/موجود در انبار|موجود است|افزودن به سبد خرید/i.test(mainBlock);
   const unavailable=/ناموجود|نا موجود|در انبار موجود نیست/i.test(mainBlock);
   out.push({
