@@ -59,7 +59,7 @@ function walkObject(x,out,base,source,depth=0){
 }
 
 function parseJsonScripts(html,out,base){
-  const re=/<script([^>]*)>([\\s\\S]*?)<\\/script>/gi; let m;
+  const re=/<script([^>]*)>([\s\S]*?)<\/script>/gi; let m;
   while((m=re.exec(html))){
     const attrs=m[1]||'', body=m[2]||'';
     if(!body.trim())continue;
