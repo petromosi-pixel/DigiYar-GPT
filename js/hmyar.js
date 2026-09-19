@@ -53,7 +53,7 @@
     status.className='hmyar-status loading'; status.textContent='هم‌یار در حال بررسی صفحات زنده فروشگاه‌هاست...';
     stores.innerHTML=''; results.innerHTML='';
     try{
-      const r=await fetch('/api/hmyar?q='+encodeURIComponent(q),{headers:{Accept:'application/json'}});
+      const r=await fetch('https://digiyar-v6.petromosi.workers.dev/api/hmyar?q='+encodeURIComponent(q),{headers:{Accept:'application/json'}});
       const d=await r.json();
       if(!r.ok||!d.success)throw new Error(d.error||'خطا در موتور هم‌یار');
       renderStores(d.stores);
