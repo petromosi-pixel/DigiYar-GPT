@@ -355,7 +355,7 @@ async function fetchStore(store,q){
 
 export async function hmyarSearch(q){
   const settled=await Promise.all(STORES.map(s=>fetchStore(s,q)));
-  const products=settled.flatMap(x=>x.products).sort((a,b)=>b.score-a.score||(a.priceToman||Infinity)-(b.priceToman||Infinity));
+  const products=settled.flatMap(x=>x.products).sort((a,b)=>b.score-a.score||(a.availability==='in_stock'?1:0)-(b.availability==='in_stock'?1:0));
   const seen=new Set();
   const unique=products.filter(p=>{
     const k=norm(p.name)+'|'+String(p.priceToman||'')+'|'+p.storeId;
