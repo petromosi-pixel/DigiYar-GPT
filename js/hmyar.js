@@ -46,8 +46,18 @@
   function renderResults(list){
     results.innerHTML=(Array.isArray(list)?list:[]).slice(0,3).map((p,i)=>{
       const reason=p.reason||'ارتباط بیشتر با عبارت جست‌وجو و داده استخراج‌شده از صفحه فروشگاه';
-      return '<article class="hmyar-result"><div class="hmyar-rank">انتخاب '+(i+1)+'</div><div><h3>'+esc(p.name||'محصول بدون نام')+'</h3><div class="hmyar-meta">'+esc(p.storeName||p.store||'فروشگاه')+(p.availability?' • '+esc(p.availability):'')+'</div><div class="hmyar-price">'+toman(p.priceToman||p.price)+'</div><div class="hmyar-reason">دلیل: '+esc(reason)+'</div></div><a class="hmyar-link" href="'+esc(p.productUrl||'#')+'" target="_blank" rel="noopener">مشاهده محصول</a></article>';
+      const href=p.affiliateUrl||p.productUrl||'#';
+      const affiliate=Boolean(p.affiliateUrl);
+      return '<article class="hmyar-result"><div class="hmyar-rank">انتخاب '+(i+1)+'</div><div><h3>'+esc(p.name||'محصول بدون نام')+'</h3><div class="hmyar-meta">'+esc(p.storeName||p.store||'فروشگاه')+(p.availability?' • '+esc(p.availability):'')+(affiliate?' • مسیر خرید افیلیت':'')+'</div><div class="hmyar-price">'+toman(p.priceToman||p.price)+'</div><div class="hmyar-reason">دلیل: '+esc(reason)+'</div></div><a class="hmyar-link" data-affiliate-click="'+(affiliate?'1':'0')+'" href="'+esc(href)+'" target="_blank" rel="noopener">'+(affiliate?'خرید از فروشگاه':'مشاهده محصول')+'</a></article>';
     }).join('');
+  }
+  async function affiliateFallback(q){
+    try{
+      const r=await fetch('https://digiyar-v6.petromosi.workers.dev/api/search?q='+encodeURIComponent(q),{headers:{Accept:'application/json'}});
+      if(!r.ok)return [];
+      const d=await r.json();
+      return Array.isArray(d.results)?d.results.filter(p=>p&&p.affiliateUrl):[];
+    }catch{return []}
   }
   async function run(q){
     status.className='hmyar-status loading'; status.textContent='هم‌یار در حال بررسی صفحات زنده فروشگاه‌هاست...';
@@ -57,13 +67,24 @@
       const d=await r.json();
       if(!r.ok||!d.success)throw new Error(d.error||'خطا در موتور هم‌یار');
       renderStores(d.stores);
-      renderResults(d.results);
-      if(d.results&&d.results.length){
+      let finalResults=Array.isArray(d.results)?d.results:[];
+      if(finalResults.length<3){
+        const affiliateResults=await affiliateFallback(q);
+        const seen=new Set(finalResults.map(p=>String(p.productUrl||p.affiliateUrl||p.name||'')));
+        for(const p of affiliateResults){
+          const key=String(p.productUrl||p.affiliateUrl||p.name||'');
+          if(!key||seen.has(key))continue;
+          seen.add(key); finalResults.push({...p,reason:'پیشنهاد قابل‌خرید از مسیر افیلیت دیجی‌یار.'});
+          if(finalResults.length>=3)break;
+        }
+      }
+      renderResults(finalResults);
+      if(finalResults.length){
         status.className='hmyar-status ok';
-        status.textContent='هم‌یار '+d.results.length+' نتیجه قابل‌استفاده را از داده‌های زنده بررسی‌شده پیدا کرد.';
+        status.textContent='هم‌یار '+finalResults.length+' نتیجه قابل‌استفاده را پیدا کرد؛ گزینه‌های قابل‌خرید با مسیر افیلیت هم فعال‌اند.';
       }else{
         status.className='hmyar-status warn';
-        status.textContent='صفحات فروشگاه‌ها بررسی شدند، اما برای این عبارت نتیجه قابل‌اعتماد کافی پیدا نشد.';
+        status.textContent='نتیجه زنده کافی نبود؛ دیجی‌یار مسیر پیشنهاد افیلیت را هم بررسی کرد اما گزینه قابل‌خریدی پیدا نشد.';
       }
     }catch(e){
       status.className='hmyar-status warn';
