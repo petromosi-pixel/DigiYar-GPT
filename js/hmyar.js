@@ -56,7 +56,14 @@
       const r=await fetch('https://digiyar-v6.petromosi.workers.dev/api/search?q='+encodeURIComponent(q),{headers:{Accept:'application/json'}});
       if(!r.ok)return [];
       const d=await r.json();
-      return Array.isArray(d.results)?d.results.filter(p=>p&&p.affiliateUrl):[];
+      const campaigns={digikala:'https://aflo.ir/TrvNHEN8',snappshop:'https://aflo.ir/YPN05dL7'};
+      return Array.isArray(d.results)?d.results.map(p=>{
+        if(!p||p.affiliateUrl)return p;
+        const sid=String(p.storeId||p.store||'').toLowerCase();
+        const base=campaigns[sid];
+        const url=p.productUrl||'';
+        return base&&url?{...p,affiliateUrl:base+'?p='+encodeURIComponent(url)}:p;
+      }).filter(p=>p&&p.affiliateUrl):[];
     }catch{return []}
   }
   async function run(q){
