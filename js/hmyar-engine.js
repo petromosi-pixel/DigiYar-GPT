@@ -1,4 +1,11 @@
 /* DigiYar V7 — Hamyar Path A: live store-page extraction (multi-layer) */
+const AFFILIATE_CAMPAIGNS={digikala:'https://aflo.ir/TrvNHEN8',snappshop:'https://aflo.ir/YPN05dL7'};
+function buildAffiliateUrl(storeId,productUrl){
+  const base=AFFILIATE_CAMPAIGNS[String(storeId||'').toLowerCase()];
+  if(!base||!productUrl)return '';
+  return base+'?p='+encodeURIComponent(productUrl);
+}
+
 const STORES=[
   {id:'digikala',name:'دیجی‌کالا',host:'digikala.com',url:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),kind:'product'},
   {id:'snappshop',name:'اسنپ‌شاپ',host:'snappshop.ir',url:q=>'https://snappshop.ir/search?q='+encodeURIComponent(q),kind:'product'},
@@ -347,6 +354,7 @@ async function fetchStore(store,q){
         }));
         products=settled.flat();
       }
+      products=products.map(p=>({...p,affiliateUrl:buildAffiliateUrl(store.id,p.productUrl)}));
       return {store:{id:store.id,name:store.name,status:products.length?'ok':'empty',
         count:products.length,mode:products.length?(links.length?'product-pages':'search-discovery'):'direct-empty',
         adapter:'technolife-adapter',ms:Date.now()-started},products};
@@ -362,7 +370,7 @@ async function fetchStore(store,q){
     if(!products.length){
       const discovered=await searchEngineFallback(store,q);
       const pageProducts=await extractProductPages(discovered,store,q);
-      products=pageProducts.map(p=>({...p,adapter:store.id+'-adapter'}));
+      products=pageProducts.map(p=>({...p,adapter:store.id+'-adapter',affiliateUrl:buildAffiliateUrl(store.id,p.productUrl)}));
       mode=pageProducts.length?'search-discovery':'direct-empty';
     }
 
@@ -422,7 +430,7 @@ export async function hmyarSearch(q){
   return {
     success:true,
     engine:'hamyar-path-a',
-    version:'7.0.0-alpha.3',
+    version:'7.0.0-alpha.4',
     query:q,
     stores:settled.map(x=>x.store),
     results,
