@@ -113,7 +113,7 @@
     var loader = splash.querySelector('.v5-splash-loader');
     if (loader) {
       while (loader.firstElementChild) loader.removeChild(loader.firstElementChild);
-      loader.appendChild(document.createElement('span'));
+      for (var i = 0; i < 3; i++) loader.appendChild(document.createElement('span'));
     }
 
     var legacyLogo = splash.querySelector('.legacy-splash-logo');
