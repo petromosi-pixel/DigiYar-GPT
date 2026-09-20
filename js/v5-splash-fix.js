@@ -88,6 +88,15 @@
     var splash = document.getElementById('splashScreen');
     if (!splash) return;
     splash.setAttribute('aria-hidden', 'false');
+    // Splash theme is explicit: app dark hooks win; otherwise splash stays light.
+    var darkTheme = document.documentElement.classList.contains('v6-dark') ||
+      document.body.classList.contains('v6-dark') ||
+      document.documentElement.classList.contains('dark') ||
+      document.body.classList.contains('dark') ||
+      document.documentElement.getAttribute('data-theme') === 'dark' ||
+      document.body.getAttribute('data-theme') === 'dark';
+    splash.setAttribute('data-splash-theme', darkTheme ? 'dark' : 'light');
+
 
     installPromptAnimationFix();
 
