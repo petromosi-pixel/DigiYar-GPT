@@ -11,20 +11,20 @@
   style.id='hmyar-v7-style';
   style.textContent=`
   .hmyar-card{width:min(100%,760px);margin:12px auto 0}
-  .hmyar-form{display:flex;gap:8px;align-items:stretch}
-  .hmyar-field{position:relative;flex:1;min-width:0}
-  .hmyar-form input{width:100%;min-height:48px;padding:10px 42px 10px 13px;border:1px solid var(--border);border-radius:12px;outline:0;background:#f7f9fc;color:var(--text);font-size:14px;box-sizing:border-box}
+  .hmyar-form{display:block}
+  .hmyar-field{position:relative;width:100%;min-width:0}
+  .hmyar-form input{width:100%;min-height:48px;padding:10px 88px 10px 13px;border:1px solid var(--border);border-radius:12px;outline:0;background:#f7f9fc;color:var(--text);font-size:14px;box-sizing:border-box}
   .hmyar-form input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(25,118,210,.1)}
-  .hmyar-form button[type="submit"]{min-width:125px;border:0;border-radius:12px;color:#fff;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--blue2))}
-  .hmyar-hint{position:absolute;inset:0 42px 0 12px;display:flex;align-items:center;pointer-events:none;color:#64748b;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:1;visibility:visible;transition:opacity .18s ease}
+  .hmyar-submit{position:absolute!important;right:8px;top:50%;transform:translateY(-50%);width:34px!important;height:34px;min-width:34px!important;padding:6px!important;border:0!important;border-radius:50%!important;background:transparent!important;color:var(--blue2)!important;display:flex;align-items:center;justify-content:center}.hmyar-submit svg{width:21px;height:21px}.hmyar-submit:hover{background:#eef4fb!important}
+  .hmyar-hint{position:absolute;inset:0 48px 0 88px;display:flex;align-items:center;pointer-events:none;color:#64748b;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:1;visibility:visible;transition:opacity .18s ease}
   .hmyar-hint.hmyar-brand{color:var(--blue2);font-weight:900}
   .hmyar-hint.hmyar-show{animation:hmyarHintIn .38s ease}
-  .hmyar-clear{position:absolute!important;right:8px;top:50%;transform:translateY(-50%);min-width:30px!important;width:30px;height:30px;padding:0;border:0!important;border-radius:50%!important;background:transparent!important;color:#d11!important;font-size:24px!important;line-height:1;display:none}
+  .hmyar-clear{position:absolute!important;right:48px;top:50%;transform:translateY(-50%);min-width:30px!important;width:30px;height:30px;padding:0;border:0!important;border-radius:50%!important;background:transparent!important;color:#d11!important;font-size:24px!important;line-height:1;display:none}
   .hmyar-clear.visible{display:block}
-  .hmyar-status{margin-top:10px;padding:9px 11px;border-radius:10px;background:#f5f7fa;color:var(--soft);font-size:11px;line-height:1.8}
-  .hmyar-status.loading{background:#eef4fb;color:var(--blue2)}
-  .hmyar-status.ok{background:#edf8f1;color:#176b3a}
-  .hmyar-status.warn{background:#fff7e8;color:#8a5a00}
+  .hmyar-status{display:none;margin-top:10px;padding:9px 11px;border-radius:10px;background:#f5f7fa;color:var(--soft);font-size:11px;line-height:1.8}
+  .hmyar-status.loading{display:block;background:#eef4fb;color:var(--blue2)}
+  .hmyar-status.ok{display:block;background:#edf8f1;color:#176b3a}
+  .hmyar-status.warn{display:block;background:#fff7e8;color:#8a5a00}
   .hmyar-results{display:grid;gap:10px;margin-top:14px}
   .hmyar-result{display:grid;grid-template-columns:72px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:13px;background:#fff}
   .hmyar-rank{width:72px;height:72px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#f5f7fa;color:var(--blue2);font-weight:900;font-size:13px}
@@ -33,11 +33,11 @@
   .hmyar-price{margin-top:3px;color:var(--red);font-size:12px;font-weight:900}
   .hmyar-reason{margin-top:3px;color:#334155;font-size:10px}
   .hmyar-link{display:inline-flex;padding:8px 10px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:800;white-space:nowrap}
+  .hmyar-form input:focus + .hmyar-clear + .hmyar-submit{color:var(--blue2)}
   .v5-hmyar-profile-toggle{display:flex;align-items:center;justify-content:center;gap:8px;margin:9px 0 0;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#f8fafc;color:var(--text);font-size:11px;cursor:pointer}
   .v5-hmyar-profile-toggle input{accent-color:var(--blue);width:16px;height:16px}
   @keyframes hmyarHintIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
   @media(max-width:560px){
-    .hmyar-form{flex-direction:column}.hmyar-form button[type="submit"]{min-height:46px}
     .hmyar-result{grid-template-columns:52px 1fr}.hmyar-rank{width:52px;height:52px}.hmyar-link{grid-column:1/-1;text-align:center;justify-content:center}
   }
   `;
@@ -47,7 +47,7 @@
   const toman=n=>{const x=Number(n);return Number.isFinite(x)&&x>0?new Intl.NumberFormat('fa-IR').format(Math.round(x))+' تومان':'قیمت نامشخص'};
 
   const hints=[
-    '🤝 هم‌یار، همراه زنده‌ی خریدت',
+    '🤝 هم‌یار، همراه زنده‌ی خرید تو',
     'مشخصات خریدتو کامل کن تا هم‌یار برات بگرده',
     'مثلاً گوشی سامسونگ تا ۳۰ میلیون',
     'برند، بودجه و نوع استفاده‌تو بگو',
@@ -84,7 +84,7 @@
     syncHint();
     results.innerHTML='';
     status.className='hmyar-status';
-    status.textContent='با تکمیل پروفایل خرید یا جستجوی مستقیم، نتایج زنده هم‌یار اینجا نمایش داده می‌شوند.';
+    status.textContent='';
     input.focus();
   });
 
@@ -192,19 +192,23 @@
 
   function bindProfile(){
     if(!profileForm)return;
-    profileForm.addEventListener('submit',()=>{
-      setTimeout(()=>{
-        if(!profileToggle?.checked)return;
-        const q=profileQuery();
-        if(!q)return;
-        input.value=q;
-        syncHint();
-        run(q,'profile');
-        setTimeout(()=>$('hmyarCard')?.scrollIntoView({behavior:'smooth',block:'start'}),80);
-      },80);
-    });
-  }
-  bindProfile();
+    let lastProfileRun=0;
+    const launchProfileSearch=()=>{
+      if(!profileToggle?.checked)return;
+      const now=Date.now();
+      if(now-lastProfileRun<500)return;
+      const q=profileQuery();
+      if(!q)return;
+      lastProfileRun=now;
+      input.value=q;
+      syncHint();
+      run(q,'profile');
+      setTimeout(()=>$('hmyarCard')?.scrollIntoView({behavior:'smooth',block:'start'}),120);
+    };
+    profileForm.addEventListener('submit',()=>setTimeout(launchProfileSearch,30));
+    const profileSubmit=profileForm.querySelector('button[type="submit"]');
+    if(profileSubmit)profileSubmit.addEventListener('click',()=>setTimeout(launchProfileSearch,30));
+  }  bindProfile();
 
   form.addEventListener('submit',e=>{
     e.preventDefault();
