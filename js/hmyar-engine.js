@@ -363,7 +363,7 @@ async function fetchStore(store,q){
     let products=parseHtml(directHtml,finalUrl,store)
       .filter(p=>isRelevantProduct(p,q)&&inPriceRange(p,q))
       .map(p=>({...p,storeId:store.id,storeName:store.name,kind:store.kind,
-        adapter:store.id+'-adapter',score:scoreProduct(p,q),
+        adapter:store.id+'-adapter',score:scoreProduct(p,q),affiliateUrl:buildAffiliateUrl(store.id,p.productUrl),
         availability:/outofstock|unavailable|ناموجود/i.test(String(p.availability))?'out_of_stock':'in_stock'}));
     let mode='direct';
 
@@ -383,7 +383,7 @@ async function fetchStore(store,q){
       if(pageProducts.length)return {
         store:{id:store.id,name:store.name,status:'ok',count:pageProducts.length,
           mode:'search-discovery',adapter:store.id+'-adapter',ms:Date.now()-started},
-        products:pageProducts.map(p=>({...p,adapter:store.id+'-adapter'}))
+        products:pageProducts.map(p=>({...p,adapter:store.id+'-adapter',affiliateUrl:buildAffiliateUrl(store.id,p.productUrl)}))
       };
     }catch{}
     return {store:{id:store.id,name:store.name,status:'error',count:0,
