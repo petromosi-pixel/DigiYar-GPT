@@ -20,7 +20,7 @@
 html.dark .v5-smart-search-field,body.dark .v5-smart-search-field,[data-theme="dark"] .v5-smart-search-field{background:#172033!important;border-color:rgba(255,255,255,.16)!important;box-shadow:0 5px 18px rgba(0,0,0,.34)!important;color:#f8fafc!important}
 html.dark .v5-smart-search-field input,body.dark .v5-smart-search-field input,[data-theme="dark"] .v5-smart-search-field input{color:#f8fafc!important}
 html.dark .v5-smart-search-field span,body.dark .v5-smart-search-field span,[data-theme="dark"] .v5-smart-search-field span{color:#9aa6b7!important}
-html.dark .v5-smart-search-field span.v6-hooshyar-brand,body.dark .v5-smart-search-field span.v6-hooshyar-brand,[data-theme="dark"] .v5-smart-search-field span.v6-hooshyar-brand{color:#ffffff!important;text-shadow:0 1px 2px rgba(0,0,0,.55)!important}
+html.dark .v5-smart-search-field span.v6-hooshyar-brand,body.dark .v5-smart-search-field span.v6-hooshyar-brand,html.v6-dark .v5-smart-search-field span.v6-hooshyar-brand,body.v6-dark .v5-smart-search-field span.v6-hooshyar-brand,[data-theme="dark"] .v5-smart-search-field span.v6-hooshyar-brand{color:#ffffff!important;text-shadow:0 1px 2px rgba(0,0,0,.55)!important}
 html.dark .v5-smart-search-clear,body.dark .v5-smart-search-clear,[data-theme="dark"] .v5-smart-search-clear{background:transparent!important;color:#ff6b70!important;border-color:transparent!important}
 html.dark .v5-smart-search-clear:hover,body.dark .v5-smart-search-clear:hover,[data-theme="dark"] .v5-smart-search-clear:hover{background:inherit!important;color:#ff8589!important}
 html.dark .v5-smart-search-field .v5-smart-search-submit,body.dark .v5-smart-search-field .v5-smart-search-submit,[data-theme="dark"] .v5-smart-search-field .v5-smart-search-submit{color:#cbd5e1!important}
