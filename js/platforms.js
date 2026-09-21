@@ -6,7 +6,7 @@ const platforms=[
 {id:'snappshop',name:'اسنپ‌شاپ',tag:'خرید آنلاین',logo:'assets/snappshop.png',url:'https://snapp.shop/'},
 {id:'torob',name:'ترب',tag:'مقایسه قیمت',logo:'assets/torob.png',url:'https://torob.com/'},
 {id:'basalam',name:'باسلام',tag:'بازار آنلاین',logo:'assets/basalam.png',url:'https://basalam.com/'},
-{id:'digiland',name:'دیجی‌لند',tag:'کالای دیجیتال و گیمینگ',logo:'assets/store-logos/digiland-temp.svg',url:'https://dgland.com/'}
+{id:'digiland',name:'دیجی‌لند',tag:'کالای دیجیتال و گیمینگ',logo:'assets/store-logos/دیجی لند.webp',url:'https://dgland.com/'}
 ];
 const popularAffiliateStores=[
 {id:'digikala',name:'دیجی‌کالا',tagline:'لبخند به خانه می‌رسد',logo:'assets/digikala.png',mark:'DK',url:'https://www.digikala.com/',heroImage:'https://nopardazco.com/uploads/posts/2025-02/1740420674_digikalaonlinestore.webp',dealUrl:'https://www.digikala.com/incredible-offers/',accent:'#e6123d',dealLabel:'پیشنهادهای شگفت‌انگیز',dealText:'تخفیف‌های روز و پیشنهادهای ویژه دیجی‌کالا',dealIcon:'★'},
@@ -22,7 +22,7 @@ const popularAffiliateStores=[
 {id:'darmankala',name:'درمان‌کالا',tagline:'مرجع تخصصی بررسی و فروش کالای پزشکی',logo:'assets/store-logos/store-logos.svg#darmankala',mark:'TK',url:'https://darmankala.com/',accent:'#2563eb',dealLabel:'پیشنهادهای تجهیزات پزشکی',dealText:'انتخاب‌های ویژه برای تجهیزات و ملزومات پزشکی',dealIcon:'+'},
 {id:'digido',name:'دیجی‌دو',tagline:'موبایل و لوازم جانبی',logo:'assets/store-logos/store-logos.svg#digido',mark:'D2',url:'https://www.digido.ir/',accent:'#334155',dealLabel:'پیشنهادهای موبایل',dealText:'موبایل و لوازم جانبی را با پیشنهادهای جذاب ببین',dealIcon:'⌁'},
 {id:'janebi',name:'جانبی',tagline:'فروشگاه اینترنتی لوازم جانبی',logo:'assets/store-logos/janebi.svg',mark:'JN',url:'https://janebi.com/',accent:'#0891b2',dealLabel:'پیشنهادهای لوازم جانبی',dealText:'اکسسوری‌های کاربردی با قیمت‌های جذاب',dealIcon:'✦'},
-{id:'digiland',name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',logo:'assets/store-logos/digiland-temp.svg',mark:'DL',url:'https://dgland.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال و گیمینگ',dealText:'لپ‌تاپ، مانیتور، کامپیوتر، کنسول و تجهیزات گیمینگ',dealIcon:'⌁'},
+{id:'digiland',name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',logo:'assets/store-logos/دیجی لند.webp',mark:'DL',url:'https://dgland.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال و گیمینگ',dealText:'لپ‌تاپ، مانیتور، کامپیوتر، کنسول و تجهیزات گیمینگ',dealIcon:'⌁'},
 {id:'takhfifan',name:'تخفیفان',tagline:'بهترم میشه',logo:'assets/store-logos/store-logos.svg#takhfifan',mark:'TF',url:'https://takhfifan.com/',accent:'#f59e0b',dealLabel:'کد و پیشنهاد تخفیف',dealText:'پیشنهادهای تخفیفی را یک‌جا ببین',dealIcon:'٪'},
 {id:'shab',name:'شب',tagline:'رزرو اقامتگاه در شمال و سراسر ایران',logo:'assets/store-logos/store-logos.svg#shab',mark:'شب',url:'https://www.shab.ir/',accent:'#0f766e',dealLabel:'پیشنهادهای اقامت',dealText:'اقامتگاه‌های منتخب با پیشنهادهای جذاب',dealIcon:'⌂'},
 {id:'neshatrokh',name:'نشاط رخ',tagline:'فروشگاه آنلاین زیبایی و سلامت',logo:'assets/store-logos/%D9%86%D8%B4%D8%A7%D8%B7%20%D8%B1%D8%AE.webp',mark:'نر',url:'https://neshatrokh.com/',accent:'#db2777',dealLabel:'فروشگاه زیبایی و سلامت',dealText:'محصولات آرایشی و بهداشتی نشاط رخ',dealIcon:'♡'},
