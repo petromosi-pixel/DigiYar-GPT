@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.10';
+const VERSION='6.0.0-store-browser.11';
 const SEARCH={
  digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
@@ -67,7 +67,6 @@ function openBrowser(query,list){
  }
  function fallback(store,u,message){
    body.innerHTML='<div class="v6-auto-status">'+esc(message||('اتصال زنده '+store.name+' برقرار نشد؛ می‌توانی نتایج مستقیم را ببینی.'))+'</div>'+
-     '<iframe class="v6-auto-frame" loading="eager" referrerpolicy="no-referrer" src="'+esc(u)+'"></iframe>'+
      '<div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,HOME[store.id]||u))+'">ورود به '+esc(store.name)+'</a></div>';
  }
  async function render(){
