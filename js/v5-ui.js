@@ -49,7 +49,7 @@ const form=card.querySelector('form');if(form){form.hidden=false;form.removeAttr
 const grid=card.querySelector('#platforms');if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
 body.innerHTML='';body.appendChild(card);sheet.classList.add('is-open');backdrop.classList.add('is-open');
 };
-const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-profile>دنبال چی می‌گردی؟</button><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-v6-deals>پیشنهادات</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
+window.__v7OpenDeals=()=>{if(deals)showCard(deals,'پیشنهادات','v6-menu-deals-card');return !!deals;};const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-profile>دنبال چی می‌گردی؟</button><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
 backdrop.addEventListener('click',close);
 sheet.addEventListener('click',e=>{
 const profile=e.target.closest('[data-v6-profile]'),popularBtn=e.target.closest('[data-v6-popular]'),dealsBtn=e.target.closest('[data-v6-deals]'),scrollBtn=e.target.closest('[data-scroll]');
