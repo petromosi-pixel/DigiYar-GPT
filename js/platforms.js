@@ -41,9 +41,15 @@ const popularAffiliateStores=[
 ];
 const moreStores={name:'فروشگاه‌های بیشتر',tagline:'هر روز انتخاب‌های بیشتری در راه است',dealLabel:'به‌زودی',dealText:'فروشگاه‌های بیشتری به دیجی‌یار اضافه می‌شوند',dealIcon:'＋'};
 const affiliateUrls={digikala:'https://aflo.ir/1GS4wzEjY',snappshop:'https://aflo.ir/13iJlKJaK'};
+const affiliateNetworks=[
+{id:'dayan',name:'دایان شاپ',type:'affiliate_network',status:'operational_user_confirmed',dashboard:null,storefront:'http://noura1393.affdn.ir/',landingPath:'https://noura1393.affdn.ir/landings'},
+{id:'memarket',name:'می‌مارکت',type:'affiliate_network',status:'operational_user_confirmed',dashboard:'https://aff.memarket24.ir/dashboard',landingBase:'https://l.memarket.me/'},
+{id:'sabzgostar',name:'سبز گستر',type:'affiliate_network',status:'inactive_unverified',dashboard:'http://sabzgostar.info'}
+];
 const newStoreIds=new Set(['khanoumi','banimode','modiseh','esam','pinket','darukade','darmankala','digido','janebi','digiland','takhfifan','shab','neshatrokh','mosbatesabz','shavaz','jeanswest','eseminar','safarme','berozkala','maktabkhooneh','daroo-online','gooshishop','karnameh','technolife','solokala']);
 window.DigiYarPlatforms=platforms;
 window.DigiYarPopularAffiliateStores=popularAffiliateStores;
+window.DigiYarAffiliateNetworks=affiliateNetworks;
 function styles(){if(document.getElementById('v6-store-brand-style'))return;const s=document.createElement('style');s.id='v6-store-brand-style';s.textContent=`
 .platform-logo img{width:100%;height:100%;object-fit:contain;border-radius:12px}.platform-mark{align-items:center;justify-content:center;width:100%;height:100%;font-size:14px;font-weight:900;line-height:1;color:#2a4169;direction:ltr}.v6-dark .platform-mark{color:#172033}.v6-dark .platform-logo{background:#f8fafc!important;border-color:#475569!important}.platform-main{min-width:0}.platform-name{display:block}.platform-tagline{display:block;margin-top:3px;font-size:10px;line-height:1.45;color:#65748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.v6-dark .platform-tagline{color:#aebbd0}
 .platform-logo-new{overflow:hidden!important;border-radius:12px!important}.platform-logo-new img{object-fit:contain!important;object-position:center!important;padding:0!important;border-radius:10px!important;transform:scale(1.12);transform-origin:center!important}
