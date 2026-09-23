@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.11';
+const VERSION='6.0.0-store-browser.12';
 const SEARCH={
  digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
@@ -86,8 +86,7 @@ function openBrowser(query,list){
      }catch(error){ fallback(active,u,'اتصال زنده '+active.name+' برقرار نشد؛ نتایج مستقیم در دسترس است.'); }
      return;
    }
-   body.innerHTML='<div class="v6-auto-status">در حال بارگذاری نتایج '+esc(active.name)+'...</div><iframe class="v6-auto-frame" loading="eager" referrerpolicy="no-referrer" src="'+esc(u)+'"></iframe><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,HOME[active.id]||u))+'">ورود به '+esc(active.name)+'</a></div>';
-   const frame=body.querySelector('iframe');frame.addEventListener('load',()=>{const st=body.querySelector('.v6-auto-status');if(st)st.textContent='نتایج '+active.name+' بارگذاری شد.';});
+   body.innerHTML='<div class="v6-auto-status">نتیجه زنده‌ای از '+esc(active.name)+' دریافت نشد؛ نتایج مستقیم در دسترس است.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,HOME[active.id]||u))+'">ورود به '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
  render();return host;
