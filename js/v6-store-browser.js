@@ -40,6 +40,58 @@ html.dark .v6-auto-frame,body.dark .v6-auto-frame,[data-theme="dark"] .v6-auto-f
 `;document.head.appendChild(s);
 }
 function ensureHost(){const existing=document.getElementById('v6StoreSimulatorResults');if(existing)return existing;let anchor=document.getElementById('v5SmartSearchResults');if(!anchor){const form=document.getElementById('v5SmartSearchForm');if(!form||!form.parentNode)return null;anchor=document.createElement('div');anchor.id='v5SmartSearchResults';anchor.className='v5-smart-search-results';form.parentNode.appendChild(anchor);}const host=document.createElement('div');host.id='v6StoreSimulatorResults';host.className='v5-smart-search-results v6-store-simulator-results';anchor.parentNode.insertBefore(host,anchor.nextSibling);return host;}
-function openBrowser(query,list){const host=ensureHost();if(!host)return;style();list=Array.isArray(list)?list:stores();if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function')list=window.DigiYarStoreEligibility.storesForQuery(query,list);const usable=list.filter(x=>SEARCH[x.id]||HOME[x.id]);if(!usable.length){host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو فروشگاه فعالی پیدا نشد.</div></div>';return host;}const box=document.createElement('section');box.className='v6-auto-store';box.innerHTML='<div class="v6-auto-head">نتایج جستجوی فروشگاه‌های دیجی‌یار برای «'+esc(query)+'»</div>';const tabs=document.createElement('div');tabs.className='v6-auto-tabs';const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);let active=usable[0];function render(){tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));const u=SEARCH[active.id]?SEARCH[active.id](query):HOME[active.id];const buyUrl=affiliateUrl(active.id,u);const homeUrl=affiliateUrl(active.id,HOME[active.id]||u);body.innerHTML='<div class="v6-auto-status">در حال بارگذاری نتایج '+esc(active.name)+'...</div><iframe class="v6-auto-frame" loading="eager" referrerpolicy="no-referrer" src="'+esc(u)+'"></iframe><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(buyUrl)+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(homeUrl)+'">ورود به '+esc(active.name)+'</a></div>';const frame=body.querySelector('iframe');frame.addEventListener('load',()=>{const st=body.querySelector('.v6-auto-status');if(st)st.textContent='نتایج '+active.name+' بارگذاری شد.';});}usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});render();return host;}
+function openBrowser(query,list){
+ const host=ensureHost();if(!host)return;
+ style();
+ list=Array.isArray(list)?list:stores();
+ if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function')
+   list=window.DigiYarStoreEligibility.storesForQuery(query,list);
+ const usable=list.filter(x=>SEARCH[x.id]||HOME[x.id]);
+ if(!usable.length){host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو فروشگاه فعالی پیدا نشد.</div></div>';return host;}
+ const box=document.createElement('section');box.className='v6-auto-store';
+ box.innerHTML='<div class="v6-auto-head">نتایج جستجوی فروشگاه‌های دیجی‌یار برای «'+esc(query)+'»</div>';
+ const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
+ const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);
+ let active=usable[0];
+ const LIVE={torob:'https://digiyar-v6.petromosi.workers.dev/api/store-search',basalam:'https://digiyar-v6.petromosi.workers.dev/api/store-search',esam:'https://digiyar-v6.petromosi.workers.dev/api/store-search'};
+ function card(item){
+   const p=Number(item&&item.priceToman)||0;
+   const price=p>0?new Intl.NumberFormat('fa-IR').format(p)+' تومان':'قیمت نامشخص';
+   const name=esc(item&&item.name||'محصول');
+   const url=esc(item&&item.productUrl||'');
+   return '<article class="v6-live-card" style="border:1px solid var(--v6-border-soft);border-radius:12px;padding:10px;margin:7px 0;background:var(--v6-surface)">'+
+     '<div style="font-weight:800;font-size:12px;line-height:1.8">'+name+'</div>'+
+     '<div style="margin-top:4px;font-size:11px;color:var(--v6-muted)">'+esc(price)+'</div>'+
+     (url?'<a class="v6-auto-link" style="margin-top:7px" target="_blank" rel="noopener noreferrer" href="'+url+'">مشاهده محصول</a>':'')+
+     '</article>';
+ }
+ function fallback(store,u,message){
+   body.innerHTML='<div class="v6-auto-status">'+esc(message||('اتصال زنده '+store.name+' برقرار نشد؛ می‌توانی نتایج مستقیم را ببینی.'))+'</div>'+
+     '<iframe class="v6-auto-frame" loading="eager" referrerpolicy="no-referrer" src="'+esc(u)+'"></iframe>'+
+     '<div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,HOME[store.id]||u))+'">ورود به '+esc(store.name)+'</a></div>';
+ }
+ async function render(){
+   tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
+   const u=SEARCH[active.id]?SEARCH[active.id](query):HOME[active.id];
+   if(LIVE[active.id]){
+     body.innerHTML='<div class="v6-auto-status">در حال دریافت زنده نتایج '+esc(active.name)+'...</div>';
+     try{
+       const response=await fetch(LIVE[active.id]+'?store='+encodeURIComponent(active.id)+'&q='+encodeURIComponent(query),{headers:{Accept:'application/json'},cache:'no-store'});
+       if(!response.ok)throw Error('HTTP '+response.status);
+       const data=await response.json();
+       if(data&&data.results&&data.results.length){
+         body.innerHTML='<div class="v6-auto-status">نتایج زنده '+esc(active.name)+' — '+data.results.length+' مورد</div>'+data.results.map(card).join('');
+         return;
+       }
+       fallback(active,u,'نتیجه زنده‌ای از '+active.name+' دریافت نشد؛ نتایج مستقیم در دسترس است.');
+     }catch(error){ fallback(active,u,'اتصال زنده '+active.name+' برقرار نشد؛ نتایج مستقیم در دسترس است.'); }
+     return;
+   }
+   body.innerHTML='<div class="v6-auto-status">در حال بارگذاری نتایج '+esc(active.name)+'...</div><iframe class="v6-auto-frame" loading="eager" referrerpolicy="no-referrer" src="'+esc(u)+'"></iframe><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,HOME[active.id]||u))+'">ورود به '+esc(active.name)+'</a></div>';
+   const frame=body.querySelector('iframe');frame.addEventListener('load',()=>{const st=body.querySelector('.v6-auto-status');if(st)st.textContent='نتایج '+active.name+' بارگذاری شد.';});
+ }
+ usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
+ render();return host;
+}
 window.DigiYarStoreBrowser={version:VERSION,open:openBrowser};
 })();
