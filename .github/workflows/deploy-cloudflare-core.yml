@@ -15,6 +15,8 @@ on:
       - 'data/category-registry-v5.1.json'
       - 'wrangler.jsonc'
       - 'tests/v5.1-smart-search-contract.test.mjs'
+      - 'js/v7-live-store-adapters.mjs'
+      - 'tests/v7-live-store-adapters.test.mjs'
       - '.github/workflows/deploy-cloudflare-core.yml'
       - '.github/workflows/catalog-ingest-v5.1.yml'
   workflow_dispatch:
@@ -88,6 +90,9 @@ jobs:
               --data-urlencode "q=${query}" \
               | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const d=JSON.parse(s); console.log(JSON.stringify({source:d.source,total:d.total,parsed:d.parsed,sample:(d.results||[]).slice(0,5).map(x=>({name:x.name,price:x.price,priceToman:x.priceToman,currency:x.currency,productUrl:x.productUrl,affiliateUrl:x.affiliateUrl,store:x.storeId||x.store}))},null,2))})'
           done
+
+      - name: Run V7 live store adapter contract gate
+        run: npm run test:v7:live-store-adapters
 
       - name: Run V5.1 Smart Search contract gate
         run: npm run test:v5.1:smart-search
