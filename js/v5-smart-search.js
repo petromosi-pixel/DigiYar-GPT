@@ -2,12 +2,10 @@
 (function(){
 'use strict';
 const hints=[
-{text:'سلام دوست من، اسم من هوش‌یار هست؛ چی می‌خوای بخری؟',mood:'greet'},
-{text:'مثلاً گوشی سامسونگ، شیائومی یا آیفون رو برات پیدا می‌کنم.',mood:'idea'},
-{text:'دنبال لپ‌تاپ مناسب می‌گردی؟ من کمکت می‌کنم.',mood:'think'},
-{text:'اسم محصولت رو بگو تا دنبالش بگردم.',mood:'search'},
-{text:'هر چی می‌خوای بنویس؛ من بررسیش می‌کنم.',mood:'ready'},
-{text:'نیازت رو بگو؛ من قدم‌به‌قدم راهنماییت می‌کنم.',mood:'help'}
+{text:'سلام، من <strong>هوش‌یار</strong> هستم؛ دستیار هوشمند خرید تو',mood:'greet'},
+{text:'دنبال لپ تاپ دانشجویی یا موبایل هستی؟',mood:'idea'},
+{text:'یا برای خونهٔ جدیدت دنبال مبل مناسب می گردی؟',mood:'think'},
+{text:'دنبال هر چی می گردی، بنویس تا برات پیداش کنم',mood:'search'}
 ];
 let i=0,timer;
 function installCardStyle(){if(document.getElementById('v6-hooshyar-card-style'))return;const s=document.createElement('style');s.id='v6-hooshyar-card-style';s.textContent=`
@@ -40,6 +38,6 @@ resetActions();renderHint();syncHint();syncActions();
 input.addEventListener('input',function(){const hasText=!!input.value.trim();if(hasText){const textEl=hint.querySelector('.v7-hooshyar-hint-text');if(textEl){textEl.style.display='none';textEl.style.visibility='hidden';textEl.style.opacity='0';}}searched=false;syncHint();syncActions();});input.addEventListener('focus',syncHint);input.addEventListener('blur',syncHint);
 if(clear)clear.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();input.value='';input.disabled=false;input.placeholder='';searched=false;i=0;renderHint();syncHint();resetActions();var r=document.getElementById('v5SmartSearchResults');if(r)r.remove();var s=document.getElementById('v6StoreSimulatorResults');if(s)s.remove();var sim=document.querySelector('[data-v6-store-simulator]');if(sim)sim.remove();input.focus();});
 timer=setInterval(()=>{if(!input.value.trim()&&!searched){i=(i+1)%hints.length;hint.classList.remove('v5-hint-show');void hint.offsetWidth;renderHint();syncHint();hint.classList.add('v5-hint-show');}},4500);
-form.addEventListener('submit',async e=>{e.preventDefault();const q=input.value.trim();if(!q)return;const textEl=hint.querySelector('.v7-hooshyar-hint-text');if(textEl){textEl.style.display='none';textEl.style.visibility='hidden';textEl.style.opacity='0';}searched=true;syncActions();const old=input.placeholder;input.placeholder='دارم برات جستجو می‌کنم...';input.disabled=true;try{const browser=await loadStoreBrowser();browser.open(q);}catch(err){console.error('DigiYar Hooshyar Store Browser:',err);}finally{input.disabled=false;input.placeholder=old;searched=true;syncActions();}});}
+form.addEventListener('submit',async e=>{e.preventDefault();const q=input.value.trim();if(!q)return;const textEl=hint.querySelector('.v7-hooshyar-hint-text');if(textEl){textEl.style.display='none';textEl.style.visibility='hidden';textEl.style.opacity='0';}searched=true;syncActions();const old=input.placeholder;input.placeholder='دارم تو فروشگاه های دیجی یار دنبال خواستهٔ تو می گردم...';input.disabled=true;try{const browser=await loadStoreBrowser();browser.open(q);}catch(err){console.error('DigiYar Hooshyar Store Browser:',err);}finally{input.disabled=false;input.placeholder=old;searched=true;syncActions();}});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
