@@ -16,95 +16,56 @@ if(document.getElementById('v6FooterNav'))return;
 const popular=document.querySelector('.v5-popular-card');
 const profileCard=document.querySelector('.v5-profile-card.profile-card');
 const profileCompletionCard=document.querySelector('.v5-profile-completion');
+const deals=document.getElementById('v7DealsHost');
 const style=document.createElement('style');
 style.id='v6-footer-navigation-style';
-style.textContent='.v6-footer-nav{position:fixed;left:0;right:0;bottom:0;z-index:9999;height:68px;padding:7px 10px;box-sizing:border-box;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;direction:rtl;background:#fff;border-top:1px solid #dfe6f0;box-shadow:0 -8px 24px rgba(16,28,53,.12)}.v6-footer-nav button{min-width:0;height:54px;border:0;background:transparent;color:#69778d;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}.v6-footer-nav button svg{display:block!important;visibility:visible!important;opacity:1!important;width:23px;height:23px;flex:0 0 23px;overflow:visible}.v6-footer-nav button span{display:none!important}.v6-footer-nav button svg{display:block!important;visibility:visible!important;opacity:1!important;width:24px;height:24px;flex:0 0 24px;overflow:visible}.v6-footer-nav .v6-menu{width:50px;height:50px;justify-self:center;border-radius:15px;background:#2a4169;color:#fff}.v6-nav-sheet{position:fixed;left:12px;right:12px;bottom:76px;z-index:10000;max-height:68vh;overflow:auto;padding:14px;border:1px solid #dfe6f0;border-radius:18px;background:#fff;box-shadow:0 16px 42px rgba(16,28,53,.2);direction:rtl;display:none}.v6-nav-sheet.is-open{display:block}.v6-sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.v6-sheet-grid{display:grid;grid-template-columns:1fr;gap:8px}.v6-sheet-action{min-height:50px;padding:9px;border:1px solid #dfe6f0;border-radius:12px;background:#f8fafd;color:#2a4169}.v6-nav-backdrop{position:fixed;inset:0;z-index:9998;background:rgba(16,28,53,.24);display:none}.v6-nav-backdrop.is-open{display:block}.v6-menu-profile-card,.v6-menu-popular-card,.v6-menu-profile-completion-card{display:block!important;width:100%!important}.v6-menu-profile-card .v5-profile-completion-toggle,.v6-menu-profile-card .v5-step4-final-toggle,.v6-menu-popular-card .v5-popular-toggle,.v6-menu-profile-completion-card .v5-profile-completion-toggle,.v6-menu-profile-completion-card .v5-step4-final-toggle{display:none!important}.v6-menu-popular-card .platform-grid{height:auto!important;max-height:none!important;overflow:visible!important}';
+style.textContent='.v6-footer-nav{position:fixed;left:0;right:0;bottom:0;z-index:9999;height:68px;padding:7px 10px;box-sizing:border-box;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;direction:rtl;background:#fff;border-top:1px solid #dfe6f0;box-shadow:0 -8px 24px rgba(16,28,53,.12)}.v6-footer-nav button{min-width:0;height:54px;border:0;background:transparent;color:#69778d;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}.v6-footer-nav button svg{display:block!important;visibility:visible!important;opacity:1!important;width:24px;height:24px;flex:0 0 24px;overflow:visible}.v6-footer-nav button span{display:none!important}.v6-footer-nav .v6-menu{width:50px;height:50px;justify-self:center;border-radius:15px;background:#2a4169;color:#fff}.v6-nav-sheet{position:fixed;left:12px;right:12px;bottom:76px;z-index:10000;max-height:68vh;overflow:auto;padding:11px;border:1px solid #dfe6f0;border-radius:18px;background:#fff;box-shadow:0 16px 42px rgba(16,28,53,.2);direction:rtl;display:none}.v6-nav-sheet.is-open{display:block}.v6-sheet-grid{display:grid;grid-template-columns:1fr;gap:8px}.v6-sheet-action{min-height:50px;padding:9px;border:1px solid #dfe6f0;border-radius:12px;background:#f8fafd;color:#2a4169}.v6-nav-backdrop{position:fixed;inset:0;z-index:9998;background:rgba(16,28,53,.24);display:none}.v6-nav-backdrop.is-open{display:block}.v6-menu-profile-card,.v6-menu-popular-card,.v6-menu-profile-completion-card,.v6-menu-deals-card{display:block!important;width:100%!important;margin:0!important;padding:11px!important;box-sizing:border-box!important}.v6-nav-sheet .section-title,.v6-nav-sheet .v5-section-heading{display:none!important}.v6-nav-sheet .v5-popular-toggle,.v6-nav-sheet .v5-profile-completion-toggle,.v6-nav-sheet .v5-step4-final-toggle{display:none!important}.v6-menu-popular-card .platform-grid{height:auto!important;max-height:none!important;overflow:visible!important}.v6-nav-sheet .v5-deal-viewport{width:100%!important}';
 document.head.appendChild(style);
 const nav=document.createElement('nav');
-nav.id='v6FooterNav';
-nav.className='v6-footer-nav';
-nav.setAttribute('aria-label','ناوبری اصلی');
-nav.innerHTML='<button type="button" data-v6-action="account" aria-label="حساب من"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 21c.7-4 3.1-6 7-6s6.3 2 7 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>حساب من</span></button><button type="button" data-v6-action="recommendations" aria-label="پیشنهادها"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>پیشنهادها</span></button><button type="button" class="v6-menu" data-v6-action="menu" aria-label="منوی اصلی"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>☰</span></button><button type="button" data-v6-action="search" aria-label="جستجو"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>جستجو</span></button><button type="button" data-v6-action="home" aria-label="خانه"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10.5V21h13V10.5M9 21v-6h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>خانه</span></button>';
-document.body.appendChild(nav);window.__v7OpenDeals=function(){const deals=document.getElementById('v7DealsHost'),sheet=document.querySelector('.v6-nav-sheet'),body=document.getElementById('v6SheetBody');if(!deals||!sheet||!body)return false;deals.hidden=false;deals.removeAttribute('aria-hidden');deals.classList.add('is-open','v6-menu-deals-card');body.innerHTML='';body.appendChild(deals);const title=document.getElementById('v6SheetTitle');if(title)title.textContent='پیشنهادات';sheet.classList.add('is-open');const backdrop=document.querySelector('.v6-nav-backdrop');if(backdrop)backdrop.classList.add('is-open');return true;};
-const backdrop=document.createElement('div');
-backdrop.className='v6-nav-backdrop';
-document.body.appendChild(backdrop);
-const sheet=document.createElement('section');
-sheet.className='v6-nav-sheet';
-sheet.innerHTML='<div class="v6-sheet-head"><h3 id="v6SheetTitle">منوی دیجی‌یار</h3><button type="button" class="v6-sheet-close">×</button></div><div id="v6SheetBody"></div>';
-document.body.appendChild(sheet);
+nav.id='v6FooterNav';nav.className='v6-footer-nav';nav.setAttribute('aria-label','ناوبری اصلی');
+nav.innerHTML='<button type="button" data-v6-action="account" aria-label="حساب من"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 21c.7-4 3.1-6 7-6s6.3 2 7 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>حساب من</span></button><button type="button" data-v6-action="recommendations" aria-label="پیشنهادها"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3 1.1-6.2L3 9.6l6.2-.9L12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>پیشنهادها</span></button><button type="button" class="v6-menu" data-v6-action="menu" aria-label="منوی اصلی"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>☰</span></button><button type="button" data-v6-action="search" aria-label="جستجو"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>جستجو</span></button><button type="button" data-v6-action="home" aria-label="خانه"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10.5V21h13V10.5M9 21v-6h6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>خانه</span></button>';
+document.body.appendChild(nav);
+const backdrop=document.createElement('div');backdrop.className='v6-nav-backdrop';document.body.appendChild(backdrop);
+const sheet=document.createElement('section');sheet.className='v6-nav-sheet';sheet.innerHTML='<div id="v6SheetBody"></div>';document.body.appendChild(sheet);
 const body=sheet.querySelector('#v6SheetBody');
-const close=()=>{sheet.classList.remove('is-open');backdrop.classList.remove('is-open');};
-const bindMenu=()=>{
-body.querySelectorAll('button[data-scroll]').forEach(button=>{
-button.addEventListener('click',()=>{
-const target=$(button.dataset.scroll);
-if(target){close();target.scrollIntoView({behavior:'smooth',block:'start'});}
-});
-});
-const profileButton=body.querySelector('[data-v6-profile]');
-if(profileButton)profileButton.addEventListener('click',()=>{
-if(!profileCard)return;
-profileCard.hidden=false;
-profileCard.removeAttribute('aria-hidden');
-profileCard.classList.add('is-open','v6-menu-profile-card');
-const form=profileCard.querySelector('#profileForm');
-if(form){form.hidden=false;form.removeAttribute('aria-hidden');form.style.display='grid';}
-body.innerHTML='';
-body.appendChild(profileCard);
-sheet.querySelector('#v6SheetTitle').textContent='دنبال چی می‌گردی؟';
-});
-const popularButton=body.querySelector('[data-v6-popular]');
-if(popularButton)popularButton.addEventListener('click',()=>{
-if(!popular)return;
-popular.hidden=false;
-popular.removeAttribute('aria-hidden');
-popular.classList.add('is-open','v6-menu-popular-card');
-const grid=popular.querySelector('#platforms');
-if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
-body.innerHTML='';
-body.appendChild(popular);
-sheet.querySelector('#v6SheetTitle').textContent='فروشگاه‌های محبوب';
-});
+const anchors=new Map();
+[popular,profileCard,profileCompletionCard,deals].forEach(card=>{if(card&&card.parentNode){const a=document.createComment('v7-nav-anchor-'+card.id);card.parentNode.insertBefore(a,card);anchors.set(card,a);}});
+let activeCard=null;
+const restoreCard=card=>{
+if(!card)return;
+const a=anchors.get(card);if(a&&a.parentNode)a.parentNode.insertBefore(card,a.nextSibling);
+card.hidden=true;card.setAttribute('aria-hidden','true');
+card.classList.remove('is-open','v6-menu-profile-card','v6-menu-popular-card','v6-menu-profile-completion-card','v6-menu-deals-card');
+const form=card.querySelector('form');if(form){form.hidden=true;form.setAttribute('aria-hidden','true');form.style.display='';}
+const grid=card.querySelector('#platforms');if(grid){grid.hidden=true;grid.setAttribute('aria-hidden','true');}
 };
-const open=(title,html)=>{
-sheet.querySelector('#v6SheetTitle').textContent=title;
-body.innerHTML=html;
-sheet.classList.add('is-open');
-backdrop.classList.add('is-open');
-bindMenu();
+const close=()=>{restoreCard(activeCard);activeCard=null;body.innerHTML='';sheet.classList.remove('is-open');backdrop.classList.remove('is-open');};
+const showCard=(card,title,cls)=>{
+if(!card)return;
+if(activeCard===card){close();return;}
+if(activeCard)restoreCard(activeCard);
+activeCard=card;card.hidden=false;card.removeAttribute('aria-hidden');card.classList.add('is-open',cls);
+const form=card.querySelector('form');if(form){form.hidden=false;form.removeAttribute('aria-hidden');form.style.display='grid';}
+const grid=card.querySelector('#platforms');if(grid){grid.hidden=false;grid.removeAttribute('aria-hidden');}
+body.innerHTML='';body.appendChild(card);sheet.classList.add('is-open');backdrop.classList.add('is-open');
 };
-sheet.querySelector('.v6-sheet-close').addEventListener('click',close);
+const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-profile>دنبال چی می‌گردی؟</button><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-v6-deals>پیشنهادات</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
 backdrop.addEventListener('click',close);
-nav.querySelectorAll('button[data-v6-action]').forEach(button=>{
-button.addEventListener('click',()=>{
+sheet.addEventListener('click',e=>{
+const profile=e.target.closest('[data-v6-profile]'),popularBtn=e.target.closest('[data-v6-popular]'),dealsBtn=e.target.closest('[data-v6-deals]'),scrollBtn=e.target.closest('[data-scroll]');
+if(profile)showCard(profileCard,'دنبال چی می‌گردی؟','v6-menu-profile-card');
+else if(popularBtn)showCard(popular,'فروشگاه‌های محبوب','v6-menu-popular-card');
+else if(dealsBtn)showCard(deals,'پیشنهادات','v6-menu-deals-card');
+else if(scrollBtn){const target=$(scrollBtn.dataset.scroll);close();if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}
+});
+nav.querySelectorAll('button[data-v6-action]').forEach(button=>button.addEventListener('click',()=>{
 const action=button.dataset.v6Action;
-if(action==='menu'){
-open('منوی دیجی‌یار','<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-profile>دنبال چی می‌گردی؟</button><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>');
-}else if(action==='account'){
-if(profileCompletionCard){
-profileCompletionCard.hidden=false;
-profileCompletionCard.removeAttribute('aria-hidden');
-profileCompletionCard.classList.add('is-open','v6-menu-profile-completion-card');
-const form=profileCompletionCard.querySelector('#v5ProfileCompletionForm');
-if(form){form.hidden=false;form.removeAttribute('aria-hidden');form.style.display='grid';}
-body.innerHTML='';
-body.appendChild(profileCompletionCard);
-sheet.querySelector('#v6SheetTitle').textContent='تکمیل و ویرایش پروفایل';
-sheet.classList.add('is-open');
-backdrop.classList.add('is-open');
-}
-}else if(action==='recommendations'){
-const target=$('recommendations')||$('v5InlineResults');
-if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-}else if(action==='search'){
-const target=$('v5SmartSearchInput');
-if(target){target.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>target.focus(),350);}
-}else if(action==='home'){
-window.scrollTo({top:0,behavior:'smooth'});
-}
-});
-});
+if(action==='menu')openRoot();
+else if(action==='account')showCard(profileCompletionCard,'تکمیل و ویرایش پروفایل','v6-menu-profile-completion-card');
+else if(action==='recommendations'){const target=$('recommendations')||$('v5InlineResults');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}
+else if(action==='search'){const target=$('v5SmartSearchInput');if(target){target.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>target.focus(),350);}}
+else if(action==='home'){close();window.scrollTo({top:0,behavior:'smooth'});}
+}));
 }
 function initRevenueTestPanel(){if(new URLSearchParams(location.search).get('revenue-test')!=='1')return;if(document.getElementById('v7RevenueTestPanel'))return;const wrap=document.createElement('section');wrap.id='v7RevenueTestPanel';wrap.dir='rtl';wrap.style.cssText='position:fixed;inset:10px;z-index:20000;max-height:calc(100vh - 20px);overflow:auto;padding:16px;border:2px solid #2a4169;border-radius:16px;background:#fff;color:#18243a;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:inherit';const render=()=>{let events=[];try{events=window.DigiYarRevenue?.getEvents?.()||[]}catch(e){};wrap.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px"><strong style="font-size:18px">تست Tracking دیجی‌یار</strong><button id="v7RevenueTestClose" type="button" style="border:0;background:#eee;border-radius:10px;padding:8px 12px;font-size:18px">×</button></div><div style="margin-bottom:12px">تعداد Eventهای ثبت‌شده: <strong>'+events.length+'</strong></div>'+(events.length?events.slice().reverse().map((e,i)=>'<article style="padding:10px;margin:8px 0;border:1px solid #dfe6f0;border-radius:10px"><strong>#'+(events.length-i)+'</strong><div>فروشگاه: '+String(e.store||'-')+'</div><div>نوع: '+String(e.type||'-')+'</div><div>منبع: '+String(e.source||'-')+'</div><div>زمان: '+String(e.timestamp||'-')+'</div><div style="word-break:break-all">URL: '+String(e.url||'-')+'</div></article>').join(''):'<p>هنوز هیچ Eventای ثبت نشده است.</p>')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button id="v7RevenueTestRefresh" type="button" style="padding:9px 12px;border:1px solid #2a4169;border-radius:10px;background:#f8fafd">به‌روزرسانی</button><button id="v7RevenueTestClear" type="button" style="padding:9px 12px;border:1px solid #c33;border-radius:10px;background:#fff;color:#b22">پاک کردن Eventها</button></div>';wrap.querySelector('#v7RevenueTestClose').onclick=()=>wrap.remove();wrap.querySelector('#v7RevenueTestRefresh').onclick=render;wrap.querySelector('#v7RevenueTestClear').onclick=()=>{window.DigiYarRevenue?.clear?.();render()};};document.body.appendChild(wrap);render()}
-function init(){initFooterNavigation();initRevenueTestPanel();initDeals();initAffiliateDeals();initRevenueTracking();initHeader();moveRecommendations();initChat();initProfileSave();removeTemporaryAIConversation();initPopularStores();initProfileCompletionToggle();initProfileCompletionFields();initPageHarmony()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();})();
+function init(){initFooterNavigation();initRevenueTestPanel();initDeals();initAffiliateDeals();initRevenueTracking();initHeader();moveRecommendations();initChat();initProfileSave();removeTemporaryAIConversation();initProfileCompletionFields();initPageHarmony()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();})();
