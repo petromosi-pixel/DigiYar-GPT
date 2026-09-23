@@ -16,7 +16,8 @@
     "test:v6:live-resolver": "node tests/v6-hooshyar-live-resolver.test.mjs",
     "test:v6:live-resolver:real": "node tests/v6-hooshyar-live-resolver-real-smoke.test.mjs",
     "test:v6:profile-flow": "node tests/v6-hooshyar-profile-flow.test.mjs",
-    "test:v7:store-eligibility": "node tests/v7-store-eligibility.test.mjs"
+    "test:v7:store-eligibility": "node tests/v7-store-eligibility.test.mjs",
+    "test:v7:live-store-adapters": "node tests/v7-live-store-adapters.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0"
