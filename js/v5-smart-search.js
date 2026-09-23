@@ -37,7 +37,7 @@ function installCardStyle(){if(document.getElementById('v6-hooshyar-card-style')
 .v7-hooshyar-action-zone .v5-smart-search-clear{font-size:15px!important}
 .v7-hooshyar-action-zone .v5-smart-search-submit svg{width:24px!important;height:24px!important}
 @keyframes v7BotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@keyframes v7HooshyarSpeak{0%{opacity:0;transform:translate(8px,-50%)}100%{opacity:1;transform:translate(0,-50%)}@media(prefers-reduced-motion:reduce){.v7-hooshyar-bot,.v7-hooshyar-hint-text{animation:none!important}.v7-hooshyar-hint-text{opacity:1!important;transform:translate(0,-50%)!important}.v7-hooshyar-bot img{animation:none!important}}.v6-hooshyar-dots{display:inline-flex;align-items:flex-end;gap:2px;min-width:1.2em;height:1em;vertical-align:middle}
+@keyframes v7HooshyarSpeak{0%{opacity:0;transform:translate(8px,-50%)}100%{opacity:1;transform:translate(0,-50%)}}@media(prefers-reduced-motion:reduce){.v7-hooshyar-robot-zone,.v7-hooshyar-hint-text{animation:none!important}.v7-hooshyar-hint-text{opacity:1!important;transform:translate(0,-50%)!important}.v7-hooshyar-robot-zone img{animation:none!important}}.v6-hooshyar-dots{display:inline-flex;align-items:flex-end;gap:2px;min-width:1.2em;height:1em;vertical-align:middle}
 .v6-hooshyar-dots i{display:block;width:.28em;height:.28em;border-radius:50%;background:currentColor;opacity:.18;animation:v6HooshyarDot 1.35s ease-in-out infinite}
 .v6-hooshyar-dots i:nth-child(2){animation-delay:.25s}.v6-hooshyar-dots i:nth-child(3){animation-delay:.5s}
 @keyframes v6HooshyarSearch{0%,20%{transform:rotate(-18deg) translate(0,0)}45%{transform:rotate(8deg) translate(2px,-1px)}70%{transform:rotate(-18deg) translate(0,0)}100%{transform:rotate(-18deg) translate(0,0)}}
