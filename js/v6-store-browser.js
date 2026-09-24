@@ -17,7 +17,10 @@ function style(){
  if(document.getElementById('v6-auto-store-style'))return;
  const s=document.createElement('style');s.id='v6-auto-store-style';s.textContent=`
 .v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:12px 0;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
-.v6-auto-head{padding:11px;background:var(--v6-surface);font-weight:800;font-size:13px;color:var(--v6-text)}
+.v6-auto-head{padding:12px;background:var(--v6-surface);font-weight:800;font-size:13px;color:var(--v6-text);text-align:center;line-height:1.9}
+.v6-auto-status{text-align:center;line-height:1.9}
+.v6-auto-actions{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap}
+.v6-auto-actions .v6-auto-link{margin:0!important;text-align:center}
 .v6-auto-tabs{display:flex;gap:6px;padding:8px;overflow-x:auto;border-bottom:1px solid var(--v6-border-soft);background:var(--v6-bg);scrollbar-width:thin}
 .v6-auto-tab{flex:0 0 auto;border:1px solid var(--v6-border);border-radius:10px;padding:7px 11px;background:var(--v6-surface-2);color:var(--v6-text);font-size:11px;font-weight:800;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
 .v6-auto-tab:hover{transform:translateY(-1px)}
@@ -49,7 +52,7 @@ function openBrowser(query,list){
  const usable=list.filter(x=>SEARCH[x.id]||HOME[x.id]);
  if(!usable.length){host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو فروشگاه فعالی پیدا نشد.</div></div>';return host;}
  const box=document.createElement('section');box.className='v6-auto-store';
- box.innerHTML='<div class="v6-auto-head">نتایج جستجوی فروشگاه‌های دیجی‌یار برای «'+esc(query)+'»</div>';
+ box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌هایی که ممکنه محصول مورد نظرت رو داشته باشن برات لیست کردم.</div>';
  const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
  const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);
  let active=usable[0];
@@ -66,8 +69,8 @@ function openBrowser(query,list){
      '</article>';
  }
  function fallback(store,u,message){
-   body.innerHTML='<div class="v6-auto-status">'+esc(message||('اتصال زنده '+store.name+' برقرار نشد؛ می‌توانی نتایج مستقیم را ببینی.'))+'</div>'+
-     '<div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,HOME[store.id]||u))+'">ورود به '+esc(store.name)+'</a></div>';
+   body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div>'+
+     '<div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,u))+'">مشاهده نتایج در '+esc(store.name)+'</a></div>';
  }
  async function render(){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
@@ -86,7 +89,7 @@ function openBrowser(query,list){
      }catch(error){ fallback(active,u,'اتصال زنده '+active.name+' برقرار نشد؛ نتایج مستقیم در دسترس است.'); }
      return;
    }
-   body.innerHTML='<div class="v6-auto-status">نتیجه زنده‌ای از '+esc(active.name)+' دریافت نشد؛ نتایج مستقیم در دسترس است.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده مستقیم نتایج</a><a class="v6-auto-link v6-auto-home" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,HOME[active.id]||u))+'">ورود به '+esc(active.name)+'</a></div>';
+   body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
  render();return host;
