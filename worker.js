@@ -100,6 +100,7 @@ while((m=ar.exec(html))&&out.length<30){
  const pm=text.match(/([0-9۰-۹][0-9۰-۹,٬\. ]{2,})\s*(تومان|ریال|IRT|IRR)/i);
  add({url,name:text.replace(/(?:تومان|ریال|IRT|IRR).*/i,'').slice(0,220).trim(),price:pm?pm[1]:0,currency:pm?pm[2]:'IRT'})
 }
+}
 return out
 }
 async function fetchHtmlCandidates(urls,store){
