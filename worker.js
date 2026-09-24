@@ -46,7 +46,7 @@ const walk=(x)=>{
  }
  Object.values(x).forEach(v=>{if(v&&typeof v==='object')walk(v)})
 };
-const scriptRe=/<script[^>]*>([\\s\\S]*?)<\\/script>/gi;let m;
+const scriptRe=/<script[^>]*>([\s\S]*?)<\/script>/gi;let m;
 while((m=scriptRe.exec(html))){
  const raw=String(m[1]||'').trim();
  if(!raw||raw.length>2000000)continue;
