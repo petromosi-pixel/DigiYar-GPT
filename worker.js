@@ -63,21 +63,34 @@ while((m=scriptRe.exec(html))){
      }
    }catch{}
    if(flight){
-     const decoded=flight.replace(/\\"/g,'"').replace(/\\/g,'\\');
+     let decoded=flight;
+     try{decoded=JSON.parse('"'+flight.replace(/\\/g,'\\\\').replace(/"/g,'\\\"')+'"')}catch{}
+     decoded=decoded.replace(/\\\"/g,'"').replace(/\\\\/g,'\\');
      const titleRe=/"title_fa"\s*:\s*"([^"]{2,300})"/g;
      let tm;
      while((tm=titleRe.exec(decoded))&&out.length<30){
-       const start=Math.max(0,tm.index-4000),end=Math.min(decoded.length,tm.index+4000),chunk=decoded.slice(start,end);
-       const ids=[...chunk.matchAll(/"(?:productId|productID|id)"\s*:\s*"?([0-9]+)"?/g)].map(x=>x[1]);
-       const id=ids.length?ids[ids.length-1]:'';
+       const start=Math.max(0,tm.index-12000),end=Math.min(decoded.length,tm.index+12000),chunk=decoded.slice(start,end);
+       const urlMatch=chunk.match(/(?:https?:\\/\\/)?(?:www\\.)?digikala\\.com\\/product\\/dkp-([0-9]+)/i);
+       const idMatch=chunk.match(/"(?:productId|productID|product_id|id)"\s*:\s*"?([0-9]+)"?/);
+       const id=urlMatch?.[1]||idMatch?.[1]||'';
        if(!id)continue;
        const prices=[...chunk.matchAll(/"(?:selling_price|selling_price_rial|price)"\s*:\s*([0-9]+)/g)].map(x=>x[1]);
        const price=prices.length?prices[prices.length-1]:0;
        add({productId:id,name:tm[1],productUrl:'https://www.digikala.com/product/dkp-'+id+'/',price,currency:'IRR'});
      }
+     if(out.length===0){
+       const urls=[...decoded.matchAll(/(?:https?:\\/\\/)?(?:www\\.)?digikala\\.com\\/product\\/dkp-([0-9]+)/gi)].map(x=>x[1]);
+       const unique=[...new Set(urls)];
+       unique.slice(0,30).forEach((id,i)=>{
+         const pos=decoded.indexOf('dkp-'+id);
+         const chunk=decoded.slice(Math.max(0,pos-10000),Math.min(decoded.length,pos+10000));
+         const tm=chunk.match(/"title_fa"\s*:\s*"([^"]{2,300})"/);
+         const prices=[...chunk.matchAll(/"(?:selling_price|selling_price_rial|price)"\s*:\s*([0-9]+)/g)].map(x=>x[1]);
+         if(tm)add({productId:id,name:tm[1],productUrl:'https://www.digikala.com/product/dkp-'+id+'/',price:prices.length?prices[prices.length-1]:0,currency:'IRR'});
+       });
+     }
    }
  }
-}
 const ar=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]{0,2200}?)<\/a>/gi;
 while((m=ar.exec(html))&&out.length<30){
  let url;try{url=new URL(m[1],pageUrl).href.split('#')[0]}catch{continue}
