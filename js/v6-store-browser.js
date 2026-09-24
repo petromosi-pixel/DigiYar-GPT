@@ -66,7 +66,8 @@ function openBrowser(query,list){
  let active=usable[0];
  async function render(){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
-   const searchQuery=storeSearchQuery(query);\n   const u=SEARCH[active.id]?SEARCH[active.id](searchQuery):HOME[active.id];
+   const searchQuery=storeSearchQuery(query);
+   const u=SEARCH[active.id]?SEARCH[active.id](searchQuery):HOME[active.id];
    body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
