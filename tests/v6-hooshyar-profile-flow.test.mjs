@@ -31,12 +31,14 @@ assert.match(browser, /list=Array\.isArray\(list\)\?list:stores\(\)/);
 assert.match(browser, /window\.DigiYarStoreBrowser=\{version:VERSION,open:openBrowser\}/);
 assert.match(browser, /id='v6StoreSimulatorResults'/);
 assert.ok(browser.includes('DigiYarStoreEligibility.storesForQuery'), 'Store Browser must apply query-driven store eligibility');
-assert.match(browser, /const LIVE=\{[\s\S]*digikala:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/search'[\s\S]*snappshop:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/search'/);
+assert.ok(!/const LIVE=/.test(browser), 'Store Browser must not retain the retired LIVE/Search Core architecture');
+assert.ok(!browser.includes('/api/search'), 'Store Browser must not depend on the Search Core API');
 assert.ok(!/iframe\s+class=["']v6-auto-frame["']/.test(browser), 'Store Browser must not depend on iframe rendering');
 assert.ok(browser.includes('SEARCH['), 'Store Browser must map the query to store search URLs');
 assert.ok(!browser.includes('/api/store-search'), 'Hooshyar Store Browser must not depend on shelved live-store adapter endpoint');
-assert.ok(browser.includes('encodeURIComponent(query)'), 'Store Browser must encode the query for the live request');
-assert.ok(browser.includes('encodeURIComponent(q)'), 'Store Browser must encode the Hooshyar query for store URLs');
+assert.ok(browser.includes('encodeURIComponent(q)'), 'Store Browser must encode the normalized Hooshyar query for store URLs');
+assert.ok(browser.includes('function storeSearchQuery(q)'), 'Store Browser must normalize budget/usage text before external store search');
+assert.match(browser, /const searchQuery=storeSearchQuery\(query\)/);
 
 assert.match(index, /id="profileForm"/);
 assert.match(index, /id="v5SmartSearchInput"/);
