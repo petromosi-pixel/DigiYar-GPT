@@ -56,39 +56,9 @@ function openBrowser(query,list){
  const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
  const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);
  let active=usable[0];
- const LIVE={digikala:'https://digiyar-v6.petromosi.workers.dev/api/search',snappshop:'https://digiyar-v6.petromosi.workers.dev/api/search'};
- function card(item){
-   const p=Number(item&&item.priceToman)||0;
-   const price=p>0?new Intl.NumberFormat('fa-IR').format(p)+' تومان':'قیمت نامشخص';
-   const name=esc(item&&item.name||'محصول');
-   const url=esc(item&&item.productUrl||'');
-   return '<article class="v6-live-card" style="border:1px solid var(--v6-border-soft);border-radius:12px;padding:10px;margin:7px 0;background:var(--v6-surface)">'+
-     '<div style="font-weight:800;font-size:12px;line-height:1.8">'+name+'</div>'+
-     '<div style="margin-top:4px;font-size:11px;color:var(--v6-muted)">'+esc(price)+'</div>'+
-     (url?'<a class="v6-auto-link" style="margin-top:7px" target="_blank" rel="noopener noreferrer" href="'+url+'">مشاهده محصول</a>':'')+
-     '</article>';
- }
- function fallback(store,u,message){
-   body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div>'+
-     '<div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(store.id,u))+'">مشاهده نتایج در '+esc(store.name)+'</a></div>';
- }
  async function render(){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
    const u=SEARCH[active.id]?SEARCH[active.id](query):HOME[active.id];
-   if(LIVE[active.id]){
-     body.innerHTML='<div class="v6-auto-status">در حال دریافت زنده نتایج '+esc(active.name)+'...</div>';
-     try{
-       const response=await fetch(LIVE[active.id]+'?q='+encodeURIComponent(query),{headers:{Accept:'application/json'},cache:'no-store'});
-       if(!response.ok)throw Error('HTTP '+response.status);
-       const data=await response.json();
-       if(data&&data.results&&data.results.length){
-         body.innerHTML='<div class="v6-auto-status">نتایج زنده '+esc(active.name)+' — '+data.results.length+' مورد</div>'+data.results.map(card).join('');
-         return;
-       }
-       fallback(active,u,'نتیجه زنده‌ای از '+active.name+' دریافت نشد؛ نتایج مستقیم در دسترس است.');
-     }catch(error){ fallback(active,u,'اتصال زنده '+active.name+' برقرار نشد؛ نتایج مستقیم در دسترس است.'); }
-     return;
-   }
    body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
