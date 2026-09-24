@@ -27,8 +27,8 @@ const add=(o)=>{
  if(!rawUrl||!name)return;
  let u;try{u=new URL(rawUrl,pageUrl).href.split('#')[0]}catch{return}
  if(seen.has(u))return;
- if(store==='digikala'&&!/digikala\.com\\/product\\/dkp-/i.test(u))return;
- if(store==='snappshop'&&!/snappshop\.ir\\//i.test(u))return;
+ if(store==='digikala'&&!/digikala\.com\/product\/dkp-/i.test(u))return;
+ if(store==='snappshop'&&!/snappshop\.ir\//i.test(u))return;
  const p=Number(o.priceToman)>0?Math.round(Number(o.priceToman)):toToman(o.price,o.currency||'IRT');
  seen.add(u);
  out.push({productId:String(o.productId||o.sku||o.id||u),name:o.name||o.productName||o.title_fa||o.title_en||'',price:Number(o.price)||0,currency:o.currency||'IRT',priceToman:p,availability:o.availability||o.status||'unknown',productUrl:u,affiliateUrl:affiliate(store,u),storeId:store,storeName:STORES[store].name,source:store+'-live-html'})
