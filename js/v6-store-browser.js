@@ -1,22 +1,30 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.13';
+const VERSION='6.0.0-store-browser.14';
 const SEARCH={
  digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
 const HOME={digikala:'https://www.digikala.com/',snappshop:'https://snappshop.ir/',torob:'https://torob.com/',basalam:'https://basalam.com/',technolife:'https://www.technolife.ir/',digido:'https://digido.ir/',gooshishop:'https://gooshishop.com/',berozkala:'https://berozkala.com/',janebi:'https://janebi.com/',khanoumi:'https://khanoumi.com/',banimode:'https://banimode.com/',modiseh:'https://modiseh.com/',esam:'https://esam.ir/',pinket:'https://pinket.com/',solokala:'https://solokala.com/'};
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function affiliateUrl(storeId,url){
- const campaigns={digikala:'https://aflo.ir/TrvNHEN8',snappshop:'https://aflo.ir/YPN05dL7'};
+ const campaigns={digikala:'https://aflo.ir/TrvNHEN8'};
  const base=campaigns[String(storeId||'').toLowerCase()];
  return base&&url?base+'?p='+encodeURIComponent(url):url;
+}
+function storeSearchQuery(q){
+ let s=String(q||'').trim();
+ s=s.replace(/(?:از\s*)?\d[\d۰-۹.,]*\s*(?:تا|الی|-)?\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)\s*(?:تومان|ریال)?/gi,' ');
+ s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
+ s=s.replace(/\b(?:برای|جهت)\s+(?:محل\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\b/gi,' ');
+ s=s.replace(/\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
+ return s||String(q||'').trim();
 }
 function stores(){const a=window.DigiYarPopularAffiliateStores;if(Array.isArray(a)&&a.length)return a.filter(x=>x&&x.id&&x.name);const s=document.getElementById('storeSelect');return s?Array.from(s.options).filter(o=>o.value&&o.value!=='all').map(o=>({id:o.value,name:o.textContent.trim()})):[];}
 function style(){
  if(document.getElementById('v6-auto-store-style'))return;
  const s=document.createElement('style');s.id='v6-auto-store-style';s.textContent=`
-.v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:12px 0;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:11px 0 12px;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
 .v6-auto-head{padding:12px;background:var(--v6-surface);font-weight:800;font-size:13px;color:var(--v6-text);text-align:center;line-height:1.9}
 .v6-auto-status{text-align:center;line-height:1.9}
 .v6-auto-actions{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap}
@@ -58,7 +66,7 @@ function openBrowser(query,list){
  let active=usable[0];
  async function render(){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
-   const u=SEARCH[active.id]?SEARCH[active.id](query):HOME[active.id];
+   const searchQuery=storeSearchQuery(query);\n   const u=SEARCH[active.id]?SEARCH[active.id](searchQuery):HOME[active.id];
    body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
