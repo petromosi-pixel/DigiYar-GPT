@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.12';
+const VERSION='6.0.0-store-browser.13';
 const SEARCH={
  digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
@@ -53,7 +53,7 @@ function openBrowser(query,list){
  const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
  const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);
  let active=usable[0];
- const LIVE={torob:'https://digiyar-v6.petromosi.workers.dev/api/store-search',basalam:'https://digiyar-v6.petromosi.workers.dev/api/store-search',esam:'https://digiyar-v6.petromosi.workers.dev/api/store-search'};
+ const LIVE={digikala:'https://digiyar-v6.petromosi.workers.dev/api/search',snappshop:'https://digiyar-v6.petromosi.workers.dev/api/search',torob:'https://digiyar-v6.petromosi.workers.dev/api/store-search',basalam:'https://digiyar-v6.petromosi.workers.dev/api/store-search',esam:'https://digiyar-v6.petromosi.workers.dev/api/store-search'};
  function card(item){
    const p=Number(item&&item.priceToman)||0;
    const price=p>0?new Intl.NumberFormat('fa-IR').format(p)+' تومان':'قیمت نامشخص';
