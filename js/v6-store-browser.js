@@ -1,9 +1,9 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.14';
+const VERSION='6.0.0-store-browser.15';
 const SEARCH={
- digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
+ torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search?q='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/search?q='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
 const HOME={digikala:'https://www.digikala.com/',snappshop:'https://snappshop.ir/',torob:'https://torob.com/',basalam:'https://basalam.com/',technolife:'https://www.technolife.ir/',digido:'https://digido.ir/',gooshishop:'https://gooshishop.com/',berozkala:'https://berozkala.com/',janebi:'https://janebi.com/',khanoumi:'https://khanoumi.com/',banimode:'https://banimode.com/',modiseh:'https://modiseh.com/',esam:'https://esam.ir/',pinket:'https://pinket.com/',solokala:'https://solokala.com/'};
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -57,8 +57,8 @@ function openBrowser(query,list){
  list=Array.isArray(list)?list:stores();
  if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function')
    list=window.DigiYarStoreEligibility.storesForQuery(query,list);
- const usable=list.filter(x=>SEARCH[x.id]||HOME[x.id]);
- if(!usable.length){host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو فروشگاه فعالی پیدا نشد.</div></div>';return host;}
+ const usable=list.filter(x=>SEARCH[x.id]);
+ if(!usable.length){host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو فروشگاه دارای جستجوی مستقیم پیدا نشد.</div></div>';return host;}
  const box=document.createElement('section');box.className='v6-auto-store';
  box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌هایی که ممکنه محصول مورد نظرت رو داشته باشن برات لیست کردم.</div>';
  const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
@@ -67,7 +67,7 @@ function openBrowser(query,list){
  async function render(){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
    const searchQuery=storeSearchQuery(query);
-   const u=SEARCH[active.id]?SEARCH[active.id](searchQuery):HOME[active.id];
+   const u=SEARCH[active.id](searchQuery);
    body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
