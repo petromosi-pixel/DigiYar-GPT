@@ -30,8 +30,14 @@ assert.match(browser, /function openBrowser\(query,list\)/);
 assert.match(browser, /list=Array\.isArray\(list\)\?list:stores\(\)/);
 assert.match(browser, /window\.DigiYarStoreBrowser=\{version:VERSION,open:openBrowser\}/);
 assert.match(browser, /id='v6StoreSimulatorResults'/);
-assert.match(browser, /iframe class="v6-auto-frame"/);
+assert.ok(browser.includes('DigiYarStoreEligibility.storesForQuery'), 'Store Browser must apply query-driven store eligibility');
+assert.match(browser, /const LIVE=\{[\s\S]*digikala:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/search'[\s\S]*snappshop:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/search'/);
+assert.match(browser, /torob:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/store-search'/);
+assert.match(browser, /basalam:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/store-search'/);
+assert.match(browser, /esam:'https:\/\/digiyar-v6\.petromosi\.workers\.dev\/api\/store-search'/);
+assert.ok(!/iframe\s+class=["']v6-auto-frame["']/.test(browser), 'Store Browser must not depend on iframe rendering');
 assert.ok(browser.includes('SEARCH['), 'Store Browser must map the query to store search URLs');
+assert.ok(browser.includes('encodeURIComponent(query)'), 'Store Browser must encode the query for the live request');
 assert.ok(browser.includes('encodeURIComponent(q)'), 'Store Browser must encode the Hooshyar query for store URLs');
 
 assert.match(index, /id="profileForm"/);
