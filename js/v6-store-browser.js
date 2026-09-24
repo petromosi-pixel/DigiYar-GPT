@@ -3,7 +3,7 @@
 'use strict';
 const VERSION='6.0.0-store-browser.13';
 const SEARCH={
- digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
+ digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.ir/search?q='+encodeURIComponent(q),digido:q=>'https://digido.ir/search?q='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
 const HOME={digikala:'https://www.digikala.com/',snappshop:'https://snappshop.ir/',torob:'https://torob.com/',basalam:'https://basalam.com/',technolife:'https://www.technolife.ir/',digido:'https://digido.ir/',gooshishop:'https://gooshishop.com/',berozkala:'https://berozkala.com/',janebi:'https://janebi.com/',khanoumi:'https://khanoumi.com/',banimode:'https://banimode.com/',modiseh:'https://modiseh.com/',esam:'https://esam.ir/',pinket:'https://pinket.com/',solokala:'https://solokala.com/'};
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -53,7 +53,7 @@ function openBrowser(query,list){
  const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
  const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);
  let active=usable[0];
- const LIVE={digikala:'https://digiyar-v6.petromosi.workers.dev/api/search',snappshop:'https://digiyar-v6.petromosi.workers.dev/api/search',torob:'https://digiyar-v6.petromosi.workers.dev/api/store-search',basalam:'https://digiyar-v6.petromosi.workers.dev/api/store-search',esam:'https://digiyar-v6.petromosi.workers.dev/api/store-search'};
+ const LIVE={digikala:'https://digiyar-v6.petromosi.workers.dev/api/search',snappshop:'https://digiyar-v6.petromosi.workers.dev/api/search'};
  function card(item){
    const p=Number(item&&item.priceToman)||0;
    const price=p>0?new Intl.NumberFormat('fa-IR').format(p)+' تومان':'قیمت نامشخص';
@@ -75,7 +75,7 @@ function openBrowser(query,list){
    if(LIVE[active.id]){
      body.innerHTML='<div class="v6-auto-status">در حال دریافت زنده نتایج '+esc(active.name)+'...</div>';
      try{
-       const response=await fetch(LIVE[active.id]+'?store='+encodeURIComponent(active.id)+'&q='+encodeURIComponent(query),{headers:{Accept:'application/json'},cache:'no-store'});
+       const response=await fetch(LIVE[active.id]+'?q='+encodeURIComponent(query),{headers:{Accept:'application/json'},cache:'no-store'});
        if(!response.ok)throw Error('HTTP '+response.status);
        const data=await response.json();
        if(data&&data.results&&data.results.length){
