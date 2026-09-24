@@ -27,8 +27,8 @@ const add=(o)=>{
  if(!rawUrl||!name)return;
  let u;try{u=new URL(rawUrl,pageUrl).href.split('#')[0]}catch{return}
  if(seen.has(u))return;
- if(store==='digikala'&&!/digikala\.com\/product\/dkp-/i.test(u))return;
- if(store==='snappshop'&&!/snappshop\.ir\//i.test(u))return;
+ if(store==='digikala'&&!/digikala\.com\\/product\\/dkp-/i.test(u))return;
+ if(store==='snappshop'&&!/snappshop\.ir\\//i.test(u))return;
  const p=Number(o.priceToman)>0?Math.round(Number(o.priceToman)):toToman(o.price,o.currency||'IRT');
  seen.add(u);
  out.push({productId:String(o.productId||o.sku||o.id||u),name:o.name||o.productName||o.title_fa||o.title_en||'',price:Number(o.price)||0,currency:o.currency||'IRT',priceToman:p,availability:o.availability||o.status||'unknown',productUrl:u,affiliateUrl:affiliate(store,u),storeId:store,storeName:STORES[store].name,source:store+'-live-html'})
@@ -50,10 +50,9 @@ const scriptRe=/<script[^>]*>([\s\S]*?)<\/script>/gi;let m;
 while((m=scriptRe.exec(html))){
  const raw=String(m[1]||'').trim();
  if(!raw||raw.length>2000000)continue;
- if(/^(?:\\{|"@context"|\\[)/.test(raw)){
+ if(/^(?:\{|"@context"|\[)/.test(raw)){
    try{walk(JSON.parse(raw))}catch{}
  }
- // Digikala currently streams product data through Next.js Flight/RSC payloads.
  if(store==='digikala'&&raw.includes('self.__next_f.push')){
    let flight='';
    try{
@@ -64,15 +63,15 @@ while((m=scriptRe.exec(html))){
      }
    }catch{}
    if(flight){
-     const decoded=flight.replace(/\\\\"/g,'"').replace(/\\\\\\\\/g,'\\\\');
-     const titleRe=/"title_fa"\\s*:\\s*"([^"]{2,300})"/g;
+     const decoded=flight.replace(/\\"/g,'"').replace(/\\/g,'\\');
+     const titleRe=/"title_fa"\s*:\s*"([^"]{2,300})"/g;
      let tm;
      while((tm=titleRe.exec(decoded))&&out.length<30){
        const start=Math.max(0,tm.index-4000),end=Math.min(decoded.length,tm.index+4000),chunk=decoded.slice(start,end);
-       const ids=[...chunk.matchAll(/"(?:productId|productID|id)"\\s*:\\s*"?([0-9]+)"?/g)].map(x=>x[1]);
+       const ids=[...chunk.matchAll(/"(?:productId|productID|id)"\s*:\s*"?([0-9]+)"?/g)].map(x=>x[1]);
        const id=ids.length?ids[ids.length-1]:'';
        if(!id)continue;
-       const prices=[...chunk.matchAll(/"(?:selling_price|selling_price_rial|price)"\\s*:\\s*([0-9]+)/g)].map(x=>x[1]);
+       const prices=[...chunk.matchAll(/"(?:selling_price|selling_price_rial|price)"\s*:\s*([0-9]+)/g)].map(x=>x[1]);
        const price=prices.length?prices[prices.length-1]:0;
        add({productId:id,name:tm[1],productUrl:'https://www.digikala.com/product/dkp-'+id+'/',price,currency:'IRR'});
      }
