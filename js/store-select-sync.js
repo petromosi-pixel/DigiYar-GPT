@@ -25,7 +25,7 @@
       return;
     }
     var script=document.createElement('script');
-    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.17';
+    script.src='js/v6-store-browser.js?v=6.0.0-store-browser.18';
     script.async=false;
     script.dataset.digiyarStoreBrowser='1';
     script.onload=function(){ callback(window.DigiYarStoreBrowser); };
@@ -138,16 +138,20 @@
     if(oldSimulator) oldSimulator.remove();
     smartInput.value=query;
     syncHooshyarHint();
-
-    loadStoreBrowser(function(browser){
-      try{
-        var host=browser.open(query);
-        requestAnimationFrame(function(){
-          var target=host||el('v6StoreSimulatorResults');
-          if(target && typeof target.scrollIntoView==='function') target.scrollIntoView({behavior:'smooth',block:'start'});
-        });
-      }catch(error){ console.error('DigiYar Hooshyar browser:',error); }
-    });
+    /* Keep the original bridge: the profile card submits through the Hooshyar search form. */
+    if(smartInput.form && typeof smartInput.form.requestSubmit==='function'){
+      smartInput.form.requestSubmit();
+    }else{
+      loadStoreBrowser(function(browser){
+        try{
+          var host=browser.open(query);
+          requestAnimationFrame(function(){
+            var target=host||el('v6StoreSimulatorResults');
+            if(target && typeof target.scrollIntoView==='function') target.scrollIntoView({behavior:'smooth',block:'start'});
+          });
+        }catch(error){ console.error('DigiYar Hooshyar browser:',error); }
+      });
+    }
     return true;
   }
 
