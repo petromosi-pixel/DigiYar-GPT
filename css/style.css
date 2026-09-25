@@ -36,3 +36,74 @@ html.dark .main-footer,body.dark .main-footer,[data-theme="dark"] .main-footer{c
 html.dark .footer-link,body.dark .footer-link,[data-theme="dark"] .footer-link,html.dark .footer-copy,body.dark .footer-copy,[data-theme="dark"] .footer-copy{color:#b8c2d1}
 html.dark .footer-panel,body.dark .footer-panel,[data-theme="dark"] .footer-panel{color:#e5eaf1}
 html.dark .v5-smart-search-results,body.dark .v5-smart-search-results,[data-theme="dark"] .v5-smart-search-results{color:#e5eaf1}
+
+
+/* =========================================================
+   DigiYar internal dark-mode completion
+   Covers navigation, menu sheet, profile/search cards, results,
+   footer panels and dynamically generated UI.
+   ========================================================= */
+html.dark .v6-footer-nav,body.dark .v6-footer-nav,[data-theme="dark"] .v6-footer-nav{
+  background:#0d1522!important;border-top-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 -8px 24px rgba(0,0,0,.42)!important;
+}
+html.dark .v6-footer-nav button,body.dark .v6-footer-nav button,[data-theme="dark"] .v6-footer-nav button{color:#b8c4d6!important}
+html.dark .v6-footer-nav .v6-menu,body.dark .v6-footer-nav .v6-menu,[data-theme="dark"] .v6-footer-nav .v6-menu{background:#263b61!important;color:#fff!important}
+html.dark .v6-nav-sheet,body.dark .v6-nav-sheet,[data-theme="dark"] .v6-nav-sheet{
+  background:#111927!important;color:#f8fafc!important;border-color:rgba(255,255,255,.14)!important;
+  box-shadow:0 16px 42px rgba(0,0,0,.55)!important;
+}
+html.dark .v6-sheet-action,body.dark .v6-sheet-action,[data-theme="dark"] .v6-sheet-action{
+  background:#182334!important;color:#f8fafc!important;border-color:rgba(255,255,255,.14)!important;
+}
+html.dark .v6-nav-sheet .section-title,body.dark .v6-nav-sheet .section-title,[data-theme="dark"] .v6-nav-sheet .section-title,
+html.dark .v6-nav-sheet .v5-section-heading,body.dark .v6-nav-sheet .v5-section-heading,[data-theme="dark"] .v6-nav-sheet .v5-section-heading{
+  background:#111927!important;color:#f8fafc!important;border-color:rgba(255,255,255,.1)!important;
+}
+html.dark .v6-nav-sheet .section-title h2,body.dark .v6-nav-sheet .section-title h2,[data-theme="dark"] .v6-nav-sheet .section-title h2,
+html.dark .v6-nav-sheet .v5-section-heading h2,body.dark .v6-nav-sheet .v5-section-heading h2,[data-theme="dark"] .v6-nav-sheet .v5-section-heading h2{color:#f8fafc!important}
+html.dark .v6-nav-sheet .section-title p,body.dark .v6-nav-sheet .section-title p,[data-theme="dark"] .v6-nav-sheet .section-title p,
+html.dark .v6-nav-sheet .v5-section-heading p,body.dark .v6-nav-sheet .v5-section-heading p,[data-theme="dark"] .v6-nav-sheet .v5-section-heading p{color:#b8c2d1!important}
+
+html.dark .v5-profile-card,body.dark .v5-profile-card,[data-theme="dark"] .v5-profile-card,
+html.dark .v5-profile-completion,body.dark .v5-profile-completion,[data-theme="dark"] .v5-profile-completion,
+html.dark .v5-popular-card,body.dark .v5-popular-card,[data-theme="dark"] .v5-popular-card{
+  background:#111927!important;color:#f1f5f9!important;border-color:rgba(255,255,255,.13)!important;
+}
+html.dark .v5-profile-card .v5-field,body.dark .v5-profile-card .v5-field,[data-theme="dark"] .v5-profile-card .v5-field,
+html.dark .v5-profile-completion label,body.dark .v5-profile-completion label,[data-theme="dark"] .v5-profile-completion label{
+  color:#e5eaf1!important;
+}
+html.dark .v5-profile-card input,html.dark .v5-profile-card select,
+body.dark .v5-profile-card input,body.dark .v5-profile-card select,
+[data-theme="dark"] .v5-profile-card input,[data-theme="dark"] .v5-profile-card select,
+html.dark .v5-profile-completion input,html.dark .v5-profile-completion select,
+body.dark .v5-profile-completion input,body.dark .v5-profile-completion select,
+[data-theme="dark"] .v5-profile-completion input,[data-theme="dark"] .v5-profile-completion select{
+  background:#182334!important;color:#f8fafc!important;border-color:rgba(255,255,255,.15)!important;
+}
+html.dark .v5-profile-card input::placeholder,body.dark .v5-profile-card input::placeholder,[data-theme="dark"] .v5-profile-card input::placeholder,
+html.dark .v5-profile-completion input::placeholder,body.dark .v5-profile-completion input::placeholder,[data-theme="dark"] .v5-profile-completion input::placeholder{color:#8f9caf!important}
+
+html.dark .v5-smart-search-results,body.dark .v5-smart-search-results,[data-theme="dark"] .v5-smart-search-results,
+html.dark .v5-result-card,body.dark .v5-result-card,[data-theme="dark"] .v5-result-card{
+  background:#111927!important;color:#f1f5f9!important;border-color:rgba(255,255,255,.13)!important;
+}
+html.dark .v5-smart-search-result-head,html.dark .v5-smart-search-loading,html.dark .v5-smart-search-empty,
+body.dark .v5-smart-search-result-head,body.dark .v5-smart-search-loading,body.dark .v5-smart-search-empty,
+[data-theme="dark"] .v5-smart-search-result-head,[data-theme="dark"] .v5-smart-search-loading,[data-theme="dark"] .v5-smart-search-empty{
+  background:#182334!important;color:#b8c2d1!important;
+}
+html.dark .v6-store-simulator-results,body.dark .v6-store-simulator-results,[data-theme="dark"] .v6-store-simulator-results{
+  color:#f1f5f9!important;
+}
+html.dark .v5-deal,body.dark .v5-deal,[data-theme="dark"] .v5-deal{
+  background:#172131!important;color:#f1f5f9!important;border-color:rgba(255,255,255,.13)!important;
+}
+html.dark .footer-panel,body.dark .footer-panel,[data-theme="dark"] .footer-panel{
+  background:#111927!important;color:#e5eaf1!important;border-color:rgba(255,255,255,.13)!important;
+}
+html.dark .footer-panel h3,body.dark .footer-panel h3,[data-theme="dark"] .footer-panel h3{color:#f8fafc!important}
+html.dark .install-prompt,body.dark .install-prompt,[data-theme="dark"] .install-prompt{
+  background:linear-gradient(135deg,#101927,#17263b)!important;border-color:rgba(255,255,255,.16)!important;
+}
