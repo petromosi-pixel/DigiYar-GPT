@@ -90,3 +90,19 @@ body.v6-dark .v6-nav-sheet .v7-deals-card .section-title{
   background:#111827!important;
   color:#f8fafc!important;
 }
+
+
+/* Internal dark simulator — complete card surface and rounded headings. */
+body.v6-dark .v6-store-simulator-results .v6-auto-store{background:#0b1220!important;color:#f8fafc!important;border:1px solid #263449!important;border-radius:16px!important;box-shadow:0 8px 26px rgba(0,0,0,.38)!important;overflow:hidden!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-head{background:#111827!important;color:#f8fafc!important;border-color:#263449!important;border-radius:12px!important;margin:8px!important;padding:10px 12px!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-tabs{background:#0b1220!important;border-color:#263449!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-tab{background:#1a2639!important;color:#f8fafc!important;border-color:#3a4a63!important;border-radius:10px!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-tab.active{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-body{background:#0b1220!important;color:#f8fafc!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-status{color:#b7c2d3!important}
+body.v6-dark .v6-store-simulator-results .v6-auto-link{background:#2563eb!important;color:#fff!important;border-radius:9px!important}
+
+/* All moved result/menu headings use the same rounded dark surface. */
+body.v6-dark .v6-nav-sheet .section-title,
+body.v6-dark .v6-nav-sheet .v5-section-heading,
+body.v6-dark .v5-result-card .section-title{border-radius:12px!important;overflow:hidden!important}
