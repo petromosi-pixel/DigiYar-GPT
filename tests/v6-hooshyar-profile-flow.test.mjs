@@ -40,6 +40,7 @@ assert.match(browser, /technolife:q=>'https:\/\/www\.technolife\.com\/product\/l
 assert.ok(!browser.includes('/api/store-search'), 'Hooshyar Store Browser must not depend on shelved live-store adapter endpoint');
 assert.ok(browser.includes('encodeURIComponent(q)'), 'Store Browser must encode the normalized Hooshyar query for store URLs');
 assert.ok(browser.includes('function storeSearchQuery(q)'), 'Store Browser must normalize budget/usage text before external store search');
+assert.ok(browser.includes('STRICT') || browser.includes('strict='), 'Store Browser must apply stricter category/subcategory query filtering');
 assert.match(browser, /const searchQuery=storeSearchQuery\(query\)/);
 
 assert.match(index, /id="profileForm"/);
