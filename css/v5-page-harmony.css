@@ -59,3 +59,34 @@ body.v6-dark .v5-profile-card .v5-danger{background:linear-gradient(135deg,#c75a
 body.v6-dark .v5-profile-card .select-wrap::after{border-left-color:#94a3b8!important;border-bottom-color:#94a3b8!important}
 body.v6-dark .v5-profile-card .v5-field select option{background:#172033!important;color:#f8fafc!important}
 body.v6-dark .v5-profile-card .v5-step4-toggle-icon,body.v6-dark .v5-profile-completion .v5-step4-toggle-icon{color:#f8fafc!important;text-shadow:none!important}
+
+
+/* Internal dark theme: headings remain readable when cards are moved into the result/menu containers. */
+body.v6-dark .v6-nav-sheet .section-title,
+body.v6-dark .v6-nav-sheet .v5-section-heading,
+body.v6-dark .v6-nav-sheet .section-title h2,
+body.v6-dark .v6-nav-sheet .v5-section-heading h2,
+body.v6-dark .v6-nav-sheet .section-title p,
+body.v6-dark .v6-nav-sheet .v5-section-heading p,
+body.v6-dark .v6-nav-sheet .v5-card-subtitle,
+body.v6-dark .v5-result-card .section-title,
+body.v6-dark .v5-result-card .section-title h2,
+body.v6-dark .v5-result-card .section-title p,
+body.v6-dark .v5-result-card .v5-card-subtitle{
+  background:#111827!important;
+  color:#f8fafc!important;
+  border-color:#263449!important;
+}
+body.v6-dark .v6-nav-sheet .section-title p,
+body.v6-dark .v6-nav-sheet .v5-section-heading p,
+body.v6-dark .v5-result-card .section-title p,
+body.v6-dark .v5-result-card .v5-card-subtitle{
+  color:#aab7ca!important;
+}
+body.v6-dark .v6-nav-sheet .v5-popular-card .section-title,
+body.v6-dark .v6-nav-sheet .v5-profile-card .section-title,
+body.v6-dark .v6-nav-sheet .v5-profile-completion .section-title,
+body.v6-dark .v6-nav-sheet .v7-deals-card .section-title{
+  background:#111827!important;
+  color:#f8fafc!important;
+}
