@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.19';
+const VERSION='6.0.0-store-browser.20';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
@@ -14,29 +14,10 @@ function affiliateUrl(storeId,url){
 }
 function storeSearchQuery(q){
  let s=String(q||'').trim();
- s=s.replace(/(?:از\s*)?\d[\d۰-۹.,]*\s*(?:تا|الی|-)?\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)\s*(?:تومان|ریال)?/gi,' ');
- s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
- s=s.replace(/\b(?:برای|جهت)\s+(?:محل\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\b/gi,' ');
- s=s.replace(/\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
- var hit=window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.domainForQuery==='function'
-   ? window.DigiYarStoreEligibility.domainForQuery(s) : null;
- var requestedAccessory=/\b(?:لوازم\s*جانبی|اکسسوری|قاب|کاور|گلس|شارژر|کابل|پاوربانک|هندزفری|هدفون|کیف|پایه|محافظ)\b/i.test(s);
- var strict={
-   digital:['لوازم جانبی','اکسسوری','قاب','کاور','گلس','شارژر','کابل','پاوربانک','هندزفری','هدفون','پایه','محافظ'],
-   home:['دکوراتیو','اکسسوری'],
-   beauty:['هدیه'],
-   furniture:['دکوراتیو','اکسسوری'],
-   computer:['کیف','کوله','ماوس','کیبورد','پایه','هاب'],
-   av:['کابل','ریموت','پایه','محافظ'],
-   auto:['اسپری','شوینده','خوشبوکننده'],
-   sports:['پوشاک','اکسسوری'],
-   kids:['پوشاک','اکسسوری'],
-   books:['هدیه','اکسسوری']
- };
- var terms=hit&&strict[hit.domain];
- if(terms&&!requestedAccessory){
-   s+=' '+terms.map(function(x){return '-'+x}).join(' ');
- }
+ s=s.replace(/(?:از\\s*)?\\d[\\d۰-۹.,]*\\s*(?:تا|الی|-)??\\s*\\d[\\d۰-۹.,]*\\s*(?:میلیون|م|هزار|تومان|ریال)\\s*(?:تومان|ریال)?/gi,' ');
+ s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\\s*\\d[\\d۰-۹.,]*\\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
+ s=s.replace(/\\b(?:برای|جهت)\\s+(?:محل\\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\\b/gi,' ');
+ s=s.replace(/\\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
  return s||String(q||'').trim();
 }
 function stores(){const a=window.DigiYarPopularAffiliateStores;if(Array.isArray(a)&&a.length)return a.filter(x=>x&&x.id&&x.name);const s=document.getElementById('storeSelect');return s?Array.from(s.options).filter(o=>o.value&&o.value!=='all').map(o=>({id:o.value,name:o.textContent.trim()})):[];}
@@ -60,6 +41,16 @@ function style(){
 .v6-auto-home{background:var(--v6-surface-2);color:var(--v6-text)}
 .v6-auto-low{opacity:.82}
 /* App theme is authoritative: do not let the device/OS color scheme override it. */
+body.v6-dark .v6-auto-store{--v6-bg:#0b1220;--v6-surface:#121c2d;--v6-surface-2:#1a2639;--v6-text:#f8fafc;--v6-muted:#b7c2d3;--v6-border:rgba(255,255,255,.15);--v6-border-soft:rgba(255,255,255,.1);box-shadow:0 4px 18px rgba(0,0,0,.4)}
+body.v6-dark .v6-auto-head{color:#f8fafc;background:#111827;border-color:#263449;border-radius:12px}
+body.v6-dark .v6-auto-tabs{background:#0b1220;border-color:rgba(255,255,255,.1)}
+body.v6-dark .v6-auto-tab{color:#f8fafc;background:#1a2639;border-color:rgba(255,255,255,.15)}
+body.v6-dark .v6-auto-tab.active{background:#2563eb;color:#fff;border-color:#2563eb}
+body.v6-dark .v6-auto-body{background:#0b1220;color:#f8fafc}
+body.v6-dark .v6-auto-status{color:#b7c2d3}
+body.v6-dark .v6-auto-link{background:#2563eb;color:#fff}
+body.v6-dark .v6-auto-home{background:#1a2639;color:#f8fafc}
+body.v6-dark .v6-auto-store{border-color:#263449}
 html.dark .v6-auto-store,body.dark .v6-auto-store,[data-theme="dark"] .v6-auto-store{--v6-bg:#0b1220;--v6-surface:#121c2d;--v6-surface-2:#1a2639;--v6-text:#f8fafc;--v6-muted:#b7c2d3;--v6-border:rgba(255,255,255,.15);--v6-border-soft:rgba(255,255,255,.1);box-shadow:0 4px 18px rgba(0,0,0,.4)}
 html.dark .v6-auto-head,body.dark .v6-auto-head,[data-theme="dark"] .v6-auto-head{color:#f8fafc}
 html.dark .v6-auto-tabs,body.dark .v6-auto-tabs,[data-theme="dark"] .v6-auto-tabs{background:#0b1220}
@@ -69,10 +60,10 @@ html.dark .v6-auto-status,body.dark .v6-auto-status,[data-theme="dark"] .v6-auto
 html.dark .v6-auto-frame,body.dark .v6-auto-frame,[data-theme="dark"] .v6-auto-frame{color-scheme:dark}
 `;document.head.appendChild(s);
 }
-function ensureHost(){const existing=document.getElementById('v6StoreSimulatorResults');if(existing)return existing;let anchor=document.getElementById('v5SmartSearchResults');if(!anchor){const form=document.getElementById('v5SmartSearchForm');if(!form||!form.parentNode)return null;anchor=document.createElement('div');anchor.id='v5SmartSearchResults';anchor.className='v5-smart-search-results';form.parentNode.appendChild(anchor);}const host=document.createElement('div');host.id='v6StoreSimulatorResults';host.className='v5-smart-search-results v6-store-simulator-results';anchor.parentNode.insertBefore(host,anchor.nextSibling);return host;}
+function ensureHost(){const existing=document.getElementById('v6StoreSimulatorResults');if(existing)return existing;let anchor=document.getElementById('v5SmartSearchResults');if(!anchor){const form=document.getElementById('v5SmartSearchForm');if(!form||!form.parentNode)return null;anchor=document.createElement('div');anchor.id='v5SmartSearchResults';anchor.className='v5-smart-search-results';anchor.style.margin='0';anchor.style.minHeight='0';form.parentNode.appendChild(anchor);}const host=document.createElement('div');host.id='v6StoreSimulatorResults';host.className='v5-smart-search-results v6-store-simulator-results';anchor.parentNode.insertBefore(host,anchor.nextSibling);return host;}
 function openBrowser(query,list){
  const host=ensureHost();if(!host)return;
- host.style.marginTop='11.34px';
+ host.style.setProperty('margin-top','3mm','important');
  host.style.marginBottom='0';
  style();
  list=Array.isArray(list)?list:stores();
