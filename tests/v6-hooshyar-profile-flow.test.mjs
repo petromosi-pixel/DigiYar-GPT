@@ -36,6 +36,7 @@ assert.ok(!/const LIVE=/.test(browser), 'Store Browser must not retain the retir
 assert.ok(!browser.includes('/api/search'), 'Store Browser must not depend on the Search Core API');
 assert.ok(!/iframe\s+class=["']v6-auto-frame["']/.test(browser), 'Store Browser must not depend on iframe rendering');
 assert.ok(browser.includes('SEARCH['), 'Store Browser must map the query to store search URLs');
+assert.match(browser, /technolife:q=>'https:\/\/www\.technolife\.com\/product\/list\/search\?keywords='\+encodeURIComponent\(q\)/, 'Technolife must use its real product search URL');
 assert.ok(!browser.includes('/api/store-search'), 'Hooshyar Store Browser must not depend on shelved live-store adapter endpoint');
 assert.ok(browser.includes('encodeURIComponent(q)'), 'Store Browser must encode the normalized Hooshyar query for store URLs');
 assert.ok(browser.includes('function storeSearchQuery(q)'), 'Store Browser must normalize budget/usage text before external store search');
