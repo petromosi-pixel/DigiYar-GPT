@@ -20,7 +20,7 @@ assert.match(sync, /function profileComplete\(\)[\s\S]*?v5Subcategory[\s\S]*?v6B
 assert.match(sync, /function launchHooshyar\(\)[\s\S]*?var query=profileQuery\(\)/);
 assert.match(sync, /loadStoreBrowser\(function\(browser\)\{[\s\S]*?browser\.open\(query\)/);
 assert.match(sync, /browser\.open\(query\)/);
-assert.match(sync, /js\/v6-store-browser\.js\?v=6\.0\.0-store-browser\.14/);
+assert.match(sync, /js\/v6-store-browser\.js\?v=6\.0\.0-store-browser\\.16/);
 assert.ok(!sync.includes('fetch('), 'profile flow must not call Search Core or an API directly');
 assert.ok(!sync.includes('/api/search'), 'profile flow must not depend on the Search Core API');
 assert.match(sync, /oldResults\.remove\(\)/);
