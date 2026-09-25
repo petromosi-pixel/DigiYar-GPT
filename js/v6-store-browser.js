@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.17';
+const VERSION='6.0.0-store-browser.18';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q)
 };
@@ -18,13 +18,32 @@ function storeSearchQuery(q){
  s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
  s=s.replace(/\b(?:برای|جهت)\s+(?:محل\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\b/gi,' ');
  s=s.replace(/\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
+ var hit=window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.domainForQuery==='function'
+   ? window.DigiYarStoreEligibility.domainForQuery(s) : null;
+ var requestedAccessory=/\b(?:لوازم\s*جانبی|اکسسوری|قاب|کاور|گلس|شارژر|کابل|پاوربانک|هندزفری|هدفون|کیف|پایه|محافظ)\b/i.test(s);
+ var strict={
+   digital:['لوازم جانبی','اکسسوری','قاب','کاور','گلس','شارژر','کابل','پاوربانک','هندزفری','هدفون','پایه','محافظ'],
+   home:['دکوراتیو','اکسسوری'],
+   beauty:['هدیه'],
+   furniture:['دکوراتیو','اکسسوری'],
+   computer:['کیف','کوله','ماوس','کیبورد','پایه','هاب'],
+   av:['کابل','ریموت','پایه','محافظ'],
+   auto:['اسپری','شوینده','خوشبوکننده'],
+   sports:['پوشاک','اکسسوری'],
+   kids:['پوشاک','اکسسوری'],
+   books:['هدیه','اکسسوری']
+ };
+ var terms=hit&&strict[hit.domain];
+ if(terms&&!requestedAccessory){
+   s+=' '+terms.map(function(x){return '-'+x}).join(' ');
+ }
  return s||String(q||'').trim();
 }
 function stores(){const a=window.DigiYarPopularAffiliateStores;if(Array.isArray(a)&&a.length)return a.filter(x=>x&&x.id&&x.name);const s=document.getElementById('storeSelect');return s?Array.from(s.options).filter(o=>o.value&&o.value!=='all').map(o=>({id:o.value,name:o.textContent.trim()})):[];}
 function style(){
  if(document.getElementById('v6-auto-store-style'))return;
  const s=document.createElement('style');s.id='v6-auto-store-style';s.textContent=`
-.v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:11px 0 12px;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:11.34px 0 12px;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
 .v6-auto-head{padding:12px;background:var(--v6-surface);font-weight:800;font-size:13px;color:var(--v6-text);text-align:center;line-height:1.9}
 .v6-auto-status{text-align:center;line-height:1.9}
 .v6-auto-actions{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:10px;flex-wrap:wrap}
@@ -60,7 +79,7 @@ function openBrowser(query,list){
  const usable=list.filter(x=>SEARCH[x.id]);
  if(!usable.length){host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو فروشگاه دارای جستجوی مستقیم پیدا نشد.</div></div>';return host;}
  const box=document.createElement('section');box.className='v6-auto-store';
- box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌هایی که ممکنه محصول مورد نظرت رو داشته باشن برات لیست کردم.</div>';
+ box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌های محصول مورد نظرت رو برات لیست کردم</div>';
  const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
  const body=document.createElement('div');body.className='v6-auto-body';box.append(tabs,body);host.innerHTML='';host.appendChild(box);
  let active=usable[0];
@@ -68,7 +87,7 @@ function openBrowser(query,list){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
    const searchQuery=storeSearchQuery(query);
    const u=SEARCH[active.id](searchQuery);
-   body.innerHTML='<div class="v6-auto-status">برای دیدن نتایج هر فروشگاه، اسم اون رو از سربرگ انتخاب و دکمه پایین رو لمس کن.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
+   body.innerHTML='<div class="v6-auto-status">با انتخاب اسم هر فروشگاه از سربرگ و لمس دکمه پایین ، نتایج ظاهر میشن</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
  render();return host;
