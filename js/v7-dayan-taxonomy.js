@@ -5,44 +5,8 @@
 (function(){
 'use strict';
 var STORE='dayan';
-var ROOTS=[
- ['men','پوشاک مردانه'],
- ['women','پوشاک زنانه'],
- ['kids','پوشاک بچگانه'],
- ['accessories','اکسسوری'],
- ['digital','لوازم دیجیتال'],
- ['home','لوازم منزل']
-];
-var SUBS={
- men:[
-  ['sets','ست‌های مردانه'],['shirts','پیراهن مردانه'],['tshirts','تیشرت و پولو شرت مردانه'],
-  ['trousers','شلوار مردانه'],['shorts','شلوارک مردانه'],['underwear','لباس زیر مردانه'],
-  ['sports','پوشاک و لوازم ورزشی مردانه'],['shoes','کفش مردانه'],['bags','کیف مردانه'],
-  ['outerwear','کاپشن و لباس گرم مردانه']
- ],
- women:[
-  ['mantle','مانتو'],['scarf','شال و روسری'],['dress','پیراهن و لباس مجلسی زنانه'],
-  ['tshirts','تیشرت و تونیک زنانه'],['trousers','شلوار زنانه'],['sets','ست زنانه'],
-  ['couple','ست عاشقانه دونفره'],['outerwear','کاپشن، بافت و سویشرت زنانه'],
-  ['shoes','کفش زنانه'],['bags','کیف زنانه']
- ],
- kids:[
-  ['girls','پوشاک دخترانه'],['boys','پوشاک پسرانه'],['baby','لباس نوزادی'],
-  ['shoes','کفش بچگانه'],['toys','اسباب‌بازی']
- ],
- accessories:[
-  ['gift','پک هدیه مناسبتی'],['sunglasses','عینک آفتابی و روزمره'],['watch-analog','ساعت مچی عقربه‌ای'],
-  ['watch-set','ست ساعت مچی'],['watch-digital','ساعت مچی دیجیتال'],['gadget','گجت'],
-  ['perfume','عطر و ادکلن'],['jewelry','زیورآلات']
- ],
- digital:[
-  ['mobile-accessories','لوازم جانبی موبایل'],['handsfree','هندزفری'],['monopod','مونوپاد'],
-  ['powerbank','پاوربانک'],['charger','شارژر'],['speakers','اسپیکر و صوتی'],
-  ['gaming','لوازم و تجهیزات گیمینگ'],['camera','دوربین و تجهیزات']
- ],
- home:[
-  ['decor','دکوراسیون'],['wall-clock','ساعت دیواری'],['utility','لوازم کاربردی'],['food','مواد غذایی']
- ]};
+var ROOTS=[['men','لباس مردانه'],['shoes','کفش مردانه'],['women','پوشاک زنانه'],['accessories','اکسسوری']];
+var SUBS={men:[['jacket','کاپشن و کت'],['knitwear','بافت، پلیور، ژاکت'],['shirt','پیراهن'],['tshirt','تیشرت'],['set','ست مردانه'],['trousers','شلوار'],['hoodie','هودی و سویشرت'],['sweatshirt','بلوز و دورس'],['tank','رکابی مردانه']],shoes:[['sport','کفش اسپرت و ورزشی'],['ankle-boots','نیم بوت'],['casual','کفش روزمره و راحتی'],['formal','کفش رسمی و مجلسی'],['sandal','صندل مردانه']],women:[['women','پوشاک زنانه']],accessories:[['watch-set','ست ساعت مچی'],['analog-watch','ساعت مچی عقربه‌ای'],['eyewear','عینک']]};
 var BRANDS={};
 function $(id){return document.getElementById(id)}
 function selected(){var s=$('storeSelect');return s&&s.value===STORE}
