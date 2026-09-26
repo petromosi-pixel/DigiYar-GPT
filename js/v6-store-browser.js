@@ -118,7 +118,7 @@ function openBrowser(query,list){
    const step=function(){
      if(charIndex<textValue.length){
        li.textContent=textValue.slice(0,++charIndex);
-       setTimeout(step,18);
+       setTimeout(step,9);
      }else if(done)done();
    };
    step();
