@@ -37,6 +37,8 @@
     var select=el('storeSelect');
     var stores=window.DigiYarPopularAffiliateStores;
     if(!select || !Array.isArray(stores) || !stores.length) return false;
+    var profileHost=el('v7ProfileSearchHost');
+    if(profileHost) profileHost.dataset.activeStore=String(select.value||'');
     var current=select.value || 'all';
     var desired=[{id:'all',name:'همه فروشگاه‌های منتخب'}];
     var seen={};
@@ -210,6 +212,14 @@
   }
 
   function boot(){
+    var store=el('storeSelect');
+    if(store && !store.dataset.v7IsolationBound){
+      store.dataset.v7IsolationBound='1';
+      store.addEventListener('change',function(){
+        var host=el('v7ProfileSearchHost');
+        if(host) host.dataset.activeStore=String(store.value||'');
+      });
+    }
     syncStores();
     connectProfileToHooshyar();
   }
