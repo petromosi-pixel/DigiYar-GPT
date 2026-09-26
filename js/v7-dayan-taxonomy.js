@@ -7,7 +7,7 @@
 var STORE='dayan';
 var ROOTS=[['men','لباس مردانه'],['shoes','کفش مردانه'],['women','پوشاک زنانه'],['accessories','اکسسوری']];
 var SUBS={men:[['jacket','کاپشن و کت'],['knitwear','بافت، پلیور، ژاکت'],['shirt','پیراهن'],['tshirt','تیشرت'],['set','ست مردانه'],['trousers','شلوار'],['hoodie','هودی و سویشرت'],['sweatshirt','بلوز و دورس'],['tank','رکابی مردانه']],shoes:[['sport','کفش اسپرت و ورزشی'],['ankle-boots','نیم بوت'],['casual','کفش روزمره و راحتی'],['formal','کفش رسمی و مجلسی'],['sandal','صندل مردانه']],women:[['women','پوشاک زنانه']],accessories:[['watch-set','ست ساعت مچی'],['analog-watch','ساعت مچی عقربه‌ای'],['eyewear','عینک']]};
-var BRANDS={};
+var BRANDS={men:['اسپان','Nike','Adidas','Maran','Araz'],shoes:['Araz','Cat','Maran','Adidas','Imaz','Dior','Kenzo','Rayan','Clarks','Carlo','Nika','Nike','Lima'],women:[],accessories:[]};
 function $(id){return document.getElementById(id)}function ensureOption(){var s=$('storeSelect');if(!s||Array.from(s.options).some(function(o){return o.value===STORE}))return;var o=document.createElement('option');o.value=STORE;o.textContent='دایان شاپ';s.appendChild(o)}
 
 function selected(){var s=$('storeSelect');return s&&s.value===STORE}
