@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.1';
+var VERSION='7.0.0-store-eligibility.2';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -12,7 +12,7 @@ var DOMAINS={
   beauty:['آرایشی','بهداشتی','زیبایی','مراقبت پوست','مراقبت مو','عطر'],
   health:['سلامت','پزشکی','مکمل','ویتامین','تجهیزات پزشکی','دارویی'],
   supermarket:['سوپرمارکت','مواد غذایی','خوراکی','نوشیدنی','کالاهای روزمره'],
-  home:['خانه و آشپزخانه','لوازم خانگی','لوازم آشپزخانه','دکوراسیون','نظافت'],
+  home:['خانه و آشپزخانه','لوازم خانگی','لوازم آشپزخانه','دکوراسیون','نظافت','فرش','فرش ماشینی','فرش دستباف','قالی','قالیچه','گلیم','موکت','تابلو فرش','پادری','کفپوش'],
   sports:['ورزش','بدنسازی','کمپ','سفر','تجهیزات ورزشی'],
   kids:['کودک','نوزاد','اسباب بازی','اسباب‌بازی'],
   books:['کتاب','لوازم تحریر','هنر'],
@@ -39,6 +39,7 @@ var STORE_DOMAINS={
   jeanswest:['fashion'],
   neshatrokh:['beauty','health'],
   solokala:['beauty'],
+  rugs:['home'],
   shavaz:['beauty','health','supermarket'],
   darukade:['health','beauty'],
   darmankala:['health'],
@@ -80,7 +81,9 @@ function domainForQuery(query){
 function storesForQuery(query, stores){
   var list=Array.isArray(stores)?stores:[];
   var hit=domainForQuery(query);
-  if(!hit) return list.slice();
+  /* Strict mode: an unclassified query must never fall back to every store.
+     Showing fewer relevant stores is safer than showing unrelated merchants. */
+  if(!hit) return [];
 
   return list.filter(function(store){
     if(!store || !store.id) return false;
