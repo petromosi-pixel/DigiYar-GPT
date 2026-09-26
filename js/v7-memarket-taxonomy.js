@@ -31,7 +31,7 @@ var SUBS={
  sale:[['sale','شگفت‌انگیزها']],
  'one-size':[['one-size','تک‌سایزها']]
 };
-var BRANDS={};
+var BRANDS={men:['Nike','Adidas','Reebok','Alshen','Palter','Pavlo'],women:['Nike','Adidas','Reebok'],bags:['Adidas','Nike','Reebok'],watch:[],jewelry:[],home:[],digital:['V380'],beauty:[],adult:[]};
 function $(id){return document.getElementById(id)}function ensureOption(){var s=$('storeSelect');if(!s||Array.from(s.options).some(function(o){return o.value===STORE}))return;var o=document.createElement('option');o.value=STORE;o.textContent='می‌مارکت';s.appendChild(o)}
 
 function selected(){var s=$('storeSelect');return s&&s.value===STORE}
