@@ -12,9 +12,12 @@ const CATEGORY={
 };
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function affiliateUrl(storeId,url){
- const campaigns={digikala:'https://aflo.ir/TrvNHEN8'};
- const base=campaigns[String(storeId||'').toLowerCase()];
- return base&&url?base+'?p='+encodeURIComponent(url):url;
+ const id=String(storeId||'').toLowerCase();
+ const registry=window.DigiYarAffiliateUrls||{};
+ const entry=registry[id];
+ if(!entry||!entry.url)return url;
+ if(entry.mode==='campaign')return url?entry.url+'?p='+encodeURIComponent(url):entry.url;
+ return entry.url;
 }
 function storeSearchQuery(q){
  let s=String(q||'').trim();
