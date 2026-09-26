@@ -191,6 +191,10 @@ function ensureSubField(){
 }
 function renderBrand(sub){
  var existing=$('v6BrandField');if(existing)existing.remove();
+ var store=$('storeSelect')&&$('storeSelect').value;
+ /* Dayan/MeMarket have their own taxonomy scripts; never let the generic
+    product-options bridge paint unrelated brands over them. */
+ if(store==='dayan'||store==='memarket')return;
  var brands=BRANDS[sub]||BRANDS.general;
  var subSel=$('v5Subcategory'),dyn=$('v5DynamicFields');if(!subSel)return;
  var field=document.createElement('label');field.id='v6BrandField';field.className='v5-field full';
