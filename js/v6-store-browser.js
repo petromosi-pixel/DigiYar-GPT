@@ -88,7 +88,7 @@ function openBrowser(query,list){
  const processing=document.createElement('div');
  processing.className='v6-auto-processing';
  processing.setAttribute('aria-live','polite');
- processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><div class="v6-auto-processing-details"><ul></ul></div>';
+ processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><div class="v6-auto-processing-details" style="display:block"><ul></ul></div>';
  const processingList=processing.querySelector('ul');
 
  function finishProcessing(onComplete){
