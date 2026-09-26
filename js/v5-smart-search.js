@@ -10,6 +10,8 @@ const hints=[
 let i=0,timer,typingTimer;
 function installCardStyle(){if(document.getElementById('v6-hooshyar-card-style'))return;const s=document.createElement('style');s.id='v6-hooshyar-card-style';s.textContent=`
 .v5-smart-search-field{position:relative!important;overflow:hidden!important}
+body:has(#v7ProfileSearchHost[data-active-store="dayan"]) .v7-hooshyar-hint,
+body:has(#v7ProfileSearchHost[data-active-store="memarket"]) .v7-hooshyar-hint{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 .v5-smart-search-field #v5SmartSearchHint.v7-hooshyar-hint{display:block!important;position:absolute!important;right:48px!important;left:48px!important;top:50%!important;transform:translateY(-50%)!important;width:auto!important;height:34px!important;margin:0!important;padding:0!important;box-sizing:border-box!important;text-align:right!important;font-size:12px!important;font-weight:600!important;white-space:nowrap!important;overflow:hidden!important;z-index:2!important;pointer-events:none!important;color:#7f8da3!important}
 .v7-hooshyar-hint-inner{position:relative!important;display:block!important;width:100%!important;height:34px!important;margin:0!important;padding:0!important;direction:rtl!important;box-sizing:border-box!important;overflow:hidden!important}
 .v7-hooshyar-hint-text{position:absolute!important;right:8px!important;left:8px!important;top:50%!important;display:block!important;width:auto!important;max-width:none!important;transform:translate(0,-50%)!important;overflow:hidden!important;text-overflow:clip!important;white-space:nowrap!important;visibility:visible!important;opacity:1!important;color:inherit!important;animation:v7HooshyarSpeak 1.15s cubic-bezier(.22,.61,.36,1) forwards!important}
