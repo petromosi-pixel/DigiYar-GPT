@@ -28,7 +28,7 @@ function stores(){const a=window.DigiYarPopularAffiliateStores;if(Array.isArray(
 function style(){
  if(document.getElementById('v6-auto-store-style'))return;
  const s=document.createElement('style');s.id='v6-auto-store-style';s.textContent=`
-.v6-auto-processing{text-align:right;direction:rtl;margin:0 0 4px;color:var(--v6-muted);font-size:11px;line-height:1.7}.v6-auto-processing-title{font-weight:800;font-size:11px;margin-bottom:3px;color:var(--v6-text);text-align:right}.v6-auto-processing-toggle{display:flex;align-items:center;justify-content:flex-start;gap:4px;width:100%;padding:0;border:0;background:transparent;color:var(--v6-muted);font:inherit;font-weight:800;font-size:12px;line-height:1.7;text-align:right;direction:rtl;cursor:pointer}.v6-auto-processing-chevron{display:inline-block;font-size:17px;line-height:1;transition:transform .18s ease;transform:rotate(0deg)}.v6-auto-processing-toggle[aria-expanded="true"] .v6-auto-processing-chevron{transform:rotate(90deg)}.v6-auto-processing-details{display:block;margin:2px 0 0;padding:0 2px;text-align:right}.v6-auto-processing-details.is-open{display:block}.v6-auto-processing ul{display:block;margin:0;padding:0;list-style:none;text-align:right}.v6-auto-processing li{margin:2px 0;white-space:nowrap;font-size:11px;font-weight:400;opacity:.55;line-height:1.65}.v6-auto-processing-done{font-weight:800;font-size:12px;line-height:1.7;text-align:right;color:var(--v6-muted)}.v6-auto-store{margin-top:0!important}
+.v6-auto-processing{text-align:right;direction:rtl;margin:0 0 4px;color:var(--v6-muted);font-size:12px;line-height:1.7}.v6-auto-processing-title{font-weight:800;font-size:12px;margin-bottom:3px;color:var(--v6-text);text-align:right}.v6-auto-processing-toggle{display:block;width:100%;padding:0;border:0;background:transparent;color:var(--v6-muted);font:inherit;font-weight:800;font-size:12px;line-height:1.7;text-align:right;direction:rtl;cursor:pointer}.v6-auto-processing-chevron{display:inline-block;font-size:17px;line-height:1;transition:transform .18s ease;margin-right:4px}.v6-auto-processing-toggle[aria-expanded="true"] .v6-auto-processing-chevron{transform:rotate(90deg)}.v6-auto-processing-details{display:none;margin:2px 0 0;padding:0 2px;text-align:right}.v6-auto-processing ul{display:block;margin:0;padding:0;list-style:none;text-align:right}.v6-auto-processing li{margin:2px 0;white-space:nowrap;font-size:12px;font-weight:400;opacity:.55;line-height:1.65}.v6-auto-processing-done{font-weight:800;font-size:12px;line-height:1.7;text-align:right;color:var(--v6-muted);opacity:.55}.v6-auto-store{margin-top:0!important}
 .v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:0 0 12px;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
 .v6-auto-head{padding:10px 12px;background:var(--v6-surface);font-weight:800;font-size:10px;color:var(--v6-text);text-align:center;line-height:1.65;position:relative;z-index:1}
 .v6-auto-status{text-align:center;line-height:1.9}
@@ -92,26 +92,20 @@ function openBrowser(query,list){
  const processingList=processing.querySelector('ul');
 
  function finishProcessing(onComplete){
-   const savedTitle=processing.querySelector('.v6-auto-processing-title');
    const savedDetails=processing.querySelector('.v6-auto-processing-details');
    processing.innerHTML='';
-   const liveBox=document.createElement('div');
-   liveBox.className='v6-auto-processing-live';
-   if(savedTitle)liveBox.appendChild(savedTitle);
-   if(savedDetails)liveBox.appendChild(savedDetails);
    const toggle=document.createElement('button');
    toggle.type='button';
    toggle.className='v6-auto-processing-toggle';
    toggle.setAttribute('aria-expanded','false');
-   toggle.innerHTML='<span class="v6-auto-processing-chevron" aria-hidden="true">›</span><span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span>';
-   processing.appendChild(liveBox);
+   toggle.innerHTML='<span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span><span class="v6-auto-processing-chevron" aria-hidden="true">›</span>';
    processing.appendChild(toggle);
-   liveBox.style.display='none';
-   if(savedDetails)savedDetails.style.display='block';
+   if(savedDetails)processing.appendChild(savedDetails);
+   if(savedDetails)savedDetails.style.display='none';
    toggle.addEventListener('click',function(){
      const open=this.getAttribute('aria-expanded')==='true';
      this.setAttribute('aria-expanded',String(!open));
-     liveBox.style.display=open?'none':'block';
+     if(savedDetails)savedDetails.style.display=open?'none':'block';
    });
    if(typeof onComplete==='function')onComplete();
  }
