@@ -28,7 +28,7 @@ function stores(){const a=window.DigiYarPopularAffiliateStores;if(Array.isArray(
 function style(){
  if(document.getElementById('v6-auto-store-style'))return;
  const s=document.createElement('style');s.id='v6-auto-store-style';s.textContent=`
-.v6-auto-processing{text-align:center;margin:0 0 4px;color:var(--v6-muted);font-size:10px;line-height:1.65}.v6-auto-processing-title{font-weight:800;margin-bottom:2px}.v6-auto-processing ul{display:block;margin:0;padding:0 18px;list-style:disc inside;text-align:center}.v6-auto-processing li{margin:0;white-space:nowrap}.v6-auto-processing-done{font-weight:800;line-height:1.5}.v6-auto-store{margin-top:0!important}
+.v6-auto-processing{text-align:right;direction:rtl;margin:0 0 4px;color:var(--v6-muted);font-size:11px;line-height:1.7}.v6-auto-processing-title{font-weight:800;font-size:11px;margin-bottom:3px;color:var(--v6-text);text-align:right}.v6-auto-processing ul{display:block;margin:0;padding:0 2px;list-style:none;text-align:right}.v6-auto-processing li{margin:2px 0;white-space:nowrap;font-size:11px;font-weight:400;opacity:.55;line-height:1.65}.v6-auto-processing-done{font-weight:800;font-size:11px;line-height:1.7;text-align:right;color:var(--v6-text)}.v6-auto-store{margin-top:0!important}
 .v6-auto-store{--v6-bg:#fff;--v6-surface:#f7f9fc;--v6-surface-2:#f3f5f8;--v6-text:#172033;--v6-muted:#596579;--v6-border:rgba(0,0,0,.12);--v6-border-soft:rgba(0,0,0,.08);--v6-accent:#2563eb;margin:0 0 12px;border:1px solid var(--v6-border);border-radius:16px;overflow:hidden;background:var(--v6-bg);color:var(--v6-text);box-shadow:0 2px 10px rgba(0,0,0,.04)}
 .v6-auto-head{padding:10px 12px;background:var(--v6-surface);font-weight:800;font-size:10px;color:var(--v6-text);text-align:center;line-height:1.65;position:relative;z-index:1}
 .v6-auto-status{text-align:center;line-height:1.9}
@@ -88,7 +88,19 @@ function openBrowser(query,list){
  const processing=document.createElement('div');
  processing.className='v6-auto-processing';
  processing.setAttribute('aria-live','polite');
- processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><ul>'+messages.map(m=>'<li>'+esc(m)+'</li>').join('')+'</ul>';
+ processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><ul></ul>';
+ const processingList=processing.querySelector('ul');
+ let processingIndex=0;
+ function showNextProcessingMessage(){
+   if(!processingList||processingIndex>=messages.length)return;
+   const li=document.createElement('li');
+   li.textContent=messages[processingIndex++];
+   li.style.opacity='0';
+   processingList.appendChild(li);
+   requestAnimationFrame(function(){li.style.transition='opacity .35s ease';li.style.opacity='.55';});
+   if(processingIndex<messages.length)setTimeout(showNextProcessingMessage,850);
+ }
+ showNextProcessingMessage();
 
  host.innerHTML='';
  host.appendChild(processing);
