@@ -35,7 +35,7 @@ function style(){
 .v6-auto-tab.active{background:var(--v6-accent);color:#fff;border-color:var(--v6-accent)}
 .v6-auto-body{padding:10px;background:var(--v6-bg)}
 .v6-auto-frame{display:block;width:100%;height:500px;border:1px solid var(--v6-border-soft);border-radius:12px;background:var(--v6-bg);color-scheme:light}
-.v6-auto-status{font-size:10px;margin:6px 0;color:var(--v6-muted);line-height:1.7}
+.v6-auto-status{font-size:11px;margin:6px 0;color:var(--v6-muted);line-height:1.7}
 .v6-auto-actions{display:flex;gap:7px;margin-top:7px;flex-wrap:wrap}
 .v6-auto-link{display:inline-flex;padding:7px 11px;border-radius:9px;background:var(--v6-accent);color:#fff;text-decoration:none;font-size:11px;font-weight:800}
 .v6-auto-home{background:var(--v6-surface-2);color:var(--v6-text)}
