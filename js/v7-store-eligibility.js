@@ -16,7 +16,8 @@ var DOMAINS={
   sports:['ورزش','بدنسازی','کمپ','سفر','تجهیزات ورزشی'],
   kids:['کودک','نوزاد','اسباب بازی','اسباب‌بازی'],
   books:['کتاب','لوازم تحریر','هنر'],
-  auto:['خودرو','ماشین','لوازم خودرو','قطعات خودرو','موتورسیکلت']
+  auto:['خودرو','ماشین','لوازم خودرو','قطعات خودرو','موتورسیکلت'],
+  accessories:['اکسسوری','ساعت مچی','ساعت','عینک','زیورآلات','کیف و کوله','کیف']
 };
 
 var STORE_DOMAINS={
@@ -50,8 +51,8 @@ var STORE_DOMAINS={
   eseminar:[],
   maktabkhooneh:[],
   karnameh:['auto'],
-  dayan:['digital','home','fashion','beauty'],
-  memarket:['digital','home','fashion','beauty','supermarket']
+  dayan:['fashion','accessories'],
+  memarket:['digital','home','fashion','accessories','beauty']
 };
 
 function norm(v){
