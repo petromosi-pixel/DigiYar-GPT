@@ -71,14 +71,7 @@ function openBrowser(query,list){
  host.style.setProperty('margin-top','3mm','important');host.style.position='relative';host.style.zIndex='1';
  host.style.marginBottom='0';
  style();
- list=Array.isArray(list)?list:stores();
- if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function')
-   list=window.DigiYarStoreEligibility.storesForQuery(query,list);
- const usable=list.filter(x=>SEARCH[x.id]);
- if(!usable.length){
-   host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو هنوز فروشگاه مرتبطی در فهرست دیجی‌یار شناسایی نشده.</div></div>';
-   return host;
- }
+
  const messages=[
    'دارم عبارت جستجو رو دقیق‌تر تحلیل می‌کنم...',
    'دسته و نوع کالای درخواستی رو با فروشگاه‌ها تطبیق می‌دم...',
@@ -86,14 +79,17 @@ function openBrowser(query,list){
    'دارم گزینه‌های مرتبط‌تر رو برایت آماده می‌کنم...',
    'تقریباً آماده‌ست؛ نتایج مرتبط رو نمایش می‌دم...'
  ];
+
  const box=document.createElement('section');box.className='v6-auto-store';
  box.innerHTML='<div class="v6-auto-head">هوش‌یار در حال بررسی فروشگاه‌های مرتبط با درخواست توست...</div>';
  const body=document.createElement('div');body.className='v6-auto-body';
  box.appendChild(body);
+
  const processing=document.createElement('div');
  processing.className='v6-auto-processing';
  processing.setAttribute('aria-live','polite');
  processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><ul>'+messages.map(m=>'<li>'+esc(m)+'</li>').join('')+'</ul>';
+
  host.innerHTML='';
  host.appendChild(processing);
  host.appendChild(box);
@@ -101,18 +97,38 @@ function openBrowser(query,list){
 
  const delay=7000;
  setTimeout(function(){
-   box.style.display='block';
-   processing.innerHTML='<div class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</div>';
-   tabsAndResults();
+   try{
+     let sourceList=Array.isArray(list)?list:stores();
+     if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function'){
+       sourceList=window.DigiYarStoreEligibility.storesForQuery(query,sourceList);
+     }
+     const usable=sourceList.filter(x=>x&&SEARCH[x.id]);
+
+     if(!usable.length){
+       box.style.display='block';
+       processing.innerHTML='<div class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</div>';
+       box.innerHTML='<div class="v6-auto-head">برای این جستجو هنوز فروشگاه مرتبطی در فهرست دیجی‌یار شناسایی نشده.</div>';
+       return;
+     }
+
+     processing.innerHTML='<div class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</div>';
+     box.style.display='block';
+     tabsAndResults(usable);
+   }catch(error){
+     console.error('DigiYar Store Browser render:',error);
+     box.style.display='block';
+     processing.innerHTML='<div class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</div>';
+     box.innerHTML='<div class="v6-auto-head">در نمایش نتایج مشکلی پیش آمد؛ دوباره جستجو کن.</div>';
+   }
  },delay);
 
- function tabsAndResults(){
+ function tabsAndResults(usable){
    box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌های مرتبط با محصول مورد نظرت رو برات لیست کردم</div>';
    const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
    const resultBody=document.createElement('div');resultBody.className='v6-auto-body';
    box.append(tabs,resultBody);
    let active=usable[0];
-   async function render(){
+   function render(){
      tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
      const searchQuery=storeSearchQuery(query);
      const sub=document.getElementById('v5Subcategory');
