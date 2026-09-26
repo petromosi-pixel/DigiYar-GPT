@@ -222,6 +222,6 @@
     attempts+=1;
     syncStores();
     connectProfileToHooshyar();
-    if(attempts>=40) clearInterval(retry);
-  },250);
+    if(attempts>=12) clearInterval(retry);
+  },500);
 })();
