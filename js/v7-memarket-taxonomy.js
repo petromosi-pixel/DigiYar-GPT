@@ -31,7 +31,11 @@ var SUBS={
  sale:[['sale','شگفت‌انگیزها']],
  'one-size':[['one-size','تک‌سایزها']]
 };
-var BRANDS={men:['Nike','Adidas','Reebok','Alshen','Palter','Pavlo'],women:['Nike','Adidas','Reebok'],bags:['Adidas','Nike','Reebok'],watch:[],jewelry:[],home:[],digital:['V380'],beauty:[],adult:[]};
+var BRANDS={
+ clothes:['بدون برند مشخص'],shirt:['بدون برند مشخص'],knitwear:['بدون برند مشخص'],outfit:['بدون برند مشخص'],couple:['بدون برند مشخص'],trousers:['بدون برند مشخص'],tshirt:['بدون برند مشخص'],outwear:['بدون برند مشخص'],coat:['بدون برند مشخص'],
+ shoes:['بدون برند مشخص'],boots:['بدون برند مشخص'],'formal-shoes':['بدون برند مشخص'],'sport-shoes':['بدون برند مشخص'],'flat-shoes':['بدون برند مشخص'],college:['بدون برند مشخص'],sandal:['بدون برند مشخص'],
+ women:['بدون برند مشخص'],'women-shoes':['بدون برند مشخص'],'women-bags':['بدون برند مشخص'],bag:['بدون برند مشخص'],watch:['بدون برند مشخص'],jewelry:['بدون برند مشخص'],household:['بدون برند مشخص'],digital:['بدون برند مشخص'],personal:['بدون برند مشخص'],adult:['بدون برند مشخص'],sale:['بدون برند مشخص'],'one-size':['بدون برند مشخص']
+};
 function $(id){return document.getElementById(id)}function ensureOption(){var s=$('storeSelect');if(!s||Array.from(s.options).some(function(o){return o.value===STORE}))return;var o=document.createElement('option');o.value=STORE;o.textContent='می‌مارکت';s.appendChild(o)}
 
 function selected(){var s=$('storeSelect');return s&&s.value===STORE}
