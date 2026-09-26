@@ -139,6 +139,7 @@ function openBrowser(query,list){
  host.appendChild(processing);
  host.appendChild(box);
  box.style.display='none';
+ showNextProcessingMessage();
 
  function renderResults(){
    try{
