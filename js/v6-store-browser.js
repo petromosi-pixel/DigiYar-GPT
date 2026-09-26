@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.28';
+const VERSION='6.0.0-store-browser.29';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q)
 };
@@ -88,9 +88,33 @@ function openBrowser(query,list){
  const processing=document.createElement('div');
  processing.className='v6-auto-processing';
  processing.setAttribute('aria-live','polite');
- processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><div class="v6-auto-processing-details is-open"><ul></ul></div>';
- const processingDetails=processing.querySelector('.v6-auto-processing-details');
+ processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><div class="v6-auto-processing-details"><ul></ul></div>';
  const processingList=processing.querySelector('ul');
+
+ function finishProcessing(onComplete){
+   const savedTitle=processing.querySelector('.v6-auto-processing-title');
+   const savedDetails=processing.querySelector('.v6-auto-processing-details');
+   processing.innerHTML='';
+   const liveBox=document.createElement('div');
+   liveBox.className='v6-auto-processing-live';
+   if(savedTitle)liveBox.appendChild(savedTitle);
+   if(savedDetails)liveBox.appendChild(savedDetails);
+   const toggle=document.createElement('button');
+   toggle.type='button';
+   toggle.className='v6-auto-processing-toggle';
+   toggle.setAttribute('aria-expanded','false');
+   toggle.innerHTML='<span class="v6-auto-processing-chevron" aria-hidden="true">›</span><span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span>';
+   processing.appendChild(liveBox);
+   processing.appendChild(toggle);
+   liveBox.style.display='none';
+   toggle.addEventListener('click',function(){
+     const open=this.getAttribute('aria-expanded')==='true';
+     this.setAttribute('aria-expanded',String(!open));
+     liveBox.style.display=open?'none':'block';
+   });
+   if(typeof onComplete==='function')onComplete();
+ }
+
  let processingIndex=0;
  function typeProcessingMessage(textValue,done){
    const li=document.createElement('li');
@@ -100,116 +124,43 @@ function openBrowser(query,list){
      if(charIndex<textValue.length){
        li.textContent=textValue.slice(0,++charIndex);
        setTimeout(step,18);
-     }else if(done) done();
+     }else if(done)done();
    };
    step();
  }
  function showNextProcessingMessage(){
-   if(!processingList||processingIndex>=messages.length)return;
    const message=messages[processingIndex++];
    typeProcessingMessage(message,function(){
      if(processingIndex<messages.length)setTimeout(showNextProcessingMessage,120);
+     else finishProcessing(renderResults);
    });
  }
- showNextProcessingMessage();
-
  host.innerHTML='';
  host.appendChild(processing);
  host.appendChild(box);
  box.style.display='none';
 
- const delay=7000;
- setTimeout(function(){
+ function renderResults(){
    try{
      let sourceList=Array.isArray(list)?list:stores();
      if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function'){
        sourceList=window.DigiYarStoreEligibility.storesForQuery(query,sourceList);
      }
      const usable=sourceList.filter(x=>x&&SEARCH[x.id]);
-
      if(!usable.length){
        box.style.display='block';
-       const savedTitle=processing.querySelector('.v6-auto-processing-title');
-     const savedDetails=processing.querySelector('.v6-auto-processing-details');
-     processing.innerHTML='';
-     const liveBox=document.createElement('div');
-     liveBox.className='v6-auto-processing-live';
-     if(savedTitle)liveBox.appendChild(savedTitle);
-     if(savedDetails){
-       savedDetails.classList.remove('is-open');
-       liveBox.appendChild(savedDetails);
-     }
-     const toggle=document.createElement('button');
-     toggle.type='button';
-     toggle.className='v6-auto-processing-toggle';
-     toggle.setAttribute('aria-expanded','false');
-     toggle.innerHTML='<span class="v6-auto-processing-chevron" aria-hidden="true">›</span><span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span>';
-     processing.appendChild(liveBox);
-     processing.appendChild(toggle);
-     toggle.addEventListener('click',function(){
-       const open=this.getAttribute('aria-expanded')==='true';
-       this.setAttribute('aria-expanded',String(!open));
-       liveBox.style.display=open?'none':'block';
-     });
-     liveBox.style.display='none';
        box.innerHTML='<div class="v6-auto-head">برای این جستجو هنوز فروشگاه مرتبطی در فهرست دیجی‌یار شناسایی نشده.</div>';
        return;
      }
-
-     const savedTitle=processing.querySelector('.v6-auto-processing-title');
-     const savedDetails=processing.querySelector('.v6-auto-processing-details');
-     processing.innerHTML='';
-     const liveBox=document.createElement('div');
-     liveBox.className='v6-auto-processing-live';
-     if(savedTitle)liveBox.appendChild(savedTitle);
-     if(savedDetails){
-       savedDetails.classList.remove('is-open');
-       liveBox.appendChild(savedDetails);
-     }
-     const toggle=document.createElement('button');
-     toggle.type='button';
-     toggle.className='v6-auto-processing-toggle';
-     toggle.setAttribute('aria-expanded','false');
-     toggle.innerHTML='<span class="v6-auto-processing-chevron" aria-hidden="true">›</span><span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span>';
-     processing.appendChild(liveBox);
-     processing.appendChild(toggle);
-     toggle.addEventListener('click',function(){
-       const open=this.getAttribute('aria-expanded')==='true';
-       this.setAttribute('aria-expanded',String(!open));
-       liveBox.style.display=open?'none':'block';
-     });
-     liveBox.style.display='none';
      box.style.display='block';
      tabsAndResults(usable);
    }catch(error){
      console.error('DigiYar Store Browser render:',error);
      box.style.display='block';
-     const savedTitle=processing.querySelector('.v6-auto-processing-title');
-     const savedDetails=processing.querySelector('.v6-auto-processing-details');
-     processing.innerHTML='';
-     const liveBox=document.createElement('div');
-     liveBox.className='v6-auto-processing-live';
-     if(savedTitle)liveBox.appendChild(savedTitle);
-     if(savedDetails){
-       savedDetails.classList.remove('is-open');
-       liveBox.appendChild(savedDetails);
-     }
-     const toggle=document.createElement('button');
-     toggle.type='button';
-     toggle.className='v6-auto-processing-toggle';
-     toggle.setAttribute('aria-expanded','false');
-     toggle.innerHTML='<span class="v6-auto-processing-chevron" aria-hidden="true">›</span><span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span>';
-     processing.appendChild(liveBox);
-     processing.appendChild(toggle);
-     toggle.addEventListener('click',function(){
-       const open=this.getAttribute('aria-expanded')==='true';
-       this.setAttribute('aria-expanded',String(!open));
-       liveBox.style.display=open?'none':'block';
-     });
-     liveBox.style.display='none';
      box.innerHTML='<div class="v6-auto-head">در نمایش نتایج مشکلی پیش آمد؛ دوباره جستجو کن.</div>';
    }
- },delay);
+ }
+
 
  function tabsAndResults(usable){
    box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌های مرتبط با محصول مورد نظرت رو برات لیست کردم</div>';
