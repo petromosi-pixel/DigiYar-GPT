@@ -79,6 +79,13 @@ function openBrowser(query,list){
    host.innerHTML='<div class="v6-auto-store"><div class="v6-auto-head">برای این جستجو هنوز فروشگاه مرتبطی در فهرست دیجی‌یار شناسایی نشده.</div></div>';
    return host;
  }
+ const messages=[
+   'دارم عبارت جستجو رو دقیق‌تر تحلیل می‌کنم...',
+   'دسته و نوع کالای درخواستی رو با فروشگاه‌ها تطبیق می‌دم...',
+   'فروشگاه‌های نامرتبط رو کنار می‌ذارم...',
+   'دارم گزینه‌های مرتبط‌تر رو برایت آماده می‌کنم...',
+   'تقریباً آماده‌ست؛ نتایج مرتبط رو نمایش می‌دم...'
+ ];
  const box=document.createElement('section');box.className='v6-auto-store';
  box.innerHTML='<div class="v6-auto-head">هوش‌یار در حال بررسی فروشگاه‌های مرتبط با درخواست توست...</div>';
  const body=document.createElement('div');body.className='v6-auto-body';
