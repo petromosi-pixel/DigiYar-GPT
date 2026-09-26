@@ -1,11 +1,15 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.21';
+const VERSION='6.0.0-store-browser.22';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q)
 };
 const HOME={digikala:'https://www.digikala.com/',snappshop:'https://snappshop.ir/',torob:'https://torob.com/',basalam:'https://basalam.com/',technolife:'https://www.technolife.ir/',digido:'https://digido.ir/',gooshishop:'https://gooshishop.com/',berozkala:'https://berozkala.com/',janebi:'https://janebi.com/',khanoumi:'https://khanoumi.com/',banimode:'https://banimode.com/',modiseh:'https://modiseh.com/',esam:'https://esam.ir/',pinket:'https://pinket.com/',solokala:'https://solokala.com/'};
+const CATEGORY={
+ dayan:{jacket:'https://dayanshop.com/products/men-warm-jacket',knitwear:'https://dayanshop.com/products/men-knitwear',shirt:'https://dayanshop.com/products/men-shirts',tshirt:'https://dayanshop.com/products/men-tshirts',set:'https://dayanshop.com/products/men-sets',trousers:'https://dayanshop.com/products/men-trousers',hoodie:'https://dayanshop.com/products/men-sweatshirts-hoodies',sweatshirt:'https://dayanshop.com/products/men-blouse',tank:'https://dayanshop.com/products/men-tops',sport:'https://dayanshop.com/products/men-sports-shoes','ankle-boots':'https://dayanshop.com/products/men-boots',casual:'https://dayanshop.com/products/men-casual-shoes',formal:'https://dayanshop.com/products/men-formal-shoes',sandal:'https://dayanshop.com/products/men-sandals'},
+ memarket:{clothes:'https://memarket24.ir/search/clothes',shirt:'https://memarket24.ir/search/shirt',knitwear:'https://memarket24.ir/search/knitwear',outfit:'https://memarket24.ir/search/outfit',couple:'https://memarket24.ir/search/couple',trousers:'https://memarket24.ir/search/trousers',tshirt:'https://memarket24.ir/search/tshirt',outwear:'https://memarket24.ir/search/outwear',coat:'https://memarket24.ir/search/coat',shoes:'https://memarket24.ir/search/shoes',boots:'https://memarket24.ir/search/boots','formal-shoes':'https://memarket24.ir/search/formal-shoes','sport-shoes':'https://memarket24.ir/search/sport-shoes','flat-shoes':'https://memarket24.ir/search/flat-shoes',college:'https://memarket24.ir/search/college',sandal:'https://memarket24.ir/search/sandal',bag:'https://memarket24.ir/search/bag',watch:'https://memarket24.ir/search/watch',jewelry:'https://memarket24.ir/search/jewelry',household:'https://memarket24.ir/search/household',digital:'https://memarket24.ir/search/digital',personal:'https://memarket24.ir/search/personal',adult:'https://memarket24.ir/search/adult',sale:'https://memarket24.ir/search/sale','one-size':'https://memarket24.ir/search/one-size'}
+};
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function affiliateUrl(storeId,url){
  const campaigns={digikala:'https://aflo.ir/TrvNHEN8'};
@@ -79,7 +83,10 @@ function openBrowser(query,list){
  async function render(){
    tabs.querySelectorAll('.v6-auto-tab').forEach(t=>t.classList.toggle('active',t.dataset.id===active.id));
    const searchQuery=storeSearchQuery(query);
-   const u=SEARCH[active.id](searchQuery);
+   const sub=document.getElementById('v5Subcategory');
+   const selectedSub=sub&&sub.value?String(sub.value):'';
+   const categoryUrl=CATEGORY[active.id]&&CATEGORY[active.id][selectedSub];
+   const u=categoryUrl||SEARCH[active.id](searchQuery);
    body.innerHTML='<div class="v6-auto-status">با انتخاب اسم هر فروشگاه از سربرگ و لمس دکمه پایین ، نتایج ظاهر میشن</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
  }
  usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
