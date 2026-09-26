@@ -29,6 +29,6 @@ assert.ok(!mobile.eligibleIds.includes('meghdadit'));
 
 const unknown = eligibility.explain('یک محصول عجیب و ناشناخته', stores);
 assert.equal(unknown.domain, null);
-assert.equal(unknown.eligibleCount, stores.length);
+assert.equal(unknown.eligibleCount, 0);
 
 console.log('V7 store eligibility tests: PASS');
