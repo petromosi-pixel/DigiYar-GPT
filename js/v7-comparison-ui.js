@@ -5,7 +5,7 @@
 (function(window, document){
   'use strict';
 
-  const VERSION='7.0.0-comparison-ui.2';
+  const VERSION='7.0.0-comparison-ui.3';
 
   function esc(value){
     return String(value==null?'':value)
@@ -56,27 +56,50 @@
       document.getElementById('digiyarConversation');
   }
 
-  function ensureCard(){
-    let card=document.getElementById('v7ComparisonCard');
-    const h=host();
-    if(!h)return null;
+  function ensureMount(){
+    let mount=document.getElementById('v7ComparisonMount');
+    const simulator=document.getElementById('v6StoreSimulatorResults');
 
-    // Keep comparison outside the simulator host. The simulator intentionally
-    // clears/rebuilds its own innerHTML when a search starts.
+    if(!mount){
+      mount=document.createElement('div');
+      mount.id='v7ComparisonMount';
+      mount.style.display='block';
+      mount.style.width='100%';
+      mount.style.boxSizing='border-box';
+    }
+
+    if(simulator && simulator.parentNode){
+      if(mount.parentElement!==simulator.parentElement || mount.previousElementSibling!==simulator){
+        simulator.parentNode.insertBefore(mount,simulator.nextSibling);
+      }
+      return mount;
+    }
+
+    const form=document.getElementById('v5SmartSearchForm');
+    if(form && form.parentNode){
+      const anchor=form.parentNode;
+      if(mount.parentElement!==anchor || mount.previousElementSibling!==form){
+        anchor.insertBefore(mount,form.nextSibling);
+      }
+      return mount;
+    }
+
+    const h=host();
+    if(h && mount.parentElement!==h)h.appendChild(mount);
+    return mount;
+  }
+
+  function ensureCard(){
+    const mount=ensureMount();
+    if(!mount)return null;
+
+    let card=document.getElementById('v7ComparisonCard');
     if(!card){
       card=document.createElement('section');
       card.id='v7ComparisonCard';
       card.setAttribute('aria-label','مقایسه محصولات');
     }
-
-    const simulator=document.getElementById('v6StoreSimulatorResults');
-    if(simulator){
-      if(card.parentElement!==simulator.parentElement || card.previousElementSibling!==simulator){
-        simulator.parentNode.insertBefore(card,simulator.nextSibling);
-      }
-    }else if(card.parentElement!==h){
-      h.appendChild(card);
-    }
+    if(card.parentElement!==mount)mount.appendChild(card);
     return card;
   }
 
@@ -113,7 +136,7 @@
 
     let html='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">بر پایه همان نتایج فعلی هوش‌یار</p></div></div>';
     html+='<div class="v7c-table-wrap"><table><thead><tr><th>شاخص</th>'+productColumns(products)+'</tr></thead><tbody>';
-    html+=row('قیمت',priceValues.map(function(v){return v;}),'',true);
+    html+='<tr><th scope="row">قیمت</th>'+priceValues.map(function(v){return '<td>'+v+'</td>';}).join('')+'</tr>';
     html+=row('فروشگاه',products.map(function(p){return p.store||'—';}));
     if(comparison.matchComparison&&comparison.matchComparison.available){
       html+=row('میزان تطابق',products.map(function(p){
@@ -174,7 +197,7 @@
         const snapshot=current.get();
         if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2){
           refresh(snapshot);
-          if(host())clearInterval(timer);
+          if(document.getElementById('v7ComparisonMount'))clearInterval(timer);
           return;
         }
       }
