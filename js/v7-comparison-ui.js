@@ -98,8 +98,8 @@
     const scored=products.map(p=>{
       if(used.has(p.id))return {p,score:-1};
       const t=productText(p);
-      let score=0;
-      if(t.includes(q))score+=20;
+      if(!tokens.every(x=>t.includes(x)))return {p,score:-1};
+      let score=t.includes(q)?20:0;
       tokens.forEach(x=>{if(t.includes(x))score+=3;});
       return {p,score};
     }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
@@ -113,10 +113,11 @@
   function row(label,values){
     return '<tr><th scope="row">'+esc(label)+'</th>'+values.map(v=>'<td>'+esc(v||'—')+'</td>').join('')+'</tr>';
   }
-  function renderComparison(comparison){
+  function renderComparison(comparison,selectedNames){
     const card=ensureCard(); if(!card)return;
+    selectedNames=Array.isArray(selectedNames)?selectedNames:[];
     let controls='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">نام حداکثر ۳ محصول را وارد کن و مقایسه را بزن</p></div></div>';
-    controls+='<div class="v7c-fields"><input class="v7c-field" data-v7-compare-input="1" placeholder="محصول اول" autocomplete="off"><input class="v7c-field" data-v7-compare-input="2" placeholder="محصول دوم" autocomplete="off"><input class="v7c-field" data-v7-compare-input="3" placeholder="محصول سوم" autocomplete="off"></div>';
+    controls+='<div class="v7c-fields"><input class="v7c-field" data-v7-compare-input="1" value="'+esc(selectedNames[0]||'')+'" placeholder="محصول اول" autocomplete="off"><input class="v7c-field" data-v7-compare-input="2" value="'+esc(selectedNames[1]||'')+'" placeholder="محصول دوم" autocomplete="off"><input class="v7c-field" data-v7-compare-input="3" value="'+esc(selectedNames[2]||'')+'" placeholder="محصول سوم" autocomplete="off"></div>';
     controls+='<div class="v7c-actions"><button type="button" class="v7c-btn v7c-btn-primary" id="v7CompareRun">مقایسه کن</button><button type="button" class="v7c-btn v7c-btn-secondary" id="v7CompareClear">پاک کردن</button></div>';
     if(!comparison){
       card.innerHTML=controls+'<p class="v7c-status">محصولات مورد نظرت را از نتایج همین جستجو انتخاب کن.</p>';
@@ -154,7 +155,7 @@
     const unmatched=values.length-selected.length;
     const controls=card.querySelector('.v7c-status');
     card.innerHTML=card.innerHTML.replace(/<div class="v7c-table-wrap">[\s\S]*$/,'')||card.innerHTML;
-    renderComparison(result);
+    renderComparison(result,values);
     if(unmatched){
       const status=card.querySelector('.v7c-status');
       if(status)status.textContent='فقط محصولاتی از همین Result Set قابل مقایسه‌اند؛ '+unmatched+' مورد با نام واردشده پیدا نشد.';
@@ -177,7 +178,7 @@
   function refresh(){
     const card=ensureCard(); if(!card)return;
     bindCard();
-    if(!card.querySelector('[data-v7-compare-input]'))renderComparison(null);
+    if(!card.querySelector('[data-v7-compare-input]'))renderComparison(null,[]);
   }
   function watchAnchor(){
     if(window.__DigiYarComparisonSimulatorObserver)return;
