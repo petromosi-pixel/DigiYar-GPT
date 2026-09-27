@@ -135,6 +135,18 @@ function fieldText(p){
 function hasTypeEvidence(p,intent){
  if(!intent.type)return true;
  var f=fieldText(p);
+
+ /* Mobile is especially noisy in the source indexes: accessories can have
+    category=mobile or subcategory="لوازم جانبی موبایل". For a mobile query,
+    require actual phone identity evidence, not merely the contaminated
+    category label. */
+ if(intent.type.key==='mobile'){
+   return f.name.indexOf('گوشی موبایل')>=0 ||
+          f.name.indexOf('گوشی موبايل')>=0 ||
+          f.subcategory==='گوشی موبایل' ||
+          f.subcategory==='گوشی موبايل';
+ }
+
  var fields=f.name+' '+f.subcategory+' '+f.category;
  return intent.type.fields.some(function(term){
    return fields.indexOf(norm(term))>=0;
