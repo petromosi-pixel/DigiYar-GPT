@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.1';
+var VERSION='7.0.0-product-result-producer.2';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -21,17 +21,72 @@ var INDEXES=[
  {path:'js/tools-industrial-product-index-v5.1.js',exportName:'TOOLS_INDUSTRIAL_PRODUCTS'}
 ];
 var cache={};
-function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();}
+
+function norm(v){
+ return String(v==null?'':v)
+   .replace(/[يى]/g,'ی').replace(/ك/g,'ک')
+   .replace(/[‌\u200c]/g,' ')
+   .replace(/\s+/g,' ').trim().toLowerCase();
+}
 function num(v){var n=Number(v);return Number.isFinite(n)?n:0;}
+
 function parseBudget(q){
  var s=norm(q).replace(/,/g,'').replace(/،/g,'');
  var nums=[],m,re=/([0-9۰-۹]+(?:\.[0-9۰-۹]+)?)\s*(میلیون|م|هزار|تومان|ریال)?/g;
- while((m=re.exec(s))&&nums.length<2){var raw=m[1].replace(/[۰-۹]/g,function(c){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(c);});var n=Number(raw);if(m[2]==='میلیون'||m[2]==='م')n*=1000000;else if(m[2]==='هزار')n*=1000;else if(m[2]==='ریال')n/=10;if(n>1000)nums.push(n);}
+ while((m=re.exec(s))&&nums.length<2){
+   var raw=m[1].replace(/[۰-۹]/g,function(c){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(c);});
+   var n=Number(raw);
+   if(m[2]==='میلیون'||m[2]==='م')n*=1000000;
+   else if(m[2]==='هزار')n*=1000;
+   else if(m[2]==='ریال')n/=10;
+   if(n>1000)nums.push(n);
+ }
  if(nums.length>=2)return{min:Math.min(nums[0],nums[1]),max:Math.max(nums[0],nums[1])};
  if(nums.length===1)return{min:0,max:nums[0]};
  return{min:0,max:0};
 }
-function queryTokens(q){return norm(q).replace(/[0-9۰-۹][0-9۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/g,' ').replace(/\b(?:میلیون|تومان|ریال|الی|تا|زیر|حدود|برای|محل|کار)\b/g,' ').split(/\s+/).filter(function(x){return x.length>1;});}
+
+function queryTokens(q){
+ return norm(q)
+   .replace(/[0-9۰-۹][0-9۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/g,' ')
+   .replace(/\b(?:میلیون|تومان|ریال|الی|تا|زیر|حدود|برای|محل|کار)\b/g,' ')
+   .split(/\s+/).filter(function(x){return x.length>1;});
+}
+
+/* Strong product-type intents. These are used as hard relevance gates
+   when the user's query explicitly names a product family. */
+var TYPE_RULES=[
+ {key:'mobile',terms:['موبایل','گوشی موبایل','گوشی'],fields:['mobile','گوشی موبایل','گوشی']},
+ {key:'laptop',terms:['لپ تاپ','لپ‌تاپ','لپتاپ','نوت بوک','نوت‌بوک'],fields:['laptop','لپ تاپ','لپ‌تاپ','لپتاپ','نوت بوک']},
+ {key:'tablet',terms:['تبلت'],fields:['tablet','تبلت']},
+ {key:'headphone',terms:['هدفون','هدست','ایرباد','هندزفری'],fields:['headphone','هدفون','هدست','ایرباد','هندزفری']},
+ {key:'television',terms:['تلویزیون','تلويزيون'],fields:['television','تلویزیون','تلويزيون']},
+ {key:'monitor',terms:['مانیتور','مانيتور'],fields:['monitor','مانیتور','مانيتور']},
+ {key:'camera',terms:['دوربین'],fields:['camera','دوربین']},
+ {key:'watch',terms:['ساعت هوشمند','اسمارت واچ','smartwatch'],fields:['watch','ساعت هوشمند','اسمارت واچ','smartwatch']},
+ {key:'printer',terms:['پرینتر','پرینتر','چاپگر'],fields:['printer','پرینتر','چاپگر']},
+ {key:'refrigerator',terms:['یخچال','فریزر','یخچال فریزر'],fields:['refrigerator','یخچال','فریزر']},
+ {key:'washing-machine',terms:['ماشین لباسشویی','لباسشویی'],fields:['washing-machine','ماشین لباسشویی','لباسشویی']},
+ {key:'air-conditioner',terms:['کولر گازی','اسپلیت'],fields:['air-conditioner','کولر گازی','اسپلیت']},
+ {key:'vacuum',terms:['جاروبرقی','جارو برقی'],fields:['vacuum','جاروبرقی','جارو برقی']}
+];
+
+function parseIntent(q){
+ var s=norm(q),type=null;
+ for(var i=0;i<TYPE_RULES.length;i++){
+   var rule=TYPE_RULES[i];
+   if(rule.terms.some(function(term){return s.indexOf(norm(term))>=0;})){
+     type=rule;break;
+   }
+ }
+ var brand=null;
+ var knownBrands=['سامسونگ','اپل','شیائومی','هواوی','نوکیا','آنر','وان پلاس','وان‌پلاس','گوگل','سونی','ال جی','ال‌جی','ایسوس','لنوو','اچ پی','اچ‌پی','دل','ایسر','بیتس','جی بی ال','جی‌بی‌ال'];
+ for(var b=0;b<knownBrands.length;b++){
+   if(s.indexOf(norm(knownBrands[b]))>=0){brand=norm(knownBrands[b]);break;}
+ }
+ return {type:type,brand:brand};
+}
+
 function parseIndexSource(source,exportName){
  var text=String(source||'').replace(/^\s*export\s+(?:const|let|var)\s+/,function(m){return m.replace('export ','');});
  var marker=new RegExp('(?:const|let|var)\\s+'+exportName+'\\s*=');
@@ -51,13 +106,12 @@ async function loadIndex(spec){
 function price(p){
  var n=num(p&&p.priceToman);if(n>0)return Math.round(n);
  n=num(p&&p.price);if(n<=0)return 0;
- return /irt|toman|تومان/i.test(String(p.currency||''))?Math.round(n):Math.round(n);
+ return Math.round(n);
 }
 function extractSpecs(p){
- var text=String(p&&p.name||'');
- var out={};
+ var text=String(p&&p.name||''),out={};
  var patterns=[
-  ['ram','رم\\s*(?:تا|:)?\\s*([0-9۰-۹]+)\\s*(?:گیگ|GB|gb)'],
+  ['ram','رم\\s*(?:تا|:)??\\s*([0-9۰-۹]+)\\s*(?:گیگ|GB|gb)'],
   ['storage','(?:ظرفیت|حافظه(?: داخلی)?)\\s*([0-9۰-۹]+(?:\\.[0-9۰-۹]+)?)\\s*(?:گیگ|GB|ترابایت|TB)'],
   ['screen','([0-9۰-۹]+(?:\\.[0-9۰-۹]+)?)\\s*(?:اینچ|inch)'],
   ['camera','دوربین[^،,؛;]{0,30}([0-9۰-۹]+)\\s*(?:مگاپیکسل|MP)'],
@@ -66,30 +120,150 @@ function extractSpecs(p){
  patterns.forEach(function(pair){var m=text.match(new RegExp(pair[1],'i'));if(m)out[pair[0]]=m[1];});
  return out;
 }
-function relevance(p,tokens){
- var text=norm([p&&p.name,p&&p.model,p&&p.brand,p&&p.subcategory,p&&p.category].filter(Boolean).join(' ')),score=0;
- tokens.forEach(function(t){if(text.indexOf(t)>=0)score+=1;});
+
+function fieldText(p){
+ return {
+   name:norm(p&&p.name),
+   model:norm(p&&p.model),
+   brand:norm(p&&p.brand),
+   subcategory:norm(p&&p.subcategory),
+   category:norm(p&&p.category),
+   all:norm([p&&p.name,p&&p.model,p&&p.brand,p&&p.subcategory,p&&p.category].filter(Boolean).join(' '))
+ };
+}
+
+function hasTypeEvidence(p,intent){
+ if(!intent.type)return true;
+ var f=fieldText(p);
+ var fields=f.name+' '+f.subcategory+' '+f.category;
+ return intent.type.fields.some(function(term){
+   return fields.indexOf(norm(term))>=0;
+ });
+}
+
+function hasBrandIdentity(p,brand){
+ if(!brand)return true;
+ var f=fieldText(p);
+ if(f.brand===brand || f.brand.indexOf(brand)>=0)return true;
+
+ /* Brand names appearing only inside compatibility/accessory text are
+    not treated as product identity. */
+ var name=f.name;
+ if(name.indexOf(brand)<0)return false;
+ var blocked=[
+   'سازگار با '+brand,
+   'سازگار '+brand,
+   'برای '+brand,
+   'مناسب '+brand,
+   'قابل استفاده با '+brand,
+   'compatible with '+brand,
+   'for '+brand
+ ];
+ if(blocked.some(function(x){return name.indexOf(x)>=0;}))return false;
+
+ /* If the query has a strong product type, the brand must occur in the
+    product identity region rather than only in a compatibility clause. */
+ if(name.indexOf('سازگار با')>=0 || name.indexOf('برای دستگاه')>=0){
+   var firstCompat=Math.min.apply(Math,[
+     name.indexOf('سازگار با')>=0?name.indexOf('سازگار با'):999999,
+     name.indexOf('برای دستگاه')>=0?name.indexOf('برای دستگاه'):999999
+   ]);
+   if(name.indexOf(brand)>firstCompat)return false;
+ }
+ return true;
+}
+
+function relevance(p,tokens,intent){
+ var f=fieldText(p),score=0;
+ if(intent.type){
+   if(!hasTypeEvidence(p,intent))return -1000;
+   score+=8;
+ }
+ if(intent.brand){
+   if(!hasBrandIdentity(p,intent.brand))return -1000;
+   if(f.brand===intent.brand)score+=8;
+   else if(f.name.indexOf(intent.brand)>=0)score+=5;
+ }
+ tokens.forEach(function(t){
+   if(!t)return;
+   if(f.brand===t)score+=4;
+   else if(f.name.indexOf(t)>=0)score+=2;
+   else if(f.subcategory.indexOf(t)>=0)score+=2;
+   else if(f.category.indexOf(t)>=0)score+=1;
+   else if(f.model.indexOf(t)>=0)score+=1;
+ });
  return score;
 }
+
+function dedupKey(p){
+ var id=norm(p&&p.productId)||norm(p&&p.id);
+ var source=norm(p&&p.sourceId)||norm(p&&p.source)||norm(p&&p.storeName)||norm(p&&p.store)||'unknown';
+ if(id)return 'id|'+source+'|'+id;
+ var name=norm(p&&p.name),model=norm(p&&p.model),brand=norm(p&&p.brand);
+ return 'text|'+source+'|'+name+'|'+model+'|'+brand;
+}
+
+function completeness(p){
+ var n=0;
+ ['brand','model','subcategory','category','productUrl','image','priceToman'].forEach(function(k){
+   if(p&&p[k])n++;
+ });
+ return n;
+}
+
+function deduplicate(items){
+ var map=Object.create(null),order=[];
+ items.forEach(function(p){
+   var key=dedupKey(p),old=map[key];
+   if(!old){map[key]=p;order.push(key);return;}
+   if(completeness(p)>completeness(old) || (completeness(p)===completeness(old)&&price(p)<price(old))){
+     map[key]=p;
+   }
+ });
+ return order.map(function(k){return map[k];});
+}
+
 async function produce(query,options){
  options=options||{};
- var tokens=queryTokens(query),budget=parseBudget(query),all=[];
- for(var i=0;i<INDEXES.length;i++){try{all=all.concat(await loadIndex(INDEXES[i]));}catch(e){console.warn('V7 Product Result Producer index:',INDEXES[i].path,e);}}
- var ranked=all.filter(function(p){return p&&p.name&&price(p)>0;}).map(function(p){
+ var tokens=queryTokens(query),budget=parseBudget(query),intent=parseIntent(query),all=[];
+ for(var i=0;i<INDEXES.length;i++){
+   try{all=all.concat(await loadIndex(INDEXES[i]));}
+   catch(e){console.warn('V7 Product Result Producer index:',INDEXES[i].path,e);}
+ }
+
+ var candidates=all.filter(function(p){
+   return p&&p.name&&price(p)>0;
+ }).map(function(p){
    var copy=Object.assign({},p);
-   copy.priceToman=price(p);copy.price=copy.priceToman;copy.currency='toman';
-   var specs=extractSpecs(p);if(Object.keys(specs).length)copy.attributes=Object.assign({},copy.attributes||{},specs);
-   copy.matchScore=relevance(p,tokens);
+   copy.priceToman=price(p);
+   copy.price=copy.priceToman;
+   copy.currency='toman';
+   var specs=extractSpecs(p);
+   if(Object.keys(specs).length)copy.attributes=Object.assign({},copy.attributes||{},specs);
+   copy.matchScore=relevance(p,tokens,intent);
    return copy;
  }).filter(function(p){
    if(budget.max&&p.priceToman>budget.max)return false;
    if(budget.min&&p.priceToman<budget.min)return false;
-   return !tokens.length||p.matchScore>0;
- }).sort(function(a,b){return b.matchScore-a.matchScore||a.priceToman-b.priceToman;}).slice(0,Math.max(1,Math.min(20,num(options.limit)||8)));
+   return !tokens.length || p.matchScore>0;
+ });
+
+ var unique=deduplicate(candidates);
+ var ranked=unique.sort(function(a,b){
+   return b.matchScore-a.matchScore || a.priceToman-b.priceToman;
+ }).slice(0,Math.max(1,Math.min(20,num(options.limit)||8)));
+
  var Source=root.DigiYarV7ProductResultSource;
  var snapshot=null;
  if(Source&&typeof Source.set==='function'){
-   snapshot=Source.publish(ranked,{query:query,source:'v7-local-product-index',networkCalls:0,catalogLookup:false,resolverCall:false,storeQuery:false});
+   snapshot=Source.publish(ranked,{
+     query:query,
+     source:'v7-local-product-index',
+     networkCalls:0,
+     catalogLookup:false,
+     resolverCall:false,
+     storeQuery:false
+   });
  }
  try{
    root.dispatchEvent(new CustomEvent('digiyar:v7-product-results-ready',{detail:snapshot||{
@@ -100,7 +274,14 @@ async function produce(query,options){
  }catch(_){}
  return ranked;
 }
-var api={version:VERSION,indexes:INDEXES.map(function(x){return x.path;}),produce:produce,parseIndexSource:parseIndexSource,clear:function(){cache={};}};
+
+var api={
+ version:VERSION,
+ indexes:INDEXES.map(function(x){return x.path;}),
+ produce:produce,
+ parseIndexSource:parseIndexSource,
+ clear:function(){cache={};}
+};
 root.DigiYarV7ProductResultProducer=api;
 root.DigiYarV7ProductProducer=api;
 })(typeof window!=='undefined'?window:globalThis);
