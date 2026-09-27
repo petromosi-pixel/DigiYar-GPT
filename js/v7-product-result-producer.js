@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.4';
+var VERSION='7.0.0-product-result-producer.5';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -68,7 +68,8 @@ var TYPE_RULES=[
  {key:'refrigerator',terms:['یخچال','فریزر','یخچال فریزر'],fields:['refrigerator','یخچال','فریزر']},
  {key:'washing-machine',terms:['ماشین لباسشویی','لباسشویی'],fields:['washing-machine','ماشین لباسشویی','لباسشویی']},
  {key:'air-conditioner',terms:['کولر گازی','اسپلیت'],fields:['air-conditioner','کولر گازی','اسپلیت']},
- {key:'vacuum',terms:['جاروبرقی','جارو برقی'],fields:['vacuum','جاروبرقی','جارو برقی']}
+ {key:'vacuum',terms:['جاروبرقی','جارو برقی'],fields:['vacuum','جاروبرقی','جارو برقی']},
+ {key:'furniture',terms:['مبلمان','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری'],fields:['furniture','مبلمان','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری']}
 ];
 
 function parseIntent(q){
