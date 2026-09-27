@@ -5,7 +5,7 @@
 (function(window, document){
   'use strict';
 
-  const VERSION='7.0.0-comparison-ui.4';
+  const VERSION='7.0.0-comparison-ui.5';
 
   function esc(value){
     return String(value==null?'':value)
@@ -68,6 +68,9 @@
       mount.style.boxSizing='border-box';
     }
 
+    // The simulator is created asynchronously after Hooshyar submit.
+    // Always prefer the simulator as the stable anchor so the comparison
+    // card sits immediately below the actual result card.
     if(simulator && simulator.parentNode){
       if(mount.parentElement!==simulator.parentElement || mount.previousElementSibling!==simulator){
         simulator.parentNode.insertBefore(mount,simulator.nextSibling);
@@ -87,6 +90,28 @@
     const h=host();
     if(h && mount.parentElement!==h)h.appendChild(mount);
     return mount;
+  }
+
+  function watchSimulatorAnchor(){
+    if(window.__DigiYarComparisonSimulatorObserver)return;
+    const root=document.body;
+    if(!root || !window.MutationObserver)return;
+    const observer=new MutationObserver(function(){
+      const simulator=document.getElementById('v6StoreSimulatorResults');
+      const mount=document.getElementById('v7ComparisonMount');
+      const source=window.DigiYarV7ProductResultSource;
+      if(simulator && mount && simulator.parentNode){
+        if(mount.parentElement!==simulator.parentElement || mount.previousElementSibling!==simulator){
+          simulator.parentNode.insertBefore(mount,simulator.nextSibling);
+        }
+        if(source&&typeof source.get==='function'){
+          const snapshot=source.get();
+          if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2) refresh(snapshot);
+        }
+      }
+    });
+    observer.observe(root,{childList:true,subtree:true});
+    window.__DigiYarComparisonSimulatorObserver=observer;
   }
 
   function ensureCard(){
@@ -189,6 +214,7 @@
     if(source&&typeof source.get==='function')refresh(source.get());
     // The Result Set can be published before the result host exists.
     // Re-read the existing Result Set after the Hooshyar UI has been initialized.
+    watchSimulatorAnchor();
     let tries=0;
     const timer=setInterval(function(){
       tries++;
@@ -197,7 +223,9 @@
         const snapshot=current.get();
         if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2){
           refresh(snapshot);
-          if(document.getElementById('v7ComparisonMount'))clearInterval(timer);
+          const simulator=document.getElementById('v6StoreSimulatorResults');
+          const mount=document.getElementById('v7ComparisonMount');
+          if(simulator && mount && mount.previousElementSibling===simulator)clearInterval(timer);
           return;
         }
       }
