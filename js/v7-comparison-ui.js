@@ -151,6 +151,22 @@
     });
     const source=window.DigiYarV7ProductResultSource;
     if(source&&typeof source.get==='function')refresh(source.get());
+    // The Result Set can be published before the result host exists.
+    // Re-read the existing Result Set after the Hooshyar UI has been initialized.
+    let tries=0;
+    const timer=setInterval(function(){
+      tries++;
+      const current=window.DigiYarV7ProductResultSource;
+      if(current&&typeof current.get==='function'){
+        const snapshot=current.get();
+        if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2){
+          refresh(snapshot);
+          clearInterval(timer);
+          return;
+        }
+      }
+      if(tries>=20)clearInterval(timer);
+    },250);
   }
 
   window.DigiYarV7ComparisonUI={version:VERSION,refresh:refresh,render:render};
