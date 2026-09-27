@@ -50,7 +50,8 @@
   }
 
   function host(){
-    return document.getElementById('v5InlineResults') ||
+    return document.getElementById('v6StoreSimulatorResults') ||
+      document.getElementById('v5InlineResults') ||
       document.getElementById('digiyar-products') ||
       document.getElementById('digiyarConversation');
   }
@@ -149,6 +150,9 @@
     window.addEventListener('digiyar:v7-product-results',function(event){
       refresh(event&&event.detail);
     });
+    window.addEventListener('digiyar:v7-product-results-ready',function(event){
+      refresh(event&&event.detail);
+    });
     const source=window.DigiYarV7ProductResultSource;
     if(source&&typeof source.get==='function')refresh(source.get());
     // The Result Set can be published before the result host exists.
@@ -161,12 +165,25 @@
         const snapshot=current.get();
         if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2){
           refresh(snapshot);
-          clearInterval(timer);
+          if(host())clearInterval(timer);
           return;
         }
       }
-      if(tries>=20)clearInterval(timer);
+      if(tries>=80)clearInterval(timer);
     },250);
+
+    if(window.MutationObserver){
+      const observer=new MutationObserver(function(){
+        const current=window.DigiYarV7ProductResultSource;
+        if(!current||typeof current.get!=='function')return;
+        const snapshot=current.get();
+        if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2&&host()){
+          refresh(snapshot);
+        }
+      });
+      const root=document.body||document.documentElement;
+      if(root)observer.observe(root,{childList:true,subtree:true});
+    }
   }
 
   window.DigiYarV7ComparisonUI={version:VERSION,refresh:refresh,render:render};
