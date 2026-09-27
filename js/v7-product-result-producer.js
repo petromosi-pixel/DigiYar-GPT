@@ -31,7 +31,7 @@ function parseBudget(q){
  if(nums.length===1)return{min:0,max:nums[0]};
  return{min:0,max:0};
 }
-function queryTokens(q){return norm(q).replace(/\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/g,' ').split(/\s+/).filter(function(x){return x.length>1;});}
+function queryTokens(q){return norm(q).replace(/[0-9۰-۹][0-9۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/g,' ').replace(/\b(?:میلیون|تومان|ریال|الی|تا|زیر|حدود|برای|محل|کار)\b/g,' ').split(/\s+/).filter(function(x){return x.length>1;});}
 function parseIndexSource(source,exportName){
  var text=String(source||'').replace(/^\s*export\s+(?:const|let|var)\s+/,function(m){return m.replace('export ','');});
  var marker=new RegExp('(?:const|let|var)\\s+'+exportName+'\\s*=');
@@ -87,7 +87,7 @@ async function produce(query,options){
    return !tokens.length||p.matchScore>0;
  }).sort(function(a,b){return b.matchScore-a.matchScore||a.priceToman-b.priceToman;}).slice(0,Math.max(1,Math.min(20,num(options.limit)||8)));
  var Source=root.DigiYarV7ProductResultSource;
- if(Source&&typeof Source.set==='function')Source.set(ranked,{query:query,source:'v7-local-product-index',networkCalls:0,catalogLookup:false,resolverCall:false,storeQuery:false});
+ if(Source&&typeof Source.set==='function')Source.publish(ranked,{query:query,source:'v7-local-product-index',networkCalls:0,catalogLookup:false,resolverCall:false,storeQuery:false});
  return ranked;
 }
 var api={version:VERSION,indexes:INDEXES.map(function(x){return x.path;}),produce:produce,parseIndexSource:parseIndexSource,clear:function(){cache={};}};
