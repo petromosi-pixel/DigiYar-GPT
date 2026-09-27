@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.3';
+var VERSION='7.0.0-product-result-producer.4';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -267,7 +267,7 @@ async function produce(query,options){
 
  var Source=root.DigiYarV7ProductResultSource;
  var snapshot=null;
- if(Source&&typeof Source.set==='function'){
+ if(Source&&typeof Source.publish==='function'){
    snapshot=Source.publish(ranked,{
      query:query,
      source:'v7-local-product-index',
