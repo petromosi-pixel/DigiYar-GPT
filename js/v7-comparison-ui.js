@@ -5,7 +5,7 @@
 (function(window, document){
   'use strict';
 
-  const VERSION='7.0.0-comparison-ui.3';
+  const VERSION='7.0.0-comparison-ui.4';
 
   function esc(value){
     return String(value==null?'':value)
@@ -24,7 +24,7 @@
     const style=document.createElement('style');
     style.id='v7-comparison-ui-style';
     style.textContent=`
-      #v7ComparisonCard{display:none;margin:10px 0 0;padding:14px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);box-sizing:border-box}
+      #v7ComparisonCard{display:none;margin:3mm 0 0;padding:14px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);box-sizing:border-box}
       #v7ComparisonCard.is-ready{display:block}
       #v7ComparisonCard .v7c-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
       #v7ComparisonCard .v7c-title{margin:0;font-size:15px;font-weight:800}
