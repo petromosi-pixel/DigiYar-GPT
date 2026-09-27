@@ -5,7 +5,7 @@
 (function(window, document){
   'use strict';
 
-  const VERSION='7.0.0-comparison-ui.1';
+  const VERSION='7.0.0-comparison-ui.2';
 
   function esc(value){
     return String(value==null?'':value)
@@ -60,11 +60,20 @@
     let card=document.getElementById('v7ComparisonCard');
     const h=host();
     if(!h)return null;
+
+    // Keep comparison outside the simulator host. The simulator intentionally
+    // clears/rebuilds its own innerHTML when a search starts.
     if(!card){
       card=document.createElement('section');
       card.id='v7ComparisonCard';
       card.setAttribute('aria-label','مقایسه محصولات');
-      h.appendChild(card);
+    }
+
+    const simulator=document.getElementById('v6StoreSimulatorResults');
+    if(simulator){
+      if(card.parentElement!==simulator.parentElement || card.previousElementSibling!==simulator){
+        simulator.parentNode.insertBefore(card,simulator.nextSibling);
+      }
     }else if(card.parentElement!==h){
       h.appendChild(card);
     }
@@ -172,18 +181,6 @@
       if(tries>=80)clearInterval(timer);
     },250);
 
-    if(window.MutationObserver){
-      const observer=new MutationObserver(function(){
-        const current=window.DigiYarV7ProductResultSource;
-        if(!current||typeof current.get!=='function')return;
-        const snapshot=current.get();
-        if(snapshot&&Array.isArray(snapshot.products)&&snapshot.products.length>=2&&host()){
-          refresh(snapshot);
-        }
-      });
-      const root=document.body||document.documentElement;
-      if(root)observer.observe(root,{childList:true,subtree:true});
-    }
   }
 
   window.DigiYarV7ComparisonUI={version:VERSION,refresh:refresh,render:render};
