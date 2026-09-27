@@ -103,7 +103,7 @@
 
     let html='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">بر پایه همان نتایج فعلی هوش‌یار</p></div></div>';
     html+='<div class="v7c-table-wrap"><table><thead><tr><th>شاخص</th>'+productColumns(products)+'</tr></thead><tbody>';
-    html+=row('قیمت',priceValues.map(function(v){return v;}));
+    html+=row('قیمت',priceValues.map(function(v){return v;}),'',true);
     html+=row('فروشگاه',products.map(function(p){return p.store||'—';}));
     if(comparison.matchComparison&&comparison.matchComparison.available){
       html+=row('میزان تطابق',products.map(function(p){
