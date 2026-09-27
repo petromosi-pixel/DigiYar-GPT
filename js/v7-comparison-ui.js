@@ -5,7 +5,7 @@
 (function(window, document){
   'use strict';
 
-  const VERSION='7.0.0-comparison-ui.5';
+  const VERSION='7.0.0-comparison-ui.6';
 
   function esc(value){
     return String(value==null?'':value)
@@ -146,9 +146,16 @@
   function render(comparison){
     const card=ensureCard();
     if(!card)return;
-    if(!comparison||comparison.status!=='comparison_ready'||comparison.count<2){
+    if(!comparison){
       card.classList.remove('is-ready');
       card.innerHTML='';
+      return;
+    }
+
+    if(comparison.status!=='comparison_ready'||comparison.count<2){
+      card.innerHTML='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">بر پایه همان نتایج فعلی هوش‌یار</p></div></div>'+
+        '<p class="v7c-empty">برای نمایش مقایسه، حداقل ۲ محصول کاملاً مرتبط لازم است. فعلاً '+esc(String(comparison.count||0))+' محصول معتبر در نتایج وجود دارد؛ محصول نامرتبط برای تکمیل مقایسه اضافه نمی‌شود.</p>';
+      card.classList.add('is-ready');
       return;
     }
 
@@ -209,6 +216,10 @@
     });
     window.addEventListener('digiyar:v7-product-results-ready',function(event){
       refresh(event&&event.detail);
+    });
+    window.addEventListener('digiyar:shopping-plan-ready',function(){
+      const source=window.DigiYarV7ProductResultSource;
+      if(source&&typeof source.get==='function')refresh(source.get());
     });
     const source=window.DigiYarV7ProductResultSource;
     if(source&&typeof source.get==='function')refresh(source.get());
