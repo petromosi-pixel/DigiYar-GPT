@@ -129,8 +129,9 @@ async function runComparison(){
 }
 function clearComparison(){const s=source();if(s&&s.clearComparison)s.clearComparison();renderControls();}
 function addSlot(){
- const c=ensureCard(),n=selected().length;if(n>=MAX)return;
- const wrap=c.querySelector('#v7CompareSlots');wrap.insertAdjacentHTML('beforeend',slotMarkup(n+1,null));
+ const c=ensureCard(),wrap=c&&c.querySelector('#v7CompareSlots');if(!wrap)return;
+ const n=wrap.querySelectorAll('.v7c-slot').length;if(n>=MAX)return;
+ wrap.insertAdjacentHTML('beforeend',slotMarkup(n+1,null));
  const b=c.querySelector('#v7AddCompareProduct');if(n+1>=MAX)b.style.display='none';
 }
 function bind(){
