@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.7';
+var VERSION='7.0.0-product-result-producer.8';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -240,6 +240,14 @@ function deduplicate(items){
 async function produce(query,options){
  options=options||{};
  var tokens=queryTokens(query),budget=parseBudget(query),intent=parseIntent(query),all=[];
+ if(options.aiPlan&&typeof options.aiPlan==='object'){
+   var ai=options.aiPlan;
+   if(ai.productTerms&&Array.isArray(ai.productTerms)) tokens=tokens.concat(ai.productTerms.map(norm).filter(Boolean));
+   if(ai.requiredNameTerms&&Array.isArray(ai.requiredNameTerms)) tokens=tokens.concat(ai.requiredNameTerms.map(norm).filter(Boolean));
+   if(ai.brand) intent.brand=norm(ai.brand);
+   if(ai.category){var ar=TYPE_RULES.find(function(r){return r.key===norm(ai.category)||r.terms.some(function(t){return norm(t)===norm(ai.category);});});if(ar)intent.type=ar;}
+   if(ai.minBudgetToman!=null||ai.maxBudgetToman!=null) budget={min:Number(ai.minBudgetToman)||0,max:Number(ai.maxBudgetToman)||0};
+ }
  for(var i=0;i<INDEXES.length;i++){
    try{all=all.concat(await loadIndex(INDEXES[i]));}
    catch(e){console.warn('V7 Product Result Producer index:',INDEXES[i].path,e);}
@@ -273,11 +281,13 @@ async function produce(query,options){
  /* Required identity tokens: semantic product words must occur in the product name/model, not merely category metadata. */
  var semanticTokens=tokens.filter(function(t){return !['برای','محل','کار','مناسب','استفاده'].includes(t);});
  if(intent.type){
-   var typeNameTerms=intent.type.terms.filter(function(t){return norm(query).indexOf(norm(t))>=0;});
+   var qn=norm(query), furniturePhrase=qn.includes('مبلمان اداری');
    candidates=candidates.filter(function(p){
-     var n=fieldText(p).name,ok=true;
-     typeNameTerms.forEach(function(term){var nt=norm(term);if(nt.length>2&&!n.includes(nt)&&intent.type.key==='furniture')ok=false;});
-     return ok;
+     var n=fieldText(p).name;
+     if(intent.type.key==='furniture'&&furniturePhrase){
+       return n.includes('مبلمان اداری') || (n.includes('مبلمان')&&n.includes('اداری')) || /میز\s*(?:اداری|مدیریت|کارمندی)|صندلی\s*(?:اداری|مدیریت)|فایلینگ|کمد\s*اداری|پارتیشن\s*اداری/.test(n);
+     }
+     return true;
    });
  }
  var unique=deduplicate(candidates);
