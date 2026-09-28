@@ -5,7 +5,7 @@
  */
 (function(window, document){
   'use strict';
-  const VERSION='7.0.0-comparison-ui.7';
+  const VERSION='7.0.0-comparison-ui.8';
 
   function esc(value){
     return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -83,6 +83,12 @@
     if(card.parentElement!==mount)mount.appendChild(card);
     return card;
   }
+  function selectedProducts(){
+    const source=window.DigiYarV7ProductResultSource;
+    if(!source)return [];
+    if(typeof source.getComparisonProducts==='function')return source.getComparisonProducts()||[];
+    return [];
+  }
   function currentProducts(){
     const source=window.DigiYarV7ProductResultSource;
     if(!source||typeof source.get!=='function')return [];
@@ -116,7 +122,7 @@
   function renderComparison(comparison,selectedNames){
     const card=ensureCard(); if(!card)return;
     selectedNames=Array.isArray(selectedNames)?selectedNames:[];
-    let controls='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">نام حداکثر ۳ محصول را وارد کن و مقایسه را بزن</p></div></div>';
+    let controls='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">محصول را از فروشگاه به دیجی‌یار بفرست یا نام حداکثر ۳ محصول را وارد کن</p></div></div>';
     controls+='<div class="v7c-fields"><input class="v7c-field" data-v7-compare-input="1" value="'+esc(selectedNames[0]||'')+'" placeholder="محصول اول" autocomplete="off"><input class="v7c-field" data-v7-compare-input="2" value="'+esc(selectedNames[1]||'')+'" placeholder="محصول دوم" autocomplete="off"><input class="v7c-field" data-v7-compare-input="3" value="'+esc(selectedNames[2]||'')+'" placeholder="محصول سوم" autocomplete="off"></div>';
     controls+='<div class="v7c-actions"><button type="button" class="v7c-btn v7c-btn-primary" id="v7CompareRun">مقایسه کن</button><button type="button" class="v7c-btn v7c-btn-secondary" id="v7CompareClear">پاک کردن</button></div>';
     if(!comparison){
@@ -147,15 +153,16 @@
     const card=ensureCard(); if(!card)return;
     const inputs=Array.from(card.querySelectorAll('[data-v7-compare-input]'));
     const values=inputs.map(x=>x.value.trim()).filter(Boolean).slice(0,3);
-    const products=currentProducts(),used=new Set(),selected=[];
-    values.forEach(v=>{const p=matchProduct(v,products,used);if(p){selected.push(p);used.add(p.id);}});
+    const stored=selectedProducts().slice(0,3),products=currentProducts(),used=new Set(),selected=stored.slice();
+    stored.forEach(p=>used.add(p.id));
+    values.forEach(v=>{if(selected.length>=3)return;const p=matchProduct(v,products,used);if(p){selected.push(p);used.add(p.id);}});
     const engine=window.DigiYarComparisonEngine||window.DigiYarV7Comparison;
     if(!engine||typeof engine.compare!=='function')return;
-    const result=engine.compare(selected,{limit:3});
+    const result=engine.compare(selected.slice(0,3),{limit:3});
     const unmatched=values.length-selected.length;
     const controls=card.querySelector('.v7c-status');
     card.innerHTML=card.innerHTML.replace(/<div class="v7c-table-wrap">[\s\S]*$/,'')||card.innerHTML;
-    renderComparison(result,values);
+    renderComparison(result,selected.slice(0,3).map(function(p){return p.name;}));
     if(unmatched){
       const status=card.querySelector('.v7c-status');
       if(status)status.textContent='فقط محصولاتی از همین Result Set قابل مقایسه‌اند؛ '+unmatched+' مورد با نام واردشده پیدا نشد.';
@@ -171,7 +178,8 @@
       if(e.target.id==='v7CompareClear'){
         const inputs=card.querySelectorAll('[data-v7-compare-input]');
         inputs.forEach(x=>x.value='');
-        renderComparison(null);
+        const source=window.DigiYarV7ProductResultSource;if(source&&source.clearComparison)source.clearComparison();
+        renderComparison(null,[]);
       }
     });
   }
@@ -196,6 +204,7 @@
     window.addEventListener('digiyar:v7-product-results-ready',refresh);
     window.addEventListener('digiyar:v7-product-results',refresh);
     window.addEventListener('digiyar:shopping-plan-ready',refresh);
+    window.addEventListener('digiyar:v7-comparison-selection-ready',refresh);
   }
   window.DigiYarV7ComparisonUI={version:VERSION,refresh:refresh,run:runComparison};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
