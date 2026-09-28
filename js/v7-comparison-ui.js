@@ -216,7 +216,7 @@
   function refresh(){
     const card=ensureCard(); if(!card)return;
     bindCard();
-    if(!card.querySelector('[data-v7-compare-input]'))renderComparison(null,[]);
+    if(!card.querySelector('[data-v7-compare-input]'))renderComparison(null,selectedProducts().slice(0,3).map(function(p){return p.name;}));
   }
   function watchAnchor(){
     if(window.__DigiYarComparisonSimulatorObserver)return;
