@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.1';
+  const VERSION='7.0.0-ai-shopping-orchestrator.2';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -117,7 +117,14 @@
 
   async function run(query,context){
     const plan=buildPlan(query,context);
-    const provider=window.DigiYarAIProvider;
+    const provider=window.DigiYarAIProvider || {
+      async understand(q,ctx){
+        const endpoint=window.DigiYarAIEndpoint||'/api/ai-shopping';
+        const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,context:ctx||{}})});
+        if(!r.ok)throw Error('AI endpoint '+r.status);
+        const data=await r.json(); return data&&data.plan?data.plan:null;
+      }
+    };
     if(provider&&typeof provider.understand==='function'){
       try{
         const aiPlan=await provider.understand(query,{plan,context:context||{}});
