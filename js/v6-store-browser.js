@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.31';
+const VERSION='6.0.0-store-browser.32';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q)
 };
@@ -151,9 +151,10 @@ function openBrowser(query,list){
      }
      const usable=sourceList.filter(x=>x&&SEARCH[x.id]);
      if(!usable.length){
-       box.style.display='block';
-       box.innerHTML='<div class="v6-auto-head">برای این جستجو هنوز فروشگاه مرتبطی در فهرست دیجی‌یار شناسایی نشده.</div>';
-       return;
+       usable=Object.keys(SEARCH).map(function(id){
+         const found=(Array.isArray(sourceList)?sourceList:[]).find(function(x){return x&&x.id===id;});
+         return found||{id:id,name:(id==='digikala'?'دیجی‌کالا':id==='snappshop'?'اسنپ‌شاپ':id==='torob'?'ترب':id==='basalam'?'باسلام':id)};
+       }).filter(function(x){return x&&SEARCH[x.id];});
      }
      box.style.display='block';
      tabsAndResults(usable);
