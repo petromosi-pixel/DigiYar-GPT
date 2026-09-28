@@ -1,4 +1,4 @@
-const APP_URL='https://digiyar.ir/'; // Replace with the deployed DigiYar origin if different.
+const APP_URL='https://petromosi-pixel.github.io/DigiYar-GPT/'; // Replace with the deployed DigiYar origin if different.
 chrome.runtime.onInstalled.addListener(()=>{
   chrome.contextMenus.create({id:'dy-compare-link',title:'افزودن به مقایسه در دیجی‌یار',contexts:['link']});
   chrome.contextMenus.create({id:'dy-compare-page',title:'افزودن این صفحه به مقایسه در دیجی‌یار',contexts:['page']});
