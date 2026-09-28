@@ -173,32 +173,46 @@
     }else html+='<p class="v7c-empty">برای مشخصات، دادهٔ مشترک و قابل مقایسه‌ای در نتایج فعلی وجود ندارد.</p>';
     return html;
   }
-  function runComparison(){
+  async function runComparison(){
     const card=ensureCard(); if(!card)return;
     const inputs=Array.from(card.querySelectorAll('[data-v7-compare-input]'));
     const values=inputs.map(x=>x.value.trim()).filter(Boolean).slice(0,3);
     const stored=selectedProducts().slice(0,3),products=currentProducts(),used=new Set(),selected=stored.slice();
     stored.forEach(p=>used.add(p.id));
-    values.forEach(function(v,i){
-      if(selected.length>=3)return;
-      const p=matchProduct(v,products,used);
-      if(p){selected.push(p);used.add(p.id);return;}
-      const manual=manualProduct(v,i);
-      if(manual){selected.push(manual);used.add(manual.id);}
-    });
+    const producer=window.DigiYarV7ProductResultProducer;
+    for(const value of values){
+      if(selected.length>=3)break;
+      const local=matchProduct(value,products,used);
+      if(local){selected.push(local);used.add(local.id);continue;}
+      if(producer&&typeof producer.findByName==='function'){
+        try{
+          const found=await producer.findByName(value,{limit:5});
+          const candidate=(found||[]).find(function(p){return !used.has(p.id||p.productId);});
+          if(candidate){
+            selected.push(candidate);
+            used.add(candidate.id||candidate.productId);
+            const source=window.DigiYarV7ProductResultSource;
+            if(source&&typeof source.addComparisonProduct==='function')source.addComparisonProduct(candidate);
+          }
+        }catch(error){console.warn('DigiYar comparison name resolver:',error);}
+      }
+    }
     const engine=window.DigiYarComparisonEngine||window.DigiYarV7Comparison;
     if(!engine||typeof engine.compare!=='function')return;
     const result=engine.compare(selected.slice(0,3),{limit:3});
-    const unmatched=0;
-    const controls=card.querySelector('.v7c-status');
-    card.innerHTML=card.innerHTML.replace(/<div class="v7c-table-wrap">[\s\S]*$/,'')||card.innerHTML;
     renderComparison(result,selected.slice(0,3).map(function(p){return p.name;}));
+    const unmatched=Math.max(0,values.length-selected.length);
     if(unmatched){
       const status=card.querySelector('.v7c-status');
-      if(status)status.textContent='';
+      if(status)status.textContent='برای '+unmatched+' مورد، محصولی با تطابق کافی در فهرست محصولات دیجی‌یار پیدا نشد. نام دقیق‌تر یا مدل کامل‌تر را وارد کن.';
+    }else{
+      const status=card.querySelector('.v7c-status');
+      if(status&&selected.length>=2)status.textContent='محصولات انتخاب‌شده آماده مقایسه‌اند.';
     }
-    inputs.forEach((el,i)=>{if(values[i])el.value=values[i];});
+    const renderedInputs=card.querySelectorAll('[data-v7-compare-input]');
+    values.forEach(function(v,i){if(renderedInputs[i])renderedInputs[i].value=v;});
   }
+
   function bindCard(){
     const card=ensureCard(); if(!card)return;
     if(card.dataset.bound==='1')return;
