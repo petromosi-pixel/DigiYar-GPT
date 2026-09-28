@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.14';
+const VERSION='7.0.0-comparison-ui.15';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();}
@@ -26,9 +26,7 @@ function installStyle(){
  if(document.getElementById('v7-comparison-ui-style'))return;
  const s=document.createElement('style');s.id='v7-comparison-ui-style';
  s.textContent=`
- #v7ComparisonShareGuide{display:block;margin:3mm 0 0;padding:10px 12px;border:1px solid rgba(42,65,105,.14);border-radius:14px;background:var(--card-bg,#fff);color:inherit;box-sizing:border-box;text-align:center;font-size:11px;line-height:1.9}
- #v7ComparisonShareGuide .v7-guide-title{color:#d93025;font-weight:800}
- #v7ComparisonShareGuide .v7-guide-text{opacity:.68;font-weight:400}
+ #v7ComparisonShareGuide{display:block;margin:3mm 0 0;padding:9px 12px;border:1px solid rgba(42,65,105,.14);border-radius:14px;background:var(--card-bg,#fff);color:inherit;box-sizing:border-box;text-align:right;font-size:9px;line-height:1.85} #v7ComparisonShareGuide .v7-guide-toggle{display:block;width:100%;border:0;background:transparent;color:#d93025;font:inherit;font-weight:800;text-align:right;cursor:pointer;padding:0} #v7ComparisonShareGuide .v7-guide-chevron{display:inline-block;margin-inline-end:4px;font-size:15px;line-height:1;transition:transform .18s ease} #v7ComparisonShareGuide .v7-guide-toggle[aria-expanded="true"] .v7-guide-chevron{transform:rotate(90deg)} #v7ComparisonShareGuide .v7-guide-text{display:none;margin-top:4px;opacity:.68;font-weight:400} #v7ComparisonShareGuide .v7-guide-toggle[aria-expanded="true"] + .v7-guide-text{display:block}
  #v7ComparisonCard{display:block;margin:3mm 0 0;padding:13px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);color:var(--text-color,#172033);box-sizing:border-box;box-shadow:0 3px 14px rgba(20,35,60,.06)}
  body.v6-dark #v7ComparisonShareGuide,html.dark #v7ComparisonShareGuide,body.dark #v7ComparisonShareGuide,[data-theme="dark"] #v7ComparisonShareGuide,body.v6-dark #v7ComparisonCard,html.dark #v7ComparisonCard,body.dark #v7ComparisonCard,[data-theme="dark"] #v7ComparisonCard{background:#121c2d;color:#f8fafc;border-color:rgba(255,255,255,.15);box-shadow:0 4px 18px rgba(0,0,0,.30)}
  #v7ComparisonCard .v7c-head{text-align:center;margin-bottom:10px}
@@ -52,7 +50,7 @@ function installStyle(){
  #v7ComparisonCard th,#v7ComparisonCard td{padding:9px 8px;border-bottom:1px solid rgba(42,65,105,.10);text-align:right;vertical-align:top}
  body.v6-dark #v7ComparisonCard th,body.v6-dark #v7ComparisonCard td,html.dark #v7ComparisonCard th,html.dark #v7ComparisonCard td,body.dark #v7ComparisonCard th,body.dark #v7ComparisonCard td,[data-theme="dark"] #v7ComparisonCard th,[data-theme="dark"] #v7ComparisonCard td{border-color:rgba(255,255,255,.12)}
  #v7ComparisonCard .v7c-product{font-weight:700;min-width:150px}
- #v7ComparisonCard .v7c-store{display:block;margin-top:3px;font-size:10px;font-weight:500;opacity:.65}
+ #v7ComparisonCard .v7c-store{display:block;margin-top:3px;font-size:10px;font-weight:500;opacity:.65} #v7ComparisonCard .v7c-view-product{display:inline-flex;margin-top:7px;padding:6px 10px;border-radius:9px;background:#ef7d00;color:#fff;text-decoration:none;font-size:10px;font-weight:800;white-space:nowrap}
  #v7ComparisonCard .v7c-section{margin:14px 0 7px;font-size:12px;font-weight:800}
  #v7ComparisonCard .v7c-spec{width:100%;border-collapse:collapse;font-size:11px}
  #v7ComparisonCard .v7c-spec th,#v7ComparisonCard .v7c-spec td{padding:7px 6px;border-bottom:1px solid rgba(42,65,105,.08)}
@@ -71,7 +69,8 @@ function ensureMount(){
 function ensureGuide(){
  let g=document.getElementById('v7ComparisonShareGuide');if(g)return g;
  g=document.createElement('section');g.id='v7ComparisonShareGuide';g.setAttribute('aria-label','راهنمای انجام مقایسه');
- g.innerHTML='<span class="v7-guide-title">راهنمای انجام مقایسه:</span> <span class="v7-guide-text">بعد از جستجوی محصول، نام یا لینک هر محصول را در کادرهای مقایسه وارد کن. برای لینک فروشگاه، گزینه اشتراک‌گذاری را بزن و دیجی‌یار را انتخاب کن؛ اگر Share در دسترس نبود، لینک را کپی و اینجا پیست کن. سپس «دریافت اطلاعات محصول» و در پایان «مقایسه تخصصی» را بزن.</span>';
+ g.innerHTML='<button type="button" class="v7-guide-toggle" aria-expanded="false"><span class="v7-guide-chevron" aria-hidden="true">›</span><span class="v7-guide-title">راهنمای انجام مقایسه:</span></button><div class="v7-guide-text">نام یا لینک هر محصول را وارد کن، «دریافت اطلاعات محصول» را بزن و در پایان «مقایسه تخصصی» را انتخاب کن. برای افزودن لینک فروشگاه هم می‌توانی لینک را کپی و اینجا وارد کنی.</div>';
+ const t=g.querySelector('.v7-guide-toggle');t.addEventListener('click',function(){const open=this.getAttribute('aria-expanded')==='true';this.setAttribute('aria-expanded',String(!open));});
  return g;
 }
 function ensureCard(){
@@ -85,15 +84,18 @@ function slotMarkup(i,p){
 }
 function renderControls(){
  const c=ensureCard();if(!c)return;
- const picked=selected();let html='<div class="v7c-head"><h3 class="v7c-title">⚖️ مقایسه محصولات</h3><p class="v7c-note">نام یا لینک محصول را وارد کن؛ برای لینک فروشگاه از آیکون اشتراک‌گذاری هم می‌توانی استفاده کنی.</p></div>';
+ const oldResults=c.querySelector('.v7c-results-box');
+ const oldX=oldResults?oldResults.scrollLeft:0;
+ const picked=selected();let html='<div class="v7c-head"><h3 class="v7c-title">مقایسه محصولات</h3><p class="v7c-note">نام یا لینک محصول را وارد کن و اطلاعات آن را دریافت کن.</p></div>';
  html+='<button type="button" class="v7c-add" id="v7AddCompareProduct">＋ افزودن محصول برای مقایسه</button><div id="v7CompareSlots"></div>';
  const slots=document.getElementById('v7CompareSlots');
  c.innerHTML=html;const wrap=c.querySelector('#v7CompareSlots');
  picked.forEach((p,i)=>{wrap.insertAdjacentHTML('beforeend',slotMarkup(i+1,p));});
  if(picked.length>=MAX)c.querySelector('#v7AddCompareProduct').style.display='none';
  if(picked.length>=2)wrap.insertAdjacentHTML('beforeend','<div class="v7c-actions"><button type="button" class="v7c-btn v7c-btn-primary" id="v7CompareRun">مقایسه تخصصی</button><button type="button" class="v7c-btn v7c-btn-secondary" id="v7CompareClear">پاک کردن</button></div>');
+ if(oldResults){c.appendChild(oldResults);requestAnimationFrame(()=>{oldResults.scrollLeft=oldX;const inner=oldResults.querySelector('.v7c-table-wrap');if(inner)inner.scrollLeft=oldX;});}
 }
-function productCols(products){return products.map(p=>'<th scope="col" class="v7c-product">'+esc(p.name)+(p.store?'<span class="v7c-store">'+esc(p.store)+'</span>':'')+(p.productUrl?'<a href="'+esc(p.productUrl)+'" target="_blank" rel="noopener noreferrer">مشاهده محصول</a>':'')+'</th>').join('');}
+function productCols(products){return products.map(p=>'<th scope="col" class="v7c-product">'+esc(p.name)+(p.store?'<span class="v7c-store">'+esc(p.store)+'</span>':'')+(p.productUrl?'<a class="v7c-view-product" href="'+esc(p.productUrl)+'" target="_blank" rel="noopener noreferrer">دیدن محصول</a>':'')+'</th>').join('');}
 function bestIds(products,label){
  const nums=products.map(p=>({p,n:numeric((p.specs&&Object.values(p.specs).find(s=>norm(s.key).includes(norm(label))))?.value)})).filter(x=>x.n!==null);
  if(nums.length<2)return new Set();
@@ -159,6 +161,8 @@ function bind(){
 }
 function place(){
  const sim=document.getElementById('v6StoreSimulatorResults');if(!sim||!sim.parentNode)return;
+ const resultCard=sim.querySelector('.v6-auto-store');
+ if(!resultCard||resultCard.style.display==='none'||!resultCard.querySelector('.v6-auto-tabs'))return;
  const parent=sim.parentNode;
  if(window.__DigiYarComparisonPlacementTimer)return;
  window.__DigiYarComparisonPlacementTimer=setTimeout(function(){
