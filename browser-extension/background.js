@@ -1,12 +1,22 @@
-const APP_URL='https://petromosi-pixel.github.io/DigiYar-GPT/'; // Replace with the deployed DigiYar origin if different.
+const APP_URL='https://petromosi-pixel.github.io/DigiYar-GPT/';
 chrome.runtime.onInstalled.addListener(()=>{
-  chrome.contextMenus.create({id:'dy-compare-link',title:'افزودن به مقایسه در دیجی‌یار',contexts:['link']});
-  chrome.contextMenus.create({id:'dy-compare-page',title:'افزودن این صفحه به مقایسه در دیجی‌یار',contexts:['page']});
+  chrome.contextMenus.create({id:'dy-root',title:'دیجی‌یار',contexts:['link','page','selection']});
+  chrome.contextMenus.create({id:'dy-compare-link',parentId:'dy-root',title:'افزودن به مقایسه در دیجی‌یار',contexts:['link']});
+  chrome.contextMenus.create({id:'dy-copy-link',parentId:'dy-root',title:'کپی لینک محصول',contexts:['link','page']});
+  chrome.contextMenus.create({id:'dy-copy-name',parentId:'dy-root',title:'کپی نام محصول',contexts:['link','page','selection']});
 });
-chrome.contextMenus.onClicked.addListener((info,tab)=>{
+async function copyToTab(tabId,text){
+  try{await chrome.scripting.executeScript({target:{tabId},func:(value)=>navigator.clipboard.writeText(value),args:[text]});}catch(_){}
+}
+chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
+  if(!tab)return;
   const url=info.linkUrl||info.pageUrl||'';
-  if(!url)return;
   const name=(info.selectionText||'').trim()||tab.title||url;
-  const target=APP_URL+'?dy_product_url='+encodeURIComponent(url)+'&dy_product_name='+encodeURIComponent(name);
-  chrome.tabs.create({url:target});
+  if(info.menuItemId==='dy-compare-link'){
+    chrome.tabs.create({url:APP_URL+'?dy_product_url='+encodeURIComponent(url)+'&dy_product_name='+encodeURIComponent(name)});
+  }else if(info.menuItemId==='dy-copy-link'){
+    await copyToTab(tab.id,url);
+  }else if(info.menuItemId==='dy-copy-name'){
+    await copyToTab(tab.id,name);
+  }
 });
