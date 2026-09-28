@@ -7,7 +7,7 @@
  */
 (function(window, document){
   'use strict';
-  const VERSION='7.0.0-comparison-ui.9';
+  const VERSION='7.0.0-comparison-ui.10';
 
   function esc(value){
     return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -150,14 +150,14 @@
     controls+='<div class="v7c-fields"><input class="v7c-field" data-v7-compare-input="1" value="'+esc(selectedNames[0]||'')+'" placeholder="محصول اول" autocomplete="off"><input class="v7c-field" data-v7-compare-input="2" value="'+esc(selectedNames[1]||'')+'" placeholder="محصول دوم" autocomplete="off"><input class="v7c-field" data-v7-compare-input="3" value="'+esc(selectedNames[2]||'')+'" placeholder="محصول سوم" autocomplete="off"></div>';
     controls+='<div class="v7c-actions"><button type="button" class="v7c-btn v7c-btn-primary" id="v7CompareRun">مقایسه کن</button><button type="button" class="v7c-btn v7c-btn-secondary" id="v7CompareClear">پاک کردن</button></div>';
     if(!comparison){
-      card.innerHTML=controls+'<p class="v7c-status">دو یا سه نام محصول را وارد کن؛ اگر محصول از صفحهٔ فروشگاه به دیجی‌یار Share شده باشد، همان محصول با لینک فروشگاه وارد مقایسه می‌شود.</p><p class="v7c-empty">انتخاب از صفحهٔ فروشگاه: صفحهٔ خود محصول را باز کن → Share/اشتراک‌گذاری → دیجی‌یار.</p>';
+      card.innerHTML=controls+'<p class="v7c-status">دو یا سه محصول را وارد کن. محصولِ صفحهٔ فروشگاه را هم می‌توانی از همان صفحه با Share/اشتراک‌گذاری به دیجی‌یار بفرستی.</p><p class="v7c-empty">مسیر انتخاب مستقیم: صفحهٔ خود محصول در فروشگاه → Share/اشتراک‌گذاری → دیجی‌یار → محصول به‌صورت خودکار به مقایسه اضافه می‌شود.</p>';
       return;
     }
     card.innerHTML=controls+renderTable(comparison);
   }
   function renderTable(comparison){
     if(!comparison||comparison.status!=='comparison_ready'||comparison.count<2)
-      return '<p class="v7c-status">برای مقایسه، حداقل ۲ محصول مرتبط از نتایج فعلی را وارد کن. حداکثر ۳ محصول قابل مقایسه است.</p>';
+      return '<p class="v7c-status">برای مقایسه، حداقل ۲ محصول وارد کن؛ محصولات می‌توانند از نتایج دیجی‌یار، Share صفحهٔ محصول فروشگاه، یا نامی که خودت وارد می‌کنی باشند. حداکثر ۳ محصول قابل مقایسه است.</p>';
     const products=comparison.products||[];
     const cheapest=new Set((comparison.priceComparison&&comparison.priceComparison.cheapestIds)||[]);
     let html='<div class="v7c-table-wrap"><table><thead><tr><th>شاخص</th>'+productColumns(products)+'</tr></thead><tbody>';
@@ -170,7 +170,7 @@
       html+='<div class="v7c-section">مشخصات قابل مقایسه</div><div class="v7c-table-wrap"><table class="v7c-spec"><thead><tr><th>مشخصه</th>'+products.map(p=>'<th>'+esc(p.name)+'</th>').join('')+'</tr></thead><tbody>';
       specs.forEach(spec=>{html+='<tr><th>'+esc(spec.label)+'</th>'+products.map(p=>{const found=(spec.valuesByProduct||[]).find(v=>v.productId===p.id);return '<td>'+esc(found&&found.value?found.value:'—')+'</td>';}).join('')+'</tr>';});
       html+='</tbody></table></div>';
-    }else html+='<p class="v7c-empty">برای مشخصات، دادهٔ مشترک و قابل مقایسه‌ای در نتایج فعلی وجود ندارد.</p>';
+    }else html+='<p class="v7c-empty">برای بعضی محصولات ممکن است قیمت یا مشخصات کامل در دسترس نباشد؛ این محصولات از طریق نام/لینک قابل مقایسه‌اند.</p>';
     return html;
   }
   async function runComparison(){
