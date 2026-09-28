@@ -1,0 +1,9 @@
+{
+  "manifest_version":3,
+  "name":"DigiYar Product Capture",
+  "version":"1.0.0",
+  "description":"افزودن محصول صفحهٔ فروشگاه به مقایسهٔ دیجی‌یار",
+  "permissions":["contextMenus","tabs"],
+  "host_permissions":["<all_urls>"],
+  "background":{"service_worker":"background.js"}
+}
