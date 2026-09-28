@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.8';
+var VERSION='7.0.0-product-result-producer.9';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -188,22 +188,25 @@ function hasBrandIdentity(p,brand){
 
 function relevance(p,tokens,intent){
  var f=fieldText(p),score=0;
- /* Identity-first ranking: product name is the strongest evidence, followed by model, brand, subcategory, category. */
+ /* Identity-first relevance:
+    name > model > brand > subcategory > category.
+    Category metadata alone can never rescue a weak product-name match. */
  if(intent.type){
    if(!hasTypeEvidence(p,intent))return -1000;
-   score+=8;
+   score+=15;
  }
  if(intent.brand){
    if(!hasBrandIdentity(p,intent.brand))return -1000;
-   if(f.brand===intent.brand)score+=8;
-   else if(f.name.indexOf(intent.brand)>=0)score+=5;
+   if(f.brand===intent.brand)score+=10;
+   else if(f.name.indexOf(intent.brand)>=0)score+=8;
+   else return -1000;
  }
  tokens.forEach(function(t){
    if(!t)return;
-   if(f.name.indexOf(t)>=0)score+=10;
-   else if(f.model.indexOf(t)>=0)score+=6;
-   else if(f.brand===t)score+=5;
-   else if(f.subcategory.indexOf(t)>=0)score+=3;
+   if(f.name.indexOf(t)>=0)score+=20;
+   else if(f.model.indexOf(t)>=0)score+=8;
+   else if(f.brand===t)score+=6;
+   else if(f.subcategory.indexOf(t)>=0)score+=2;
    else if(f.category.indexOf(t)>=0)score+=1;
  });
  return score;
@@ -279,17 +282,30 @@ async function produce(query,options){
  });
 
  /* Required identity tokens: semantic product words must occur in the product name/model, not merely category metadata. */
- var semanticTokens=tokens.filter(function(t){return !['برای','محل','کار','مناسب','استفاده'].includes(t);});
+ var semanticTokens=tokens.filter(function(t){return !['برای','محل','کار','مناسب','استفاده','جهت','دفتر'].includes(t);});
  if(intent.type){
    var qn=norm(query), furniturePhrase=qn.includes('مبلمان اداری');
    candidates=candidates.filter(function(p){
-     var n=fieldText(p).name;
+     var f=fieldText(p), n=f.name;
+     /* For an explicit "مبلمان اداری" request, the product name itself
+        must identify both requested concepts. Desks/chairs/accessories
+        are not allowed to masquerade as furniture unless the query asks
+        for those product families. */
      if(intent.type.key==='furniture'&&furniturePhrase){
-       return n.includes('مبلمان اداری') || (n.includes('مبلمان')&&n.includes('اداری')) || /میز\s*(?:اداری|مدیریت|کارمندی)|صندلی\s*(?:اداری|مدیریت)|فایلینگ|کمد\s*اداری|پارتیشن\s*اداری/.test(n);
+       return n.includes('مبلمان') && n.includes('اداری');
      }
-     return true;
+     /* Every semantic query token must have identity evidence in the
+        product name/model/brand. Category metadata is insufficient. */
+     return semanticTokens.every(function(t){
+       return n.indexOf(t)>=0 || f.model.indexOf(t)>=0 || f.brand.indexOf(t)>=0;
+     });
    });
  }
+ /* Minimum relevance floor: weak accidental matches are discarded even
+    if they happen to survive the hard type/brand gates. */
+ candidates=candidates.filter(function(p){
+   return p.matchScore>= (intent.type||intent.brand ? 25 : Math.max(20,semanticTokens.length*18));
+ });
  var unique=deduplicate(candidates);
  var ranked=unique.sort(function(a,b){
    return b.matchScore-a.matchScore || a.priceToman-b.priceToman;
