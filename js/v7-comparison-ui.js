@@ -85,6 +85,7 @@ function slotMarkup(i,p){
 function renderControls(){
  const c=ensureCard();if(!c)return;
  const oldResults=c.querySelector('.v7c-results-box');
+ const oldTools=c.querySelector('#v7ComparisonTools');
  const oldX=oldResults?oldResults.scrollLeft:0;
  const picked=selected();let html='<div class="v7c-head"><h3 class="v7c-title">مقایسه محصولات</h3><p class="v7c-note">نام یا لینک محصول را وارد کن و اطلاعات آن را دریافت کن.</p></div>';
  html+='<button type="button" class="v7c-add" id="v7AddCompareProduct">＋ افزودن محصول برای مقایسه</button><div id="v7CompareSlots"></div>';
@@ -94,6 +95,7 @@ function renderControls(){
  if(picked.length>=MAX)c.querySelector('#v7AddCompareProduct').style.display='none';
  if(picked.length>=2)wrap.insertAdjacentHTML('beforeend','<div class="v7c-actions"><button type="button" class="v7c-btn v7c-btn-primary" id="v7CompareRun">مقایسه تخصصی</button><button type="button" class="v7c-btn v7c-btn-secondary" id="v7CompareClear">پاک کردن</button></div>');
  if(oldResults){c.appendChild(oldResults);requestAnimationFrame(()=>{oldResults.scrollLeft=oldX;const inner=oldResults.querySelector('.v7c-table-wrap');if(inner)inner.scrollLeft=oldX;});}
+ if(oldTools){c.appendChild(oldTools);if(window.DigiYarV7ComparisonTools&&window.DigiYarV7ComparisonTools.refresh)window.DigiYarV7ComparisonTools.refresh();}
 }
 function productCols(products){return products.map(p=>'<th scope="col" class="v7c-product">'+esc(p.name)+(p.store?'<span class="v7c-store">'+esc(p.store)+'</span>':'')+(p.productUrl?'<a class="v7c-view-product" href="'+esc(p.productUrl)+'" target="_blank" rel="noopener noreferrer">دیدن محصول</a>':'')+'</th>').join('');}
 function bestIds(products,label){
