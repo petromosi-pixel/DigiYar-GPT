@@ -4,7 +4,7 @@
    ========================================================= */
 (function(window){
 'use strict';
-const VERSION='7.0.0-comparison.2';
+const VERSION='7.0.0-comparison.3';
 const MAX_RESULTS=20;
 function text(v){return String(v==null?'':v).trim();}
 function number(v){const n=Number(v);return Number.isFinite(n)?n:0;}
@@ -23,12 +23,30 @@ function priceComparison(products){const priced=products.filter(p=>p.priceToman>
 function specificationComparison(products){const keys={};products.forEach(product=>Object.keys(product.specs||{}).forEach(key=>{if(!keys[key])keys[key]={key:product.specs[key].key,values:[]};const value=product.specs[key].value;if(!keys[key].values.some(v=>normalizeKey(v)===normalizeKey(value)))keys[key].values.push(value);}));return Object.keys(keys).map(key=>{const row=keys[key],presentCount=products.filter(p=>!!(p.specs&&p.specs[key]&&p.specs[key].value)).length;return {field:key,label:row.key,comparable:row.values.length>1,valuesByProduct:products.map(p=>({productId:p.id,value:p.specs&&p.specs[key]?p.specs[key].value:''})),presentCount,distinctValueCount:row.values.length};}).filter(row=>row.presentCount>=2);}
 function storeComparison(products){const stores={};products.forEach(p=>{const key=normalizeKey(p.store);if(!key)return;if(!stores[key])stores[key]={name:p.store,productIds:[]};stores[key].productIds.push(p.id);});return Object.keys(stores).map(k=>stores[k]);}
 function matchComparison(products){const available=products.filter(p=>p.matchScore!==null);return {available:available.length>0,values:products.map(p=>({productId:p.id,score:p.matchScore,rank:p.rank})),note:available.length?'امتیاز تطابق از مجموعه نتایج فعلی خوانده شده و امتیاز جدیدی از داده بیرونی ساخته نشده است.':'در مجموعه نتایج فعلی امتیاز تطابق قابل اتکا وجود ندارد.'};}
-function expertReview(products,price,stores,match,specs){if(products.length<2)return {available:false,items:[]};const items=[];const priced=products.filter(p=>p.priceToman>0);if(priced.length>=2){const min=Math.min(...priced.map(p=>p.priceToman));const max=Math.max(...priced.map(p=>p.priceToman));items.push('قیمت: '+priced.map(p=>p.name+' '+p.priceToman.toLocaleString('fa-IR')+' تومان').join('، ')+'؛ اختلاف بیشینه و کمینه '+(max-min).toLocaleString('fa-IR')+' تومان است.');if(price.cheapestIds.length)items.push('از نظر قیمت، گزینه یا گزینه‌های کم‌هزینه‌تر بر اساس قیمت ثبت‌شده در همین مجموعه نتایج مشخص شده‌اند؛ این مورد به‌تنهایی به معنی انتخاب بهتر نیست.');}else items.push('قیمت قابل مقایسه برای حداقل دو محصول در داده فعلی وجود ندارد.');
-const comparableSpecs=specs.filter(s=>s.comparable);if(comparableSpecs.length){const names=comparableSpecs.slice(0,6).map(s=>s.label);items.push('مشخصات: '+names.join('، ')+' بین محصولات مقدارهای متفاوت یا قابل مقایسه دارند و در جدول کنار هم نمایش داده شده‌اند.');}else items.push('مشخصات مشترک و قابل مقایسه کافی در داده فعلی ثبت نشده است.');
-items.push(stores.length>1?'فروشگاه: محصولات از '+stores.length+' فروشگاه یا منبع مختلف در مجموعه نتایج فعلی دیده می‌شوند.':'فروشگاه: همه محصولات قابل مقایسه در یک فروشگاه یا منبع ثبت شده‌اند.');
-if(match.available){const valid=products.filter(p=>p.matchScore!==null);const best=Math.max(...valid.map(p=>p.matchScore));const names=valid.filter(p=>p.matchScore===best).map(p=>p.name);items.push('تطابق با نیاز: بر اساس امتیاز تطابق موجود در نتیجه فعلی، '+names.join('، ')+' بالاترین تطابق ثبت‌شده را دارند.');}else items.push('تطابق با نیاز: امتیاز تطابق قابل اتکا در داده فعلی وجود ندارد و امتیاز ساختگی تولید نشده است.');
-items.push('قاعده بررسی: این تحلیل فقط از محصولات مرتبط و داده‌های موجود در مجموعه نتایج فعلی استفاده می‌کند؛ امتیاز کیفیت یا برنده ساختگی تولید نمی‌شود و برای اطلاعات لحظه‌ای فروشگاه‌ها بازخوانی جداگانه انجام نمی‌شود.');return {available:true,items};}
-function compare(results,options){const opts=options&&typeof options==='object'?options:{};const raw=comparable(results).map(normalizeProduct),products=dedupe(raw),price=priceComparison(products),specs=specificationComparison(products),stores=storeComparison(products),match=matchComparison(products);return clone({version:VERSION,status:products.length>=2?'comparison_ready':'not_enough_results',count:products.length,products,priceComparison:price,specificationComparison:specs,storeComparison:stores,matchComparison:match,expertReview:expertReview(products,price,stores,match,specs),meta:{source:'existing-result-set',networkCalls:0,catalogLookup:false,resolverCall:false,storeQuery:false,deduplicated:true,maxResults:MAX_RESULTS,requestedLimit:opts.limit||null}});}
+function expertReview(products,price,stores,match,specs){
+if(products.length<2)return {available:false,items:[]};
+const items=[],count=products.length;
+items.push('مقایسه شامل '+(count===2?'دو':'سه')+' محصول است و نقد و بررسی زیر فقط بر پایه اطلاعات ثبت‌شده برای همین محصولات انجام می‌شود.');
+const priced=products.filter(p=>p.priceToman>0);
+if(priced.length>=2){
+ const min=Math.min(...priced.map(p=>p.priceToman)),max=Math.max(...priced.map(p=>p.priceToman));
+ items.push('قیمت: '+priced.map(p=>p.name+' '+p.priceToman.toLocaleString('fa-IR')+' تومان').join('، ')+'؛ اختلاف بیشینه و کمینه '+(max-min).toLocaleString('fa-IR')+' تومان است.');
+ if(price.cheapestIds.length)items.push('از نظر قیمت، محصول یا محصولات کم‌هزینه‌تر در جدول با علامت ✓ مشخص شده‌اند؛ این علامت فقط مقایسه قیمت است و به معنی بهتر بودن محصول نیست.');
+}else items.push('قیمت: برای حداقل دو محصول قیمت قابل مقایسه در داده فعلی ثبت نشده است.');
+const comparableSpecs=specs.filter(s=>s.comparable);
+if(comparableSpecs.length){
+ const names=comparableSpecs.slice(0,8).map(s=>s.label);
+ items.push('مشخصات کلیدی: '+names.join('، ')+' بین محصولات قابل مقایسه‌اند و هر ویژگی در ردیف اختصاصی خودش روبه‌روی محصولات قرار گرفته است.');
+}else items.push('مشخصات کلیدی: داده مشترک و قابل مقایسه کافی در اطلاعات فعلی ثبت نشده است.');
+items.push(stores.length>1?'فروشگاه: محصولات از '+stores.length+' فروشگاه یا منبع مختلف در مجموعه نتایج فعلی دیده می‌شوند.':'فروشگاه: محصولات در یک فروشگاه یا منبع ثبت شده‌اند.');
+if(match.available){
+ const valid=products.filter(p=>p.matchScore!==null),best=Math.max(...valid.map(p=>p.matchScore));
+ const names=valid.filter(p=>p.matchScore===best).map(p=>p.name);
+ items.push('تطابق با نیاز: بر اساس امتیاز ثبت‌شده در مجموعه نتایج فعلی، بیشترین تطابق به '+names.join('، ')+' تعلق دارد؛ این شاخص کیفیت کلی محصول را اندازه‌گیری نمی‌کند.');
+}else items.push('تطابق با نیاز: امتیاز تطابق قابل اتکا در داده فعلی وجود ندارد و امتیاز جدیدی ساخته نشده است.');
+items.push('جمع‌بندی: این نقد و بررسی برای مقایسه '+(count===2?'دو':'سه')+' محصول، تفاوت‌های قیمت، مشخصات، فروشگاه و تطابق را کنار هم بیان می‌کند و از اعلام برنده یا امتیاز کیفیت ساختگی خودداری می‌کند.');
+return {available:true,items};
+}function compare(results,options){const opts=options&&typeof options==='object'?options:{};const raw=comparable(results).map(normalizeProduct),products=dedupe(raw),price=priceComparison(products),specs=specificationComparison(products),stores=storeComparison(products),match=matchComparison(products);return clone({version:VERSION,status:products.length>=2?'comparison_ready':'not_enough_results',count:products.length,products,priceComparison:price,specificationComparison:specs,storeComparison:stores,matchComparison:match,expertReview:expertReview(products,price,stores,match,specs),meta:{source:'existing-result-set',networkCalls:0,catalogLookup:false,resolverCall:false,storeQuery:false,deduplicated:true,maxResults:MAX_RESULTS,requestedLimit:opts.limit||null}});}
 function toTable(comparison){if(!comparison||!Array.isArray(comparison.products))return [];return comparison.products.map(p=>({id:p.id,name:p.name,brand:p.brand,model:p.model,store:p.store,priceToman:p.priceToman||null,availability:p.availability,matchScore:p.matchScore,productUrl:p.productUrl}));}
 const api={version:VERSION,normalizeProduct,compare,build:compare,toTable};window.DigiYarComparisonEngine=api;window.DigiYarV7Comparison=api;
 })(window);
