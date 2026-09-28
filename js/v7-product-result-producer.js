@@ -335,10 +335,43 @@ async function produce(query,options){
  return ranked;
 }
 
+async function findByName(query,options){
+ options=options||{};
+ var q=norm(query);
+ if(!q)return [];
+ var rawTokens=q.split(/\s+/).filter(function(x){return x.length>1;});
+ var all=[];
+ for(var i=0;i<INDEXES.length;i++){
+   try{all=all.concat(await loadIndex(INDEXES[i]));}
+   catch(e){console.warn('V7 Product Name Search index:',INDEXES[i].path,e);}
+ }
+ var scored=all.filter(function(p){return p&&p.name&&price(p)>0;}).map(function(p){
+   var n=norm(p.name),m=norm(p.model),b=norm(p.brand);
+   var exact=n===q,contains=n.indexOf(q)>=0;
+   var matched=rawTokens.filter(function(t){return n.indexOf(t)>=0;}).length;
+   var modelMatched=rawTokens.filter(function(t){return m.indexOf(t)>=0;}).length;
+   var brandMatched=rawTokens.filter(function(t){return b.indexOf(t)>=0;}).length;
+   var coverage=rawTokens.length?matched/rawTokens.length:0;
+   var score=(exact?10000:0)+(contains?3000:0)+(coverage*2000)+(matched*100)+(modelMatched*35)+(brandMatched*20)-(Math.max(0,n.length-q.length)*0.02);
+   return {p:Object.assign({},p),score:score,coverage:coverage};
+ }).filter(function(x){return x.score>=200||x.coverage>=0.8;}).sort(function(a,b){return b.score-a.score;});
+ var seen=Object.create(null),out=[],limit=Math.max(1,Math.min(10,num(options.limit)||5));
+ scored.forEach(function(x){
+   var key=norm(x.p.productId||x.p.id||x.p.name);
+   if(seen[key]||out.length>=limit)return;
+   seen[key]=1;
+   x.p.priceToman=price(x.p);x.p.price=x.p.priceToman;x.p.currency='toman';
+   x.p.matchScore=Math.round(Math.min(100,x.score/100));
+   out.push(x.p);
+ });
+ return out;
+}
+
 var api={
  version:VERSION,
  indexes:INDEXES.map(function(x){return x.path;}),
  produce:produce,
+ findByName:findByName,
  parseIndexSource:parseIndexSource,
  clear:function(){cache={};}
 };
