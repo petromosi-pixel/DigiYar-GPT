@@ -7,7 +7,7 @@
  */
 (function(window, document){
   'use strict';
-  const VERSION='7.0.0-comparison-ui.10';
+  const VERSION='7.0.0-comparison-ui.11';
 
   function esc(value){
     return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -30,6 +30,9 @@
     const s=document.createElement('style');
     s.id='v7-comparison-ui-style';
     s.textContent=`
+      #v7ComparisonShareGuide{display:block;margin:3mm 0 0;padding:10px 12px;border:1px solid rgba(42,65,105,.14);border-radius:14px;background:var(--card-bg,#fff);color:inherit;box-sizing:border-box;text-align:center;font-size:13px;font-weight:400;line-height:1.9}
+      #v7ComparisonShareGuide strong{font-weight:800}
+      body.v6-dark #v7ComparisonShareGuide,html.dark #v7ComparisonShareGuide,body.dark #v7ComparisonShareGuide,[data-theme="dark"] #v7ComparisonShareGuide{background:#121c2d;color:#f8fafc;border-color:rgba(255,255,255,.15);box-shadow:0 3px 14px rgba(0,0,0,.28)}
       #v7ComparisonCard{display:block;margin:3mm 0 0;padding:13px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);box-sizing:border-box}
       #v7ComparisonCard .v7c-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
       #v7ComparisonCard .v7c-title{margin:0;font-size:15px;font-weight:800}
@@ -77,6 +80,15 @@
       return mount;
     }
     return mount;
+  }
+  function ensureGuide(){
+    let guide=document.getElementById('v7ComparisonShareGuide');
+    if(guide)return guide;
+    guide=document.createElement('section');
+    guide.id='v7ComparisonShareGuide';
+    guide.setAttribute('aria-label','راهنمای مقایسه محصولات');
+    guide.innerHTML='برای <strong>مقایسه محصولات</strong> در کادر پایین، وارد صفحهٔ خود محصول در فروشگاه مورد نظرت شو و از گزینهٔ <strong>اشتراک‌گذاری → دیجی‌یار</strong> استفاده کن.';
+    return guide;
   }
   function ensureCard(){
     const mount=ensureMount(); if(!mount)return null;
@@ -237,14 +249,26 @@
     const root=document.body;if(!root||!window.MutationObserver)return;
     const observer=new MutationObserver(function(){
       const mount=document.getElementById('v7ComparisonMount'),sim=document.getElementById('v6StoreSimulatorResults');
-      if(mount&&sim&&sim.parentNode&&mount.previousElementSibling!==sim)sim.parentNode.insertBefore(mount,sim.nextSibling);
+      if(mount&&sim&&sim.parentNode){
+        const guide=ensureGuide();
+        if(guide.parentNode!==sim.parentNode || guide.previousElementSibling!==sim)sim.parentNode.insertBefore(guide,sim.nextSibling);
+        if(mount.previousElementSibling!==guide)sim.parentNode.insertBefore(mount,guide.nextSibling);
+      }
       refresh();
     });
     observer.observe(root,{childList:true,subtree:true});
     window.__DigiYarComparisonSimulatorObserver=observer;
   }
   function init(){
-    installStyle(); refresh(); watchAnchor();
+    installStyle();
+    const sim=document.getElementById('v6StoreSimulatorResults');
+    if(sim&&sim.parentNode){
+      const guide=ensureGuide();
+      sim.parentNode.insertBefore(guide,sim.nextSibling);
+      const mount=document.getElementById('v7ComparisonMount');
+      if(mount&&mount!==guide.nextSibling)sim.parentNode.insertBefore(mount,guide.nextSibling);
+    }
+    refresh(); watchAnchor();
     window.addEventListener('digiyar:v7-product-results-ready',refresh);
     window.addEventListener('digiyar:v7-product-results',refresh);
     window.addEventListener('digiyar:shopping-plan-ready',refresh);
