@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.11';
+var VERSION='7.0.0-product-result-producer.12';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -312,6 +312,34 @@ async function produce(query,options){
  var ranked=unique.sort(function(a,b){
    return b.matchScore-a.matchScore || a.priceToman-b.priceToman;
  }).slice(0,Math.max(1,Math.min(20,num(options.limit)||8)));
+
+ /* Universal no-empty fallback:
+    the local product indexes are finite snapshots, so an arbitrary product
+    (for example a desk or a specific tyre) may legitimately have no indexed
+    product. Never invent price/specifications to fill that gap. Instead,
+    publish explicit store-search entries so Hooshyar always has a useful
+    next result for the user's exact query. These entries are intentionally
+    marked as search fallbacks and are excluded from product comparison. */
+ if(!ranked.length){
+   var fallbackStores=[
+     {id:'digikala',name:'دیجی‌کالا',url:'https://www.digikala.com/search/?q='},
+     {id:'snappshop',name:'اسنپ‌شاپ',url:'https://snappshop.ir/search?query='},
+     {id:'torob',name:'ترب',url:'https://torob.com/search/?query='},
+     {id:'basalam',name:'باسلام',url:'https://basalam.com/search?q='}
+   ];
+   ranked=fallbackStores.map(function(store,idx){
+     return {
+       id:'search-fallback|'+store.id+'|'+norm(query),
+       productId:'search-fallback|'+store.id+'|'+norm(query),
+       name:'جستجوی «'+String(query).trim()+'» در '+store.name,
+       brand:'',model:'',category:'search-fallback',subcategory:'',
+       priceToman:0,price:0,currency:'toman',availability:'search',
+       productUrl:store.url+encodeURIComponent(String(query).trim()),
+       store:store.id,storeName:store.name,source:'store-search-fallback',
+       isSearchFallback:true,matchScore:1,rank:idx+1
+     };
+   }).slice(0,Math.max(1,Math.min(20,num(options.limit)||8)));
+ }
 
  var Source=root.DigiYarV7ProductResultSource;
  var snapshot=null;
