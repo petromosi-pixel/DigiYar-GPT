@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.6';
+var VERSION='7.0.0-product-result-producer.7';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -188,6 +188,7 @@ function hasBrandIdentity(p,brand){
 
 function relevance(p,tokens,intent){
  var f=fieldText(p),score=0;
+ /* Identity-first ranking: product name is the strongest evidence, followed by model, brand, subcategory, category. */
  if(intent.type){
    if(!hasTypeEvidence(p,intent))return -1000;
    score+=8;
@@ -199,11 +200,11 @@ function relevance(p,tokens,intent){
  }
  tokens.forEach(function(t){
    if(!t)return;
-   if(f.brand===t)score+=4;
-   else if(f.name.indexOf(t)>=0)score+=2;
-   else if(f.subcategory.indexOf(t)>=0)score+=2;
+   if(f.name.indexOf(t)>=0)score+=10;
+   else if(f.model.indexOf(t)>=0)score+=6;
+   else if(f.brand===t)score+=5;
+   else if(f.subcategory.indexOf(t)>=0)score+=3;
    else if(f.category.indexOf(t)>=0)score+=1;
-   else if(f.model.indexOf(t)>=0)score+=1;
  });
  return score;
 }
@@ -258,9 +259,27 @@ async function produce(query,options){
  }).filter(function(p){
    if(budget.max&&p.priceToman>budget.max)return false;
    if(budget.min&&p.priceToman<budget.min)return false;
-   return !tokens.length || p.matchScore>0;
+   if(tokens.length&&!p.matchScore) return false;
+   /* For explicit furniture searches, the requested product identity must be present in the product name. */
+   if(intent.type&&intent.type.key==='furniture'){
+     var n=fieldText(p).name;
+     var hasFurniture=/مبلمان|میز\s*(?:اداری|مدیریت|کارمندی)|صندلی\s*(?:اداری|مدیریت)|فایلینگ|کمد\s*اداری|پارتیشن\s*اداری/.test(n);
+     if(!hasFurniture)return false;
+     if(norm(query).indexOf('اداری')>=0&&!n.includes('اداری'))return false;
+   }
+   return true;
  });
 
+ /* Required identity tokens: semantic product words must occur in the product name/model, not merely category metadata. */
+ var semanticTokens=tokens.filter(function(t){return !['برای','محل','کار','مناسب','استفاده'].includes(t);});
+ if(intent.type){
+   var typeNameTerms=intent.type.terms.filter(function(t){return norm(query).indexOf(norm(t))>=0;});
+   candidates=candidates.filter(function(p){
+     var n=fieldText(p).name,ok=true;
+     typeNameTerms.forEach(function(term){var nt=norm(term);if(nt.length>2&&!n.includes(nt)&&intent.type.key==='furniture')ok=false;});
+     return ok;
+   });
+ }
  var unique=deduplicate(candidates);
  var ranked=unique.sort(function(a,b){
    return b.matchScore-a.matchScore || a.priceToman-b.priceToman;
