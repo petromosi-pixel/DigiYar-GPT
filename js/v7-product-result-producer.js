@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.9';
+var VERSION='7.0.0-product-result-producer.10';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -188,26 +188,28 @@ function hasBrandIdentity(p,brand){
 
 function relevance(p,tokens,intent){
  var f=fieldText(p),score=0;
- /* Identity-first relevance:
-    name > model > brand > subcategory > category.
-    Category metadata alone can never rescue a weak product-name match. */
+ /* Standardized identity weighting:
+    product-name evidence dominates everything else.
+    A category/subcategory label can never compensate for a missing
+    product-name identity. Explicit brand evidence is deliberately below
+    name/model evidence. */
  if(intent.type){
    if(!hasTypeEvidence(p,intent))return -1000;
-   score+=15;
+   score+=25;
  }
  if(intent.brand){
    if(!hasBrandIdentity(p,intent.brand))return -1000;
-   if(f.brand===intent.brand)score+=10;
-   else if(f.name.indexOf(intent.brand)>=0)score+=8;
+   if(f.brand===intent.brand)score+=25;
+   else if(f.name.indexOf(intent.brand)>=0)score+=20;
    else return -1000;
  }
+ var brandToken=intent.brand?norm(intent.brand):'';
  tokens.forEach(function(t){
-   if(!t)return;
-   if(f.name.indexOf(t)>=0)score+=20;
-   else if(f.model.indexOf(t)>=0)score+=8;
-   else if(f.brand===t)score+=6;
-   else if(f.subcategory.indexOf(t)>=0)score+=2;
-   else if(f.category.indexOf(t)>=0)score+=1;
+   if(!t||t===brandToken)return;
+   if(f.name.indexOf(t)>=0)score+=100;
+   else if(f.model.indexOf(t)>=0)score+=35;
+   else if(f.subcategory.indexOf(t)>=0)score+=8;
+   else if(f.category.indexOf(t)>=0)score+=3;
  });
  return score;
 }
@@ -304,7 +306,7 @@ async function produce(query,options){
  /* Minimum relevance floor: weak accidental matches are discarded even
     if they happen to survive the hard type/brand gates. */
  candidates=candidates.filter(function(p){
-   return p.matchScore>= (intent.type||intent.brand ? 25 : Math.max(20,semanticTokens.length*18));
+   return p.matchScore>= (intent.type||intent.brand ? 60 : Math.max(70,semanticTokens.length*70));
  });
  var unique=deduplicate(candidates);
  var ranked=unique.sort(function(a,b){
