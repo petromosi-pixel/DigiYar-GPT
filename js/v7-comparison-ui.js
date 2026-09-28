@@ -159,11 +159,18 @@ function bind(){
 }
 function place(){
  const sim=document.getElementById('v6StoreSimulatorResults');if(!sim||!sim.parentNode)return;
- const parent=sim.parentNode;const g=ensureGuide(),m=ensureMount();
- if(g.parentNode!==parent||g.previousElementSibling!==sim)parent.insertBefore(g,sim.nextSibling);
- if(m.parentNode!==parent||m.previousElementSibling!==g)parent.insertBefore(m,g.nextSibling);
+ const parent=sim.parentNode;
+ if(window.__DigiYarComparisonPlacementTimer)return;
+ window.__DigiYarComparisonPlacementTimer=setTimeout(function(){
+   window.__DigiYarComparisonPlacementTimer=null;
+   const g=ensureGuide(),m=ensureMount();
+   if(g.parentNode!==parent||g.previousElementSibling!==sim)parent.insertBefore(g,sim.nextSibling);
+   setTimeout(function(){
+     if(m.parentNode!==parent||m.previousElementSibling!==g)parent.insertBefore(m,g.nextSibling);
+   },1000);
+ },2000);
 }
-function refresh(){place();renderControls();bind();}
+function refresh(){place();renderControls();bind();if(window.DigiYarV7ComparisonTools&&window.DigiYarV7ComparisonTools.refresh)window.DigiYarV7ComparisonTools.refresh();}
 function watch(){if(window.__DigiYarComparisonSimulatorObserver)return;const root=document.body;if(!root)return;let pending=false;const o=new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;place();});});o.observe(root,{childList:true,subtree:true});window.__DigiYarComparisonSimulatorObserver=o;}
 function init(){installStyle();refresh();watch();window.addEventListener('digiyar:v7-product-results-ready',refresh);window.addEventListener('digiyar:v7-product-results',refresh);window.addEventListener('digiyar:v7-comparison-selection-ready',refresh);}
 window.DigiYarV7ComparisonUI={version:VERSION,refresh,run:runComparison};
