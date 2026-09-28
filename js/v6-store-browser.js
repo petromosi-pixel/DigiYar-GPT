@@ -149,7 +149,7 @@ function openBrowser(query,list){
      if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function'){
        sourceList=window.DigiYarStoreEligibility.storesForQuery(query,sourceList);
      }
-     const usable=sourceList.filter(x=>x&&SEARCH[x.id]);
+     let usable=sourceList.filter(x=>x&&SEARCH[x.id]);
      if(!usable.length){
        usable=Object.keys(SEARCH).map(function(id){
          const found=(Array.isArray(sourceList)?sourceList:[]).find(function(x){return x&&x.id===id;});
