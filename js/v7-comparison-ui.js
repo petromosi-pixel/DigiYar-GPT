@@ -105,7 +105,11 @@ function renderTable(comparison){
  const ps=comparison.products||[];let h='<div class="v7c-table-wrap"><table><thead><tr><th>شاخص</th>'+productCols(ps)+'</tr></thead><tbody>';
  const prices=ps.map(p=>p.priceToman||0).filter(Boolean),min=prices.length?Math.min(...prices):0;
  h+='<tr><th>قیمت</th>'+ps.map(p=>'<td class="'+(p.priceToman&&p.priceToman===min?'v7c-best':'')+'">'+esc(toman(p.priceToman))+(p.priceToman&&p.priceToman===min?'<span class="v7c-check">✓</span>':'')+'</td>').join('')+'</tr>';
+ h+='<tr><th>برند</th>'+ps.map(p=>'<td>'+esc(p.brand||'—')+'</td>').join('')+'</tr>';
+ h+='<tr><th>مدل</th>'+ps.map(p=>'<td>'+esc(p.model||'—')+'</td>').join('')+'</tr>';
  h+='<tr><th>فروشگاه</th>'+ps.map(p=>'<td>'+esc(p.store||'—')+'</td>').join('')+'</tr>';
+ h+='<tr><th>وضعیت موجودی</th>'+ps.map(p=>{const ok=norm(p.availability).includes('موجود')||norm(p.availability).includes('available');return '<td class="'+(ok?'v7c-best':'')+'">'+esc(p.availability||'اطلاعات نامشخص')+(ok?'<span class="v7c-check">✓</span>':'')+'</td>';}).join('')+'</tr>';
+ if(comparison.matchComparison&&comparison.matchComparison.available)h+='<tr><th>امتیاز تطابق</th>'+ps.map(p=>{const v=Number(p.matchScore);const vals=ps.map(x=>Number(x.matchScore)).filter(Number.isFinite);const best=Number.isFinite(v)&&vals.length>1&&v===Math.max(...vals);return '<td class="'+(best?'v7c-best':'')+'">'+(Number.isFinite(v)?esc(v):'—')+(best?'<span class="v7c-check">✓</span>':'')+'</td>';}).join('')+'</tr>';
  const specs=comparison.specificationComparison||[];
  specs.forEach(s=>{const ids=bestIds(ps,s.label);h+='<tr><th>'+esc(s.label)+'</th>'+ps.map(p=>{const f=(s.valuesByProduct||[]).find(v=>v.productId===p.id);const best=ids.has(p.id);return '<td class="'+(best?'v7c-best':'')+'">'+esc(f&&f.value?f.value:'—')+(best?'<span class="v7c-check">✓</span>':'')+'</td>';}).join('')+'</tr>';});
  h+='</tbody></table></div>';
