@@ -5,7 +5,7 @@
 (function(){
   'use strict';
 
-  const VERSION='7.0.0-product-result-source.1';
+  const VERSION='7.0.0-product-result-source.2';
   const MAX_RESULTS=20;
   let state={version:VERSION,query:'',source:'none',products:[],comparisonProducts:[],updatedAt:null};
   const STORAGE_KEY='digiyar:v7:comparison-products';
