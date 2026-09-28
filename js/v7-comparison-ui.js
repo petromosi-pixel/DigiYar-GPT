@@ -1,11 +1,13 @@
 /* DigiYar V7 — User-selected product comparison UI
  * Comparison is opt-in: the user enters up to 3 product names.
- * Matching is performed only against the current V7 Product Result Set.
- * No fetch, API, resolver, catalog lookup, or store query.
+ * Matching prefers the current V7 Result Set, but also accepts products
+ * captured from an external store page through the PWA Share Target.
+ * Manual product names are also accepted so the comparison card never
+ * dead-ends merely because a store page is cross-origin.
  */
 (function(window, document){
   'use strict';
-  const VERSION='7.0.0-comparison-ui.8';
+  const VERSION='7.0.0-comparison-ui.9';
 
   function esc(value){
     return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -89,6 +91,28 @@
     if(typeof source.getComparisonProducts==='function')return source.getComparisonProducts()||[];
     return [];
   }
+  function allKnownProducts(){
+    const list=currentProducts().slice();
+    selectedProducts().forEach(function(p){
+      if(!list.some(function(x){return String(x.id)===String(p.id);}))list.push(p);
+    });
+    return list;
+  }
+  function manualProduct(name,index){
+    const n=String(name||'').trim();
+    if(!n)return null;
+    return {
+      id:'manual|'+Date.now()+'|'+index+'|'+norm(n),
+      productId:'manual|'+norm(n),
+      name:n,
+      store:'نامشخص',
+      source:'manual-comparison',
+      matchScore:null,
+      priceToman:0,
+      price:0,
+      currency:'toman'
+    };
+  }
   function currentProducts(){
     const source=window.DigiYarV7ProductResultSource;
     if(!source||typeof source.get!=='function')return [];
@@ -126,7 +150,7 @@
     controls+='<div class="v7c-fields"><input class="v7c-field" data-v7-compare-input="1" value="'+esc(selectedNames[0]||'')+'" placeholder="محصول اول" autocomplete="off"><input class="v7c-field" data-v7-compare-input="2" value="'+esc(selectedNames[1]||'')+'" placeholder="محصول دوم" autocomplete="off"><input class="v7c-field" data-v7-compare-input="3" value="'+esc(selectedNames[2]||'')+'" placeholder="محصول سوم" autocomplete="off"></div>';
     controls+='<div class="v7c-actions"><button type="button" class="v7c-btn v7c-btn-primary" id="v7CompareRun">مقایسه کن</button><button type="button" class="v7c-btn v7c-btn-secondary" id="v7CompareClear">پاک کردن</button></div>';
     if(!comparison){
-      card.innerHTML=controls+'<p class="v7c-status">محصولات مورد نظرت را از نتایج همین جستجو انتخاب کن.</p>';
+      card.innerHTML=controls+'<p class="v7c-status">دو یا سه نام محصول را وارد کن؛ اگر محصول از صفحهٔ فروشگاه به دیجی‌یار Share شده باشد، همان محصول با لینک فروشگاه وارد مقایسه می‌شود.</p><p class="v7c-empty">انتخاب از صفحهٔ فروشگاه: صفحهٔ خود محصول را باز کن → Share/اشتراک‌گذاری → دیجی‌یار.</p>';
       return;
     }
     card.innerHTML=controls+renderTable(comparison);
@@ -155,17 +179,23 @@
     const values=inputs.map(x=>x.value.trim()).filter(Boolean).slice(0,3);
     const stored=selectedProducts().slice(0,3),products=currentProducts(),used=new Set(),selected=stored.slice();
     stored.forEach(p=>used.add(p.id));
-    values.forEach(v=>{if(selected.length>=3)return;const p=matchProduct(v,products,used);if(p){selected.push(p);used.add(p.id);}});
+    values.forEach(function(v,i){
+      if(selected.length>=3)return;
+      const p=matchProduct(v,products,used);
+      if(p){selected.push(p);used.add(p.id);return;}
+      const manual=manualProduct(v,i);
+      if(manual){selected.push(manual);used.add(manual.id);}
+    });
     const engine=window.DigiYarComparisonEngine||window.DigiYarV7Comparison;
     if(!engine||typeof engine.compare!=='function')return;
     const result=engine.compare(selected.slice(0,3),{limit:3});
-    const unmatched=values.length-selected.length;
+    const unmatched=0;
     const controls=card.querySelector('.v7c-status');
     card.innerHTML=card.innerHTML.replace(/<div class="v7c-table-wrap">[\s\S]*$/,'')||card.innerHTML;
     renderComparison(result,selected.slice(0,3).map(function(p){return p.name;}));
     if(unmatched){
       const status=card.querySelector('.v7c-status');
-      if(status)status.textContent='فقط محصولاتی از همین Result Set قابل مقایسه‌اند؛ '+unmatched+' مورد با نام واردشده پیدا نشد.';
+      if(status)status.textContent='';
     }
     inputs.forEach((el,i)=>{if(values[i])el.value=values[i];});
   }
