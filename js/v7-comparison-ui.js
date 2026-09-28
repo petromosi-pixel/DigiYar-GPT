@@ -7,7 +7,7 @@
  */
 (function(window, document){
   'use strict';
-  const VERSION='7.0.0-comparison-ui.11';
+  const VERSION='7.0.0-comparison-ui.12';
 
   function esc(value){
     return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;')
@@ -33,7 +33,11 @@
       #v7ComparisonShareGuide{display:block;margin:3mm 0 0;padding:10px 12px;border:1px solid rgba(42,65,105,.14);border-radius:14px;background:var(--card-bg,#fff);color:inherit;box-sizing:border-box;text-align:center;font-size:13px;font-weight:400;line-height:1.9}
       #v7ComparisonShareGuide strong{font-weight:800}
       body.v6-dark #v7ComparisonShareGuide,html.dark #v7ComparisonShareGuide,body.dark #v7ComparisonShareGuide,[data-theme="dark"] #v7ComparisonShareGuide{background:#121c2d;color:#f8fafc;border-color:rgba(255,255,255,.15);box-shadow:0 3px 14px rgba(0,0,0,.28)}
-      #v7ComparisonCard{display:block;margin:3mm 0 0;padding:13px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);box-sizing:border-box}
+      #v7ComparisonCard{display:block;margin:3mm 0 0;padding:13px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);color:var(--text-color,#172033);box-sizing:border-box;box-shadow:0 3px 14px rgba(20,35,60,.06)}
+      body.v6-dark #v7ComparisonCard,html.dark #v7ComparisonCard,body.dark #v7ComparisonCard,[data-theme="dark"] #v7ComparisonCard{background:#121c2d;color:#f8fafc;border-color:rgba(255,255,255,.15);box-shadow:0 4px 18px rgba(0,0,0,.30)}
+      body.v6-dark #v7ComparisonCard .v7c-field,html.dark #v7ComparisonCard .v7c-field,body.dark #v7ComparisonCard .v7c-field,[data-theme="dark"] #v7ComparisonCard .v7c-field{background:#0c1524;color:#f8fafc;border-color:rgba(255,255,255,.18)}
+      body.v6-dark #v7ComparisonCard .v7c-btn-secondary,html.dark #v7ComparisonCard .v7c-btn-secondary,body.dark #v7ComparisonCard .v7c-btn-secondary,[data-theme="dark"] #v7ComparisonCard .v7c-btn-secondary{background:rgba(255,255,255,.10);color:#f8fafc}
+      body.v6-dark #v7ComparisonCard th,body.v6-dark #v7ComparisonCard td,html.dark #v7ComparisonCard th,html.dark #v7ComparisonCard td,body.dark #v7ComparisonCard th,body.dark #v7ComparisonCard td,[data-theme="dark"] #v7ComparisonCard th,[data-theme="dark"] #v7ComparisonCard td{border-color:rgba(255,255,255,.12)}
       #v7ComparisonCard .v7c-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
       #v7ComparisonCard .v7c-title{margin:0;font-size:15px;font-weight:800}
       #v7ComparisonCard .v7c-note{margin:3px 0 0;font-size:11px;opacity:.68}
@@ -247,17 +251,30 @@
   function watchAnchor(){
     if(window.__DigiYarComparisonSimulatorObserver)return;
     const root=document.body;if(!root||!window.MutationObserver)return;
-    const observer=new MutationObserver(function(){
-      const mount=document.getElementById('v7ComparisonMount'),sim=document.getElementById('v6StoreSimulatorResults');
-      if(mount&&sim&&sim.parentNode){
-        const guide=ensureGuide();
-        if(guide.parentNode!==sim.parentNode || guide.previousElementSibling!==sim)sim.parentNode.insertBefore(guide,sim.nextSibling);
-        if(mount.previousElementSibling!==guide)sim.parentNode.insertBefore(mount,guide.nextSibling);
+    let scheduled=false;
+    function placeOnly(){
+      scheduled=false;
+      const sim=document.getElementById('v6StoreSimulatorResults');
+      if(!sim||!sim.parentNode)return;
+      const parent=sim.parentNode;
+      let guide=document.getElementById('v7ComparisonShareGuide');
+      if(!guide)guide=ensureGuide();
+      if(guide.parentNode!==parent || guide.previousElementSibling!==sim){
+        parent.insertBefore(guide,sim.nextSibling);
       }
-      refresh();
+      let mount=document.getElementById('v7ComparisonMount');
+      if(!mount)mount=ensureMount();
+      if(mount&&mount.parentNode!==parent)parent.appendChild(mount);
+      if(mount&&mount.previousElementSibling!==guide)parent.insertBefore(mount,guide.nextSibling);
+    }
+    const observer=new MutationObserver(function(){
+      if(scheduled)return;
+      scheduled=true;
+      requestAnimationFrame(placeOnly);
     });
     observer.observe(root,{childList:true,subtree:true});
     window.__DigiYarComparisonSimulatorObserver=observer;
+    placeOnly();
   }
   function init(){
     installStyle();
