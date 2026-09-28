@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.13';
+const VERSION='7.0.0-comparison-ui.14';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();}
@@ -26,14 +26,14 @@ function installStyle(){
  if(document.getElementById('v7-comparison-ui-style'))return;
  const s=document.createElement('style');s.id='v7-comparison-ui-style';
  s.textContent=`
- #v7ComparisonShareGuide{display:block;margin:3mm 0 0;padding:10px 12px;border:1px solid rgba(42,65,105,.14);border-radius:14px;background:var(--card-bg,#fff);color:inherit;box-sizing:border-box;text-align:center;font-size:13px;line-height:1.9}
+ #v7ComparisonShareGuide{display:block;margin:3mm 0 0;padding:10px 12px;border:1px solid rgba(42,65,105,.14);border-radius:14px;background:var(--card-bg,#fff);color:inherit;box-sizing:border-box;text-align:center;font-size:11px;line-height:1.9}
  #v7ComparisonShareGuide .v7-guide-title{color:#d93025;font-weight:800}
  #v7ComparisonShareGuide .v7-guide-text{opacity:.68;font-weight:400}
  #v7ComparisonCard{display:block;margin:3mm 0 0;padding:13px;border:1px solid rgba(42,65,105,.14);border-radius:16px;background:var(--card-bg,#fff);color:var(--text-color,#172033);box-sizing:border-box;box-shadow:0 3px 14px rgba(20,35,60,.06)}
  body.v6-dark #v7ComparisonShareGuide,html.dark #v7ComparisonShareGuide,body.dark #v7ComparisonShareGuide,[data-theme="dark"] #v7ComparisonShareGuide,body.v6-dark #v7ComparisonCard,html.dark #v7ComparisonCard,body.dark #v7ComparisonCard,[data-theme="dark"] #v7ComparisonCard{background:#121c2d;color:#f8fafc;border-color:rgba(255,255,255,.15);box-shadow:0 4px 18px rgba(0,0,0,.30)}
- #v7ComparisonCard .v7c-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
- #v7ComparisonCard .v7c-title{margin:0;font-size:15px;font-weight:800}
- #v7ComparisonCard .v7c-note{margin:3px 0 0;font-size:11px;opacity:.68}
+ #v7ComparisonCard .v7c-head{text-align:center;margin-bottom:10px}
+ #v7ComparisonCard .v7c-title{margin:0;font-size:15px;font-weight:800;text-align:center}
+ #v7ComparisonCard .v7c-note{margin:3px 0 0;font-size:11px;opacity:.68;text-align:center}
  #v7ComparisonCard .v7c-add{display:block;margin:0 auto;height:38px;padding:0 18px;border:0;border-radius:11px;background:#ef7d00;color:#fff;cursor:pointer;font:inherit;font-size:12px;font-weight:800}
  #v7ComparisonCard .v7c-slot{margin-top:8px;padding:9px;border:1px solid rgba(42,65,105,.12);border-radius:12px}
  body.v6-dark #v7ComparisonCard .v7c-slot,html.dark #v7ComparisonCard .v7c-slot,body.dark #v7ComparisonCard .v7c-slot,[data-theme="dark"] #v7ComparisonCard .v7c-slot{background:#0c1524;border-color:rgba(255,255,255,.14)}
@@ -47,7 +47,7 @@ function installStyle(){
  #v7ComparisonCard .v7c-btn-secondary{background:rgba(42,65,105,.08);color:inherit}
  body.v6-dark #v7ComparisonCard .v7c-btn-secondary,html.dark #v7ComparisonCard .v7c-btn-secondary,body.dark #v7ComparisonCard .v7c-btn-secondary,[data-theme="dark"] #v7ComparisonCard .v7c-btn-secondary{background:rgba(255,255,255,.10);color:#f8fafc}
  #v7ComparisonCard .v7c-status{margin:8px 0 0;font-size:11px;opacity:.72;text-align:center}
- #v7ComparisonCard .v7c-table-wrap{width:100%;overflow-x:auto;border-radius:12px}
+ #v7ComparisonCard .v7c-results-box{margin-top:12px;max-height:70vh;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid rgba(42,65,105,.12);border-radius:13px;padding:2px} #v7ComparisonCard .v7c-table-wrap{width:100%;overflow-x:auto;border-radius:12px}
  #v7ComparisonCard table{width:100%;min-width:520px;border-collapse:collapse;font-size:12px}
  #v7ComparisonCard th,#v7ComparisonCard td{padding:9px 8px;border-bottom:1px solid rgba(42,65,105,.10);text-align:right;vertical-align:top}
  body.v6-dark #v7ComparisonCard th,body.v6-dark #v7ComparisonCard td,html.dark #v7ComparisonCard th,html.dark #v7ComparisonCard td,body.dark #v7ComparisonCard th,body.dark #v7ComparisonCard td,[data-theme="dark"] #v7ComparisonCard th,[data-theme="dark"] #v7ComparisonCard td{border-color:rgba(255,255,255,.12)}
@@ -59,7 +59,7 @@ function installStyle(){
  #v7ComparisonCard .v7c-best{color:#18a558!important;font-weight:900}
  #v7ComparisonCard .v7c-check{display:inline-block;margin-inline-start:4px;font-weight:900}
  #v7ComparisonCard .v7c-empty{font-size:11px;opacity:.65;margin:8px 0;text-align:center}
- @media(max-width:600px){#v7ComparisonCard{padding:11px;border-radius:14px}}
+ @media(max-width:600px){#v7ComparisonCard{padding:11px;border-radius:14px}#v7ComparisonCard .v7c-results-box{max-height:62vh}#v7ComparisonCard table{min-width:480px}}
  `;document.head.appendChild(s);
 }
 function ensureMount(){
@@ -71,7 +71,7 @@ function ensureMount(){
 function ensureGuide(){
  let g=document.getElementById('v7ComparisonShareGuide');if(g)return g;
  g=document.createElement('section');g.id='v7ComparisonShareGuide';g.setAttribute('aria-label','راهنمای انجام مقایسه');
- g.innerHTML='<span class="v7-guide-title">راهنمای انجام مقایسه:</span> <span class="v7-guide-text">بعد از جستجوی محصول مورد نظر، وارد صفحه اون محصول در یکی از فروشگاه های سربرگ شو، اشتراک گذاری و دیجی یار رو انتخاب و ارسال کن تا محصول بصورت خودکار در کادر مقایسه اینجا درج بشه.</span>';
+ g.innerHTML='<span class="v7-guide-title">راهنمای انجام مقایسه:</span> <span class="v7-guide-text">بعد از جستجوی محصول، نام یا لینک هر محصول را در کادرهای مقایسه وارد کن. برای لینک فروشگاه، گزینه اشتراک‌گذاری را بزن و دیجی‌یار را انتخاب کن؛ اگر Share در دسترس نبود، لینک را کپی و اینجا پیست کن. سپس «دریافت اطلاعات محصول» و در پایان «مقایسه تخصصی» را بزن.</span>';
  return g;
 }
 function ensureCard(){
@@ -81,11 +81,11 @@ function ensureCard(){
 }
 function slotMarkup(i,p){
  const name=p&&p.name?p.name:'';const url=p&&p.productUrl?p.productUrl:'';
- return '<div class="v7c-slot" data-slot="'+i+'"><div class="v7c-slot-head"><span>محصول '+['اول','دوم','سوم'][i-1]+'</span><button type="button" class="v7c-remove" data-v7-remove="'+i+'">حذف</button></div><input class="v7c-field" data-v7-url="'+i+'" value="'+esc(url)+'" placeholder="لینک صفحه محصول فروشگاه"><div class="v7c-slot-actions"><button type="button" class="v7c-btn v7c-btn-primary" data-v7-fetch="'+i+'">دریافت اطلاعات محصول</button><button type="button" class="v7c-btn v7c-btn-secondary" data-v7-paste="'+i+'">چسباندن لینک</button></div><div class="v7c-status" data-v7-slot-status="'+i+'">'+(name?'✓ '+esc(name):'لینک محصول را وارد کن')+'</div></div>';
+ return '<div class="v7c-slot" data-slot="'+i+'"><div class="v7c-slot-head"><span>محصول '+['اول','دوم','سوم'][i-1]+'</span><button type="button" class="v7c-remove" data-v7-remove="'+i+'">حذف</button></div><input class="v7c-field" data-v7-url="'+i+'" value="'+esc(url)+'" placeholder="نام محصول یا لینک صفحه محصول فروشگاه"><div class="v7c-slot-actions"><button type="button" class="v7c-btn v7c-btn-primary" data-v7-fetch="'+i+'">دریافت اطلاعات محصول</button><button type="button" class="v7c-btn v7c-btn-secondary" data-v7-paste="'+i+'">چسباندن لینک</button></div><div class="v7c-status" data-v7-slot-status="'+i+'">'+(name?'✓ '+esc(name):'لینک محصول را وارد کن')+'</div></div>';
 }
 function renderControls(){
  const c=ensureCard();if(!c)return;
- const picked=selected();let html='<div class="v7c-head"><div><h3 class="v7c-title">🔎 مقایسه محصولات</h3><p class="v7c-note">برای هر محصول، لینک صفحه فروشگاه را وارد کن یا از Share استفاده کن.</p></div></div>';
+ const picked=selected();let html='<div class="v7c-head"><h3 class="v7c-title">⚖️ مقایسه محصولات</h3><p class="v7c-note">نام یا لینک محصول را وارد کن؛ برای لینک فروشگاه از آیکون اشتراک‌گذاری هم می‌توانی استفاده کنی.</p></div>';
  html+='<button type="button" class="v7c-add" id="v7AddCompareProduct">＋ افزودن محصول برای مقایسه</button><div id="v7CompareSlots"></div>';
  const slots=document.getElementById('v7CompareSlots');
  c.innerHTML=html;const wrap=c.querySelector('#v7CompareSlots');
@@ -115,11 +115,18 @@ function renderTable(comparison){
  h+='</tbody></table></div>';
  return h;
 }
+async function resolveManualName(name){
+ const q=String(name||'').trim(); if(!q)return null;
+ let p=findLocal(q); const pr=producer();
+ if(!p&&pr&&typeof pr.findByName==='function'){try{const a=await pr.findByName(q,{limit:5});p=(a||[])[0]||null;}catch(_){}}
+ if(p)return Object.assign({},p,{source:p.source||'comparison-name'});
+ return {id:'name|'+norm(q)+'|'+Date.now(),name:q,store:'نتیجه دیجی‌یار',source:'comparison-name',priceToman:0,price:0,currency:'IRT'};
+}
 async function fetchSlot(i){
  const c=ensureCard(),input=c&&c.querySelector('[data-v7-url="'+i+'"]'),status=c&&c.querySelector('[data-v7-slot-status="'+i+'"]');if(!input)return;
- const url=input.value.trim();if(!/^https?:\/\//i.test(url)){if(status)status.textContent='لینک معتبر محصول را وارد کن.';return;}
- if(status)status.textContent='در حال دریافت اطلاعات…';
- const p=await enrich(nameFromUrl(url),url,storeFromUrl(url));const s=source();if(s&&s.addComparisonProduct)s.addComparisonProduct(p);
+ const raw=input.value.trim();if(!raw){if(status)status.textContent='نام یا لینک محصول را وارد کن.';return;} const isUrl=/^https?:\/\//i.test(raw); const url=isUrl?raw:'';
+ if(status)status.textContent='در حال استخراج اطلاعات…';
+ const p=isUrl?await enrich(nameFromUrl(url),url,storeFromUrl(url)):await resolveManualName(raw);const s=source();if(s&&s.addComparisonProduct)s.addComparisonProduct(p);
  renderControls();const st=document.querySelector('[data-v7-slot-status="'+i+'"]');if(st)st.textContent='✓ اطلاعات محصول ثبت شد: '+p.name;
 }
 async function pasteSlot(i){
@@ -129,7 +136,7 @@ async function runComparison(){
  const s=source(),ps=selected();if(!s||ps.length<2)return;
  const e=window.DigiYarComparisonEngine||window.DigiYarV7Comparison;if(!e)return;
  const result=e.compare(ps,{limit:3});const c=ensureCard();renderControls();
- const wrap=document.createElement('div');wrap.innerHTML=renderTable(result);c.appendChild(wrap.firstChild);
+ const wrap=document.createElement('div');wrap.className='v7c-results-box';wrap.innerHTML=renderTable(result);c.appendChild(wrap);
 }
 function clearComparison(){const s=source();if(s&&s.clearComparison)s.clearComparison();renderControls();}
 function addSlot(){
