@@ -7,13 +7,10 @@
 
   const VERSION='7.0.0-product-result-source.1';
   const MAX_RESULTS=20;
-  let state={
-    version:VERSION,
-    query:'',
-    source:'none',
-    products:[],
-    updatedAt:null
-  };
+  let state={version:VERSION,query:'',source:'none',products:[],comparisonProducts:[],updatedAt:null};
+  const STORAGE_KEY='digiyar:v7:comparison-products';
+  function loadComparison(){try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(x)?x.slice(0,3):[];}catch(_){return[];}}
+  function saveComparison(list){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(list.slice(0,3)));}catch(_){} state.comparisonProducts=list.slice(0,3);}
 
   function clone(value){
     if(value===undefined)return value;
@@ -39,13 +36,7 @@
     const list=Array.isArray(results)?results:[];
     const products=list.slice(0,MAX_RESULTS).map(normalizeProduct).filter(Boolean);
     const m=meta&&typeof meta==='object'?meta:{};
-    state={
-      version:VERSION,
-      query:String(m.query||state.query||'').trim(),
-      source:String(m.source||'supplied').trim()||'supplied',
-      products,
-      updatedAt:new Date().toISOString()
-    };
+    state={version:VERSION,query:String(m.query||state.query||'').trim(),source:String(m.source||'supplied').trim()||'supplied',products,comparisonProducts:loadComparison(),updatedAt:new Date().toISOString()};
     return get();
   }
 
@@ -54,13 +45,7 @@
   }
 
   function clear(){
-    state={
-      version:VERSION,
-      query:'',
-      source:'none',
-      products:[],
-      updatedAt:null
-    };
+    state={version:VERSION,query:'',source:'none',products:[],comparisonProducts:[],updatedAt:null}; saveComparison([]);
     return get();
   }
 
@@ -79,6 +64,14 @@
     return null;
   }
 
+  function addComparisonProduct(product){
+    if(!product||typeof product!=='object'||!String(product.name||product.title||'').trim())return get();
+    const p=normalizeProduct(product,0); if(!p)return get();
+    const list=loadComparison().filter(x=>String(x.id)!==String(p.id));
+    list.push(p); saveComparison(list); return get();
+  }
+  function removeComparisonProduct(id){saveComparison(loadComparison().filter(x=>String(x.id)!==String(id)));return get();}
+  function clearComparison(){saveComparison([]);return get();}
   function compareCurrent(){
     const engine=window.DigiYarComparisonEngine||window.DigiYarV7Comparison;
     if(!engine||typeof engine.compare!=='function')return null;
@@ -95,6 +88,10 @@
     publish:publish,
     get:get,
     clear:clear,
+    addComparisonProduct:addComparisonProduct,
+    removeComparisonProduct:removeComparisonProduct,
+    clearComparison:clearComparison,
+    getComparisonProducts:function(){return loadComparison();},
     compare:compareCurrent
   };
 })();
