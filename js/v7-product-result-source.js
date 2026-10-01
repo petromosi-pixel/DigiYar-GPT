@@ -29,6 +29,14 @@
     if(p.storeName&&!p.store)p.store=p.storeName;
     if(p.price==null&&p.priceToman!=null)p.price=p.priceToman;
     if(p.productUrl==null&&p.sourceUrl!=null)p.productUrl=p.sourceUrl;
+    if(p.comparisonUrl!=null&&String(p.comparisonUrl).trim()){
+      const exact=String(p.comparisonUrl).trim();
+      p.comparisonUrl=exact;
+      p.productUrl=exact;
+      p.sourceUrl=exact;
+      p.url=exact;
+      p.link=exact;
+    }
     return p;
   }
 
@@ -67,6 +75,14 @@
   function addComparisonProduct(product){
     if(!product||typeof product!=='object'||!String(product.name||product.title||'').trim())return get();
     const p=normalizeProduct(product,0); if(!p)return get();
+    if(product.comparisonUrl!=null&&String(product.comparisonUrl).trim()){
+      const exact=String(product.comparisonUrl).trim();
+      p.comparisonUrl=exact;
+      p.productUrl=exact;
+      p.sourceUrl=exact;
+      p.url=exact;
+      p.link=exact;
+    }
     const list=loadComparison().filter(x=>String(x.id)!==String(p.id));
     list.push(p); saveComparison(list); return get();
   }
