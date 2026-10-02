@@ -45,7 +45,7 @@ module.exports = async function handler(req,res){
       headers:{'Content-Type':'application/json','Authorization:'Bearer '+key},
       body:JSON.stringify({
         model:'openai/gpt-5.6-luna',
-        input:[{type:'message',role:'user',content:prompt}],
+        input:prompt,
         text:{format:{type:'json_schema',name:'digiyar_shopping_plan',strict:true,schema}},
         max_output_tokens:700
       })
