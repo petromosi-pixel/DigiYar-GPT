@@ -169,8 +169,20 @@ function aiSpecialtyMatches(query,list){
   }catch(_){return [];}
 }
 
+function aiSelectedStores(query,list){
+  try{
+    var p=root.DigiYarShoppingPlan;
+    if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)||!p.ai.eligibleStoreIds.length) return null;
+    var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();});
+    var selected=list.filter(function(x){return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;});
+    return selected.length?selected:[];
+  }catch(_){return null;}
+}
+
 function storesForQuery(query, stores){
   var list=mergedSourceList(stores);
+  var aiSelected=aiSelectedStores(query,list);
+  if(aiSelected!==null) return aiSelected;
   var semantic=semanticMatches(query);
   var specialty=specialtyStoresForQuery(query,list);
   if(semantic.length){
