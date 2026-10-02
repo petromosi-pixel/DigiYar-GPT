@@ -24,15 +24,16 @@ module.exports = async function handler(req,res){
       minBudgetToman:{type:['number','null']},
       maxBudgetToman:{type:['number','null']},
       useCase:{type:['string','null']},
+      domains:{type:'array',items:{type:'string'}},
       productTerms:{type:'array',items:{type:'string'}},
       requiredNameTerms:{type:'array',items:{type:'string'}},
       excludedTerms:{type:'array',items:{type:'string'}},
       confidence:{type:'number'}
     },
-    required:['category','brand','minBudgetToman','maxBudgetToman','useCase','productTerms','requiredNameTerms','excludedTerms','confidence'],
+    required:['category','brand','minBudgetToman','maxBudgetToman','useCase','domains','productTerms','requiredNameTerms','excludedTerms','confidence'],
     additionalProperties:false
   };
-  const prompt='تو موتور فهم خرید دیجی‌یار هستی. عبارت فارسی کاربر را فقط به دادهٔ ساختاری تبدیل کن. هیچ محصولی اختراع نکن. productTerms و requiredNameTerms باید کلمات/عبارت‌های واقعی و ضروریِ هویت کالا باشند؛ کلمات عمومی مثل برای، محل، استفاده و بودجه را وارد نکن. اگر برند یا بودجه مشخص نیست null بده.\nعبارت کاربر: '+query;
+  const prompt='تو موتور فهم خرید دیجی‌یار هستی. عبارت فارسی کاربر را فقط به دادهٔ ساختاری تبدیل کن. هیچ محصولی اختراع نکن. domains فقط از این فهرست انتخاب شود: digital, furniture, fashion, beauty, health, supermarket, home, sports, kids, books, auto, accessories, travel_ticket, lodging, education, auto_service, medicine. اگر عبارت طبیعی کاربر نیاز یک حوزه را توصیف می‌کند، آن حوزه را بر اساس معنای جمله تعیین کن؛ حتی اگر نام صریح کالا در متن نباشد. productTerms و requiredNameTerms باید کلمات/عبارت‌های واقعی و ضروریِ هویت کالا باشند؛ کلمات عمومی مثل برای، محل، استفاده و بودجه را وارد نکن. اگر برند یا بودجه مشخص نیست null بده.\nعبارت کاربر: '+query;
   try{
     const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{
       method:'POST',
