@@ -127,7 +127,7 @@
     };
     if(provider&&typeof provider.understand==='function'){
       try{
-        const aiPlan=await provider.understand(query,{plan,context:context||{}});
+        const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{}});
         if(aiPlan&&typeof aiPlan==='object'){
           plan.ai=aiPlan;
           plan.provider='external-ai';
