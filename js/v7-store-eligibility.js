@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.4';
+var VERSION='7.0.0-store-eligibility.5';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -131,7 +131,14 @@ function storesForQuery(query, stores){
   var hit=domainForQuery(query);
   /* Strict mode: an unclassified query must never fall back to every store.
      Showing fewer relevant stores is safer than showing unrelated merchants. */
-  if(!hit) return [];
+  /* Open-browser mode: natural-language queries are not limited to a
+     finite keyword dictionary. When no domain can be classified safely,
+     keep the user's exact query and route it to the four broad marketplaces.
+     This guarantees that a new product/service/phrase still produces a
+     useful destination instead of an empty result. */
+  if(!hit){
+    return list.filter(function(store){return store&&isGeneralStore(store.id);});
+  }
 
   return list.filter(function(store){
     if(!store || !store.id) return false;
