@@ -82,6 +82,10 @@ var SPECIALTY_RULES=[
   {terms:['کارشناسی خودرو','کارشناسی ماشین','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],stores:['karnameh']}
 ];
 
+
+var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam'];
+function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
+
 function specialtyStoresForQuery(query,stores){
   var s=norm(query), list=Array.isArray(stores)?stores:[];
   var hits=[];
@@ -109,7 +113,21 @@ function domainForQuery(query){
 function storesForQuery(query, stores){
   var list=Array.isArray(stores)?stores:[];
   var specialty=specialtyStoresForQuery(query,list);
-  if(specialty!==null) return specialty;
+  if(specialty!==null){
+    /* Specialist rules are authoritative, but general marketplaces are also
+       eligible when their catalog domain actually matches the query. */
+    var domainHit=domainForQuery(query);
+    if(!domainHit) return specialty;
+    var generalMatches=list.filter(function(store){
+      if(!store||!isGeneralStore(store.id)) return false;
+      var domains=STORE_DOMAINS[String(store.id).toLowerCase()];
+      return Array.isArray(domains)&&domains.indexOf(domainHit.domain)!==-1;
+    });
+    specialty=specialty.concat(generalMatches.filter(function(g){
+      return !specialty.some(function(s){return String(s.id).toLowerCase()===String(g.id).toLowerCase();});
+    }));
+    return specialty;
+  }
   var hit=domainForQuery(query);
   /* Strict mode: an unclassified query must never fall back to every store.
      Showing fewer relevant stores is safer than showing unrelated merchants. */
