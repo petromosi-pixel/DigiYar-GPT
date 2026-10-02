@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.3';
+var VERSION='7.0.0-store-eligibility.4';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -17,7 +17,12 @@ var DOMAINS={
   kids:['کودک','نوزاد','اسباب بازی','اسباب‌بازی'],
   books:['کتاب','لوازم تحریر','هنر'],
   auto:['خودرو','ماشین','لوازم خودرو','قطعات خودرو','موتورسیکلت','لاستیک','تایر','رینگ','باتری خودرو','روغن موتور','لنت ترمز'],
-  accessories:['اکسسوری','ساعت مچی','ساعت','عینک','زیورآلات','کیف و کوله','کیف']
+  accessories:['اکسسوری','ساعت مچی','ساعت','عینک','زیورآلات','کیف و کوله','کیف'],
+  travel_ticket:['بلیط قطار','بلیت قطار','قطار','بلیط هواپیما','بلیت هواپیما','پرواز','بلیط اتوبوس','بلیت اتوبوس','تور مسافرتی','تور'],
+  lodging:['اقامتگاه','اقامت','ویلا','سوئیت','کلبه','بوم گردی','بوم‌گردی','رزرو ویلا','اجاره ویلا'],
+  education:['دوره آنلاین','دوره آموزشی','وبینار','آموزش آنلاین','کلاس آنلاین','آموزش برنامه نویسی','آموزش برنامه‌نویسی'],
+  auto_service:['کارشناسی خودرو','کارشناسی ماشین','قیمت خودرو','فروش خودرو','خرید خودرو','خدمات خودرو','خودرو کارکرده'],
+  medicine:['دارو','دارویی','داروخانه','قرص','کپسول','شربت','نسخه','محصولات درمانی','دارو و درمان','داروی','مکمل','ویتامین','مواد معدنی','فشار خون','فشارسنج','تجهیزات پزشکی','ارتوپدی','توانبخشی']
 };
 
 var STORE_DOMAINS={
@@ -53,7 +58,12 @@ var STORE_DOMAINS={
   maktabkhooneh:[],
   karnameh:['auto'],
   dayan:['fashion','accessories'],
-  memarket:['digital','home','fashion','accessories','beauty']
+  memarket:['digital','home','fashion','accessories','beauty'],
+  safarme:['travel_ticket'],
+  shab:['lodging','travel_ticket'],
+  eseminar:['education'],
+  maktabkhooneh:['education'],
+  karnameh:['auto_service']
 };
 
 function norm(v){
@@ -65,8 +75,32 @@ function norm(v){
     .replace(/\s+/g,' ').trim().toLowerCase();
 }
 
+var SPECIALTY_RULES=[
+  {terms:['بلیط قطار','بلیت قطار'],stores:['safarme','shab']},
+  {terms:['بلیط هواپیما','بلیت هواپیما'],stores:['safarme']},
+  {terms:['بلیط اتوبوس','بلیت اتوبوس'],stores:['safarme']},
+  {terms:['دارو','دارویی','داروی','داروخانه','قرص','کپسول','شربت','نسخه','محصولات درمانی'],stores:['darukade','darmankala','daroo-online','mosbatesabz']},
+  {terms:['تجهیزات پزشکی','فشارسنج','ارتوپدی','توانبخشی','محصولات بیمارستانی'],stores:['darmankala','darukade','mosbatesabz','daroo-online']},
+  {terms:['مکمل','ویتامین','مواد معدنی'],stores:['darukade','mosbatesabz','daroo-online']},
+  {terms:['اقامتگاه','ویلا','سوئیت','کلبه','بوم گردی','بوم‌گردی','رزرو ویلا','اجاره ویلا'],stores:['shab']},
+  {terms:['وبینار','دوره آنلاین','دوره آموزشی','آموزش آنلاین','کلاس آنلاین'],stores:['eseminar','maktabkhooneh']},
+  {terms:['کارشناسی خودرو','کارشناسی ماشین','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],stores:['karnameh']}
+];
+
+function specialtyStoresForQuery(query,stores){
+  var s=norm(query), list=Array.isArray(stores)?stores:[];
+  var hits=[];
+  SPECIALTY_RULES.forEach(function(rule){
+    var matched=rule.terms.some(function(term){return s.indexOf(norm(term))!==-1;});
+    if(matched) rule.stores.forEach(function(id){if(hits.indexOf(id)===-1)hits.push(id);});
+  });
+  if(!hits.length)return null;
+  return list.filter(function(store){return store&&hits.indexOf(String(store.id).toLowerCase())!==-1;});
+}
+
 function domainForQuery(query){
   var s=norm(query);
+  var specialty=specialtyStoresForQuery(query,[]);
   var best=null;
   Object.keys(DOMAINS).forEach(function(domain){
     DOMAINS[domain].forEach(function(term){
@@ -80,6 +114,8 @@ function domainForQuery(query){
 
 function storesForQuery(query, stores){
   var list=Array.isArray(stores)?stores:[];
+  var specialty=specialtyStoresForQuery(query,list);
+  if(specialty!==null) return specialty;
   var hit=domainForQuery(query);
   /* Strict mode: an unclassified query must never fall back to every store.
      Showing fewer relevant stores is safer than showing unrelated merchants. */
