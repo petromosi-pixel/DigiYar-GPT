@@ -44,7 +44,7 @@ module.exports = async function handler(req,res){
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization:'Bearer '+key},
       body:JSON.stringify({
-        model:'openai/gpt-6-luna',
+        model:'openai/gpt-5.6-luna',
         input:[{type:'message',role:'user',content:prompt}],
         text:{format:{type:'json_schema',name:'digiyar_shopping_plan',strict:true,schema}},
         max_output_tokens:700
@@ -59,6 +59,6 @@ module.exports = async function handler(req,res){
       plan.eligibleStoreIds=plan.eligibleStoreIds.map(x=>String(x||'').toLowerCase()).filter((x,i,a)=>allowedIds.has(x)&&a.indexOf(x)===i);
       if(plan.eligibleStoreIds.length>6) plan.eligibleStoreIds=[];
     }
-    return res.status(200).json({ok:true,provider:'vercel-ai-gateway',model:'openai/gpt-6-luna',plan});
+    return res.status(200).json({ok:true,provider:'vercel-ai-gateway',model:'openai/gpt-5.6-luna',plan});
   }catch(e){return res.status(502).json({error:'ai_request_failed'});}
 };
