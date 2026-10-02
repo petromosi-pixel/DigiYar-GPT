@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 820" role="img" aria-labelledby="title desc">
+<title id="title">ربات متحرک هوش‌یار</title>
+<desc id="desc">ربات هوش‌یار با حرکت شناور، پلک زدن و هولوگرام زیر پا</desc>
+<defs>
+ <linearGradient id="robot-white" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#c9d6e6"/></linearGradient>
+ <linearGradient id="robot-blue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f8cff"/><stop offset="1" stop-color="#0b3fa8"/></linearGradient>
+ <linearGradient id="robot-visor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2a44"/><stop offset="1" stop-color="#03060f"/></linearGradient>
+ <radialGradient id="robot-holo"><stop offset="0" stop-color="#7fd0ff" stop-opacity=".8"/><stop offset="1" stop-color="#1e7bff" stop-opacity="0"/></radialGradient>
+ <filter id="robot-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<style>
+.float{animation:robotFloat 4s cubic-bezier(.45,0,.55,1) infinite}.eyes{transform-box:fill-box;transform-origin:center;animation:robotBlink 4s infinite}.holo{transform-box:fill-box;transform-origin:center;animation:robotHolo 4s cubic-bezier(.45,0,.55,1) infinite}.ring{transform-box:fill-box;transform-origin:center;animation:robotRing 2s ease-out infinite}.armL{transform-box:view-box;transform-origin:228px 430px;animation:robotArmL 4s ease-in-out infinite}.armR{transform-box:view-box;transform-origin:478px 430px;animation:robotArmR 4s ease-in-out infinite}.pulse{animation:robotPulse 1.6s ease-in-out infinite}.chip{animation:robotPulse 2.4s ease-in-out infinite}
+@keyframes robotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-38px)}}@keyframes robotBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}@keyframes robotHolo{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.8);opacity:.6}}@keyframes robotRing{0%{transform:scale(.5);opacity:.9}100%{transform:scale(1.15);opacity:0}}@keyframes robotArmL{0%,100%{transform:rotate(0)}50%{transform:rotate(5deg)}}@keyframes robotArmR{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}@keyframes robotPulse{0%,100%{opacity:1}50%{opacity:.45}}
+</style>
+<g class="holo">
+ <ellipse cx="350" cy="738" rx="135" ry="30" fill="url(#robot-holo)"/>
+ <ellipse cx="350" cy="738" rx="125" ry="26" fill="none" stroke="#38a9ff" stroke-width="4" filter="url(#robot-glow)"/>
+ <ellipse cx="350" cy="738" rx="85" ry="17" fill="none" stroke="#7fd0ff" stroke-width="3" opacity=".9"/>
+ <ellipse cx="350" cy="738" rx="45" ry="9" fill="none" stroke="#bfe8ff" stroke-width="2.5" opacity=".9"/>
+ <ellipse class="ring" cx="350" cy="738" rx="125" ry="26" fill="none" stroke="#5cc0ff" stroke-width="2"/>
+</g>
+<g class="float">
+ <line x1="364" y1="98" x2="364" y2="42" stroke="#1a3a73" stroke-width="6" stroke-linecap="round"/>
+ <circle class="pulse" cx="364" cy="30" r="13" fill="#5ff2ff" filter="url(#robot-glow)"/>
+ <path d="M285 585Q350 560 415 585Q410 650 350 668Q290 650 285 585Z" fill="url(#robot-blue)"/>
+ <path d="M310 640Q350 625 390 640Q372 668 350 670Q328 668 310 640Z" fill="#7fd0ff" opacity=".6" filter="url(#robot-glow)"/>
+ <g class="armL">
+  <line x1="228" y1="432" x2="172" y2="520" stroke="#0d2f73" stroke-width="58" stroke-linecap="round"/>
+  <line x1="228" y1="432" x2="172" y2="520" stroke="url(#robot-white)" stroke-width="48" stroke-linecap="round"/>
+  <ellipse cx="226" cy="425" rx="50" ry="30" transform="rotate(-35 226 425)" fill="url(#robot-blue)"/>
+  <g fill="url(#robot-blue)" stroke="#0a2a66" stroke-width="2"><ellipse cx="160" cy="548" rx="34" ry="28" transform="rotate(-25 160 548)"/><circle cx="128" cy="552" r="14"/><circle cx="140" cy="575" r="14"/><circle cx="162" cy="578" r="14"/><circle cx="146" cy="524" r="14"/></g>
+  <circle cx="175" cy="546" r="7" fill="#5ff2ff" filter="url(#robot-glow)"/>
+ </g>
+ <g class="armR">
+  <line x1="478" y1="432" x2="540" y2="520" stroke="#0d2f73" stroke-width="58" stroke-linecap="round"/>
+  <line x1="478" y1="432" x2="540" y2="520" stroke="url(#robot-white)" stroke-width="48" stroke-linecap="round"/>
+  <ellipse cx="482" cy="425" rx="50" ry="30" transform="rotate(35 482 425)" fill="url(#robot-blue)"/>
+  <g fill="url(#robot-blue)" stroke="#0a2a66" stroke-width="2"><ellipse cx="552" cy="548" rx="34" ry="28" transform="rotate(25 552 548)"/><circle cx="584" cy="556" r="14"/><circle cx="572" cy="580" r="14"/><circle cx="548" cy="582" r="14"/><circle cx="566" cy="526" r="14"/></g>
+  <circle cx="545" cy="548" r="7" fill="#5ff2ff" filter="url(#robot-glow)"/>
+ </g>
+ <rect x="318" y="362" width="70" height="40" rx="14" fill="#0d2f73"/>
+ <path d="M255 420Q350 380 450 420Q462 520 420 590Q350 615 285 590Q245 520 255 420Z" fill="url(#robot-white)" stroke="#aebfd6" stroke-width="2"/>
+ <path d="M290 440Q350 420 412 440Q422 500 388 545Q350 560 314 545Q280 500 290 440Z" fill="url(#robot-blue)" stroke="#7fd0ff" stroke-width="3"/>
+ <g class="chip" stroke="#7fd0ff" stroke-width="2" fill="none">
+  <path d="M312 470h-14M312 490h-18M312 510h-14M392 470h14M392 490h18M392 510h14M335 450v-14M352 450v-18M370 450v-14M335 530v14M352 530v18M370 530v14"/>
+  <rect x="318" y="456" width="68" height="68" rx="10" fill="#0a2f80" stroke="#8fe3ff" stroke-width="4" filter="url(#robot-glow)"/>
+  <text x="352" y="505" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="34" fill="#fff" stroke="none">AI</text>
+ </g>
+ <rect x="168" y="212" width="44" height="100" rx="20" fill="url(#robot-blue)" stroke="#0a2a66" stroke-width="2"/><rect x="502" y="212" width="44" height="100" rx="20" fill="url(#robot-blue)" stroke="#0a2a66" stroke-width="2"/>
+ <rect x="198" y="225" width="14" height="74" rx="7" fill="#d8e4f3"/><rect x="502" y="225" width="14" height="74" rx="7" fill="#d8e4f3"/>
+ <path d="M205 250Q205 105 355 100Q505 105 505 250Q505 370 355 375Q205 370 205 250Z" fill="url(#robot-white)" stroke="#aebfd6" stroke-width="2"/>
+ <path d="M300 104Q355 92 410 104Q355 118 300 104Z" fill="url(#robot-blue)"/>
+ <path d="M232 150Q215 190 214 235M478 150Q495 190 496 235" fill="none" stroke="#2f8cff" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+ <rect x="218" y="165" width="278" height="172" rx="84" fill="url(#robot-visor)" stroke="#8fb8e8" stroke-width="3"/>
+ <path d="M250 190Q300 172 360 176" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".18"/>
+ <g class="eyes" fill="none" stroke="#5ff2ff" stroke-width="10" stroke-linecap="round" filter="url(#robot-glow)"><path d="M257 275A27 27 0 0 1 311 275"/><path d="M401 275A27 27 0 0 1 455 275"/></g>
+ <path fill="#5ff2ff" stroke="#5ff2ff" stroke-width="3" stroke-linejoin="round" filter="url(#robot-glow)" d="M326 301C336 313 370 313 380 301C370 307 336 307 326 301Z"><animate attributeName="d" dur="3.6s" repeatCount="indefinite" values="M326 301C336 313 370 313 380 301C370 307 336 307 326 301Z;M328 300C332 330 374 330 378 300C366 294 340 294 328 300Z;M340 300C342 316 364 316 366 300C360 297 346 297 340 300Z;M326 301C336 313 370 313 380 301C370 307 336 307 326 301Z"/></path>
+</g>
+</svg>
