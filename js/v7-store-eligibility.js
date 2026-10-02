@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.8';
+var VERSION='7.0.0-store-eligibility.9';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -94,6 +94,7 @@ var SPECIALTY_STORE_META={
    user query is always preserved as the actual store search text. */
 var SEMANTIC_FAMILIES=[
   {domain:'beauty',terms:['ضد تعریق','بوی بدن','عرق بدن','بوی زیر بغل','تعریق زیاد','کنترل بو'],stores:['khanoumi','modiseh','shavaz','mosbatesabz']},
+  {domain:'beauty',terms:['ضد آفتاب','کرم ضد آفتاب','کرم آبرسان','آبرسان','مرطوب کننده','مرطوب‌کننده','نرم کردن پوست','نرم کننده پوست','کرم پوست'],stores:['khanoumi','modiseh','shavaz','mosbatesabz','digikala','snappshop','torob']},
   {domain:'beauty',terms:['ضد جوش','جوش صورت','آکنه','جای جوش','پوست مستعد جوش','کنترل جوش'],stores:['khanoumi','modiseh','shavaz','mosbatesabz']},
   {domain:'fashion',terms:['کیف وکالت','کیف وکیل','کیف اداری','کیف برای کار','کیف رسمی','استایل رسمی'],stores:['digikala','snappshop','torob','basalam','dayan','memarket']},
   {domain:'auto',terms:['برای پراید','مناسب پراید','تعمیر پراید','قطعه پراید','لوازم پراید'],stores:['digikala','snappshop','torob','basalam','esam']},
