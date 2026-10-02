@@ -25,15 +25,18 @@ module.exports = async function handler(req,res){
       maxBudgetToman:{type:['number','null']},
       useCase:{type:['string','null']},
       domains:{type:'array',items:{type:'string'}},
+      eligibleStoreIds:{type:'array',items:{type:'string'}},
       productTerms:{type:'array',items:{type:'string'}},
       requiredNameTerms:{type:'array',items:{type:'string'}},
       excludedTerms:{type:'array',items:{type:'string'}},
       confidence:{type:'number'}
     },
-    required:['category','brand','minBudgetToman','maxBudgetToman','useCase','domains','productTerms','requiredNameTerms','excludedTerms','confidence'],
+    required:['category','brand','minBudgetToman','maxBudgetToman','useCase','domains','eligibleStoreIds','productTerms','requiredNameTerms','excludedTerms','confidence'],
     additionalProperties:false
   };
-  const prompt='تو موتور فهم خرید دیجی‌یار هستی. عبارت فارسی کاربر را فقط به دادهٔ ساختاری تبدیل کن. هیچ محصولی اختراع نکن. domains فقط از این فهرست انتخاب شود: digital, furniture, fashion, beauty, health, supermarket, home, sports, kids, books, auto, accessories, travel_ticket, lodging, education, auto_service, medicine. اگر عبارت طبیعی کاربر نیاز یک حوزه را توصیف می‌کند، آن حوزه را بر اساس معنای جمله تعیین کن؛ حتی اگر نام صریح کالا در متن نباشد. productTerms و requiredNameTerms باید کلمات/عبارت‌های واقعی و ضروریِ هویت کالا باشند؛ کلمات عمومی مثل برای، محل، استفاده و بودجه را وارد نکن. اگر برند یا بودجه مشخص نیست null بده.\nعبارت کاربر: '+query;
+  const catalog=body.storeCatalog&&typeof body.storeCatalog==='object'?body.storeCatalog:{};
+  const catalogText=JSON.stringify(catalog);
+  const prompt='تو موتور فهم خرید دیجی‌یار هستی. عبارت فارسی کاربر را از نظر معنایی بفهم و فقط دادهٔ ساختاری برگردان. هیچ محصولی اختراع نکن. domains فقط از این فهرست انتخاب شود: digital, furniture, fashion, beauty, health, supermarket, home, sports, kids, books, auto, accessories, travel_ticket, lodging, education, auto_service, medicine. eligibleStoreIds مهم‌ترین خروجی است: فقط شناسه فروشگاه‌هایی را انتخاب کن که با نیاز دقیق کاربر ارتباط مستقیم دارند؛ صرفاً چون یک فروشگاه عمومی در آن حوزه فعالیت دارد آن را انتخاب نکن. اگر محصول/نیاز تخصصی است، فروشگاه تخصصی مرتبط را انتخاب کن. اگر درباره ارتباط یک فروشگاه تردید داری، آن را انتخاب نکن. انتخاب 2 تا 8 فروشگاه مرتبط بهتر از انتخاب تعداد زیاد و نامرتبط است. از شناسه‌های خارج از کاتالوگ استفاده نکن. productTerms و requiredNameTerms باید کلمات/عبارت‌های واقعی و ضروریِ هویت کالا باشند؛ کلمات عمومی مثل برای، محل، استفاده و بودجه را وارد نکن. اگر برند یا بودجه مشخص نیست null بده.\nکاتالوگ فروشگاه‌ها و حوزه‌های آن‌ها: '+catalogText+'\nعبارت کاربر: '+query+'\n' و requiredNameTerms باید کلمات/عبارت‌های واقعی و ضروریِ هویت کالا باشند؛ کلمات عمومی مثل برای، محل، استفاده و بودجه را وارد نکن. اگر برند یا بودجه مشخص نیست null بده.\nعبارت کاربر: '+query;
   try{
     const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{
       method:'POST',
