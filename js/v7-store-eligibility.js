@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.6';
+var VERSION='7.0.0-store-eligibility.7';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -149,6 +149,32 @@ function domainForQuery(query){
   return best;
 }
 
+function aiDomainHints(query){
+  try{
+    var p=root.DigiYarShoppingPlan;
+    if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.domains)) return [];
+    return p.ai.domains.map(function(x){return norm(x);}).filter(function(x){return !!DOMAINS[x]||x==='accessories';});
+  }catch(_){return [];}
+}
+
+function aiSpecialtyMatches(query,list){
+  try{
+    var p=root.DigiYarShoppingPlan;
+    if(!p||norm(p.query)!==norm(query)||!p.ai) return [];
+    var domains=aiDomainHints(query), out=[];
+    domains.forEach(function(domain){
+      Object.keys(STORE_DOMAINS).forEach(function(id){
+        var ds=STORE_DOMAINS[id]||[];
+        if(ds.indexOf(domain)!==-1){
+          var found=list.find(function(x){return x&&String(x.id).toLowerCase()===id;});
+          if(found&&!out.some(function(x){return String(x.id).toLowerCase()===id;})) out.push(found);
+        }
+      });
+    });
+    return out;
+  }catch(_){return [];}
+}
+
 function storesForQuery(query, stores){
   var list=mergedSourceList(stores);
   var semantic=semanticMatches(query);
@@ -167,7 +193,7 @@ function storesForQuery(query, stores){
   if(specialty!==null){
     /* Specialist rules are authoritative, but general marketplaces are also
        eligible when their catalog domain actually matches the query. */
-    var domainHit=domainForQuery(query);
+    var domainHit=domainForQuery(query);\n    var aiDomains=aiDomainHints(query);\n    if(!domainHit&&aiDomains.length) domainHit={domain:aiDomains[0],term:null};
     if(!domainHit) return specialty;
     var generalMatches=list.filter(function(store){
       if(!store||!isGeneralStore(store.id)) return false;
@@ -179,7 +205,7 @@ function storesForQuery(query, stores){
     }));
     return specialty;
   }
-  var hit=domainForQuery(query);
+  var hit=domainForQuery(query);\n  var aiDomains=aiDomainHints(query);\n  if(!hit&&aiDomains.length) hit={domain:aiDomains[0],term:null};
   /* Strict mode: an unclassified query must never fall back to every store.
      Showing fewer relevant stores is safer than showing unrelated merchants. */
   /* Open-browser mode: natural-language queries are not limited to a
