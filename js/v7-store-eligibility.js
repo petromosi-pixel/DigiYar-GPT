@@ -203,7 +203,9 @@ function storesForQuery(query, stores){
   if(specialty!==null){
     /* Specialist rules are authoritative, but general marketplaces are also
        eligible when their catalog domain actually matches the query. */
-    var domainHit=domainForQuery(query);\n    var aiDomains=aiDomainHints(query);\n    if(!domainHit&&aiDomains.length) domainHit={domain:aiDomains[0],term:null};
+    var domainHit=domainForQuery(query);
+    var aiDomains=aiDomainHints(query);
+    if(!domainHit&&aiDomains.length) domainHit={domain:aiDomains[0],term:null};
     if(!domainHit) return specialty;
     var generalMatches=list.filter(function(store){
       if(!store||!isGeneralStore(store.id)) return false;
@@ -215,7 +217,9 @@ function storesForQuery(query, stores){
     }));
     return specialty;
   }
-  var hit=domainForQuery(query);\n  var aiDomains=aiDomainHints(query);\n  if(!hit&&aiDomains.length) hit={domain:aiDomains[0],term:null};
+  var hit=domainForQuery(query);
+  var aiDomains=aiDomainHints(query);
+  if(!hit&&aiDomains.length) hit={domain:aiDomains[0],term:null};
   /* Strict mode: an unclassified query must never fall back to every store.
      Showing fewer relevant stores is safer than showing unrelated merchants. */
   /* Open-browser mode: natural-language queries are not limited to a
