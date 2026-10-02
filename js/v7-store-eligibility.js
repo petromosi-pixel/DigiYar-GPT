@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.10';
+var VERSION='7.0.0-store-eligibility.11';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -84,7 +84,7 @@ var SPECIALTY_RULES=[
 
 
 var SPECIALTY_STORE_META={
-  darukade:{name:'داروکده'},darmankala:{name:'درمان‌کالا'},mosbatesabz:{name:'مثبت سبز'},'daroo-online':{name:'داروخانه آنلاین'},
+  darukade:{name:'داروکده'},darmankala:{name:'درمان‌کالا'},neshatrokh:{name:'نشاط رخ'},solokala:{name:'سولوکالا'},mosbatesabz:{name:'مثبت سبز'},'daroo-online':{name:'داروخانه آنلاین'},
   shab:{name:'شب'},safarme:{name:'سفرمی'},eseminar:{name:'ایسمینار'},maktabkhooneh:{name:'مکتب‌خونه'},karnameh:{name:'کارنامه'}
 };
 
