@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.9';
+var VERSION='7.0.0-store-eligibility.10';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -173,10 +173,13 @@ function aiSpecialtyMatches(query,list){
 function aiSelectedStores(query,list){
   try{
     var p=root.DigiYarShoppingPlan;
-    if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)||!p.ai.eligibleStoreIds.length) return null;
+    /* Once the AI planner has answered for this exact query, its store
+       selection is authoritative — including an intentional empty array.
+       Never fall back to the old keyword/domain engine after an AI answer. */
+    if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)) return null;
     var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();});
     var selected=list.filter(function(x){return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;});
-    return selected.length?selected:[];
+    return selected;
   }catch(_){return null;}
 }
 
