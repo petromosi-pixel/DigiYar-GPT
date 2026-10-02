@@ -75,6 +75,9 @@
 
   const ALL_CATEGORIES = Array.from(new Set(Object.keys(STORE_CATEGORIES).reduce(function(all, key){ return all.concat(STORE_CATEGORIES[key]); }, [])));
 
+  /* V7 AI catalog: the same category/subtitle vocabulary used by the Popular Stores UI. */
+  window.DigiYarStoreCategories = STORE_CATEGORIES;
+
   function uniqueCategories(categories) {
     return Array.from(new Set((categories || []).map(String).map(function(item){ return item.trim(); }).filter(Boolean)));
   }
