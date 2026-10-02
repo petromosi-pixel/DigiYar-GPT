@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.34';
+const VERSION='6.0.0-store-browser.35';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q),darukade:q=>'https://www.darukade.com/search?search='+encodeURIComponent(q),darmankala:q=>'https://darmankala.com/?s='+encodeURIComponent(q),mosbatesabz:q=>'https://mosbatesabz.com/?s='+encodeURIComponent(q),'daroo-online':q=>'https://DarookhaneOnline.com/',shab:q=>'https://www.shab.ir/',safarme:q=>'https://www.safarme.ir/',eseminar:q=>'https://eseminar.tv/',maktabkhooneh:q=>'https://maktabkhooneh.org/',karnameh:q=>'https://karnameh.com/'
 };
@@ -171,6 +171,10 @@ function openBrowser(query,list){
 
 
  function tabsAndResults(usable){
+   if(!Array.isArray(usable)||!usable.length){
+     box.innerHTML='<div class="v6-auto-head">برای این درخواست، فروشگاه مرتبطی با اطمینان کافی پیدا نشد.</div>';
+     return;
+   }
    box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌های مرتبط با محصول مورد نظرت رو برات لیست کردم</div>';
    const tabs=document.createElement('div');tabs.className='v6-auto-tabs';
    const resultBody=document.createElement('div');resultBody.className='v6-auto-body';
