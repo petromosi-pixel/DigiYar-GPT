@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.5';
+var VERSION='7.0.0-store-eligibility.6';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -83,12 +83,51 @@ var SPECIALTY_RULES=[
 ];
 
 
+var SPECIALTY_STORE_META={
+  darukade:{name:'داروکده'},darmankala:{name:'درمان‌کالا'},mosbatesabz:{name:'مثبت سبز'},'daroo-online':{name:'داروخانه آنلاین'},
+  shab:{name:'شب'},safarme:{name:'سفرمی'},eseminar:{name:'ایسمینار'},maktabkhooneh:{name:'مکتب‌خونه'},karnameh:{name:'کارنامه'}
+};
+
+/* Semantic families are intentionally small and expandable. They are not a
+   finite search vocabulary: they describe concepts/intent signals so that
+   natural phrases can resolve to the same commercial domain. The original
+   user query is always preserved as the actual store search text. */
+var SEMANTIC_FAMILIES=[
+  {domain:'beauty',terms:['ضد تعریق','بوی بدن','عرق بدن','بوی زیر بغل','تعریق زیاد','کنترل بو'],stores:['khanoumi','modiseh','shavaz','mosbatesabz']},
+  {domain:'beauty',terms:['ضد جوش','جوش صورت','آکنه','جای جوش','پوست مستعد جوش','کنترل جوش'],stores:['khanoumi','modiseh','shavaz','mosbatesabz']},
+  {domain:'fashion',terms:['کیف وکالت','کیف وکیل','کیف اداری','کیف برای کار','کیف رسمی','استایل رسمی'],stores:['digikala','snappshop','torob','basalam','dayan','memarket']},
+  {domain:'auto',terms:['برای پراید','مناسب پراید','تعمیر پراید','قطعه پراید','لوازم پراید'],stores:['digikala','snappshop','torob','basalam','esam']},
+  {domain:'kids',terms:['برای کودک','برای بچه','برای نوزاد','مناسب کودک','مناسب نوزاد','هدیه کودک'],stores:['digikala','snappshop','torob','basalam']},
+  {domain:'books',terms:['برای وکالت','برای حقوق','آزمون وکالت','منابع وکالت','کتاب حقوقی'],stores:['digikala','snappshop','torob','basalam','esam']}
+];
+
+function semanticMatches(query){
+  var s=norm(query),hits=[];
+  SEMANTIC_FAMILIES.forEach(function(f){
+    if(f.terms.some(function(t){return s.indexOf(norm(t))!==-1;})){
+      hits.push({domain:f.domain,stores:f.stores});
+    }
+  });
+  return hits;
+}
+
+function mergedSourceList(list){
+  var out=Array.isArray(list)?list.slice():[];
+  Object.keys(SPECIALTY_STORE_META).forEach(function(id){
+    if(!out.some(function(x){return x&&String(x.id).toLowerCase()===id;})){
+      out.push({id:id,name:SPECIALTY_STORE_META[id].name});
+    }
+  });
+  return out;
+}
+
 var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam'];
 function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
 
 function specialtyStoresForQuery(query,stores){
-  var s=norm(query), list=Array.isArray(stores)?stores:[];
-  var hits=[];
+  var s=norm(query), list=mergedSourceList(stores), hits=[];
+  var semantic=semanticMatches(query);
+  semantic.forEach(function(f){f.stores.forEach(function(id){if(hits.indexOf(id)===-1)hits.push(id);});});
   SPECIALTY_RULES.forEach(function(rule){
     var matched=rule.terms.some(function(term){return s.indexOf(norm(term))!==-1;});
     if(matched) rule.stores.forEach(function(id){if(hits.indexOf(id)===-1)hits.push(id);});
@@ -111,8 +150,20 @@ function domainForQuery(query){
 }
 
 function storesForQuery(query, stores){
-  var list=Array.isArray(stores)?stores:[];
+  var list=mergedSourceList(stores);
+  var semantic=semanticMatches(query);
   var specialty=specialtyStoresForQuery(query,list);
+  if(semantic.length){
+    var semanticStores=[];
+    semantic.forEach(function(f){
+      f.stores.forEach(function(id){
+        var found=list.find(function(x){return x&&String(x.id).toLowerCase()===String(id).toLowerCase();});
+        if(found&&!semanticStores.some(function(x){return String(x.id).toLowerCase()===String(found.id).toLowerCase();})) semanticStores.push(found);
+      });
+    });
+    if(specialty===null) specialty=semanticStores;
+    else semanticStores.forEach(function(x){if(!specialty.some(function(s){return String(s.id).toLowerCase()===String(x.id).toLowerCase();})) specialty.push(x);});
+  }
   if(specialty!==null){
     /* Specialist rules are authoritative, but general marketplaces are also
        eligible when their catalog domain actually matches the query. */
