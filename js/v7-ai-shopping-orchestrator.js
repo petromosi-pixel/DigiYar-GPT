@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.3';
+  const VERSION='7.0.0-ai-shopping-orchestrator.4';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -110,7 +110,7 @@
         {name:'get_store_status',enabled:true,source:'store-eligibility'},
         {name:'get_affiliate_link',enabled:true,source:'affiliate-registry'}
       ],
-      candidateStores:storesFor(understanding),
+      candidateStores:[],
       dataPolicy:'product facts must come from the Result Set; AI may interpret but never invent them'
     };
   }
@@ -130,14 +130,17 @@
         const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{}});
         if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)){
           plan.ai=aiPlan;
+          plan.candidateStores=Array.isArray(aiPlan.eligibleStoreIds)?aiPlan.eligibleStoreIds.slice():[];
           plan.provider='external-ai';
         }else{
           plan.ai={eligibleStoreIds:[],domains:[],productTerms:[],requiredNameTerms:[],excludedTerms:[],confidence:0};
+          plan.candidateStores=[];
           plan.provider='external-ai-empty';
         }
       }catch(error){
         console.warn('DigiYar AI provider unavailable; no store selection will be shown.',error);
         plan.ai={eligibleStoreIds:[],domains:[],productTerms:[],requiredNameTerms:[],excludedTerms:[],confidence:0};
+        plan.candidateStores=[];
         plan.provider='external-ai-error';
       }
     }
