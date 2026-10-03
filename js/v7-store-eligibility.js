@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.11';
+var VERSION='7.0.0-store-eligibility.12';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -122,7 +122,9 @@ function mergedSourceList(list){
   return out;
 }
 
-var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam'];
+var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket'];
+function isSpecialistStore(id){return !isGeneralStore(id);}
+function orderStoresSpecialistFirst(list){return (Array.isArray(list)?list:[]).slice().sort(function(a,b){var as=isSpecialistStore(a&&a.id),bs=isSpecialistStore(b&&b.id);return as===bs?0:(as?-1:1);});}
 function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
 
 function specialtyStoresForQuery(query,stores){
@@ -179,7 +181,7 @@ function aiSelectedStores(query,list){
     if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)) return null;
     var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();});
     var selected=list.filter(function(x){return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;});
-    return selected;
+    return orderStoresSpecialistFirst(selected);
   }catch(_){return null;}
 }
 
@@ -215,7 +217,7 @@ function storesForQuery(query, stores){
     specialty=specialty.concat(generalMatches.filter(function(g){
       return !specialty.some(function(s){return String(s.id).toLowerCase()===String(g.id).toLowerCase();});
     }));
-    return specialty;
+    return orderStoresSpecialistFirst(specialty);
   }
   var hit=domainForQuery(query);
   var aiDomains=aiDomainHints(query);
