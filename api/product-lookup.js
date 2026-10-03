@@ -15,7 +15,7 @@ module.exports=async function(req,res){
  const prompt='از وب برای پیدا کردن اطلاعات واقعی محصول استفاده کن. نام محصولی که کاربر وارد کرده را دقیقاً جستجو کن و یک محصول واقعی و قابل شناسایی را انتخاب کن. اولویت با صفحه محصول فروشگاه رسمی یا فروشگاه معتبر است. نام، برند، مدل، قیمت فعلی اگر در صفحه موجود است، وضعیت موجودی، URL صفحه محصول و مشخصات قابل مشاهده را استخراج کن. اگر داده‌ای در وب پیدا نشد آن فیلد را null بگذار و هرگز اطلاعات را حدس نزن. attributes فقط مشخصات صریح صفحه هستند. عبارت کاربر: '+query;
  try{
   const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-   body:JSON.stringify({model:'openai/gpt-5.6-luna',input:prompt,tools:[{type:'web_search_preview'}],text:{format:{type:'json_schema',name:'digiyar_product_lookup',strict:true,schema}},max_output_tokens:1200})});
+   body:JSON.stringify({model:'openai/gpt-5.6-luna',input:[{type:'message',role:'user',content:prompt}],tools:[{type:'web_search'}],tool_choice:'auto',text:{format:{type:'json_schema',name:'digiyar_product_lookup',strict:true,schema}},max_output_tokens:1200})});
   const data=await r.json();if(!r.ok)return res.status(502).json({error:'ai_gateway_error',detail:data&&data.error?data.error:null});
   function responseText(x){
    if(x&&typeof x.output_text==='string'&&x.output_text.trim())return x.output_text.trim();
