@@ -34,22 +34,22 @@ module.exports=async function(req,res){
  }
  function parse(data){
    const raw=textOf(data);
-   return JSON.parse(raw.replace(/^\\s*\`\`\`(?:json)?/i,'').replace(/\`\`\`\\s*$/,'').trim());
+   return JSON.parse(raw.replace(/^\s*\`\`\`(?:json)?/i,'').replace(/\`\`\`\s*$/,'').trim());
  }
  function cleanText(html){
    return String(html||'')
-     .replace(/<script[\\s\\S]*?<\\/script>/gi,' ')
-     .replace(/<style[\\s\\S]*?<\\/style>/gi,' ')
-     .replace(/<noscript[\\s\\S]*?<\\/noscript>/gi,' ')
-     .replace(/<svg[\\s\\S]*?<\\/svg>/gi,' ')
+     .replace(/<script[\s\S]*?<\/script>/gi,' ')
+     .replace(/<style[\s\S]*?<\/style>/gi,' ')
+     .replace(/<noscript[\s\S]*?<\/noscript>/gi,' ')
+     .replace(/<svg[\s\S]*?<\/svg>/gi,' ')
      .replace(/<[^>]+>/g,' ')
      .replace(/&nbsp;/gi,' ')
      .replace(/&amp;/gi,'&')
-     .replace(/\\s+/g,' ')
+     .replace(/\s+/g,' ')
      .trim();
  }
  function validUrl(u){try{const x=new URL(String(u));return /^https?:$/.test(x.protocol)&&!!x.hostname}catch(_){return false}}
- function host(u){try{return new URL(u).hostname.replace(/^www\\./,'')}catch(_){return ''}}
+ function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(_){return ''}}
 
  const normalizeSchema={type:'object',properties:{
    normalizedQuery:{type:'string'},
@@ -118,7 +118,7 @@ module.exports=async function(req,res){
    if(!usable.length)return res.status(422).json({error:'web_product_not_verified',stage:'page_fetch',normalizedQuery:normalized.normalizedQuery});
 
    // Stage 4 — AI verification/extraction against real page content.
-   const pagePacket=usable.map((p,i)=>'نامزد '+(i+1)+'\\nURL: '+p.url+'\\nعنوان: '+p.title+'\\nدامنه: '+p.host+'\\nمحتوای صفحه:\\n'+p.text).join('\\n\\n---\\n\\n');
+   const pagePacket=usable.map((p,i)=>'نامزد '+(i+1)+'\nURL: '+p.url+'\nعنوان: '+p.title+'\nدامنه: '+p.host+'\nمحتوای صفحه:\n'+p.text).join('\n\n---\n\n');
    const verifyPrompt='از بین صفحات واقعی زیر، دقیقاً همان محصولی را که کاربر خواسته انتخاب و اطلاعاتش را استخراج کن. این مرحله تصمیم نهایی است. نام محصول باید با هویت درخواست کاربر تطابق داشته باشد؛ اگر «گوشی a57» است، نتیجه باید همان Samsung Galaxy A57 باشد و نه A56، A57 Ultra یا صفحه جستجوی موبایل. اگر تطابق مستقیم وجود ندارد verified=false بده. productUrl فقط URL یکی از صفحات واقعی ورودی باشد؛ هرگز URL جدید نساز. قیمت و موجودی را فقط از متن صفحه استخراج کن و در غیر این صورت null بده. attributes فقط مشخصات صریح صفحه باشند. confidence بین 0 و 1 باشد. اگر صفحه مربوط به دسته‌بندی یا نتایج جستجوست verified=false.\nدرخواست خام: '+query+'\nهویت استاندارد: '+normalized.normalizedQuery+'\nکلمات ضروری: '+(normalized.requiredTerms||[]).join('، ')+'\n\nصفحات:\n'+pagePacket;
    const verified=parse(await ai({
      model,input:[{type:'message',role:'user',content:verifyPrompt}],
