@@ -16,8 +16,11 @@ module.exports=async function(req,res){
  try{
   const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
    body:JSON.stringify({model:'openai/gpt-5.6-luna',input:prompt,tools:[{type:'web_search_preview'}],text:{format:{type:'json_schema',name:'digiyar_product_lookup',strict:true,schema}},max_output_tokens:1200})});
-  const data=await r.json();if(!r.ok)return res.status(502).json({error:'ai_gateway_error'});
-  let plan;try{plan=JSON.parse(data.output_text||'')}catch(_){return res.status(502).json({error:'ai_invalid_json'})}
+  const data=await r.json();if(!r.ok)return res.status(502).json({error:'ai_gateway_error',detail:data&&data.error?data.error:null});
+  let plan;try{plan=JSON.parse(data.output_text||'')}catch(_){return res.status(502).json({error:'ai_invalid_json'});}
+  const productUrl=String(plan&&plan.productUrl||'').trim();
+  const productName=String(plan&&plan.name||'').trim();
+  if(!productName||!/^https?:\\/\\//i.test(productUrl))return res.status(422).json({error:'web_product_not_verified'});
   return res.status(200).json({ok:true,product:plan});
  }catch(_){return res.status(502).json({error:'ai_request_failed'})}
 };
