@@ -30,7 +30,7 @@ module.exports=async function(req,res){
    return parts.join('').trim();
   }
   const raw=responseText(data);
-  let plan;try{plan=JSON.parse(raw.replace(/^\`\`\`(?:json)?\\s*/i,'').replace(/\\s*\`\`\`$/,''));}catch(_){return res.status(502).json({error:'ai_invalid_json'});}
+  let plan;try{plan=JSON.parse(raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,''));}catch(_){return res.status(502).json({error:'ai_invalid_json'});}
   const productUrl=String(plan&&plan.productUrl||'').trim();
   const productName=String(plan&&plan.name||'').trim();
   if(!productName||!/^https?:\\/\\//i.test(productUrl))return res.status(422).json({error:'web_product_not_verified'});
