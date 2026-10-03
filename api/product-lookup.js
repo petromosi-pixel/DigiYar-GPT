@@ -63,22 +63,14 @@ module.exports=async function(req,res){
 
  const searchSchema={type:'object',properties:{
    candidates:{type:'array',items:{type:'object',properties:{
-     title:{type:'string'},url:{type:'string'},reason:{type:'string'}
-   },required:['title','url','reason'],additionalProperties:false}}
+     title:{type:'string'},url:{type:'string'},name:{type:'string'},
+     brand:{type:['string','null']},model:{type:['string','null']},
+     priceToman:{type:['number','null']},availability:{type:['string','null']},
+     store:{type:['string','null']},
+     attributes:{type:'object',additionalProperties:{type:['string','number','boolean','null']}},
+     reason:{type:'string'}
+   },required:['title','url','name','brand','model','priceToman','availability','store','attributes','reason'],additionalProperties:false}}
  },required:['candidates'],additionalProperties:false};
-
- const verifySchema={type:'object',properties:{
-   verified:{type:'boolean'},
-   name:{type:'string'},
-   brand:{type:['string','null']},
-   model:{type:['string','null']},
-   priceToman:{type:['number','null']},
-   availability:{type:['string','null']},
-   productUrl:{type:'string'},
-   store:{type:['string','null']},
-   attributes:{type:'object',additionalProperties:{type:['string','number','boolean','null']}},
-   confidence:{type:'number'}
- },required:['verified','name','brand','model','priceToman','availability','productUrl','store','attributes','confidence'],additionalProperties:false};
 
  try{
    // Stage 1 — AI normalization. This is the semantic equivalent of the Hooshyar query parser.
@@ -89,43 +81,44 @@ module.exports=async function(req,res){
    }));
 
    const queries=[normalized.normalizedQuery,...(normalized.alternateQueries||[])].map(String).map(x=>x.trim()).filter(Boolean).slice(0,4);
-   // Stage 2 — AI web discovery. The model must use web search and return direct product pages only.
-   const searchPrompt='محصول زیر را در وب پیدا کن. فقط صفحه مستقیم همان محصول را پیدا کن، نه صفحه جستجو، دسته‌بندی، برند یا صفحه اصلی فروشگاه. چند عبارت جستجوی داده‌شده را بررسی کن و حداکثر 5 نامزد واقعی برگردان. اگر URL به صفحه جستجو/دسته‌بندی/فروشگاه اصلی مربوط است آن را حذف کن. اگر محصولی با تطابق مستقیم پیدا نشد آرایه خالی بده. ورودی خام کاربر: '+query+'\nعبارت استاندارد: '+normalized.normalizedQuery+'\nعبارت‌های جایگزین: '+queries.join(' | ')+'\nکلمات ضروری هویت محصول: '+(normalized.requiredTerms||[]).join('، ');
+
+   // Stage 2 — AI web discovery + extraction.
+   // IMPORTANT: do not server-fetch arbitrary retail pages here. Many Iranian stores
+   // block datacenter requests (403/anti-bot), which used to turn a valid search into
+   // the generic "product not found" message. The web-search tool already has access
+   // to the indexed/direct page and is the correct place to inspect it.
+   const searchPrompt='محصول زیر را در وب پیدا کن و حتماً خود صفحه مستقیم همان محصول را بررسی کن. فقط صفحه محصول واقعی را برگردان، نه صفحه جستجو، دسته‌بندی، برند یا صفحه اصلی فروشگاه. اگر چند فروشگاه محصول را دارند، چند صفحه مستقیم واقعی برگردان. برای هر کاندید، نام واقعی محصول، برند، مدل، قیمت و موجودی اگر در صفحه قابل مشاهده است و مشخصات صریح را استخراج کن. اگر اطلاعاتی در صفحه نیست null بده. URL باید دقیقاً URL صفحه محصول باشد. اگر فقط صفحه جستجو یا دسته‌بندی پیدا شد آن را کاندید نکن. محصول باید با هویت درخواست تطابق داشته باشد؛ برای «گوشی a57» فقط Samsung Galaxy A57 / Galaxy A57 5G و معادل همان مدل معتبر است، نه A56، A57 Ultra یا نتایج جستجو. درخواست خام: '+query+'\\nعبارت استاندارد: '+normalized.normalizedQuery+'\\nعبارت‌های جایگزین: '+queries.join(' | ')+'\\nکلمات ضروری هویت: '+(normalized.requiredTerms||[]).join('، ');
    const searchData=parse(await ai({
      model,input:[{type:'message',role:'user',content:searchPrompt}],
      tools:[{type:'web_search_preview'}],
      tool_choice:'required',
      text:{format:{type:'json_schema',name:'digiyar_product_candidates',strict:true,schema:searchSchema}},
-     max_output_tokens:900
+     max_output_tokens:1600
    }));
-   const candidates=(searchData.candidates||[]).filter(x=>x&&validUrl(x.url)).slice(0,5);
+   const candidates=(searchData.candidates||[]).filter(x=>x&&validUrl(x.url)&&String(x.name||'').trim()).slice(0,5);
    if(!candidates.length)return res.status(422).json({error:'web_product_not_verified',stage:'discovery',normalizedQuery:normalized.normalizedQuery});
 
-   // Stage 3 — retrieve the actual pages ourselves. This prevents the AI from returning a search URL.
-   const pages=await Promise.all(candidates.map(async c=>{
+   // Stage 3 — deterministic URL guard. We no longer reject valid products merely
+   // because the merchant blocks server-side HTML fetching.
+   function looksLikeSearchUrl(u){
      try{
-       const r=await fetch(c.url,{redirect:'follow',headers:{'user-agent':'Mozilla/5.0 DigiYarProductResolver/1.0','accept':'text/html,application/xhtml+xml'}});
-       if(!r.ok)return null;
-       const finalUrl=r.url||c.url;
-       if(!validUrl(finalUrl))return null;
-       const html=await r.text();
-       const text=cleanText(html).slice(0,18000);
-       if(!text)return null;
-       return {title:c.title,url:finalUrl,host:host(finalUrl),text};
-     }catch(_){return null}
-   }));
-   const usable=pages.filter(Boolean);
-   if(!usable.length)return res.status(422).json({error:'web_product_not_verified',stage:'page_fetch',normalizedQuery:normalized.normalizedQuery});
+       const x=new URL(u), path=(x.pathname||'').toLowerCase(), qs=(x.search||'').toLowerCase();
+       return /(^|\\/)(search|search-result|results|category|categories|collections|brand|brands)(\\/|$)/.test(path)
+         || /[?&](q|query|search|keyword|page)=/.test(qs);
+     }catch(_){return true}
+   }
+   const direct=candidates.filter(x=>!looksLikeSearchUrl(x.url));
+   if(!direct.length)return res.status(422).json({error:'web_product_not_verified',stage:'direct_url_guard',normalizedQuery:normalized.normalizedQuery});
 
-   // Stage 4 — AI verification/extraction against real page content.
-   const pagePacket=usable.map((p,i)=>'نامزد '+(i+1)+'\nURL: '+p.url+'\nعنوان: '+p.title+'\nدامنه: '+p.host+'\nمحتوای صفحه:\n'+p.text).join('\n\n---\n\n');
-   const verifyPrompt='از بین صفحات واقعی زیر، دقیقاً همان محصولی را که کاربر خواسته انتخاب و اطلاعاتش را استخراج کن. این مرحله تصمیم نهایی است. نام محصول باید با هویت درخواست کاربر تطابق داشته باشد؛ اگر «گوشی a57» است، نتیجه باید همان Samsung Galaxy A57 باشد و نه A56، A57 Ultra یا صفحه جستجوی موبایل. اگر تطابق مستقیم وجود ندارد verified=false بده. productUrl فقط URL یکی از صفحات واقعی ورودی باشد؛ هرگز URL جدید نساز. قیمت و موجودی را فقط از متن صفحه استخراج کن و در غیر این صورت null بده. attributes فقط مشخصات صریح صفحه باشند. confidence بین 0 و 1 باشد. اگر صفحه مربوط به دسته‌بندی یا نتایج جستجوست verified=false.\nدرخواست خام: '+query+'\nهویت استاندارد: '+normalized.normalizedQuery+'\nکلمات ضروری: '+(normalized.requiredTerms||[]).join('، ')+'\n\nصفحات:\n'+pagePacket;
+   // Stage 4 — AI verification against the actual web-search findings.
+   const candidatePacket=direct.map((p,i)=>'کاندید '+(i+1)+'\\nURL: '+p.url+'\\nعنوان صفحه: '+p.title+'\\nنام محصول: '+p.name+'\\nبرند: '+(p.brand||'نامشخص')+'\\nمدل: '+(p.model||'نامشخص')+'\\nفروشگاه: '+(p.store||'نامشخص')+'\\nقیمت: '+(p.priceToman==null?'نامشخص':p.priceToman)+'\\nموجودی: '+(p.availability||'نامشخص')+'\\nمشخصات: '+JSON.stringify(p.attributes||{})).join('\\n\\n---\\n\\n');
+   const verifyPrompt='از بین یافته‌های واقعی جستجوی وب زیر، دقیقاً همان محصولی را که کاربر خواسته انتخاب کن. این مرحله تصمیم نهایی است. اگر «گوشی a57» است، نتیجه باید همان Samsung Galaxy A57 باشد و نه A56، A57 Ultra یا صفحه جستجو. اگر تطابق مستقیم وجود ندارد verified=false بده. productUrl فقط باید دقیقاً یکی از URLهای کاندید باشد و هرگز URL جدید نساز. نام، برند، مدل، قیمت، موجودی و مشخصات را فقط از کاندید انتخاب‌شده بردار. confidence بین 0 و 1 باشد.\\nدرخواست خام: '+query+'\\nهویت استاندارد: '+normalized.normalizedQuery+'\\nکلمات ضروری: '+(normalized.requiredTerms||[]).join('، ')+'\\n\\nیافته‌ها:\\n'+candidatePacket;
    const verified=parse(await ai({
      model,input:[{type:'message',role:'user',content:verifyPrompt}],
      text:{format:{type:'json_schema',name:'digiyar_verified_product',strict:true,schema:verifySchema}},
      max_output_tokens:1200
    }));
-   if(!verified.verified||!validUrl(verified.productUrl)||!usable.some(p=>p.url===verified.productUrl)){
+   if(!verified.verified||!validUrl(verified.productUrl)||!direct.some(p=>p.url===verified.productUrl)){
      return res.status(422).json({error:'web_product_not_verified',stage:'verification',normalizedQuery:normalized.normalizedQuery});
    }
    return res.status(200).json({ok:true,product:verified,normalizedQuery:normalized.normalizedQuery});
