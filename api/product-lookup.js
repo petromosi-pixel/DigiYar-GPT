@@ -61,6 +61,19 @@ module.exports=async function(req,res){
 
  const normalizePrompt='در نقش «تحلیلگر ورودی محصول» فقط عبارت کاربر را به چند عبارت دقیق جستجو تبدیل کن. محصول را پیدا نکن و URL نساز. کوتاه‌نویسی، غلط جزئی، فارسی/انگلیسی و حذف کلمات عمومی را اصلاح کن. بخش متمایزکننده مثل برند، مدل، شماره مدل، نسل، ظرفیت و ویژگی ضروری را حفظ کن. مثال «گوشی a57» باید به عبارت‌هایی مثل «Samsung Galaxy A57 5G»، «سامسونگ Galaxy A57» و «گوشی سامسونگ A57» تبدیل شود. برای «ردمی نوت 14 پرو» نیز شکل استاندارد Xiaomi Redmi Note 14 Pro را بساز. اگر برند از عبارت به‌طور منطقی قابل استنباط نیست، آن را اختراع نکن؛ فقط شکل‌های جستجوی رایج را بساز. requiredTerms فقط هویت ضروری کالا را شامل شود. عبارت خام کاربر: '+query;
 
+ const verifySchema={type:'object',properties:{
+   verified:{type:'boolean'},
+   name:{type:'string'},
+   brand:{type:['string','null']},
+   model:{type:['string','null']},
+   priceToman:{type:['number','null']},
+   availability:{type:['string','null']},
+   productUrl:{type:'string'},
+   store:{type:['string','null']},
+   attributes:{type:'object',additionalProperties:{type:['string','number','boolean','null']}},
+   confidence:{type:'number'}
+ },required:['verified','name','brand','model','priceToman','availability','productUrl','store','attributes','confidence'],additionalProperties:false};
+
  const searchSchema={type:'object',properties:{
    candidates:{type:'array',items:{type:'object',properties:{
      title:{type:'string'},url:{type:'string'},name:{type:'string'},
