@@ -101,14 +101,17 @@ function renderTable(comparison){if(!comparison||comparison.status!=='comparison
 async function resolveManualName(name){const q=String(name||'').trim();if(!q)return null;
 try{
  const r=await fetch('/api/product-lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})});
- const data=await r.json();
+ const data=await r.json().catch(()=>null);
  if(r.ok&&data&&data.product&&String(data.product.name||'').trim()){
    const p=data.product;
    return {id:'web|'+norm(p.name)+'|'+Date.now(),name:String(p.name).trim(),brand:p.brand||'',model:p.model||'',store:p.store||'فروشگاه',priceToman:Number(p.priceToman)||0,price:Number(p.priceToman)||0,currency:'IRT',availability:p.availability||'',productUrl:p.productUrl||'',sourceUrl:p.productUrl||'',url:p.productUrl||'',link:p.productUrl||'',attributes:p.attributes&&typeof p.attributes==='object'?p.attributes:{},source:'web-product-lookup'};
  }
-}catch(_){}
-let p=findLocal(q);const pr=producer();if(!p&&pr&&typeof pr.findByName==='function'){try{const a=await pr.findByName(q,{limit:5});p=(a||[])[0]||null;}catch(_){}}
-if(p)return Object.assign({},p,{source:p.source||'comparison-name'});return {id:'name|'+norm(q)+'|'+Date.now(),name:q,store:'نتیجه دیجی‌یار',source:'comparison-name',priceToman:0,price:0,currency:'IRT'};}
+ const message=(data&&data.error)?String(data.error):'web_lookup_failed';
+ throw new Error(message);
+}catch(e){
+ console.warn('[DigiYar V7 comparison] web product lookup failed:',e&&e.message?e.message:e);
+ return null;
+}}
 async function fetchSlot(i){const c=ensureCard(),input=c&&c.querySelector('[data-v7-url="'+i+'"]'),status=c&&c.querySelector('[data-v7-slot-status="'+i+'"]');if(!input)return;const raw=input.value.trim();if(!raw){if(status)status.textContent='نام یا لینک محصول را وارد کن.';return;}const isUrl=/^https?:\/\//i.test(raw),url=isUrl?raw:'';if(status)status.textContent='در حال استخراج اطلاعات…';const p=isUrl?await enrich(nameFromUrl(url),url,storeFromUrl(url)):await resolveManualName(raw);if(isUrl&&p&&typeof p==='object'){p.comparisonUrl=url;p.productUrl=url;p.sourceUrl=url;p.url=url;p.link=url;p.store=p.store||storeFromUrl(url);p.source='external-share';}const s=source();if(s&&s.addComparisonProduct)s.addComparisonProduct(p);renderControls();const st=document.querySelector('[data-v7-slot-status="'+i+'"]');if(st)st.textContent='✓ اطلاعات محصول ثبت شد: '+p.name;}
 async function pasteSlot(i){const el=document.querySelector('[data-v7-url="'+i+'"]');if(!el)return;el.focus();try{el.setSelectionRange(0,el.value.length);}catch(_){}
   const st=document.querySelector('[data-v7-slot-status="'+i+'"]');if(st)st.textContent='لینک را از کلیپ‌بورد انتخاب کن: داخل کادر لمس طولانی کن و «Paste» را بزن؛ سپس «دریافت اطلاعات محصول» را لمس کن.';
