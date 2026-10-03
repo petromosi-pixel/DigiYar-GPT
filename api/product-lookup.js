@@ -8,7 +8,7 @@ module.exports=async function(req,res){
  const schema={type:'object',properties:{
   name:{type:'string'},brand:{type:['string','null']},model:{type:['string','null']},
   priceToman:{type:['number','null']},availability:{type:['string','null']},
-  productUrl:{type:['string','null']},store:{type:['string','null']},
+  productUrl:{type:'string'},store:{type:['string','null']},
   attributes:{type:'object',additionalProperties:{type:['string','number','boolean','null']}},
   confidence:{type:'number'}
  },required:['name','brand','model','priceToman','availability','productUrl','store','attributes','confidence'],additionalProperties:false};
