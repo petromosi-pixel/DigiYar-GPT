@@ -28,7 +28,17 @@ function storeSearchQuery(q){
  s=s.replace(/\\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
  return s||String(q||'').trim();
 }
-function stores(){const a=window.DigiYarPopularAffiliateStores;if(Array.isArray(a)&&a.length)return a.filter(x=>x&&x.id&&x.name);const s=document.getElementById('storeSelect');return s?Array.from(s.options).filter(o=>o.value&&o.value!=='all').map(o=>({id:o.value,name:o.textContent.trim()})):[];}
+function stores(){
+ const plan=window.DigiYarShoppingPlan;
+ const aiIds=plan&&plan.ai&&Array.isArray(plan.ai.eligibleStoreIds)?plan.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();}).filter(Boolean):[];
+ if(aiIds.length){
+   return aiIds.filter(function(id){return !!SEARCH[id];}).map(function(id){return {id:id,name:STORE_NAMES[id]||id};});
+ }
+ const a=window.DigiYarPopularAffiliateStores;
+ if(Array.isArray(a)&&a.length)return a.filter(x=>x&&x.id&&x.name);
+ const s=document.getElementById('storeSelect');
+ return s?Array.from(s.options).filter(o=>o.value&&o.value!=='all').map(o=>({id:o.value,name:o.textContent.trim()})):[];
+}
 function style(){
  if(document.getElementById('v6-auto-store-style'))return;
  const s=document.createElement('style');s.id='v6-auto-store-style';s.textContent=`
