@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.3';
+var VERSION='7.0.0-store-business-domains.4';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره'],aliases:['خرید آنلاین عمومی']},
@@ -13,7 +13,7 @@ banimode:{name:'بانی‌مد',domains:['fashion','beauty'],products:['تیش�
 modiseh:{name:'مدیسه',domains:['fashion','beauty'],products:['لباس','کفش','کیف','اکسسوری','عطر','لوازم آرایش','مراقبت پوست'],aliases:['مد و زیبایی'],exclude:['موبایل']},
 pinket:{name:'پینکت',domains:['supermarket','home','beauty'],products:['مواد غذایی','نوشیدنی','شوینده','کالاهای مصرفی','بهداشتی','لوازم خانه'],aliases:['سوپرمارکت','خرید روزمره'],exclude:['موبایل','لپ تاپ']},
 darukade:{name:'داروکده',domains:['health','beauty','medicine'],products:['دارو','قرص','کپسول','شربت','مکمل','ویتامین','ضد آفتاب','کرم پوست','آبرسان','مراقبت پوست','شامپو'],aliases:['داروخانه','مکمل','سلامت'],exclude:['موبایل']},
-darmankala:{name:'درمان‌کالا',domains:['health','medicine'],products:['فشارسنج','تجهیزات پزشکی','ارتوپدی','توانبخشی','ویلچر','نبولایزر','تجهیزات بیمارستانی','سلامت'],aliases:['کالای پزشکی','تجهیزات پزشکی'],exclude:['موبایل','پوشاک']},
+darmankala:{name:'درمان‌کالا',domains:['health','medicine'],products:['فشارسنج','تجهیزات پزشکی','ارتوپدی','توانبخشی','ویلچر','نبولایزر','تجهیزات بیمارستانی','مکمل','ویتامین','سلامت'],aliases:['کالای پزشکی','تجهیزات پزشکی'],exclude:['موبایل','پوشاک']},
 digido:{name:'دیجی‌دو',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','آیفون','سامسونگ','شیائومی','قاب گوشی','گلس','شارژر','کابل','پاوربانک','هندزفری'],aliases:['موبایل','گوشی','لوازم جانبی موبایل'],exclude:['پوشاک','مواد غذایی']},
 janebi:{name:'جانبی',intents:['mobile','mobile_accessories'],domains:['digital'],products:['قاب گوشی','گلس','محافظ صفحه','شارژر','کابل','هندزفری','پاوربانک','هولدر','تبدیل','لوازم جانبی لپ تاپ'],aliases:['اکسسوری موبایل','لوازم جانبی'],exclude:['پوشاک']},
 digiland:{name:'دیجی‌لند',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','لپ تاپ','مانیتور','کامپیوتر','کنسول','گیمینگ','شبکه','لوازم جانبی دیجیتال'],aliases:['کالای دیجیتال','گیمینگ'],exclude:['پوشاک','مواد غذایی']},
