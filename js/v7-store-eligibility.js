@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.20';
+var VERSION='7.0.0-store-eligibility.21';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -102,6 +102,9 @@ function relevantGeneralStores(query,list){
     return generalStoreHasDirectProductMatch(query,store.id);
   });
 }
+function rankEligibleStores(specialists,general){
+  return orderStoresSpecialistFirst((Array.isArray(specialists)?specialists:[]).concat(Array.isArray(general)?general:[]));
+}
 
 function specialtyStoresForQuery(query,stores){
   var out=knowledgeSpecialistsForQuery(query,mergedSourceList(stores));
@@ -154,7 +157,7 @@ function aiSelectedStores(query,list){
           general=general.filter(function(g){return String(g.id||'').toLowerCase()!==String(s.id||'').toLowerCase();});
         }
       });
-      return orderStoresSpecialistFirst(kbSpecialists.concat(general));
+      return rankEligibleStores(kbSpecialists,general);
     }
 
     var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();}).filter(Boolean);
@@ -182,7 +185,7 @@ function storesForQuery(query, stores){
   if(!hit&&aiDomains.length)hit={domain:aiDomains[0],term:null};
 
   if(specialty!==null){
-    if(!hit)return orderStoresSpecialistFirst(specialty);
+    if(!hit)return rankEligibleStores(specialty,relevantGeneralStores(query,list));
     var general=relevantGeneralStores(query,list);
     general.forEach(function(g){
       if(!specialty.some(function(s){return String(s.id||'').toLowerCase()===String(g.id||'').toLowerCase();}))specialty.push(g);
