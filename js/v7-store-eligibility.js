@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.19';
+var VERSION='7.0.0-store-eligibility.20';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -86,6 +86,22 @@ var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket
 function isSpecialistStore(id){return !isGeneralStore(id);}
 function orderStoresSpecialistFirst(list){return (Array.isArray(list)?list:[]).slice().sort(function(a,b){var as=isSpecialistStore(a&&a.id),bs=isSpecialistStore(b&&b.id);return as===bs?0:(as?-1:1);});}
 function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
+function generalStoreHasDirectProductMatch(query,id){
+  var item=kbItem(id);
+  if(!item)return false;
+  var s=norm(query);
+  var terms=[].concat(item.products||[],item.aliases||[]);
+  return terms.some(function(term){
+    var t=norm(term);
+    return t&&s.indexOf(t)!==-1;
+  });
+}
+function relevantGeneralStores(query,list){
+  return (Array.isArray(list)?list:[]).filter(function(store){
+    if(!store||!isGeneralStore(store.id))return false;
+    return generalStoreHasDirectProductMatch(query,store.id);
+  });
+}
 
 function specialtyStoresForQuery(query,stores){
   var out=knowledgeSpecialistsForQuery(query,mergedSourceList(stores));
@@ -132,14 +148,7 @@ function aiSelectedStores(query,list){
     var kbSpecialists=specialtyStoresForQuery(query,list);
     if(kbSpecialists&&kbSpecialists.length){
       var hit=domainForQuery(query);
-      var general=[];
-      if(hit){
-        general=list.filter(function(store){
-          if(!store||!isGeneralStore(store.id))return false;
-          var domains=STORE_DOMAINS[String(store.id||'').toLowerCase()];
-          return Array.isArray(domains)&&domains.indexOf(hit.domain)!==-1;
-        });
-      }
+      var general=relevantGeneralStores(query,list);
       kbSpecialists.forEach(function(s){
         if(general.some(function(g){return String(g.id||'').toLowerCase()===String(s.id||'').toLowerCase();})){
           general=general.filter(function(g){return String(g.id||'').toLowerCase()!==String(s.id||'').toLowerCase();});
@@ -174,11 +183,7 @@ function storesForQuery(query, stores){
 
   if(specialty!==null){
     if(!hit)return orderStoresSpecialistFirst(specialty);
-    var general=list.filter(function(store){
-      if(!store||!isGeneralStore(store.id))return false;
-      var domains=STORE_DOMAINS[String(store.id||'').toLowerCase()];
-      return Array.isArray(domains)&&domains.indexOf(hit.domain)!==-1;
-    });
+    var general=relevantGeneralStores(query,list);
     general.forEach(function(g){
       if(!specialty.some(function(s){return String(s.id||'').toLowerCase()===String(g.id||'').toLowerCase();}))specialty.push(g);
     });
