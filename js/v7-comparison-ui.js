@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.45';
+const VERSION='7.0.0-comparison-ui.46';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').replace(/\\s+/g,' ').trim().toLowerCase();}
@@ -53,7 +53,7 @@ body.v6-dark #v7ComparisonCard .v7c-btn-secondary,html.dark #v7ComparisonCard .v
 function ensureMount(){
  let m=document.getElementById('v7ComparisonMount');
  if(!m){m=document.createElement('div');m.id='v7ComparisonMount';m.style.width='100%';m.style.boxSizing='border-box';}
- const anchor=document.getElementById('v5SmartSearchResults')||document.getElementById('v5SmartSearchForm');
+ const anchor=document.getElementById('v6StoreSimulatorResults')||document.getElementById('v5SmartSearchResults')||document.getElementById('v5SmartSearchForm');
  if(anchor&&anchor.parentNode){
    const parent=anchor.parentNode;
    if(m.parentElement!==parent||m.previousElementSibling!==anchor)parent.insertBefore(m,anchor.nextSibling);
@@ -146,45 +146,38 @@ async function runComparison(){const s=source(),ps=selected();if(!s||ps.length<2
 function clearComparison(){const s=source();if(s&&s.clearComparison)s.clearComparison();renderControls();}
 function addSlot(){const c=ensureCard(),wrap=c&&c.querySelector('#v7CompareSlots');if(!wrap)return;const n=wrap.querySelectorAll('.v7c-slot').length;if(n>=MAX)return;wrap.insertAdjacentHTML('beforeend',slotMarkup(n+1,null));const b=c.querySelector('#v7AddCompareProduct');if(n+1>=MAX)b.style.display='none';}
 function bind(){const c=ensureCard();if(!c||c.dataset.bound==='1')return;c.dataset.bound='1';c.addEventListener('input',e=>{const t=e.target;if(!t||!t.matches||!t.matches('[data-v7-url]'))return;const st=t.closest('.v7c-slot')&&t.closest('.v7c-slot').querySelector('.v7c-status');if(st)st.textContent='';});c.addEventListener('paste',e=>{const t=e.target;if(!t||!t.matches||!t.matches('[data-v7-url]'))return;const data=e.clipboardData||window.clipboardData;let text=String((data&&data.getData('text/uri-list'))||(data&&data.getData('text/html')?urlFromClipboardHtml(data.getData('text/html')):'')||(data&&data.getData('text/plain'))||'').trim();if(text.includes('\\n'))text=text.split(/\\r?\\n/).find(x=>x&&!/^#/.test(x))||text;if(!text)return;e.preventDefault();console.info('[DigiYar V7 comparison] native clipboard URL:',text);t.value=text;const st=t.closest('.v7c-slot')&&t.closest('.v7c-slot').querySelector('.v7c-status');if(st)st.textContent='✓ لینک دریافت شد؛ حالا «دریافت اطلاعات محصول» را لمس کن.';});c.addEventListener('click',e=>{const t=e.target;const guide=t.closest&&t.closest('.v7c-guide-toggle');if(guide){const open=guide.getAttribute('aria-expanded')==='true';guide.setAttribute('aria-expanded',String(!open));return;}if(t.id==='v7AddCompareProduct')addSlot();else if(t.dataset.v7Fetch)fetchSlot(Number(t.dataset.v7Fetch));else if(t.closest&&t.closest('[data-v7-paste]')){const b=t.closest('[data-v7-paste]');pasteSlot(Number(b.dataset.v7Paste));}else if(t.dataset.v7Remove){const idx=Number(t.dataset.v7Remove)-1;const ps=selected(),s=source();if(s&&s.removeComparisonProduct&&ps[idx])s.removeComparisonProduct(ps[idx].id);renderControls();}else if(t.id==='v7CompareRun')runComparison();else if(t.id==='v7CompareClear')clearComparison();});}
-function place(){
+function show(){
  const sim=document.getElementById('v6StoreSimulatorResults');
  if(!sim||!sim.parentNode)return;
- const visible=sim.getClientRects().length>0&&sim.getBoundingClientRect().height>0;
- if(!visible)return;
  const mount=ensureMount();
  if(!mount)return;
  const card=ensureCard();
  if(!card)return;
- if(window.__DigiYarComparisonPlacementTimer)return;
- if(window.__DigiYarComparisonPlacementScheduled){
-   card.style.display='none';
-   return;
- }
- window.__DigiYarComparisonPlacementScheduled=true;
- window.__DigiYarComparisonSimulatorSeen=sim;
- window.__DigiYarComparisonPlacementAt=Date.now();
- card.style.display='none';
- window.__DigiYarComparisonPlacementTimer=setTimeout(function(){
-   window.__DigiYarComparisonPlacementTimer=null;
-   const latest=document.getElementById('v6StoreSimulatorResults');
-   if(!latest||!latest.parentNode){
-     window.__DigiYarComparisonPlacementScheduled=false;
-     return;
-   }
-   const m=ensureMount();
-   const card2=m&&ensureCard();
-   if(!card2){
-     window.__DigiYarComparisonPlacementScheduled=false;
-     return;
-   }
-   card2.style.display='block';
-   renderControls();
-   bind();
- },3000);
+ card.style.display='block';
+ renderControls();
+ bind();
+ requestAnimationFrame(function(){try{card.scrollIntoView({behavior:'smooth',block:'start'});}catch(_){}});
 }
-function refresh(){const oldGuide=document.getElementById('v7ComparisonShareGuide');if(oldGuide)oldGuide.remove();place();renderControls();bind();}
-function watch(){if(window.__DigiYarComparisonSimulatorObserver)return;const root=document.body;if(!root)return;let pending=false;const o=new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;place();});});o.observe(root,{childList:true,subtree:true});window.__DigiYarComparisonSimulatorObserver=o;}
-function hideAndClear(){const s=source();if(s&&s.clearComparison)s.clearComparison();const c=document.getElementById('v7ComparisonCard');if(c){c.style.display='none';c.innerHTML='';}window.__DigiYarComparisonSimulatorSeen=null;window.__DigiYarComparisonPlacementScheduled=false;if(window.__DigiYarComparisonPlacementTimer){clearTimeout(window.__DigiYarComparisonPlacementTimer);window.__DigiYarComparisonPlacementTimer=null;}}
-function init(){installStyle();const s=source();if(s&&s.clearComparison)s.clearComparison();refresh();const card=document.getElementById('v7ComparisonCard');if(card)card.style.display='none';watch();window.addEventListener('digiyar:v7-product-results-ready',refresh);window.addEventListener('digiyar:v7-product-results',refresh);window.addEventListener('digiyar:v7-comparison-selection-ready',refresh);window.addEventListener('digiyar:v7-hooshyar-cleared',hideAndClear);}
-window.DigiYarV7ComparisonUI={version:VERSION,refresh,run:runComparison,hideAndClear};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+function hideAndClear(){
+ const s=source();
+ if(s&&s.clearComparison)s.clearComparison();
+ const c=document.getElementById('v7ComparisonCard');
+ if(c){c.style.display='none';c.innerHTML='';}
+}
+function init(){
+ installStyle();
+ const s=source();
+ if(s&&s.clearComparison)s.clearComparison();
+ const existing=document.getElementById('v7ComparisonCard');
+ if(existing){existing.style.display='none';existing.innerHTML='';}
+ document.addEventListener('click',function(e){
+   const b=e.target&&e.target.closest?e.target.closest('[data-v7-open-comparison]'):null;
+   if(!b)return;
+   e.preventDefault();
+   show();
+ });
+ window.addEventListener('digiyar:v7-hooshyar-cleared',hideAndClear);
+}
+window.DigiYarV7ComparisonUI={version:VERSION,show,run:runComparison,hideAndClear};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })(window,document);
