@@ -14,6 +14,7 @@ module.exports=async function(req,res){
 
  const gateway='https://ai-gateway.vercel.sh/v1/responses';
  const model='openai/gpt-5.6-luna';
+ const RESOLVER_VERSION='7.0.0-product-lookup.3';
 
  async function ai(payload){
    const r=await fetch(gateway,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(payload)});
@@ -104,13 +105,13 @@ module.exports=async function(req,res){
    const searchPrompt='محصول زیر را در وب پیدا کن و حتماً خود صفحه مستقیم همان محصول را بررسی کن. فقط صفحه محصول واقعی را برگردان، نه صفحه جستجو، دسته‌بندی، برند یا صفحه اصلی فروشگاه. اگر چند فروشگاه محصول را دارند، چند صفحه مستقیم واقعی برگردان. برای هر کاندید، نام واقعی محصول، برند، مدل، قیمت و موجودی اگر در صفحه قابل مشاهده است و مشخصات صریح را استخراج کن. اگر اطلاعاتی در صفحه نیست null بده. URL باید دقیقاً URL صفحه محصول باشد. اگر فقط صفحه جستجو یا دسته‌بندی پیدا شد آن را کاندید نکن. محصول باید با هویت درخواست تطابق داشته باشد؛ برای «گوشی a57» فقط Samsung Galaxy A57 / Galaxy A57 5G و معادل همان مدل معتبر است، نه A56، A57 Ultra یا نتایج جستجو. درخواست خام: '+query+'\\nعبارت استاندارد: '+normalized.normalizedQuery+'\\nعبارت‌های جایگزین: '+queries.join(' | ')+'\\nکلمات ضروری هویت: '+(normalized.requiredTerms||[]).join('، ');
    const searchData=parse(await ai({
      model,input:[{type:'message',role:'user',content:searchPrompt}],
-     tools:[{type:'web_search_preview'}],
+     tools:[{type:'web_search'}],
      tool_choice:'required',
      text:{format:{type:'json_schema',name:'digiyar_product_candidates',strict:true,schema:searchSchema}},
      max_output_tokens:2600
    }));
    const candidates=(searchData.candidates||[]).filter(x=>x&&validUrl(x.url)&&String(x.name||'').trim()).slice(0,5);
-   if(!candidates.length)return res.status(422).json({error:'web_product_not_verified',stage:'discovery',normalizedQuery:normalized.normalizedQuery});
+   if(!candidates.length)return res.status(422).json({error:'web_product_not_verified',resolverVersion:RESOLVER_VERSION,stage:'discovery',normalizedQuery:normalized.normalizedQuery});
 
    // Stage 3 — deterministic URL guard. We no longer reject valid products merely
    // because the merchant blocks server-side HTML fetching.
@@ -122,7 +123,7 @@ module.exports=async function(req,res){
      }catch(_){return true}
    }
    const direct=candidates.filter(x=>!looksLikeSearchUrl(x.url));
-   if(!direct.length)return res.status(422).json({error:'web_product_not_verified',stage:'direct_url_guard',normalizedQuery:normalized.normalizedQuery});
+   if(!direct.length)return res.status(422).json({error:'web_product_not_verified',resolverVersion:RESOLVER_VERSION,stage:'direct_url_guard',normalizedQuery:normalized.normalizedQuery});
 
    // Stage 4 — AI verification against the actual web-search findings.
    const candidatePacket=direct.map((p,i)=>'کاندید '+(i+1)+'\\nURL: '+p.url+'\\nعنوان صفحه: '+p.title+'\\nنام محصول: '+p.name+'\\nبرند: '+(p.brand||'نامشخص')+'\\nمدل: '+(p.model||'نامشخص')+'\\nفروشگاه: '+(p.store||'نامشخص')+'\\nقیمت: '+(p.priceToman==null?'نامشخص':p.priceToman)+'\\nموجودی: '+(p.availability||'نامشخص')+'\\nمشخصات: '+JSON.stringify(p.attributes||{})).join('\\n\\n---\\n\\n');
@@ -151,13 +152,13 @@ module.exports=async function(req,res){
          availability:p.availability||null,productUrl:p.url,store:p.store||null,
          attributes:p.attributes&&typeof p.attributes==='object'?p.attributes:{},
          confidence:Math.min(.86,.55+(best.hits/Math.max(1,terms.length))*.3)
-       },normalizedQuery:normalized.normalizedQuery,verificationFallback:true});
+       },normalizedQuery:normalized.normalizedQuery,resolverVersion:RESOLVER_VERSION,verificationFallback:true});
      }
-     return res.status(422).json({error:'web_product_not_verified',stage:'verification',normalizedQuery:normalized.normalizedQuery});
+     return res.status(422).json({error:'web_product_not_verified',resolverVersion:RESOLVER_VERSION,stage:'verification',normalizedQuery:normalized.normalizedQuery});
    }
-   return res.status(200).json({ok:true,product:verified,normalizedQuery:normalized.normalizedQuery});
+   return res.status(200).json({ok:true,product:verified,normalizedQuery:normalized.normalizedQuery,resolverVersion:RESOLVER_VERSION});
  }catch(e){
    console.error('[DigiYar product resolver]',e&&e.message?e.message:e);
-   return res.status(502).json({error:'ai_request_failed'});
+   return res.status(502).json({error:'ai_request_failed',resolverVersion:RESOLVER_VERSION,message:e&&e.message?String(e.message):'unknown'});
  }
 };
