@@ -181,6 +181,15 @@ function aiSelectedStores(query,list){
     if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)) return null;
     var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();});
     var selected=list.filter(function(x){return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;});
+    /* AI ids are authoritative. Do not discard a valid AI-selected store merely
+       because it is not present in the Popular Stores runtime list. The Store
+       Browser has its own SEARCH/STORE_NAMES registry and can render these ids. */
+    ids.forEach(function(id){
+      if(!id||selected.some(function(x){return String(x.id||'').toLowerCase()===id;})) return;
+      if(Object.prototype.hasOwnProperty.call(STORE_DOMAINS,id)){
+        selected.push({id:id,name:id});
+      }
+    });
     return orderStoresSpecialistFirst(selected);
   }catch(_){return null;}
 }
