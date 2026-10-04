@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.12';
+  const VERSION='7.0.0-ai-shopping-orchestrator.13';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -135,32 +135,41 @@
          * "no related store" message. */
         const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
         const categories=window.DigiYarStoreCategories&&typeof window.DigiYarStoreCategories==='object'?window.DigiYarStoreCategories:{};
+        const businessRoot=window.DigiYarStoreBusinessDomains;
+        const businessCatalog=businessRoot&&typeof businessRoot.forAI==='function'?businessRoot.forAI():{};
         const storeCatalog={};
+        /* Business-domain knowledge is the primary grounding source. Visual
+         * Popular Stores metadata is only supplemental context and must never
+         * replace the detailed merchant knowledge base. */
+        Object.keys(businessCatalog).forEach(function(id){
+          const b=businessCatalog[id]||{};
+          storeCatalog[id]={
+            name:String(b.name||id),
+            businessDomain:b.domains||[],
+            specialties:b.specialties||[],
+            productFamilies:b.products||[],
+            aliases:b.aliases||[],
+            exclusions:b.exclude||[]
+          };
+        });
         Object.keys(categories).forEach(function(id){
           const key=String(id).toLowerCase();
           const subtitle=Array.isArray(categories[id])?categories[id].slice():[];
-          storeCatalog[key]={name:key,description:subtitle.join('، '),categories:subtitle};
+          const existing=storeCatalog[key]||{name:key};
+          existing.categories=subtitle;
+          storeCatalog[key]=existing;
         });
         popular.forEach(function(store){
           if(!store||!store.id)return;
           const id=String(store.id).toLowerCase();
-          const categoryTerms=Array.isArray(categories[id])?categories[id].slice():[];
-          const existing=storeCatalog[id]||{};
-          /* The Popular Stores card is the business-domain source of truth:
-           * tagline = the subtitle shown directly under the store name;
-           * dealText/tag = additional human-readable domain signals;
-           * categories = structured domain vocabulary. */
+          const existing=storeCatalog[id]||{name:id};
           storeCatalog[id]={
+            ...existing,
             name:String(store.name||existing.name||id),
             tagline:String(store.tagline||'').trim(),
-            description:[
-              String(store.tagline||'').trim(),
-              String(store.dealText||'').trim(),
-              String(store.tag||'').trim()
-            ].filter(Boolean).join(' | '),
-            categories:categoryTerms
+            dealText:String(store.dealText||'').trim(),
+            tag:String(store.tag||'').trim()
           };
-          if(existing.domains)storeCatalog[id].domains=existing.domains;
         });
         /* Mobile specialists that must remain visible for any clear mobile/phone
          * intent. Their domain metadata is also supplied to AI even when a store
