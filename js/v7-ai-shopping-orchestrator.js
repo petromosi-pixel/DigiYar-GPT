@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.8';
+  const VERSION='7.0.0-ai-shopping-orchestrator.9';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -154,14 +154,17 @@
           else storeCatalog[key].domains=domainCatalog[id];
         });
         const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:storeCatalog});
-        if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)){
+        if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)&&aiPlan.eligibleStoreIds.length){
           plan.ai=aiPlan;
-          plan.candidateStores=Array.isArray(aiPlan.eligibleStoreIds)?aiPlan.eligibleStoreIds.slice():[];
+          plan.candidateStores=aiPlan.eligibleStoreIds.slice();
           plan.provider='external-ai';
         }else{
-          plan.ai={eligibleStoreIds:[],domains:[],productTerms:[],requiredNameTerms:[],excludedTerms:[],confidence:0};
+          /* An empty/failed AI answer must not erase the proven V6/V7
+           * deterministic eligibility path. Leaving plan.ai unset makes
+           * Store Eligibility continue with its semantic/domain resolver. */
+          delete plan.ai;
           plan.candidateStores=[];
-          plan.provider='external-ai-empty';
+          plan.provider='external-ai-empty-fallback';
         }
       }catch(error){
         console.warn('DigiYar AI provider unavailable; no store selection will be shown.',error);
