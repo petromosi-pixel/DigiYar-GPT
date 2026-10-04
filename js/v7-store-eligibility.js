@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.18';
+var VERSION='7.0.0-store-eligibility.19';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -122,24 +122,36 @@ function aiSelectedStores(query,list){
   try{
     var p=root.DigiYarShoppingPlan;
     if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)) return null;
+
+    /*
+     * When the merchant KB has a high-confidence specialist set, that set is
+     * the authoritative eligibility boundary. AI can rank/interpret the
+     * request, but it must not replace specialist merchants with unrelated
+     * beauty/general merchants.
+     */
+    var kbSpecialists=specialtyStoresForQuery(query,list);
+    if(kbSpecialists&&kbSpecialists.length){
+      var hit=domainForQuery(query);
+      var general=[];
+      if(hit){
+        general=list.filter(function(store){
+          if(!store||!isGeneralStore(store.id))return false;
+          var domains=STORE_DOMAINS[String(store.id||'').toLowerCase()];
+          return Array.isArray(domains)&&domains.indexOf(hit.domain)!==-1;
+        });
+      }
+      kbSpecialists.forEach(function(s){
+        if(general.some(function(g){return String(g.id||'').toLowerCase()===String(s.id||'').toLowerCase();})){
+          general=general.filter(function(g){return String(g.id||'').toLowerCase()!==String(s.id||'').toLowerCase();});
+        }
+      });
+      return orderStoresSpecialistFirst(kbSpecialists.concat(general));
+    }
+
     var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();}).filter(Boolean);
     var selected=list.filter(function(x){
       return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;
     });
-
-    /* AI may rank merchants semantically, but it must not suppress a
-       high-confidence specialist set already identified by the merchant KB. */
-    var kbSpecialists=specialtyStoresForQuery(query,list);
-    if(kbSpecialists&&kbSpecialists.length){
-      var aiHasKbSpecialist=kbSpecialists.some(function(kbStore){
-        var kid=String(kbStore.id||'').toLowerCase();
-        return ids.indexOf(kid)!==-1;
-      });
-      if(!aiHasKbSpecialist){
-        return orderStoresSpecialistFirst(kbSpecialists);
-      }
-    }
-
     ids.forEach(function(id){
       if(!id||selected.some(function(x){return String(x.id||'').toLowerCase()===id;})) return;
       if(Object.prototype.hasOwnProperty.call(STORE_DOMAINS,id)){
