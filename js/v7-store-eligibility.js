@@ -198,7 +198,7 @@ function aiSelectedStores(query,list){
         selected.push({id:id,name:(kbItem(id)&&kbItem(id).name)||id});
       }
     });
-    return orderStoresSpecialistFirst(selected);
+    return rankEligibleStores(selected,[]);
   }catch(_){return null;}
 }
 
@@ -220,11 +220,11 @@ function storesForQuery(query, stores){
   if(!hit){
     return list.filter(function(store){return store&&isGeneralStore(store.id);});
   }
-  return list.filter(function(store){
+  return rankEligibleStores(list.filter(function(store){
     if(!store||!store.id)return false;
     var domains=STORE_DOMAINS[String(store.id).toLowerCase()];
     return Array.isArray(domains)&&domains.indexOf(hit.domain)!==-1;
-  });
+  }),[]);
 }
 
 function explain(query, stores){
