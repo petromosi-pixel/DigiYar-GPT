@@ -35,6 +35,7 @@ safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هوا�
 eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار','رویداد آنلاین','سمینار'],aliases:['وبینار','آموزش آنلاین'],exclude:['کالای فیزیکی']},
 maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دوره آموزشی','دوره برنامه نویسی','آموزش مهارتی','کلاس آنلاین'],aliases:['دوره آنلاین','آموزش'],exclude:['کالای فیزیکی']},
 karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']}
+};
 /*
  * Semantic enrichment layer.
  * The catalog above remains the merchant-specific source of truth.
