@@ -1,12 +1,12 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.5';
+var VERSION='7.0.0-store-business-domains.6';
 var C={
-digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو'],aliases:['فروشگاه عمومی','مارکت پلیس']},
-snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره'],aliases:['خرید آنلاین عمومی']},
-torob:{name:'ترب',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','لپ تاپ','تبلت','دیجیتال','لوازم خانگی','پوشاک','آرایشی','بهداشتی','خودرو','کتاب'],aliases:['مقایسه قیمت','جستجوی کالا']},
-basalam:{name:'باسلام',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books'],products:['پوشاک','کفش','کیف','خانه','خوراکی','آرایشی','سلامت','دیجیتال','صنایع دستی','کتاب'],aliases:['بازارگاه','محصولات محلی']},
+digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
+snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
+torob:{name:'ترب',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','لپ تاپ','تبلت','دیجیتال','لوازم خانگی','پوشاک','آرایشی','بهداشتی','خودرو','کتاب','قرص','مکمل','ویتامین'],aliases:['مقایسه قیمت','جستجوی کالا']},
+basalam:{name:'باسلام',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books'],products:['پوشاک','کفش','کیف','خانه','خوراکی','آرایشی','سلامت','دیجیتال','صنایع دستی','کتاب','قرص','مکمل','ویتامین'],aliases:['بازارگاه','محصولات محلی']},
 esam:{name:'ایسام',domains:['digital','furniture','fashion','home','auto','books'],products:['دیجیتال','موبایل','لپ تاپ','خانه','پوشاک','خودرو','کتاب','کلکسیونی'],aliases:['مزایده','خرید و فروش']},
 khanoumi:{name:'خانومی',domains:['beauty','health'],products:['ضد آفتاب','کرم','آبرسان','ضد جوش','شوینده صورت','سرم پوست','لوازم آرایش','عطر','شامپو','ضد تعریق'],aliases:['زیبایی','مراقبت پوست','مراقبت مو'],exclude:['موبایل','لپ تاپ']},
 banimode:{name:'بانی‌مد',domains:['fashion','beauty'],products:['تیشرت','پیراهن','شلوار','هودی','کاپشن','مانتو','کفش','کیف','اکسسوری','عطر'],aliases:['مد','فشن','پوشاک'],exclude:['موبایل']},
