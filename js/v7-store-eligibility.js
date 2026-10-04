@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.24';
+var VERSION='7.0.0-store-eligibility.25';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -107,10 +107,29 @@ function generalStoreHasDirectProductMatch(query,id){
     return t&&s.indexOf(t)!==-1;
   });
 }
+function generalStoreHasKnowledgeMatch(query,id){
+  var item=kbItem(id);
+  if(!item)return false;
+  var s=norm(query);
+  /* General marketplaces get a broader semantic eligibility window:
+     their KB business domains describe broad inventory coverage, while the
+     specialist path remains strictly product/alias driven. */
+  var domains=Array.isArray(item.domains)?item.domains:[];
+  return domains.some(function(domain){
+    var profile=DOMAIN_PROFILES[domain];
+    if(!profile)return false;
+    var terms=[].concat(profile.signals||[],profile.specialties||[]);
+    return terms.some(function(term){
+      var t=norm(term);
+      return t&&s.indexOf(t)!==-1;
+    });
+  });
+}
 function relevantGeneralStores(query,list){
   return (Array.isArray(list)?list:[]).filter(function(store){
     if(!store||!isGeneralStore(store.id))return false;
-    return generalStoreHasDirectProductMatch(query,store.id);
+    return generalStoreHasDirectProductMatch(query,store.id) ||
+      generalStoreHasKnowledgeMatch(query,store.id);
   });
 }
 var ALWAYS_INCLUDED_STORE_IDS=['digikala'];
