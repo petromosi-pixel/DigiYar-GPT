@@ -118,7 +118,7 @@ module.exports=async function(req,res){
    function looksLikeSearchUrl(u){
      try{
        const x=new URL(u), path=(x.pathname||'').toLowerCase(), qs=(x.search||'').toLowerCase();
-       return /(^|\\/)(search|search-result|results|category|categories|collections|brand|brands)(\\/|$)/.test(path)
+       return /(^|\/)(search|search-result|results|category|categories|collections|brand|brands)(\/|$)/.test(path)
          || /[?&](q|query|search|keyword|page)=/.test(qs);
      }catch(_){return true}
    }
