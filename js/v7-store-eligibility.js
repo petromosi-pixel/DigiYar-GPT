@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.16';
+var VERSION='7.0.0-store-eligibility.17';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -59,6 +59,27 @@ function norm(v){
     .replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);})
     .replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d);})
     .replace(/\s+/g,' ').trim().toLowerCase();
+}
+
+function mergedSourceList(stores){
+  var out=[];
+  var seen={};
+  (Array.isArray(stores)?stores:[]).forEach(function(store){
+    if(!store||!store.id)return;
+    var id=String(store.id).toLowerCase();
+    if(seen[id])return;
+    seen[id]=true;
+    out.push(store);
+  });
+  var kb=getKB();
+  Object.keys(kb).forEach(function(id){
+    var key=String(id).toLowerCase();
+    if(seen[key])return;
+    var item=kb[id]||{};
+    out.push({id:key,name:item.name||key});
+    seen[key]=true;
+  });
+  return out;
 }
 
 var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket'];
