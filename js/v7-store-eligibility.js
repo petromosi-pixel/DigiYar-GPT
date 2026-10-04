@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.25';
+var VERSION='7.0.0-store-eligibility.26';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -94,6 +94,7 @@ function mergedSourceList(stores){
 }
 
 var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket'];
+var BROAD_GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam'];
 function isSpecialistStore(id){return !isGeneralStore(id);}
 function orderStoresSpecialistFirst(list){return (Array.isArray(list)?list:[]).slice().sort(function(a,b){var as=isSpecialistStore(a&&a.id),bs=isSpecialistStore(b&&b.id);return as===bs?0:(as?-1:1);});}
 function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
@@ -127,8 +128,14 @@ function generalStoreHasKnowledgeMatch(query,id){
 function relevantGeneralStores(query,list){
   return (Array.isArray(list)?list:[]).filter(function(store){
     if(!store||!isGeneralStore(store.id))return false;
-    return generalStoreHasDirectProductMatch(query,store.id) ||
-      generalStoreHasKnowledgeMatch(query,store.id);
+    var id=String(store.id||'').toLowerCase();
+    /* The four broad marketplaces may use their category coverage as a
+       semantic signal. Esam and MeMarket are deliberately stricter: they
+       enter only on a direct KB product/alias match. */
+    if(BROAD_GENERAL_STORE_IDS.indexOf(id)!==-1){
+      return generalStoreHasDirectProductMatch(query,id) || generalStoreHasKnowledgeMatch(query,id);
+    }
+    return generalStoreHasDirectProductMatch(query,id);
   });
 }
 var ALWAYS_INCLUDED_STORE_IDS=['digikala'];
