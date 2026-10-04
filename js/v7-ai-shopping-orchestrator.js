@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.9';
+  const VERSION='7.0.0-ai-shopping-orchestrator.10';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -167,10 +167,12 @@
           plan.provider='external-ai-empty-fallback';
         }
       }catch(error){
-        console.warn('DigiYar AI provider unavailable; no store selection will be shown.',error);
-        plan.ai={eligibleStoreIds:[],domains:[],productTerms:[],requiredNameTerms:[],excludedTerms:[],confidence:0};
+        console.warn('DigiYar AI provider unavailable; restoring deterministic store eligibility.',error);
+        /* A transport/provider failure is not an AI answer. Keep plan.ai absent
+           so v7-store-eligibility can execute its deterministic/domain fallback. */
+        delete plan.ai;
         plan.candidateStores=[];
-        plan.provider='external-ai-error';
+        plan.provider='external-ai-error-fallback';
       }
     }
     window.DigiYarShoppingPlan=plan;
