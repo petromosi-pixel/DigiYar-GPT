@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.48';
+const VERSION='7.0.0-comparison-ui.49';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').replace(/\\s+/g,' ').trim().toLowerCase();}
@@ -121,7 +121,7 @@ try{
    const p=data.product;
    return {id:'web|'+norm(p.name)+'|'+Date.now(),name:String(p.name).trim(),brand:p.brand||'',model:p.model||'',store:p.store||'فروشگاه',priceToman:Number(p.priceToman)||0,price:Number(p.priceToman)||0,currency:'IRT',availability:p.availability||'',productUrl:p.productUrl||'',sourceUrl:p.productUrl||'',url:p.productUrl||'',link:p.productUrl||'',attributes:p.attributes&&typeof p.attributes==='object'?p.attributes:{},source:'web-product-lookup'};
  }
- const message=(data&&data.error)?String(data.error):'web_lookup_failed';
+ const message=(data&&data.stage)?String(data.stage):((data&&data.error)?String(data.error):'web_lookup_failed');
  throw new Error(message);
 }catch(e){
  console.warn('[DigiYar V7 comparison] web product lookup failed:',e&&e.message?e.message:e);
@@ -148,7 +148,7 @@ async function fetchSlot(i){
  try{p=isUrl?await enrich(nameFromUrl(url),url,storeFromUrl(url)):await resolveManualName(raw);}
  finally{clearInterval(timer);}
  if(!p){
-   if(status)status.textContent=isUrl?'اطلاعات محصول از لینک قابل استخراج نشد.':'محصولی با اطلاعات معتبر از وب پیدا نشد؛ نام محصول را دقیق‌تر وارد کن.';
+   if(status)status.textContent=isUrl?'اطلاعات محصول از لینک قابل استخراج نشد.':'محصولی با اطلاعات معتبر از وب پیدا نشد؛ موتور جستجوی محصول نتوانست صفحه مستقیم و معتبر همان کالا را تأیید کند.';
    return;
  }
  if(isUrl&&p&&typeof p==='object'){p.comparisonUrl=url;p.productUrl=url;p.sourceUrl=url;p.url=url;p.link=url;p.store=p.store||storeFromUrl(url);p.source='external-share';}
