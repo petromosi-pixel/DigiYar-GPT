@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.13';
+  const VERSION='7.0.0-ai-shopping-orchestrator.14';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -197,13 +197,16 @@
         if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)&&aiPlan.eligibleStoreIds.length){
           plan.ai=aiPlan;
           plan.candidateStores=aiPlan.eligibleStoreIds.slice();
-          /* A mobile query has a known specialist set that the user explicitly
-           * expects to see. AI may rank them, but must not accidentally omit one
-           * because a single merchant description was underweighted. */
-          if(plan.category==='mobile'){
-            const mobileRequired=['digido','janebi','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'];
-            mobileRequired.forEach(function(id){
-              if(plan.candidateStores.indexOf(id)===-1)plan.candidateStores.push(id);
+          /* The knowledge base may contain direct intent coverage that the
+           * model underweights. Add those merchants by data, never by a
+           * category-specific hardcoded list. */
+          if(businessRoot&&businessRoot.catalog){
+            Object.keys(businessRoot.catalog).forEach(function(id){
+              const item=businessRoot.catalog[id]||{};
+              const intents=Array.isArray(item.intents)?item.intents:[];
+              if(intents.indexOf(plan.category)!==-1 && plan.candidateStores.indexOf(id)===-1){
+                plan.candidateStores.push(id);
+              }
             });
             plan.ai.eligibleStoreIds=plan.candidateStores.slice();
           }
