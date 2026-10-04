@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.44';
+const VERSION='7.0.0-comparison-ui.45';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').replace(/\\s+/g,' ').trim().toLowerCase();}
@@ -151,25 +151,35 @@ function place(){
  if(!sim||!sim.parentNode)return;
  const visible=sim.getClientRects().length>0&&sim.getBoundingClientRect().height>0;
  if(!visible)return;
- if(window.__DigiYarComparisonPlacementTimer)return;
  const mount=ensureMount();
  if(!mount)return;
+ const card=ensureCard();
+ if(!card)return;
+ if(window.__DigiYarComparisonPlacementTimer)return;
  if(window.__DigiYarComparisonPlacementScheduled){
-   const card=document.getElementById('v7ComparisonCard');if(card)card.style.display='none';
+   card.style.display='none';
    return;
  }
  window.__DigiYarComparisonPlacementScheduled=true;
  window.__DigiYarComparisonSimulatorSeen=sim;
  window.__DigiYarComparisonPlacementAt=Date.now();
- const card=document.getElementById('v7ComparisonCard');if(card)card.style.display='none';
+ card.style.display='none';
  window.__DigiYarComparisonPlacementTimer=setTimeout(function(){
    window.__DigiYarComparisonPlacementTimer=null;
    const latest=document.getElementById('v6StoreSimulatorResults');
-   if(!latest||!latest.parentNode)return;
+   if(!latest||!latest.parentNode){
+     window.__DigiYarComparisonPlacementScheduled=false;
+     return;
+   }
    const m=ensureMount();
-   if(!m)return;
-   const card2=document.getElementById('v7ComparisonCard');
-   if(card2)card2.style.display='block';
+   const card2=m&&ensureCard();
+   if(!card2){
+     window.__DigiYarComparisonPlacementScheduled=false;
+     return;
+   }
+   card2.style.display='block';
+   renderControls();
+   bind();
  },3000);
 }
 function refresh(){const oldGuide=document.getElementById('v7ComparisonShareGuide');if(oldGuide)oldGuide.remove();place();renderControls();bind();}
