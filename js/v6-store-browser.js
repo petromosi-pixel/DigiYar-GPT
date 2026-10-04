@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.36';
+const VERSION='6.0.0-store-browser.37';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),neshatrokh:q=>'https://www.neshatrokh.com/',dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q),darukade:q=>'https://www.darukade.com/search?search='+encodeURIComponent(q),darmankala:q=>'https://darmankala.com/?s='+encodeURIComponent(q),mosbatesabz:q=>'https://mosbatesabz.com/?s='+encodeURIComponent(q),'daroo-online':q=>'https://DarookhaneOnline.com/',shab:q=>'https://www.shab.ir/',safarme:q=>'https://www.safarme.ir/',eseminar:q=>'https://eseminar.tv/',maktabkhooneh:q=>'https://maktabkhooneh.org/',karnameh:q=>'https://karnameh.com/'
 };
@@ -46,7 +46,7 @@ function style(){
 .v6-auto-frame{display:block;width:100%;height:500px;border:1px solid var(--v6-border-soft);border-radius:12px;background:var(--v6-bg);color-scheme:light}
 .v6-auto-status{font-size:11px;margin:6px 0;color:var(--v6-muted);line-height:1.7}
 .v6-auto-actions{display:flex;gap:7px;margin-top:7px;flex-wrap:wrap}
-.v6-auto-link{display:inline-flex;padding:7px 11px;border-radius:9px;background:var(--v6-accent);color:#fff;text-decoration:none;font-size:11px;font-weight:800}
+.v6-auto-link{display:inline-flex;padding:7px 11px;border-radius:9px;background:var(--v6-accent);color:#fff;text-decoration:none;font-size:11px;font-weight:800}.v6-auto-compare-btn{display:inline-flex;padding:7px 11px;border-radius:9px;border:0;background:#ef7d00;color:#fff;font:inherit;font-size:11px;font-weight:800;cursor:pointer;align-items:center;justify-content:center}
 .v6-auto-home{background:var(--v6-surface-2);color:var(--v6-text)}
 .v6-auto-low{opacity:.82}
 /* App theme is authoritative: do not let the device/OS color scheme override it. */
@@ -187,7 +187,7 @@ function openBrowser(query,list){
      const selectedSub=sub&&sub.value?String(sub.value):'';
      const categoryUrl=CATEGORY[active.id]&&CATEGORY[active.id][selectedSub];
      const u=categoryUrl||SEARCH[active.id](searchQuery);
-     resultBody.innerHTML='<div class="v6-auto-status">با انتخاب اسم هر فروشگاه از سربرگ و لمس دکمه پایین، نتایج ظاهر میشن</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a></div>';
+     resultBody.innerHTML='<div class="v6-auto-status">با انتخاب اسم هر فروشگاه از سربرگ و لمس دکمه پایین، نتایج ظاهر میشن</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
    }
    usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
    render();
