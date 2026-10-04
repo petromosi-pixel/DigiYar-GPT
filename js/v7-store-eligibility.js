@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.14';
+var VERSION='7.0.0-store-eligibility.15';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -62,6 +62,20 @@ var STORE_DOMAINS={
   maktabkhooneh:['education'],
   karnameh:['auto_service']
 };
+
+/* Prefer the unified business-domain knowledge base when available. The
+   hardcoded map above remains a safe fallback for offline/legacy loading. */
+function hydrateStoreDomainsFromKnowledgeBase(){
+  try{
+    var kb=root.DigiYarStoreBusinessDomains;
+    if(!kb||!kb.catalog)return;
+    Object.keys(kb.catalog).forEach(function(id){
+      var item=kb.catalog[id]||{};
+      if(Array.isArray(item.domains)&&item.domains.length)STORE_DOMAINS[id]=item.domains.slice();
+    });
+  }catch(_){}
+}
+hydrateStoreDomainsFromKnowledgeBase();
 
 function norm(v){
   return String(v==null?'':v)
