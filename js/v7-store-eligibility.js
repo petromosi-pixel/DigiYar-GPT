@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.17';
+var VERSION='7.0.0-store-eligibility.18';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -121,19 +121,29 @@ function aiSpecialtyMatches(query,list){
 function aiSelectedStores(query,list){
   try{
     var p=root.DigiYarShoppingPlan;
-    /* Once the AI planner has answered for this exact query, its store
-       selection is authoritative — including an intentional empty array.
-       Never fall back to the old keyword/domain engine after an AI answer. */
     if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)) return null;
-    var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();});
-    var selected=list.filter(function(x){return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;});
-    /* AI ids are authoritative. Do not discard a valid AI-selected store merely
-       because it is not present in the Popular Stores runtime list. The Store
-       Browser has its own SEARCH/STORE_NAMES registry and can render these ids. */
+    var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();}).filter(Boolean);
+    var selected=list.filter(function(x){
+      return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;
+    });
+
+    /* AI may rank merchants semantically, but it must not suppress a
+       high-confidence specialist set already identified by the merchant KB. */
+    var kbSpecialists=specialtyStoresForQuery(query,list);
+    if(kbSpecialists&&kbSpecialists.length){
+      var aiHasKbSpecialist=kbSpecialists.some(function(kbStore){
+        var kid=String(kbStore.id||'').toLowerCase();
+        return ids.indexOf(kid)!==-1;
+      });
+      if(!aiHasKbSpecialist){
+        return orderStoresSpecialistFirst(kbSpecialists);
+      }
+    }
+
     ids.forEach(function(id){
       if(!id||selected.some(function(x){return String(x.id||'').toLowerCase()===id;})) return;
       if(Object.prototype.hasOwnProperty.call(STORE_DOMAINS,id)){
-        selected.push({id:id,name:id});
+        selected.push({id:id,name:(kbItem(id)&&kbItem(id).name)||id});
       }
     });
     return orderStoresSpecialistFirst(selected);
