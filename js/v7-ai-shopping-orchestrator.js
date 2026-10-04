@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.7';
+  const VERSION='7.0.0-ai-shopping-orchestrator.8';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -127,14 +127,25 @@
     };
     if(provider&&typeof provider.understand==='function'){
       try{
+        /* Build the AI catalog independently of the Popular Stores runtime.
+         * The Hooshyar submit can fire before the Popular Stores array has been
+         * populated, while DigiYarStoreCategories is already the canonical
+         * store-domain source. An empty catalog makes the API's allowed-id
+         * filter erase every eligibleStoreId and produces the misleading
+         * "no related store" message. */
         const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
         const categories=window.DigiYarStoreCategories&&typeof window.DigiYarStoreCategories==='object'?window.DigiYarStoreCategories:{};
         const storeCatalog={};
+        Object.keys(categories).forEach(function(id){
+          const key=String(id).toLowerCase();
+          const subtitle=Array.isArray(categories[id])?categories[id].slice():[];
+          storeCatalog[key]={name:key,description:subtitle.join('، '),categories:subtitle};
+        });
         popular.forEach(function(store){
           if(!store||!store.id)return;
           const id=String(store.id).toLowerCase();
           const subtitle=Array.isArray(categories[id])?categories[id].slice():[];
-          storeCatalog[id]={name:String(store.name||id),description:subtitle.join('، '),categories:subtitle};
+          storeCatalog[id]={name:String(store.name||storeCatalog[id]&&storeCatalog[id].name||id),description:subtitle.join('، '),categories:subtitle};
         });
         const domainCatalog=window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{};
         Object.keys(domainCatalog).forEach(function(id){
