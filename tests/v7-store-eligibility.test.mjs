@@ -8,6 +8,12 @@ const stores = [
   {id:'basalam',name:'باسلام'},
   {id:'meghdadit',name:'مقداد آی‌تی'},
   {id:'technolife',name:'تکنولایف'},
+  {id:'digido',name:'دیجی‌دو'},
+  {id:'janebi',name:'جانبی'},
+  {id:'digiland',name:'دیجی‌لند'},
+  {id:'takhfifan',name:'تخفیفان'},
+  {id:'berozkala',name:'بروزکالا'},
+  {id:'gooshishop',name:'گوشی شاپ'},
   {id:'khanoumi',name:'خانومی'}
 ];
 
@@ -23,9 +29,8 @@ assert.ok(!office.eligibleIds.includes('khanoumi'));
 
 const mobile = eligibility.explain('گوشی سامسونگ تا ۳۰۰ میلیون تومان', stores);
 assert.equal(mobile.domain, 'digital');
-assert.ok(mobile.eligibleIds.includes('technolife'));
+['digido','janebi','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'].forEach(id=>assert.ok(mobile.eligibleIds.includes(id)));
 assert.ok(!mobile.eligibleIds.includes('khanoumi'));
-assert.ok(!mobile.eligibleIds.includes('meghdadit'));
 
 const unknown = eligibility.explain('یک محصول عجیب و ناشناخته', stores);
 assert.equal(unknown.domain, null);
