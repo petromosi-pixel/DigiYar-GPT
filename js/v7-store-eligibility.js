@@ -116,9 +116,8 @@ function generalStoreHasKnowledgeMatch(query,id){
      specialist path remains strictly product/alias driven. */
   var domains=Array.isArray(item.domains)?item.domains:[];
   return domains.some(function(domain){
-    var profile=DOMAIN_PROFILES[domain];
-    if(!profile)return false;
-    var terms=[].concat(profile.signals||[],profile.specialties||[]);
+    var terms=DOMAINS[domain]||[];
+    if(!terms.length)return false;
     return terms.some(function(term){
       var t=norm(term);
       return t&&s.indexOf(t)!==-1;
