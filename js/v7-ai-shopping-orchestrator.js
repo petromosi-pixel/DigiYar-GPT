@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.6';
+  const VERSION='7.0.0-ai-shopping-orchestrator.7';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -127,7 +127,22 @@
     };
     if(provider&&typeof provider.understand==='function'){
       try{
-        const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];\n        const categories=window.DigiYarStoreCategories&&typeof window.DigiYarStoreCategories==='object'?window.DigiYarStoreCategories:{};\n        const storeCatalog={};\n        popular.forEach(function(store){\n          if(!store||!store.id)return;\n          const id=String(store.id).toLowerCase();\n          const subtitle=Array.isArray(categories[id])?categories[id].slice():[];\n          storeCatalog[id]={name:String(store.name||id),description:subtitle.join('، '),categories:subtitle};\n        });\n        const domainCatalog=window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{};\n        Object.keys(domainCatalog).forEach(function(id){\n          const key=String(id).toLowerCase();\n          if(!storeCatalog[key])storeCatalog[key]={name:key,description:'',categories:[],domains:domainCatalog[id]};\n          else storeCatalog[key].domains=domainCatalog[id];\n        });\n        const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:storeCatalog});
+        const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
+        const categories=window.DigiYarStoreCategories&&typeof window.DigiYarStoreCategories==='object'?window.DigiYarStoreCategories:{};
+        const storeCatalog={};
+        popular.forEach(function(store){
+          if(!store||!store.id)return;
+          const id=String(store.id).toLowerCase();
+          const subtitle=Array.isArray(categories[id])?categories[id].slice():[];
+          storeCatalog[id]={name:String(store.name||id),description:subtitle.join('، '),categories:subtitle};
+        });
+        const domainCatalog=window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{};
+        Object.keys(domainCatalog).forEach(function(id){
+          const key=String(id).toLowerCase();
+          if(!storeCatalog[key])storeCatalog[key]={name:key,description:'',categories:[],domains:domainCatalog[id]};
+          else storeCatalog[key].domains=domainCatalog[id];
+        });
+        const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:storeCatalog});
         if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)){
           plan.ai=aiPlan;
           plan.candidateStores=Array.isArray(aiPlan.eligibleStoreIds)?aiPlan.eligibleStoreIds.slice():[];
