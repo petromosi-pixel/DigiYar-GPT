@@ -50,6 +50,7 @@ module.exports=async function(req,res){
  }
  function validUrl(u){try{const x=new URL(String(u));return /^https?:$/.test(x.protocol)&&!!x.hostname}catch(_){return false}}
  function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(_){return ''}}
+ function normText(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase()}
 
  const normalizeSchema={type:'object',properties:{
    normalizedQuery:{type:'string'},
@@ -135,9 +136,9 @@ module.exports=async function(req,res){
      // The discovery stage already contains web-grounded product data. If the
      // second pass refuses to verify it, keep a deterministic exact-identity
      // candidate instead of turning a valid product into the generic UI error.
-     const terms=(normalized.requiredTerms||[]).map(x=>norm(x)).filter(x=>x.length>1);
+     const terms=(normalized.requiredTerms||[]).map(x=>normText(x)).filter(x=>x.length>1);
      const scored=direct.map(p=>{
-       const hay=norm([p.title,p.name,p.brand,p.model].filter(Boolean).join(' '));
+       const hay=normText([p.title,p.name,p.brand,p.model].filter(Boolean).join(' '));
        const hits=terms.filter(t=>hay.includes(t)).length;
        return {p,hits};
      }).sort((a,b)=>b.hits-a.hits);
