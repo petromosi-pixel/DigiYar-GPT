@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.1';
+var VERSION='7.0.0-store-business-domains.2';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره'],aliases:['خرید آنلاین عمومی']},
@@ -35,6 +35,55 @@ safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هوا�
 eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار','رویداد آنلاین','سمینار'],aliases:['وبینار','آموزش آنلاین'],exclude:['کالای فیزیکی']},
 maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دوره آموزشی','دوره برنامه نویسی','آموزش مهارتی','کلاس آنلاین'],aliases:['دوره آنلاین','آموزش'],exclude:['کالای فیزیکی']},
 karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']}
+/*
+ * Semantic enrichment layer.
+ * The catalog above remains the merchant-specific source of truth.
+ * These profiles only normalize vocabulary shared by merchants in the same
+ * business domain; they are never used to declare that a merchant sells a
+ * product it does not list in products.
+ */
+var DOMAIN_PROFILES={
+ digital:{specialties:['کالای دیجیتال','فناوری','موبایل و تجهیزات دیجیتال'],signals:['موبایل','گوشی','آیفون','سامسونگ','شیائومی','تبلت','لپ تاپ','کامپیوتر','مانیتور','تلویزیون','هدفون','هندزفری','شارژر','کابل','پاوربانک','ساعت هوشمند','کنسول']},
+ furniture:{specialties:['مبلمان و دکوراسیون','خانه و آشپزخانه'],signals:['مبل','مبلمان','صندلی','میز','تخت','کمد','دکوراسیون','آشپزخانه']},
+ fashion:{specialties:['پوشاک و مد','استایل'],signals:['لباس','پوشاک','تیشرت','شلوار','پیراهن','مانتو','هودی','کاپشن','کفش','کتانی','کیف','جین','اکسسوری']},
+ beauty:{specialties:['زیبایی و مراقبت شخصی','آرایشی و بهداشتی'],signals:['آرایش','کرم','ضد آفتاب','آبرسان','سرم','ضد جوش','شوینده صورت','شامپو','مراقبت پوست','مراقبت مو','عطر','ضد تعریق']},
+ health:{specialties:['سلامت و مراقبت شخصی'],signals:['سلامت','بهداشتی','مراقبت','ویتامین','مکمل','فشارسنج','ارتوپدی','توانبخشی']},
+ medicine:{specialties:['داروخانه و محصولات دارویی'],signals:['دارو','داروخانه','قرص','کپسول','شربت','نسخه','مکمل','ویتامین']},
+ supermarket:{specialties:['سوپرمارکت و کالاهای مصرفی'],signals:['سوپرمارکت','مواد غذایی','نوشیدنی','تنقلات','شوینده','دستمال','مصرفی','خرید روزمره']},
+ home:{specialties:['خانه و کالاهای مصرفی منزل'],signals:['خانه','آشپزخانه','ظرف','شوینده','لوازم خانه','دکوراسیون','خواب']},
+ sports:{specialties:['ورزش و تجهیزات ورزشی'],signals:['ورزش','بدنسازی','توپ','دوچرخه','کفش ورزشی','تجهیزات ورزشی']},
+ kids:{specialties:['کودک و مادر'],signals:['کودک','نوزاد','اسباب بازی','پوشک','مادر','سیسمونی']},
+ books:{specialties:['کتاب و آموزش مکتوب'],signals:['کتاب','رمان','درسی','دانشگاهی','کمک آموزشی']},
+ auto:{specialties:['خودرو و لوازم خودرو'],signals:['خودرو','ماشین','قطعات خودرو','لوازم خودرو','لاستیک','باتری']},
+ auto_service:{specialties:['خدمات خودرو'],signals:['کارشناسی خودرو','قیمت خودرو','خرید خودرو','فروش خودرو','خودرو کارکرده','ماشین']},
+ lodging:{specialties:['رزرو اقامتگاه'],signals:['ویلا','سوئیت','کلبه','اقامتگاه','بوم گردی','رزرو اقامت']},
+ travel_ticket:{specialties:['سفر و بلیط'],signals:['بلیط','پرواز','هواپیما','قطار','اتوبوس','رزرو سفر']},
+ education:{specialties:['آموزش آنلاین'],signals:['دوره','کلاس','آموزش','وبینار','سمینار','مهارت','برنامه نویسی']},
+ accessories:{specialties:['اکسسوری و لوازم جانبی'],signals:['اکسسوری','لوازم جانبی','قاب','گلس','کیف','ساعت','عینک']}
+};
+Object.keys(C).forEach(function(id){
+ var s=C[id], profiles=(s.domains||[]).map(function(d){return DOMAIN_PROFILES[d]||null;}).filter(Boolean);
+ var specialties=[].concat.apply([],profiles.map(function(p){return p.specialties||[];}));
+ var signals=[].concat.apply([],profiles.map(function(p){return p.signals||[];}));
+ s.specialties=Array.from(new Set(specialties));
+ s.productFamilies=Array.from(new Set((s.products||[]).concat(s.specialties||[])));
+ s.querySignals=Array.from(new Set((s.aliases||[]).concat(s.products||[]).concat(signals)));
+ s.semanticText=[
+   'merchant: '+s.name,
+   'business domains: '+(s.domains||[]).join(', '),
+   'specialties: '+s.specialties.join(', '),
+   'products: '+(s.products||[]).join(', '),
+   'aliases: '+(s.aliases||[]).join(', '),
+   'query signals: '+s.querySignals.join(', '),
+   'exclude: '+(s.exclude||[]).join(', ')
+ ].join(' | ');
+ s.matchPolicy={
+   specialistFirst: Boolean(s.intents&&s.intents.length)||s.domains.length<=2,
+   allowGenericWhenDirectMatch: s.domains.some(function(d){return ['digital','furniture','fashion','beauty','health','home','supermarket'].indexOf(d)>=0;}),
+   hardExclude:s.exclude||[]
+ };
+});
+
 };
 root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
 if(typeof module!=='undefined'&&module.exports)module.exports=root.DigiYarStoreBusinessDomains;
