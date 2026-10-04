@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.22';
+var VERSION='7.0.0-store-eligibility.23';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -113,8 +113,25 @@ function relevantGeneralStores(query,list){
     return generalStoreHasDirectProductMatch(query,store.id);
   });
 }
+var ALWAYS_INCLUDED_STORE_IDS=['digikala'];
 function rankEligibleStores(specialists,general){
-  return orderStoresSpecialistFirst((Array.isArray(specialists)?specialists:[]).concat(Array.isArray(general)?general:[]));
+  var ordered=(Array.isArray(specialists)?specialists:[]).concat(Array.isArray(general)?general:[]);
+  var seen={};
+  ordered=ordered.filter(function(store){
+    var id=String(store&&store.id||'').toLowerCase();
+    if(!id||seen[id])return false;
+    seen[id]=true;
+    return true;
+  });
+  ALWAYS_INCLUDED_STORE_IDS.forEach(function(id){
+    if(seen[id])return;
+    var item=kbItem(id);
+    if(item){
+      ordered.push({id:id,name:item.name||id});
+      seen[id]=true;
+    }
+  });
+  return orderStoresSpecialistFirst(ordered);
 }
 
 function specialtyStoresForQuery(query,stores){
