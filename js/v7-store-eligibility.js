@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.26';
+var VERSION='7.0.0-store-eligibility.27';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -139,6 +139,8 @@ function relevantGeneralStores(query,list){
   });
 }
 var ALWAYS_INCLUDED_STORE_IDS=['digikala'];
+var NON_PRODUCT_DOMAINS=['travel_ticket','lodging','education','auto_service'];
+var currentEligibilityQuery='';
 function rankEligibleStores(specialists,general){
   var ordered=(Array.isArray(specialists)?specialists:[]).concat(Array.isArray(general)?general:[]);
   var seen={};
@@ -148,6 +150,9 @@ function rankEligibleStores(specialists,general){
     seen[id]=true;
     return true;
   });
+  var queryDomain=domainForQuery(currentEligibilityQuery||'');
+  var allowAlwaysIncluded=!queryDomain||NON_PRODUCT_DOMAINS.indexOf(queryDomain.domain)===-1;
+  if(!allowAlwaysIncluded)return;
   ALWAYS_INCLUDED_STORE_IDS.forEach(function(id){
     if(seen[id])return;
     var item=kbItem(id);
@@ -228,6 +233,7 @@ function aiSelectedStores(query,list){
 }
 
 function storesForQuery(query, stores){
+  currentEligibilityQuery=query;
   var list=mergedSourceList(stores);
   var aiSelected=aiSelectedStores(query,list);
   if(aiSelected!==null)return aiSelected;
