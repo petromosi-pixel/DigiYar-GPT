@@ -190,7 +190,7 @@ function storesForQuery(query, stores){
     general.forEach(function(g){
       if(!specialty.some(function(s){return String(s.id||'').toLowerCase()===String(g.id||'').toLowerCase();}))specialty.push(g);
     });
-    return orderStoresSpecialistFirst(specialty);
+    return rankEligibleStores(specialty,general);
   }
 
   if(!hit){
