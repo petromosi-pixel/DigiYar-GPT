@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.11';
+  const VERSION='7.0.0-ai-shopping-orchestrator.12';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -162,6 +162,22 @@
           };
           if(existing.domains)storeCatalog[id].domains=existing.domains;
         });
+        /* Mobile specialists that must remain visible for any clear mobile/phone
+         * intent. Their domain metadata is also supplied to AI even when a store
+         * is not present in Popular Stores at submit time. */
+        const mobileCatalog={
+          digido:{name:'دیجی‌دو',tagline:'موبایل و لوازم جانبی',categories:['digital']},
+          janebi:{name:'جانبی',tagline:'فروشگاه اینترنتی لوازم جانبی',categories:['digital']},
+          digiland:{name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',categories:['digital']},
+          takhfifan:{name:'تخفیفان',tagline:'پیشنهادها و تخفیف‌های آنلاین',categories:['digital']},
+          berozkala:{name:'بروز کالا',tagline:'کالای دیجیتال و ماشین اداری',categories:['digital']},
+          gooshishop:{name:'گوشی شاپ',tagline:'فروشگاه اینترنتی موبایل',categories:['digital']},
+          technolife:{name:'تکنولایف',tagline:'فروشگاه آنلاین موبایل و کالاهای دیجیتال',categories:['digital']},
+          meghdadit:{name:'مقداد آی‌تی',tagline:'فروشگاه اینترنتی آی‌تی، موبایل و کالای دیجیتال',categories:['digital']}
+        };
+        Object.keys(mobileCatalog).forEach(function(id){
+          if(!storeCatalog[id])storeCatalog[id]=mobileCatalog[id];
+        });
         const domainCatalog=window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{};
         Object.keys(domainCatalog).forEach(function(id){
           const key=String(id).toLowerCase();
@@ -172,6 +188,16 @@
         if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)&&aiPlan.eligibleStoreIds.length){
           plan.ai=aiPlan;
           plan.candidateStores=aiPlan.eligibleStoreIds.slice();
+          /* A mobile query has a known specialist set that the user explicitly
+           * expects to see. AI may rank them, but must not accidentally omit one
+           * because a single merchant description was underweighted. */
+          if(plan.category==='mobile'){
+            const mobileRequired=['digido','janebi','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'];
+            mobileRequired.forEach(function(id){
+              if(plan.candidateStores.indexOf(id)===-1)plan.candidateStores.push(id);
+            });
+            plan.ai.eligibleStoreIds=plan.candidateStores.slice();
+          }
           plan.provider='external-ai';
         }else{
           /* An empty/failed AI answer must not erase the proven V6/V7
