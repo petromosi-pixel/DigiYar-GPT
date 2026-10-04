@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.13';
+var VERSION='7.0.0-store-eligibility.14';
 
 var DOMAINS={
   furniture:['مبلمان','مبلمان اداری','میز اداری','میز تحریر','میز مطالعه','میز کامپیوتر','میز کار','صندلی تحریر','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری','office furniture','office chair','office desk'],
@@ -38,6 +38,7 @@ var STORE_DOMAINS={
   digido:['digital'],
   janebi:['digital'],
   gooshishop:['digital'],
+  digiland:['digital'],
   khanoumi:['beauty'],
   banimode:['fashion'],
   modiseh:['fashion','beauty'],
@@ -51,7 +52,8 @@ var STORE_DOMAINS={
   mosbatesabz:['health','beauty'],
   'daroo-online':['health'],
   pinket:['supermarket','home','beauty'],
-  takhfifan:['furniture','beauty','fashion','home','sports'],
+  takhfifan:['digital','furniture','beauty','fashion','home','sports'],
+  meghdadit:['digital'],
   dayan:['fashion','accessories'],
   memarket:['digital','home','fashion','accessories','beauty'],
   safarme:['travel_ticket'],
@@ -71,6 +73,7 @@ function norm(v){
 }
 
 var SPECIALTY_RULES=[
+  {terms:['موبایل','گوشی','smartphone','mobile'],stores:['digido','janebi','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit']},
   {terms:['بلیط قطار','بلیت قطار'],stores:['safarme','shab']},
   {terms:['بلیط هواپیما','بلیت هواپیما'],stores:['safarme']},
   {terms:['بلیط اتوبوس','بلیت اتوبوس'],stores:['safarme']},
@@ -84,6 +87,7 @@ var SPECIALTY_RULES=[
 
 
 var SPECIALTY_STORE_META={
+  digido:{name:'دیجی‌دو'},janebi:{name:'جانبی'},digiland:{name:'دیجی‌لند'},takhfifan:{name:'تخفیفان'},berozkala:{name:'بروز کالا'},gooshishop:{name:'گوشی شاپ'},technolife:{name:'تکنولایف'},meghdadit:{name:'مقداد آی‌تی'},
   darukade:{name:'داروکده'},darmankala:{name:'درمان‌کالا'},neshatrokh:{name:'نشاط رخ'},solokala:{name:'سولوکالا'},mosbatesabz:{name:'مثبت سبز'},'daroo-online':{name:'داروخانه آنلاین'},
   shab:{name:'شب'},safarme:{name:'سفرمی'},eseminar:{name:'ایسمینار'},maktabkhooneh:{name:'مکتب‌خونه'},karnameh:{name:'کارنامه'}
 };
