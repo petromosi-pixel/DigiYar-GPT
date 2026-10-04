@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.21';
+var VERSION='7.0.0-store-eligibility.22';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -37,7 +37,18 @@ function kbMatchedStoreIds(query){
   var s=norm(query),out=[];
   Object.keys(getKB()).forEach(function(id){
     var item=getKB()[id]||{};
-    if(kbSignals(item).some(function(term){var t=norm(term);return t&&s.indexOf(t)!==-1;}))out.push(id);
+    /*
+     * Eligibility must be product-driven. Domain profile signals such as
+     * «سلامت», «بهداشتی» and «ویتامین» are useful for AI grounding, but they
+     * are too broad to make a merchant eligible on their own. A specialist
+     * merchant enters the result set only when the query directly matches
+     * one of its declared products/aliases.
+     */
+    var terms=[].concat(item.products||[],item.aliases||[]);
+    if(terms.some(function(term){
+      var t=norm(term);
+      return t&&s.indexOf(t)!==-1;
+    }))out.push(id);
   });
   return out;
 }
@@ -185,11 +196,7 @@ function storesForQuery(query, stores){
   if(!hit&&aiDomains.length)hit={domain:aiDomains[0],term:null};
 
   if(specialty!==null){
-    if(!hit)return rankEligibleStores(specialty,relevantGeneralStores(query,list));
     var general=relevantGeneralStores(query,list);
-    general.forEach(function(g){
-      if(!specialty.some(function(s){return String(s.id||'').toLowerCase()===String(g.id||'').toLowerCase();}))specialty.push(g);
-    });
     return rankEligibleStores(specialty,general);
   }
 
