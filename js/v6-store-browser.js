@@ -2,21 +2,21 @@
 (function(){
 'use strict';
 const VERSION='6.0.0-store-browser.42';
-function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').replace(/\\s+/g,' ').trim();}
+function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
- if(/ضد\\s*آفتاب|ضدآفتاب/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/sun-block-sun-protecter';
- if(/(?:مرطوب\\s*کننده|آبرسان)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/moisturizer';
- if(/(?:شوینده|پاک\\s*کننده|میسلار|تونر)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/cleanser';
- if(/(?:سرم|روغن)\\s*(?:صورت|پوست)?/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/serum';
- if(/(?:شامپو|نرم\\s*کننده|ماسک\\s*مو|سرم\\s*مو)/i.test(s))return 'https://www.khanoumi.com/categories/hair-care';
+ if(/ضد\s*آفتاب|ضدآفتاب/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/sun-block-sun-protecter';
+ if(/(?:مرطوب\s*کننده|آبرسان)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/moisturizer';
+ if(/(?:شوینده|پاک\s*کننده|میسلار|تونر)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/cleanser';
+ if(/(?:سرم|روغن)\s*(?:صورت|پوست)?/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/serum';
+ if(/(?:شامپو|نرم\s*کننده|ماسک\s*مو|سرم\s*مو)/i.test(s))return 'https://www.khanoumi.com/categories/hair-care';
  return 'https://www.khanoumi.com/';
 }
 function janebiSearchQuery(q){
  var s=storeQueryTerms(q);
- var patterns=[/ضد\\s*آفتاب|ضدآفتاب/i,/مرطوب\\s*کننده|آبرسان/i,/هندزفری|ایرباد|هدفون/i,/پاوربانک/i,/شارژر/i,/کابل(?:\\s+شارژ)?/i,/قاب|کاور|گلس|محافظ\\s*صفحه/i,/هولدر/i,/ساعت\\s*هوشمند/i,/اسپیکر/i,/دستگاه\\s*بخور|رطوبت\\s*ساز/i,/جارو\\s*شارژی/i,/چراغ\\s*خواب/i,/ماساژور/i,/کوله|کیف/i,/چمدان/i];
+ var patterns=[/ضد\s*آفتاب|ضدآفتاب/i,/مرطوب\s*کننده|آبرسان/i,/هندزفری|ایرباد|هدفون/i,/پاوربانک/i,/شارژر/i,/کابل(?:\s+شارژ)?/i,/قاب|کاور|گلس|محافظ\s*صفحه/i,/هولدر/i,/ساعت\s*هوشمند/i,/اسپیکر/i,/دستگاه\s*بخور|رطوبت\s*ساز/i,/جارو\s*شارژی/i,/چراغ\s*خواب/i,/ماساژور/i,/کوله|کیف/i,/چمدان/i];
  for(var i=0;i<patterns.length;i++){var m=s.match(patterns[i]);if(m)return m[0];}
- return s.split(/\\s+/).slice(0,4).join(' ');
+ return s.split(/\s+/).slice(0,4).join(' ');
 }
 
 const SEARCH={iranmiz:q=>'https://www.iranmiz.com/category/%D9%85%DB%8C%D8%B2-%D9%86%D8%A7%D9%87%D8%A7%D8%B1%D8%AE%D9%88%D8%B1%DB%8C',partochoob:q=>'https://partochoob.com/shop/',chidahome:q=>'https://chidahomestudio.com/shop',tidawood:q=>'https://tidawood.com/',
@@ -39,10 +39,10 @@ function affiliateUrl(storeId,url){
 }
 function storeSearchQuery(q){
  let s=String(q||'').trim();
- s=s.replace(/(?:از\\s*)?\\d[\\d۰-۹.,]*\\s*(?:تا|الی|-)??\\s*\\d[\\d۰-۹.,]*\\s*(?:میلیون|م|هزار|تومان|ریال)\\s*(?:تومان|ریال)?/gi,' ');
- s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\\s*\\d[\\d۰-۹.,]*\\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
- s=s.replace(/\\b(?:برای|جهت)\\s+(?:محل\\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\\b/gi,' ');
- s=s.replace(/\\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
+ s=s.replace(/(?:از\s*)?\\d[\\d۰-۹.,]*\s*(?:تا|الی|-)??\s*\\d[\\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)\s*(?:تومان|ریال)?/gi,' ');
+ s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\s*\\d[\\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
+ s=s.replace(/\\b(?:برای|جهت)\s+(?:محل\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\\b/gi,' ');
+ s=s.replace(/\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
  return s||String(q||'').trim();
 }
 function stores(){
