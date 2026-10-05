@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.43';
+const VERSION='6.0.0-store-browser.44';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -16,16 +16,27 @@ function siteSearchUrl(domain,q){
  var s=storeQueryTerms(q);
  return 'https://www.google.com/search?q='+encodeURIComponent('site:'+domain+' '+s);
 }
+function healthSearchQuery(q){
+ var s=storeQueryTerms(q);
+ var patterns=[/ضد\s*آفتاب|ضدآفتاب/i,/مرطوب\s*کننده|آبرسان/i,/شوینده|پاک\s*کننده|میسلار|تونر/i,/سرم/i,/کرم/i,/شامپو/i];
+ for(var i=0;i<patterns.length;i++){var m=s.match(patterns[i]);if(m)return m[0].replace(/\s+/g,' ');}
+ return s.split(/\s+/).slice(0,4).join(' ');
+}
 function storeSearchUrl(id,q){
  var key=String(id||'').toLowerCase();
  var s=storeSearchQuery(q);
+ var hs=healthSearchQuery(s);
  if(key==='khanoumi')return khanoumiSearchUrl(s);
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(janebiSearchQuery(s));
- if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(s);
- if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(s);
- if(key==='darukade')return 'https://www.darukade.com/search?search='+encodeURIComponent(s);
+ if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
+ if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
+ if(key==='darukade')return 'https://darukade.com/products';
  if(key==='meghdadit')return siteSearchUrl('meghdadit.com',s);
- if(key==='neshatrokh'||key==='solokala'||key==='daroo-online')return siteSearchUrl(key==='neshatrokh'?'neshatrokh.com':key==='solokala'?'solokala.com':'DarookhaneOnline.com',s);
+ if(key==='neshatrokh')return 'https://www.neshatrokh.com/';
+ if(key==='solokala' && /ضد\s*آفتاب|ضدآفتاب/i.test(s))return 'https://solokala.com/product-category/%DA%A9%D8%B1%D9%85-%D8%B6%D8%AF-%D8%A2%D9%81%D8%AA%D8%A7%D8%A8/';
+ if(key==='solokala')return 'https://solokala.com/';
+ if(key==='daroo-online' && /(?:ضد\s*آفتاب|ضدآفتاب|مرطوب\s*کننده|آبرسان|شوینده|پاک\s*کننده|سرم|کرم)/i.test(s))return 'https://darookhaneonline.com/category/care-from-skin';
+ if(key==='daroo-online')return 'https://darookhaneonline.com/';
  if(SEARCH[key])return SEARCH[key](s);
  return null;
 }
