@@ -26,6 +26,11 @@ assert.ok(office.eligibleIds.includes('basalam'));
 assert.ok(!office.eligibleIds.includes('meghdadit'));
 assert.ok(!office.eligibleIds.includes('technolife'));
 assert.ok(!office.eligibleIds.includes('khanoumi'));
+['iranmiz','partochoob','chidahome','tidawood'].forEach(id=>assert.ok(office.eligibleIds.includes(id)));
+
+const dining = eligibility.explain('میز ناهارخوری چوبی ۶ نفره', stores);
+assert.equal(dining.domain, 'furniture');
+['iranmiz','partochoob','chidahome','tidawood','digikala','snappshop','torob','basalam'].forEach(id=>assert.ok(dining.eligibleIds.includes(id)));
 
 const mobile = eligibility.explain('گوشی سامسونگ تا ۳۰۰ میلیون تومان', stores);
 assert.equal(mobile.domain, 'digital');
@@ -36,4 +41,4 @@ const unknown = eligibility.explain('یک محصول عجیب و ناشناخت�
 assert.equal(unknown.domain, null);
 assert.equal(unknown.eligibleCount, 0);
 
-console.log('V7 store eligibility tests: PASS');
+console.log('V7 store eligibility tests: PASS — furniture specialists included');
