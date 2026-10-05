@@ -18,7 +18,8 @@
     "test:v6:profile-flow": "node tests/v6-hooshyar-profile-flow.test.mjs",
     "test:v7:store-eligibility": "node tests/v7-store-eligibility.test.mjs",
     "test:v7:product-result-source": "node tests/v7-product-result-source.test.mjs",
-    "test:v7:comparison": "node tests/v7-comparison-engine.test.mjs"
+    "test:v7:comparison": "node tests/v7-comparison-engine.test.mjs",
+    "test:v7:product-result-producer": "node tests/v7-product-result-producer.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0"
