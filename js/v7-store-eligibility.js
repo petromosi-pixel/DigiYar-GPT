@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.34';
+var VERSION='7.0.0-store-eligibility.35';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -45,10 +45,27 @@ function kbMatchedStoreIds(query){
      * one of its declared products/aliases.
      */
     var terms=[].concat(item.products||[],item.aliases||[]);
-    if(terms.some(function(term){
+    var directMatch=terms.some(function(term){
       var t=norm(term);
       return t&&s.indexOf(t)!==-1;
-    }))out.push(id);
+    });
+    /*
+     * Intent-aware eligibility closes the gap between a merchant's declared
+     * business area and literal phrase matching. For example, "موبایل
+     * سامسونگ" does not literally contain "گوشی موبایل", so a mobile merchant
+     * such as DigiLand/BerozKala/Meghdad IT would otherwise be lost even
+     * though its KB explicitly declares intent=mobile. This is still bounded
+     * by the merchant's declared intent; it does not make every digital store
+     * eligible.
+     */
+    var intentMatch=(item.intents||[]).some(function(intent){
+      var key=norm(intent);
+      if(key==='mobile'||key==='mobile_accessories'){
+        return /(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi|تبلت|لوازم\s*جانبی)/i.test(s);
+      }
+      return false;
+    });
+    if(directMatch||intentMatch)out.push(id);
   });
   return out;
 }
