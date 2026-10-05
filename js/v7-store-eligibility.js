@@ -287,7 +287,20 @@ function storesForQuery(query, stores){
   }
 
   if(!hit){
-    return list.filter(function(store){return store&&isGeneralStore(store.id);});
+    /*
+     * No domain/product hit is a genuine unknown-product case. The old
+     * implementation returned every GENERAL_STORE_IDS member here, which
+     * leaked narrow marketplaces (Esam/MeMarket) into unrelated queries.
+     * Keep their direct-product path intact, but make the unknown fallback
+     * use the same broad-marketplace rule as the normal resolver. If the KB
+     * has no semantic signal at all, the four broad marketplaces are the
+     * deterministic safety net.
+     */
+    var noHitGeneral=relevantGeneralStores(query,list);
+    if(noHitGeneral.length)return rankEligibleStores([],noHitGeneral);
+    return list.filter(function(store){
+      return store&&BROAD_GENERAL_STORE_IDS.indexOf(String(store.id||'').toLowerCase())!==-1;
+    });
   }
 
   /* Never use a merchant's broad domain label as standalone eligibility.
