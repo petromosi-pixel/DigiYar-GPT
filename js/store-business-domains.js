@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.8';
+var VERSION='7.0.0-store-business-domains.9';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
@@ -31,7 +31,7 @@ dayan:{name:'دایان شاپ',domains:['fashion','accessories'],products:['ل�
 memarket:{name:'می‌مارکت',domains:['digital','home','fashion','accessories','beauty'],products:['موبایل','لپ تاپ','لوازم دیجیتال','لوازم خانه','پوشاک','کفش','کیف','آرایشی','ساعت','اکسسوری'],aliases:['خرید آنلاین متنوع']},
 jeanswest:{name:'جین وست',domains:['fashion'],products:['پوشاک زنانه','پوشاک مردانه','پوشاک کودک','تیشرت','شلوار','کاپشن','کفش','اکسسوری'],aliases:['پوشاک','استایل'],exclude:['موبایل','لپ تاپ']},
 shab:{name:'شب',domains:['lodging','travel_ticket'],products:['ویلا','سوئیت','کلبه','اقامتگاه','بوم گردی','بلیط قطار','بلیط اتوبوس','سفر'],aliases:['رزرو ویلا','اقامت','رزرو سفر'],exclude:['کالای فیزیکی']},
-safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هواپیما','پرواز','سفر'],aliases:['پرواز','بلیط هواپیما'],exclude:['کالای فیزیکی']},
+safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هواپیما','بلیط قطار','بلیط اتوبوس','پرواز','سفر'],aliases:['پرواز','بلیط هواپیما'],exclude:['کالای فیزیکی']},
 eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار','رویداد آنلاین','سمینار'],aliases:['وبینار','آموزش آنلاین'],exclude:['کالای فیزیکی']},
 maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دوره آموزشی','دوره برنامه نویسی','آموزش مهارتی','کلاس آنلاین'],aliases:['دوره آنلاین','آموزش'],exclude:['کالای فیزیکی']},
 karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']}
