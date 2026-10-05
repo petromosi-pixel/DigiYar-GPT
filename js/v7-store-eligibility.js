@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.35';
+var VERSION='7.0.0-store-eligibility.36';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -60,8 +60,11 @@ function kbMatchedStoreIds(query){
      */
     var intentMatch=(item.intents||[]).some(function(intent){
       var key=norm(intent);
-      if(key==='mobile'||key==='mobile_accessories'){
-        return /(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi|تبلت|لوازم\s*جانبی)/i.test(s);
+      if(key==='mobile'){
+        return /(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi|تبلت)/i.test(s);
+      }
+      if(key==='mobile_accessories'){
+        return /(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|پایه|استند|مبدل|تبدیل|لوازم\s*جانبی|اکسسوری)/i.test(s);
       }
       return false;
     });
