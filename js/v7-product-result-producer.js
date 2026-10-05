@@ -283,7 +283,6 @@ async function produce(query,options){
    return true;
  });
 
- /* Required identity tokens: semantic product words must occur in the product name/model, not merely category metadata. */
  /* Required identity tokens: product-family terms are already enforced by
     hasTypeEvidence(). Requiring them literally in the title would reject
     valid titles such as "Samsung Galaxy S25" when subcategory identifies it. */
@@ -295,6 +294,7 @@ async function produce(query,options){
    return !['برای','محل','کار','مناسب','استفاده','جهت','دفتر'].includes(t) &&
           !typeTerms.includes(norm(t));
  });
+ if(intent.type){
    var qn=norm(query), furniturePhrase=qn.includes('مبلمان اداری');
    candidates=candidates.filter(function(p){
      var f=fieldText(p), n=f.name;
