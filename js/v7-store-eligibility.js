@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.37';
+var VERSION='7.0.0-store-eligibility.38';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -143,9 +143,13 @@ function generalStoreHasDirectProductMatch(query,id){
   if(!item)return false;
   var s=norm(query);
   var terms=[].concat(item.products||[],item.aliases||[]);
+  var genericTerms=['موبایل','گوشی','دیجیتال','لپ تاپ','تبلت','خانه','پوشاک','لوازم جانبی'];
   return terms.some(function(term){
     var t=norm(term);
-    return t&&s.indexOf(t)!==-1;
+    if(!t||s.indexOf(t)===-1)return false;
+    if(s!==t && genericTerms.indexOf(t)!==-1 &&
+       /(?:قاب|کاور|گلس|محافظ|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|مبدل|لوازم\s*جانبی|اکسسوری)/i.test(s)) return false;
+    return true;
   });
 }
 function generalStoreHasKnowledgeMatch(query,id){
