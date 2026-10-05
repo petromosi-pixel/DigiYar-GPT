@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.31';
+var VERSION='7.0.0-store-eligibility.32';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -253,11 +253,15 @@ function storesForQuery(query, stores){
   if(!hit){
     return list.filter(function(store){return store&&isGeneralStore(store.id);});
   }
-  return rankEligibleStores(list.filter(function(store){
-    if(!store||!store.id)return false;
-    var domains=STORE_DOMAINS[String(store.id).toLowerCase()];
-    return Array.isArray(domains)&&domains.indexOf(hit.domain)!==-1;
-  }),[]);
+
+  /* Never use a merchant's broad domain label as standalone eligibility.
+   * A store may have a generic domain such as "furniture" in metadata while
+   * actually being irrelevant to the requested product. At this stage only
+   * the KB product/alias resolver plus the general-marketplace semantic window
+   * are authoritative. */
+  var fallbackSpecialists=knowledgeSpecialistsForQuery(query,list);
+  var fallbackGeneral=relevantGeneralStores(query,list);
+  return rankEligibleStores(fallbackSpecialists||[],fallbackGeneral);
 }
 
 function explain(query, stores){
