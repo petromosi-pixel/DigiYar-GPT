@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.32';
+var VERSION='7.0.0-store-eligibility.33';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -94,9 +94,18 @@ function mergedSourceList(stores){
 }
 
 var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket'];
+var AFTER_GENERAL_STORE_IDS=['takhfifan','esam'];
 var BROAD_GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam'];
 function isSpecialistStore(id){return !isGeneralStore(id);}
-function orderStoresSpecialistFirst(list){return (Array.isArray(list)?list:[]).slice().sort(function(a,b){var as=isSpecialistStore(a&&a.id),bs=isSpecialistStore(b&&b.id);return as===bs?0:(as?-1:1);});}
+function orderStoresSpecialistFirst(list){
+  return (Array.isArray(list)?list:[]).slice().sort(function(a,b){
+    var aid=String(a&&a.id||'').toLowerCase(),bid=String(b&&b.id||'').toLowerCase();
+    var at=AFTER_GENERAL_STORE_IDS.indexOf(aid)!==-1,bt=AFTER_GENERAL_STORE_IDS.indexOf(bid)!==-1;
+    if(at!==bt)return at?1:-1;
+    var as=isSpecialistStore(a&&a.id),bs=isSpecialistStore(b&&b.id);
+    return as===bs?0:(as?-1:1);
+  });
+}
 function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
 function generalStoreHasDirectProductMatch(query,id){
   var item=kbItem(id);
