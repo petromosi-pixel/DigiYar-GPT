@@ -152,7 +152,7 @@ function rankEligibleStores(specialists,general){
   });
   var queryDomain=domainForQuery(currentEligibilityQuery||'');
   var allowAlwaysIncluded=!queryDomain||NON_PRODUCT_DOMAINS.indexOf(queryDomain.domain)===-1;
-  if(!allowAlwaysIncluded)return;
+  if(!allowAlwaysIncluded)return orderStoresSpecialistFirst(ordered);
   ALWAYS_INCLUDED_STORE_IDS.forEach(function(id){
     if(seen[id])return;
     var item=kbItem(id);
