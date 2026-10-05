@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.27';
+var VERSION='7.0.0-store-eligibility.30';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -221,17 +221,15 @@ function aiSelectedStores(query,list){
       return rankEligibleStores(kbSpecialists,general);
     }
 
-    var ids=p.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();}).filter(Boolean);
-    var selected=list.filter(function(x){
-      return x&&ids.indexOf(String(x.id||'').toLowerCase())!==-1;
-    });
-    ids.forEach(function(id){
-      if(!id||selected.some(function(x){return String(x.id||'').toLowerCase()===id;})) return;
-      if(Object.prototype.hasOwnProperty.call(STORE_DOMAINS,id)){
-        selected.push({id:id,name:(kbItem(id)&&kbItem(id).name)||id});
-      }
-    });
-    return rankEligibleStores(selected,[]);
+    /* AI is an interpretation/ranking layer, not an eligibility authority.
+     * When no KB specialist set exists, discard arbitrary AI-selected merchants
+     * and fall back to the deterministic KB general-marketplace resolver.
+     * This prevents category confusion (e.g. furniture queries returning
+     * unrelated digital/mobile merchants simply because the model saw a broad
+     * "furniture" type). */
+    var deterministicGeneral=relevantGeneralStores(query,list);
+    if(deterministicGeneral.length)return rankEligibleStores([],deterministicGeneral);
+    return [];
   }catch(_){return null;}
 }
 
