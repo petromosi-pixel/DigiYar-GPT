@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.13';
+var VERSION='7.0.0-product-result-producer.14';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -284,8 +284,17 @@ async function produce(query,options){
  });
 
  /* Required identity tokens: semantic product words must occur in the product name/model, not merely category metadata. */
- var semanticTokens=tokens.filter(function(t){return !['برای','محل','کار','مناسب','استفاده','جهت','دفتر'].includes(t);});
- if(intent.type){
+ /* Required identity tokens: product-family terms are already enforced by
+    hasTypeEvidence(). Requiring them literally in the title would reject
+    valid titles such as "Samsung Galaxy S25" when subcategory identifies it. */
+ var typeTerms=TYPE_RULES.reduce(function(out,rule){
+   rule.terms.forEach(function(term){out.push(norm(term));});
+   return out;
+ },[]);
+ var semanticTokens=tokens.filter(function(t){
+   return !['برای','محل','کار','مناسب','استفاده','جهت','دفتر'].includes(t) &&
+          !typeTerms.includes(norm(t));
+ });
    var qn=norm(query), furniturePhrase=qn.includes('مبلمان اداری');
    candidates=candidates.filter(function(p){
      var f=fieldText(p), n=f.name;
@@ -308,6 +317,17 @@ async function produce(query,options){
  candidates=candidates.filter(function(p){
    return p.matchScore>= (intent.type||intent.brand ? 60 : Math.max(70,semanticTokens.length*70));
  });
+ /* Explicit phone searches must not surface accessory-only records even
+    when a noisy source index labels them as mobile. */
+ if(intent.type&&intent.type.key==='mobile'){
+   var accessoryOnly=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|آداپتور|پاوربانک|هولدر|پایه|استند|باتری|کیف|بند|اسپیکر|هدفون|هدست|هندزفری|ایرباد|مبدل|هاب|تبدیل)/i;
+   candidates=candidates.filter(function(p){
+     var n=fieldText(p).name;
+     if(!accessoryOnly.test(n))return true;
+     return /(?:Galaxy|iPhone|Redmi|Poco|Pixel|گوشی\s*(?:موبایل|سامسونگ|اپل|شیائومی))/i.test(n) &&
+            !/^(?:قاب|کاور|گلس|محافظ|شارژر|کابل|آداپتور|پاوربانک|هولدر|کیف|بند|هندزفری|هدفون|هدست|ایرباد|اسپیکر)/i.test(n);
+   });
+ }
  var unique=deduplicate(candidates);
  var ranked=unique.sort(function(a,b){
    return b.matchScore-a.matchScore || a.priceToman-b.priceToman;
