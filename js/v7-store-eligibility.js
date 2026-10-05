@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.33';
+var VERSION='7.0.0-store-eligibility.34';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -54,10 +54,17 @@ function kbMatchedStoreIds(query){
 }
 function knowledgeSpecialistsForQuery(query,list){
   var ids=kbMatchedStoreIds(query),out=[];
+  /*
+   * Every specialist merchant with a direct KB product/alias match is
+   * eligible.  "matchPolicy.specialistFirst" is an ordering hint, not an
+   * eligibility gate.  Gating on that optional flag caused valid merchants
+   * such as DigiLand and BerozKala to disappear from mobile queries even
+   * though their KB explicitly declares mobile products.
+   */
   ids.forEach(function(id){
-    var item=kbItem(id);
-    if(!item||!item.matchPolicy||!item.matchPolicy.specialistFirst)return;
-    var found=(Array.isArray(list)?list:[]).find(function(x){return x&&String(x.id||'').toLowerCase()===id;});
+    var found=(Array.isArray(list)?list:[]).find(function(x){
+      return x&&String(x.id||'').toLowerCase()===String(id||'').toLowerCase();
+    });
     if(found)out.push(found);
   });
   return out;
