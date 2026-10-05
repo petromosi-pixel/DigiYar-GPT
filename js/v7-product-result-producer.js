@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.12';
+var VERSION='7.0.0-product-result-producer.13';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
