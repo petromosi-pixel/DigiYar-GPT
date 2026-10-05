@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.30';
+var VERSION='7.0.0-store-eligibility.31';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -236,9 +236,10 @@ function aiSelectedStores(query,list){
 function storesForQuery(query, stores){
   currentEligibilityQuery=query;
   var list=mergedSourceList(stores);
-  var aiSelected=aiSelectedStores(query,list);
-  if(aiSelected!==null)return aiSelected;
-
+  /* The AI plan may rank merchants, but it must never bypass the
+   * merchant knowledge-base eligibility boundary. Resolve eligibility
+   * deterministically from the KB first, then let AI influence ordering only
+   * through the already-qualified set. */ 
   var specialty=specialtyStoresForQuery(query,list);
   var hit=domainForQuery(query);
   var aiDomains=aiDomainHints(query);
