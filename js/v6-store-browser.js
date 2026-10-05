@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.37';
+const VERSION='6.0.0-store-browser.38';
 const SEARCH={
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digiland:q=>'https://dgland.com/search?q='+encodeURIComponent(q),takhfifan:q=>'https://takhfifan.com/search?q='+encodeURIComponent(q),meghdadit:q=>'https://meghdadit.com/search?q='+encodeURIComponent(q),digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>'https://www.khanoumi.com/search?q='+encodeURIComponent(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),neshatrokh:q=>'https://www.neshatrokh.com/',dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q),darukade:q=>'https://www.darukade.com/search?search='+encodeURIComponent(q),darmankala:q=>'https://darmankala.com/?s='+encodeURIComponent(q),mosbatesabz:q=>'https://mosbatesabz.com/?s='+encodeURIComponent(q),'daroo-online':q=>'https://DarookhaneOnline.com/',shab:q=>'https://www.shab.ir/',safarme:q=>'https://www.safarme.ir/',eseminar:q=>'https://eseminar.tv/',maktabkhooneh:q=>'https://maktabkhooneh.org/',karnameh:q=>'https://karnameh.com/'
 };
@@ -156,9 +156,16 @@ function openBrowser(query,list){
 
  function renderResults(){
    try{
-     let sourceList=Array.isArray(list)?list:stores();
+     /* Always resolve from the canonical Popular Stores/KB universe.
+        The AI plan is intentionally not used as the source list here; otherwise
+        stale or over-broad eligibleStoreIds can leak unrelated merchants into
+        the visible tabs before the KB gate runs. */
+     let canonicalList=Array.isArray(window.DigiYarPopularAffiliateStores)
+       ? window.DigiYarPopularAffiliateStores
+       : (Array.isArray(list)?list:stores());
+     let sourceList=canonicalList;
      if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function'){
-       sourceList=window.DigiYarStoreEligibility.storesForQuery(query,sourceList);
+       sourceList=window.DigiYarStoreEligibility.storesForQuery(query,canonicalList);
      }
      let usable=sourceList.filter(x=>x&&SEARCH[x.id]);
      if(!usable.length){
