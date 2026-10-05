@@ -126,6 +126,8 @@ function generalStoreHasKnowledgeMatch(query,id){
   });
 }
 function relevantGeneralStores(query,list){
+  var queryDomain=domainForQuery(query);
+  if(queryDomain&&VEHICLE_TRANSACTION_DOMAINS.indexOf(queryDomain.domain)!==-1)return [];
   return (Array.isArray(list)?list:[]).filter(function(store){
     if(!store||!isGeneralStore(store.id))return false;
     var id=String(store.id||'').toLowerCase();
@@ -140,6 +142,7 @@ function relevantGeneralStores(query,list){
 }
 var ALWAYS_INCLUDED_STORE_IDS=['digikala'];
 var NON_PRODUCT_DOMAINS=['travel_ticket','lodging','education','auto_service'];
+var VEHICLE_TRANSACTION_DOMAINS=['auto_service'];
 var currentEligibilityQuery='';
 function rankEligibleStores(specialists,general){
   var ordered=(Array.isArray(specialists)?specialists:[]).concat(Array.isArray(general)?general:[]);
