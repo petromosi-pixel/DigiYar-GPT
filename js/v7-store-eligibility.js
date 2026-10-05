@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.38';
+var VERSION='7.0.0-store-eligibility.39';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -58,6 +58,14 @@ function kbMatchedStoreIds(query){
      * by the merchant's declared intent; it does not make every digital store
      * eligible.
      */
+    /* General marketplaces are resolved by relevantGeneralStores().
+     * Keeping them out of the specialist resolver prevents a broad product
+     * word such as «موبایل» from promoting Esam/MeMarket into specialist
+     * results for a more specific query. */
+    if(isGeneralStore(id))return;
+    if(item.rankAfterGeneral && /(?:قاب|کاور|گلس|محافظ|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|مبدل|لوازم\s*جانبی|اکسسوری)/i.test(s)){
+      directMatch=false;
+    }
     var intentMatch=(item.intents||[]).some(function(intent){
       var key=norm(intent);
       if(key==='mobile'){
