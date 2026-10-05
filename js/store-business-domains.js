@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.14';
+var VERSION='7.0.0-store-business-domains.15';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
@@ -25,7 +25,7 @@ takhfifan:{name:'تخفیفان',intents:['mobile'],rankAfterGeneral:true,domain
 berozkala:{name:'بروز کالا',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','تبلت','لپ تاپ','مانیتور','پرینتر','ماشین اداری','تجهیزات دیجیتال'],aliases:['کالای دیجیتال','ماشین اداری'],exclude:['پوشاک','مواد غذایی']},
 gooshishop:{name:'گوشی شاپ',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','آیفون','سامسونگ','شیائومی','لوازم جانبی موبایل','گجت'],aliases:['فروشگاه موبایل','گوشی'],exclude:['پوشاک','مواد غذایی']},
 technolife:{name:'تکنولایف',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','آیفون','سامسونگ','شیائومی','لپ تاپ','تبلت','هدفون','هندزفری','ساعت هوشمند','لوازم جانبی'],aliases:['کالای دیجیتال','فناوری'],exclude:['پوشاک','مواد غذایی']},
-meghdadit:{name:'مقداد آی‌تی',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','لپ تاپ','کامپیوتر','قطعات کامپیوتر','مانیتور','پرینتر','شبکه','لوازم جانبی','تبلت'],aliases:['آی تی','فروشگاه کامپیوتر','کالای دیجیتال'],exclude:['پوشاک','مواد غذایی']},
+meghdadit:{name:'مقداد آی‌تی',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','لپ تاپ','کامپیوتر','قطعات کامپیوتر','مانیتور','پرینتر','شبکه','تجهیزات جانبی کامپیوتر','تبلت'],aliases:['آی تی','فروشگاه کامپیوتر','کالای دیجیتال'],exclude:['پوشاک','مواد غذایی']},
 neshatrokh:{name:'نشاط رخ',domains:['beauty','health'],products:['لوازم آرایشی','ضد آفتاب','کرم پوست','آبرسان','مراقبت پوست','مراقبت مو','بهداشتی'],aliases:['زیبایی','سلامت'],exclude:['موبایل','لپ تاپ']},
 mosbatesabz:{name:'مثبت سبز',domains:['health','beauty','medicine'],products:['مکمل','ویتامین','فشارسنج','تجهیزات پزشکی','ضد آفتاب','کرم پوست','بهداشتی','داروخانه‌ای','مراقبت پوست'],aliases:['داروخانه','سلامت','مکمل'],exclude:['موبایل','لپ تاپ']},
 shavaz:{name:'شاواز',domains:['beauty','health'],products:['لوازم آرایش','ضد آفتاب','کرم پوست','شامپو','مراقبت مو','بهداشتی','عطر'],aliases:['زیبایی','آرایشی بهداشتی'],exclude:['موبایل','لپ تاپ']},
