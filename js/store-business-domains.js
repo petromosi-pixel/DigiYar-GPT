@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.10';
+var VERSION='7.0.0-store-business-domains.11';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
@@ -21,7 +21,7 @@ darmankala:{name:'درمان‌کالا',domains:['health','medicine'],products:
 digido:{name:'دیجی‌دو',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','آیفون','سامسونگ','شیائومی','قاب گوشی','گلس','شارژر','کابل','پاوربانک','هندزفری'],aliases:['موبایل','گوشی','لوازم جانبی موبایل'],exclude:['پوشاک','مواد غذایی']},
 janebi:{name:'جانبی',intents:['mobile','mobile_accessories'],domains:['digital'],products:['قاب گوشی','گلس','محافظ صفحه','شارژر','کابل','هندزفری','پاوربانک','هولدر','تبدیل','لوازم جانبی لپ تاپ'],aliases:['اکسسوری موبایل','لوازم جانبی'],exclude:['پوشاک']},
 digiland:{name:'دیجی‌لند',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','لپ تاپ','مانیتور','کامپیوتر','کنسول','گیمینگ','شبکه','لوازم جانبی دیجیتال'],aliases:['کالای دیجیتال','گیمینگ'],exclude:['پوشاک','مواد غذایی']},
-takhfifan:{name:'تخفیفان',intents:['mobile'],domains:['digital','furniture','beauty','fashion','home','sports'],products:['موبایل','کالای دیجیتال','لوازم جانبی','پوشاک','زیبایی','خانه','ورزش','خدمات تخفیفی'],aliases:['تخفیف','کد تخفیف','پیشنهاد ویژه']},
+takhfifan:{name:'تخفیفان',intents:['mobile'],rankAfterGeneral:true,domains:['digital','furniture','beauty','fashion','home','sports'],products:['موبایل','کالای دیجیتال','لوازم جانبی','پوشاک','زیبایی','خانه','ورزش','خدمات تخفیفی'],aliases:['تخفیف','کد تخفیف','پیشنهاد ویژه']},
 berozkala:{name:'بروز کالا',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','تبلت','لپ تاپ','مانیتور','پرینتر','ماشین اداری','تجهیزات دیجیتال'],aliases:['کالای دیجیتال','ماشین اداری'],exclude:['پوشاک','مواد غذایی']},
 gooshishop:{name:'گوشی شاپ',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','آیفون','سامسونگ','شیائومی','لوازم جانبی موبایل','گجت'],aliases:['فروشگاه موبایل','گوشی'],exclude:['پوشاک','مواد غذایی']},
 technolife:{name:'تکنولایف',intents:['mobile'],domains:['digital'],products:['گوشی موبایل','آیفون','سامسونگ','شیائومی','لپ تاپ','تبلت','هدفون','هندزفری','ساعت هوشمند','لوازم جانبی'],aliases:['کالای دیجیتال','فناوری'],exclude:['پوشاک','مواد غذایی']},
@@ -32,7 +32,7 @@ shavaz:{name:'شاواز',domains:['beauty','health'],products:['لوازم آر
 solokala:{name:'سولوکالا',domains:['beauty','health','accessories'],products:['لوازم آرایش','ضد آفتاب','کرم پوست','عطر','بهداشتی','اکسسوری'],aliases:['آرایشی بهداشتی','اکسسوری'],exclude:['موبایل','لپ تاپ']},
 'daroo-online':{name:'داروخانه آنلاین',domains:['medicine','health','beauty'],products:['دارو','قرص','کپسول','شربت','مکمل','ویتامین','فشارسنج','تجهیزات پزشکی','ضد آفتاب','بهداشتی','مراقبت پوست'],aliases:['داروخانه آنلاین','دارو'],exclude:['موبایل','لپ تاپ']},
 dayan:{name:'دایان شاپ',domains:['fashion','accessories'],products:['لباس مردانه','لباس زنانه','کفش','کتانی','هودی','سوییشرت','کاپشن','شلوار','تیشرت','پیراهن','ساعت','عینک','کیف','زیورآلات'],aliases:['پوشاک','استایل','اکسسوری'],exclude:['موبایل']},
-memarket:{name:'می‌مارکت',domains:['digital','home','fashion','accessories','beauty'],products:['موبایل','لپ تاپ','لوازم دیجیتال','لوازم خانه','پوشاک','کفش','کیف','آرایشی','ساعت','اکسسوری'],aliases:['خرید آنلاین متنوع']},
+memarket:{name:'می‌مارکت',domains:['digital','home','fashion','accessories','beauty'],products:['لپ تاپ','لوازم دیجیتال','لوازم خانه','پوشاک','کفش','کیف','آرایشی','ساعت','اکسسوری'],aliases:['خرید آنلاین متنوع']},
 jeanswest:{name:'جین وست',domains:['fashion'],products:['پوشاک زنانه','پوشاک مردانه','پوشاک کودک','تیشرت','شلوار','کاپشن','کفش','اکسسوری'],aliases:['پوشاک','استایل'],exclude:['موبایل','لپ تاپ']},
 shab:{name:'شب',domains:['lodging','travel_ticket'],products:['ویلا','سوئیت','کلبه','اقامتگاه','بوم گردی','بلیط قطار','بلیط اتوبوس','سفر'],aliases:['رزرو ویلا','اقامت','رزرو سفر'],exclude:['کالای فیزیکی']},
 safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هواپیما','بلیط قطار','بلیط اتوبوس','پرواز','سفر'],aliases:['پرواز','بلیط هواپیما'],exclude:['کالای فیزیکی']},
