@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.40';
+var VERSION='7.0.0-store-eligibility.41';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -250,6 +250,33 @@ function aiSpecialtyMatches(query,list){
   }catch(_){return [];}
 }
 
+function aiSelectionIsAllowed(query,id){
+  var key=String(id||'').toLowerCase();
+  var item=kbItem(key);
+  if(!item)return false;
+  var s=norm(query);
+
+  /* AI may select semantically, but it may not bypass merchant-specific
+     product boundaries. General marketplaces require direct product/alias
+     evidence from their own KB. */
+  if(isGeneralStore(key)){
+    return generalStoreHasDirectProductMatch(query,key);
+  }
+
+  /* Respect explicit merchant exclusions before accepting an AI decision. */
+  var exclusions=[].concat(item.exclude||[]);
+  if(exclusions.some(function(term){
+    var t=norm(term);
+    return t&&s.indexOf(t)!==-1;
+  }))return false;
+
+  /* Takhfifan is a promotion/service marketplace, not a default product
+     destination merely because it lists a product category. */
+  if(key==='takhfifan'&&!/(?:تخفیف|کد\s*تخفیف|پیشنهاد\s*ویژه|خدمات\s*تخفیفی)/i.test(s))return false;
+
+  return true;
+}
+
 function aiSelectedStores(query,list){
   try{
     var p=root.DigiYarShoppingPlan;
@@ -277,7 +304,7 @@ function aiSelectedStores(query,list){
       var id=String(rawId||'').toLowerCase();
       if(!id||seen[id])return;
       var store=byId[id];
-      if(store){
+      if(store&&aiSelectionIsAllowed(query,id)){
         selected.push(store);
         seen[id]=true;
       }
