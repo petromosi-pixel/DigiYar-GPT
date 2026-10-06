@@ -57,7 +57,7 @@ module.exports = async function handler(req,res){
     const allowedIds=new Set(Object.keys(catalog||{}).map(x=>String(x).toLowerCase()));
     if(Array.isArray(plan.eligibleStoreIds)){
       plan.eligibleStoreIds=plan.eligibleStoreIds.map(x=>String(x||'').toLowerCase()).filter((x,i,a)=>allowedIds.has(x)&&a.indexOf(x)===i);
-      if(plan.eligibleStoreIds.length>10) plan.eligibleStoreIds=plan.eligibleStoreIds.slice(0,10);
+
     }
     return res.status(200).json({ok:true,provider:'vercel-ai-gateway',model:'openai/gpt-5.6-luna',plan});
   }catch(e){return res.status(502).json({error:'ai_request_failed'});}
