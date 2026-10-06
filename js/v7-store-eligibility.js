@@ -256,35 +256,36 @@ function aiSelectedStores(query,list){
     if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.eligibleStoreIds)) return null;
 
     /*
-     * When the merchant KB has a high-confidence specialist set, that set is
-     * the authoritative eligibility boundary. AI can rank/interpret the
-     * request, but it must not replace specialist merchants with unrelated
-     * beauty/general merchants.
+     * The AI plan is the open-vocabulary bridge. Its IDs are still bounded by
+     * the real merchant catalog (mergedSourceList), so the model cannot invent
+     * a merchant, but a new synonym/description does not need a literal KB
+     * product term anymore.
+     *
+     * Deterministic KB specialists remain first-class: AI may add a genuinely
+     * relevant merchant, but it never removes a specialist already proven by
+     * the deterministic resolver.
      */
-    var kbSpecialists=specialtyStoresForQuery(query,list);
-    if(kbSpecialists&&kbSpecialists.length){
-      var hit=domainForQuery(query);
-      var general=relevantGeneralStores(query,list);
-      kbSpecialists.forEach(function(s){
-        if(general.some(function(g){return String(g.id||'').toLowerCase()===String(s.id||'').toLowerCase();})){
-          general=general.filter(function(g){return String(g.id||'').toLowerCase()!==String(s.id||'').toLowerCase();});
-        }
-      });
-      return rankEligibleStores(kbSpecialists,general);
-    }
+    var source=Array.isArray(list)?list:[];
+    var byId={};
+    source.forEach(function(store){
+      if(store&&store.id)byId[String(store.id).toLowerCase()]=store;
+    });
 
-    /* AI is an interpretation/ranking layer, not an eligibility authority.
-     * When no KB specialist set exists, discard arbitrary AI-selected merchants
-     * and fall back to the deterministic KB general-marketplace resolver.
-     * This prevents category confusion (e.g. furniture queries returning
-     * unrelated digital/mobile merchants simply because the model saw a broad
-     * "furniture" type). */
-    var deterministicGeneral=relevantGeneralStores(query,list);
-    if(deterministicGeneral.length)return rankEligibleStores([],deterministicGeneral);
-    return [];
+    var selected=[];
+    var seen={};
+    p.ai.eligibleStoreIds.forEach(function(rawId){
+      var id=String(rawId||'').toLowerCase();
+      if(!id||seen[id])return;
+      var store=byId[id];
+      if(store){
+        selected.push(store);
+        seen[id]=true;
+      }
+    });
+
+    return selected.length?selected:[];
   }catch(_){return null;}
 }
-
 function mergeAiExpansion(query, deterministicSpecialists, deterministicGeneral, list){
   var ai=aiSelectedStores(query,list);
   if(!ai||!ai.length)return null;
