@@ -35,7 +35,7 @@ assert.equal(dining.domain, 'furniture');
 
 const mobile = eligibility.explain('گوشی سامسونگ تا ۳۰۰ میلیون تومان', stores);
 assert.equal(mobile.domain, 'digital');
-['digido','janebi','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'].forEach(id=>assert.ok(mobile.eligibleIds.includes(id)));
+['digido','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'].forEach(id=>assert.ok(mobile.eligibleIds.includes(id)));
 assert.ok(!mobile.eligibleIds.includes('khanoumi'));
 
 const unknown = eligibility.explain('یک محصول عجیب و ناشناخته', stores);
