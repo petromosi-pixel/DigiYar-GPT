@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.39';
+var VERSION='7.0.0-store-eligibility.40';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -285,48 +285,82 @@ function aiSelectedStores(query,list){
   }catch(_){return null;}
 }
 
+function mergeAiExpansion(query, deterministicSpecialists, deterministicGeneral, list){
+  var ai=aiSelectedStores(query,list);
+  if(!ai||!ai.length)return null;
+
+  var detIds={};
+  (deterministicSpecialists||[]).concat(deterministicGeneral||[]).forEach(function(store){
+    if(store&&store.id)detIds[String(store.id).toLowerCase()]=true;
+  });
+
+  /* AI is an open-vocabulary semantic expansion layer. It may introduce a
+   * merchant for a synonym/product phrase that is not yet present in the
+   * literal KB vocabulary, but it can only select IDs that already exist in
+   * our merchant catalog. This keeps the resolver closed to hallucinated
+   * stores while making the query vocabulary effectively open-ended. */
+  var kb=getKB();
+  var aiSpecialists=[],aiGeneral=[];
+  ai.forEach(function(store){
+    if(!store||!store.id)return;
+    var id=String(store.id).toLowerCase();
+    if(detIds[id]||!kbItem(id))return;
+    if(isGeneralStore(id))aiGeneral.push(store);
+    else aiSpecialists.push(store);
+  });
+
+  if(!aiSpecialists.length&&!aiGeneral.length)return null;
+  return {
+    specialists:(deterministicSpecialists||[]).concat(aiSpecialists),
+    general:(deterministicGeneral||[]).concat(aiGeneral)
+  };
+}
+
 function storesForQuery(query, stores){
   currentEligibilityQuery=query;
   var list=mergedSourceList(stores);
-  /* The AI plan may rank merchants, but it must never bypass the
-   * merchant knowledge-base eligibility boundary. Resolve eligibility
-   * deterministically from the KB first, then let AI influence ordering only
-   * through the already-qualified set. */ 
+  /* Deterministic KB rules remain authoritative for known vocabulary. AI is
+   * used only to expand that boundary when it can semantically identify an
+   * already-known merchant for a new/unlisted expression. */
   var specialty=specialtyStoresForQuery(query,list);
+  var general=relevantGeneralStores(query,list);
+  var aiExpanded=mergeAiExpansion(query,specialty||[],general,list);
+
+  if(aiExpanded){
+    specialty=aiExpanded.specialists;
+    general=aiExpanded.general;
+  }
+
   var hit=domainForQuery(query);
   var aiDomains=aiDomainHints(query);
   if(!hit&&aiDomains.length)hit={domain:aiDomains[0],term:null};
 
-  if(specialty!==null){
-    var general=relevantGeneralStores(query,list);
+  if(specialty!==null&&specialty.length){
     return rankEligibleStores(specialty,general);
   }
 
   if(!hit){
-    /*
-     * No domain/product hit is a genuine unknown-product case. The old
-     * implementation returned every GENERAL_STORE_IDS member here, which
-     * leaked narrow marketplaces (Esam/MeMarket) into unrelated queries.
-     * Keep their direct-product path intact, but make the unknown fallback
-     * use the same broad-marketplace rule as the normal resolver. If the KB
-     * has no semantic signal at all, the four broad marketplaces are the
-     * deterministic safety net.
-     */
-    var noHitGeneral=relevantGeneralStores(query,list);
-    if(noHitGeneral.length)return rankEligibleStores([],noHitGeneral);
+    /* Unknown vocabulary: prefer AI's semantically grounded merchant
+     * selection. If it found no specialist, retain the four broad-marketplace
+     * safety net rather than leaking narrow marketplaces. */
+    if(aiExpanded&&aiExpanded.specialists.length){
+      return rankEligibleStores(aiExpanded.specialists,aiExpanded.general);
+    }
+    if(general.length)return rankEligibleStores([],general);
+    if(aiExpanded&&aiExpanded.general.length)return rankEligibleStores([],aiExpanded.general);
     return list.filter(function(store){
       return store&&BROAD_GENERAL_STORE_IDS.indexOf(String(store.id||'').toLowerCase())!==-1;
     });
   }
 
-  /* Never use a merchant's broad domain label as standalone eligibility.
-   * A store may have a generic domain such as "furniture" in metadata while
-   * actually being irrelevant to the requested product. At this stage only
-   * the KB product/alias resolver plus the general-marketplace semantic window
-   * are authoritative. */
-  var fallbackSpecialists=knowledgeSpecialistsForQuery(query,list);
-  var fallbackGeneral=relevantGeneralStores(query,list);
-  return rankEligibleStores(fallbackSpecialists||[],fallbackGeneral);
+  /* Known domain but no deterministic specialist: AI can now bridge the
+   * vocabulary gap (for example a colloquial product name, synonym, or
+   * natural-language description) without replacing the deterministic
+   * general-marketplace set. */
+  if(aiExpanded&&aiExpanded.specialists.length){
+    return rankEligibleStores(aiExpanded.specialists,aiExpanded.general);
+  }
+  return rankEligibleStores([],general);
 }
 
 function explain(query, stores){
