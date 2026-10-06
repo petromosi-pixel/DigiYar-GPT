@@ -186,9 +186,9 @@ function relevantGeneralStores(query,list){
     /* The four broad marketplaces may use their category coverage as a
        semantic signal. Esam and MeMarket are deliberately stricter: they
        enter only on a direct KB product/alias match. */
-    if(BROAD_GENERAL_STORE_IDS.indexOf(id)!==-1){
-      return generalStoreHasDirectProductMatch(query,id) || generalStoreHasKnowledgeMatch(query,id);
-    }
+    /* General marketplaces are eligible only when their own merchant
+     * product/alias catalog matches the query. Shared domain vocabulary must
+     * never promote a marketplace merely because it operates in that domain. */
     return generalStoreHasDirectProductMatch(query,id);
   });
 }
@@ -320,6 +320,19 @@ function mergeAiExpansion(query, deterministicSpecialists, deterministicGeneral,
 function storesForQuery(query, stores){
   currentEligibilityQuery=query;
   var list=mergedSourceList(stores);
+
+  /*
+   * When the external AI planner returned a non-empty eligibleStoreIds list,
+   * it is the authoritative semantic selection. Eligibility only validates
+   * those IDs against the real merchant catalog; it must not add deterministic
+   * specialists, broad marketplaces, or ALWAYS_INCLUDED stores afterwards.
+   * This is the critical boundary between "AI selection" and "fallback
+   * resolver".
+   */
+  var aiSelected=aiSelectedStores(query,list);
+  if(aiSelected&&aiSelected.length){
+    return orderStoresSpecialistFirst(aiSelected);
+  }
   /* Deterministic KB rules remain authoritative for known vocabulary. AI is
    * used only to expand that boundary when it can semantically identify an
    * already-known merchant for a new/unlisted expression. */
