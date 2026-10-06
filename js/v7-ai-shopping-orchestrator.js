@@ -197,19 +197,10 @@
         if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)&&aiPlan.eligibleStoreIds.length){
           plan.ai=aiPlan;
           plan.candidateStores=aiPlan.eligibleStoreIds.slice();
-          /* The knowledge base may contain direct intent coverage that the
-           * model underweights. Add those merchants by data, never by a
-           * category-specific hardcoded list. */
-          if(businessRoot&&businessRoot.catalog){
-            Object.keys(businessRoot.catalog).forEach(function(id){
-              const item=businessRoot.catalog[id]||{};
-              const intents=Array.isArray(item.intents)?item.intents:[];
-              if(intents.indexOf(plan.category)!==-1 && plan.candidateStores.indexOf(id)===-1){
-                plan.candidateStores.push(id);
-              }
-            });
-            plan.ai.eligibleStoreIds=plan.candidateStores.slice();
-          }
+          /* The AI result is authoritative for store selection when it is
+           * present. Do not append merchants merely because their broad
+           * intent/category happens to match. That expansion caused unrelated
+           * stores to leak into otherwise precise queries. */
           plan.provider='external-ai';
         }else{
           /* An empty/failed AI answer must not erase the proven V6/V7
