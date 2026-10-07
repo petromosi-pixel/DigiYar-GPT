@@ -251,7 +251,9 @@ function relevantGeneralStores(query,list){
     /* General marketplaces are eligible only when their own merchant
      * product/alias catalog matches the query. Shared domain vocabulary must
      * never promote a marketplace merely because it operates in that domain. */
-    return generalStoreHasCurrentCategoryMatch(query,id);
+    return generalStoreHasCurrentCategoryMatch(query,id) ||
+      generalStoreHasDirectProductMatch(query,id) ||
+      generalStoreHasKnowledgeMatch(query,id);
   });
 }
 var ALWAYS_INCLUDED_STORE_IDS=[];
