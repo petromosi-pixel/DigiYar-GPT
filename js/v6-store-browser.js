@@ -28,6 +28,7 @@ function storeSearchUrl(id,q){
  var hs=healthSearchQuery(s);
  if(key==='khanoumi')return khanoumiSearchUrl(s);
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(janebiSearchQuery(s));
+ if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(basalamSearchQuery(s));
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
@@ -38,6 +39,25 @@ function storeSearchUrl(id,q){
  if(SEARCH[key])return SEARCH[key](s);
  return null;
 }
+function basalamSearchQuery(q){
+ var s=storeSearchTerms(q);
+ var plan=window.DigiYarShoppingPlan;
+ var ai=plan&&plan.ai&&Array.isArray(plan.ai.productTerms)?plan.ai.productTerms:[];
+ var required=plan&&plan.ai&&Array.isArray(plan.ai.requiredNameTerms)?plan.ai.requiredNameTerms:[];
+ var candidates=required.concat(ai).map(function(x){return String(x||'').trim();}).filter(Boolean);
+ /* باسلام با عبارت‌های کوتاه و هویت‌محور بهتر نتیجه می‌دهد؛
+    جملهٔ طبیعی هوش‌یار و قیدهای کاربردی را مستقیماً به موتور آن نفرست. */
+ var preferred=[/تصفیه\s*هوا/i,/رطوبت\s*ساز/i,/جارو\s*برقی/i,/بخارشوی/i,/ماشین\s*لباسشویی/i,/یخچال/i,/پنکه/i,/کولر/i,/تلویزیون/i,/لپ.?تاپ/i,/موبایل|گوشی/i,/شارژر/i,/پاوربانک/i,/هندزفری|هدفون/i,/کابل/i];
+ for(var i=0;i<preferred.length;i++){
+   var m=s.match(preferred[i]);
+   if(m)return m[0].replace(/\\s+/g,' ').trim();
+ }
+ for(var j=0;j<candidates.length;j++){
+   var t=candidates[j].replace(/^(?:دستگاه|یک|یه|یک\s+عدد)\s+/i,'').trim();
+   if(t.length>=3)return t;
+ }
+ return s.split(/\\s+/).filter(function(x){return x.length>=2;}).slice(0,4).join(' ');
+}
 function janebiSearchQuery(q){
  var s=storeQueryTerms(q);
  var patterns=[/ضد\s*آفتاب|ضدآفتاب/i,/مرطوب\s*کننده|آبرسان/i,/هندزفری|ایرباد|هدفون/i,/پاوربانک/i,/شارژر/i,/کابل(?:\s+شارژ)?/i,/قاب|کاور|گلس|محافظ\s*صفحه/i,/هولدر/i,/ساعت\s*هوشمند/i,/اسپیکر/i,/دستگاه\s*بخور|رطوبت\s*ساز/i,/جارو\s*شارژی/i,/چراغ\s*خواب/i,/ماساژور/i,/کوله|کیف/i,/چمدان/i];
@@ -45,7 +65,7 @@ function janebiSearchQuery(q){
  return s.split(/\s+/).slice(0,4).join(' ');
 }
 
-const SEARCH={iranmiz:q=>'https://www.iranmiz.com/category/%D9%85%DB%8C%D8%B2-%D9%86%D8%A7%D9%87%D8%A7%D8%B1%D8%AE%D9%88%D8%B1%DB%8C',partochoob:q=>'https://partochoob.com/shop/',chidahome:q=>'https://chidahomestudio.com/shop',tidawood:q=>'https://tidawood.com/',
+const SEARCH=iranmiz:q=>'https://www.iranmiz.com/category/%D9%85%DB%8C%D8%B2-%D9%86%D8%A7%D9%87%D8%A7%D8%B1%D8%AE%D9%88%D8%B1%DB%8C',partochoob:q=>'https://partochoob.com/shop/',chidahome:q=>'https://chidahomestudio.com/shop',tidawood:q=>'https://tidawood.com/',
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digiland:q=>'https://dgland.com/search?q='+encodeURIComponent(q),takhfifan:q=>'https://takhfifan.com/search?q='+encodeURIComponent(q),meghdadit:q=>'https://meghdadit.com/',digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(janebiSearchQuery(q)),khanoumi:q=>khanoumiSearchUrl(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),neshatrokh:q=>'https://www.neshatrokh.com/',dayan:q=>'https://dayanshop.com/search/?q='+encodeURIComponent(q),memarket:q=>'https://memarket-eshopfa.ir/?s='+encodeURIComponent(q),darukade:q=>'https://www.darukade.com/search?search='+encodeURIComponent(q),darmankala:q=>'https://darmankala.com/?s='+encodeURIComponent(q),mosbatesabz:q=>'https://mosbatesabz.com/?s='+encodeURIComponent(q),'daroo-online':q=>'https://DarookhaneOnline.com/',shab:q=>'https://www.shab.ir/',safarme:q=>'https://www.safarme.ir/',eseminar:q=>'https://eseminar.tv/',maktabkhooneh:q=>'https://maktabkhooneh.org/',karnameh:q=>'https://karnameh.com/'
 };
 const STORE_NAMES={iranmiz:'ایران میز',partochoob:'پرتوچوب',chidahome:'چیدا هوم',tidawood:'تیدا چوب',digikala:'دیجی‌کالا',snappshop:'اسنپ‌شاپ',torob:'ترب',basalam:'باسلام',esam:'ایسام',technolife:'تکنولایف',digiland:'دیجی‌لند',takhfifan:'تخفیفان',meghdadit:'مقداد آی‌تی',digido:'دیجی‌دو',gooshishop:'گوشی‌شاپ',berozkala:'بروزکالا',janebi:'جانبی',khanoumi:'خانومی',banimode:'بانی‌مد',modiseh:'مدیسه',pinket:'پینکت',solokala:'سولوکالا',neshatrokh:'نشاط رخ',dayan:'دایان',memarket:'می‌مارکت',darukade:'داروکده',darmankala:'درمان‌کالا',mosbatesabz:'مثبت سبز','daroo-online':'داروخانه آنلاین',shab:'شب',safarme:'سفرمی',eseminar:'ایسمینار',maktabkhooneh:'مکتب‌خونه',karnameh:'کارنامه'};
