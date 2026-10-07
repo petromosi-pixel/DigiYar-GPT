@@ -23,13 +23,13 @@ ${JSON.stringify(catalog)}
 عبارت کاربر:
 ${query}`;
   try{
-    const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'openai/gpt-5.6-luna',input:prompt,text:{format:{type:'json_schema',name:'digiyar_shopping_plan',strict:true,schema}},max_output_tokens:1400})});
+    const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'openai/gpt-5.4',input:prompt,text:{format:{type:'json_schema',name:'digiyar_shopping_plan',strict:true,schema}},max_output_tokens:1400})});
     const data=await r.json();
     if(!r.ok)return res.status(502).json({error:'ai_gateway_error',detail:data&&data.error?data.error:null});
     const raw=String(data.output_text||'').trim();
     let plan;try{plan=JSON.parse(raw);}catch(_){return res.status(502).json({error:'ai_invalid_json'});}
     const allowed=new Set(Object.keys(catalog).map(x=>String(x).toLowerCase()));
     plan.eligibleStoreIds=Array.isArray(plan.eligibleStoreIds)?plan.eligibleStoreIds.map(x=>String(x||'').toLowerCase()).filter((x,i,a)=>allowed.has(x)&&a.indexOf(x)===i):[];
-    return res.status(200).json({ok:true,provider:'vercel-ai-gateway',model:'openai/gpt-5.6-luna',plan});
+    return res.status(200).json({ok:true,provider:'vercel-ai-gateway',model:'openai/gpt-5.4',plan});
   }catch(e){return res.status(502).json({error:'ai_request_failed'});}
 };
