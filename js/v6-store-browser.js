@@ -24,6 +24,7 @@ function healthSearchQuery(q){
 }
 function storeSearchUrl(id,q){
  var key=String(id||'').toLowerCase();
+ window.__DigiYarCurrentStoreSearchId=key;
  var s=storeSearchQuery(q);
  var hs=healthSearchQuery(s);
  if(key==='khanoumi')return khanoumiSearchUrl(s);
@@ -84,6 +85,11 @@ function affiliateUrl(storeId,url){
  return entry.url;
 }
 function storeSearchQuery(q){
+ const plan=window.DigiYarShoppingPlan;
+ const ai=plan&&plan.ai;
+ const current=plan&&String(plan.query||'').trim()===String(q||'').trim();
+ const id=window.__DigiYarCurrentStoreSearchId;
+ if(current&&ai&&ai.searchQueries&&id&&typeof ai.searchQueries[id]==='string'&&ai.searchQueries[id].trim()) return ai.searchQueries[id].trim();
  let s=String(q||'').trim();
  s=s.replace(/(?:از\s*)?\d[\d۰-۹.,]*\s*(?:تا|الی|-)??\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)\s*(?:تومان|ریال)?/gi,' ');
  s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
