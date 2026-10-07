@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.43';
+var VERSION='7.0.0-store-eligibility.44';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -155,6 +155,51 @@ function orderStoresSpecialistFirst(list){
   });
 }
 function isGeneralStore(id){return GENERAL_STORE_IDS.indexOf(String(id||'').toLowerCase())!==-1;}
+function currentStoreCategories(id){
+  var all=root.DigiYarStoreCategories;
+  if(!all||typeof all!=='object')return [];
+  var key=String(id||'').toLowerCase();
+  return Array.isArray(all[key])?all[key]:[];
+}
+function generalStoreHasCurrentCategoryMatch(query,id){
+  var cats=currentStoreCategories(id).map(norm);
+  if(!cats.length)return false;
+  var s=norm(query);
+  var p=root.DigiYarShoppingPlan;
+  var ai=p&&norm(p.query)===s&&p.ai?p.ai:null;
+  var domains=ai&&Array.isArray(ai.domains)?ai.domains.map(norm):[];
+  var productTerms=ai&&Array.isArray(ai.productTerms)?ai.productTerms.map(norm):[];
+  var text=productTerms.concat([ai&&ai.category||'',ai&&ai.useCase||'']).map(norm).filter(Boolean).join(' ');
+  if(isCleaningTaskQuery(query)){
+    /* In an action query, the object being cleaned is not the requested
+       product. Only current categories that actually describe cleaning,
+       household-cleaning or hygiene products may qualify a general store. */
+    return cats.some(function(c){return /(?:شوینده|نظافت|بهداشت|خانه|آشپزخانه|سوپرمارکت)/i.test(c);}) &&
+      /(?:شوینده|تمیزکننده|نظافت|پاک\s*کننده|مبل\s*شویی|بخارشوی|جارو)/i.test(text||s.replace(/مبل|مبلمان/g,'').trim());
+  }
+  var domainMatchers={
+    digital:/(?:دیجیتال|موبایل|لپ.?تاپ|کامپیوتر|صوتی|تصویری|لوازم\s*جانبی)/i,
+    furniture:/(?:خانه|آشپزخانه|مبلمان|لوازم\s*خانه)/i,
+    home:/(?:خانه|آشپزخانه|لوازم\s*خانه|لوازم\s*خانگی)/i,
+    fashion:/(?:مد|پوشاک|کفش|اکسسوری)/i,
+    beauty:/(?:آرایشی|زیبایی|مراقبت\s*پوست|مراقبت\s*مو)/i,
+    health:/(?:سلامت|پزشکی|بهداشت|مراقبت)/i,
+    medicine:/(?:سلامت|پزشکی|دارو|مکمل|بهداشت)/i,
+    supermarket:/(?:سوپرمارکت|مواد\s*غذایی|میوه|لبنیات|نوشیدنی|شوینده)/i,
+    sports:/(?:ورزش|سفر|تناسب\s*اندام)/i,
+    kids:/(?:کودک|نوزاد|اسباب.?بازی)/i,
+    books:/(?:کتاب|فرهنگی|هنری|لوازم\s*تحریر)/i,
+    auto:/(?:خودرو|وسایل\s*نقلیه)/i,
+    accessories:/(?:اکسسوری|لوازم\s*جانبی)/i
+  };
+  if(domains.some(function(d){return domainMatchers[d]&&cats.some(function(c){return domainMatchers[d].test(c);});}))return true;
+  /* A specific product term is stronger evidence than the broad domain. */
+  return productTerms.some(function(t){
+    if(!t)return false;
+    var tokens=t.split(/\\s+/).filter(function(x){return x.length>=3;});
+    return tokens.length&&cats.some(function(c){return tokens.some(function(tok){return c.indexOf(tok)!==-1;});});
+  });
+}
 function generalStoreHasDirectProductMatch(query,id){
   var item=kbItem(id);
   if(!item)return false;
@@ -198,10 +243,10 @@ function relevantGeneralStores(query,list){
     /* General marketplaces are eligible only when their own merchant
      * product/alias catalog matches the query. Shared domain vocabulary must
      * never promote a marketplace merely because it operates in that domain. */
-    return generalStoreHasDirectProductMatch(query,id);
+    return generalStoreHasCurrentCategoryMatch(query,id);
   });
 }
-var ALWAYS_INCLUDED_STORE_IDS=['digikala'];
+var ALWAYS_INCLUDED_STORE_IDS=[];
 var NON_PRODUCT_DOMAINS=['travel_ticket','lodging','education','auto_service'];
 var VEHICLE_TRANSACTION_DOMAINS=['auto_service'];
 var currentEligibilityQuery='';
@@ -274,12 +319,12 @@ function aiSelectionIsAllowed(query,id){
      product boundaries. General marketplaces require direct product/alias
      evidence from their own KB. */
   if(isGeneralStore(key)){
-    return generalStoreHasDirectProductMatch(query,key);
+    return generalStoreHasCurrentCategoryMatch(query,key);
   }
 
   /* A cleaning-task query must never promote a furniture-only merchant just
      because the target object (e.g. «مبل») appears in that merchant's catalog. */
-  if(isCleaningTaskQuery(query) && item.intents && item.intents.indexOf('furniture')!==-1){
+  if(isCleaningTaskQuery(query) && ((item.intents||[]).indexOf('furniture')!==-1 || (item.domains||[]).indexOf('furniture')!==-1)){
     var cleaningProducts=[].concat(item.products||[],item.aliases||[]);
     var hasCleaningProduct=cleaningProducts.some(function(term){
       var t=norm(term);
