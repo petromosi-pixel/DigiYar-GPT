@@ -349,44 +349,32 @@ function semanticStoreEvidence(item,ai){
 function aiSelectionIsAllowed(query,id){
   var key=String(id||'').toLowerCase();
   var item=kbItem(key);
-  if(!item)return false;
   var ai=semanticPlanForQuery(query);
-  if(!ai)return false;
+  if(!item||!ai)return false;
+
+  /*
+   * Hooshyar has already done the open-vocabulary semantic reasoning.
+   * This function is deliberately a guard, not a second intent engine.
+   * Do not reject a merchant merely because the requested phrase is new and
+   * absent from the literal KB vocabulary.
+   */
   var semanticText=semanticPlanText(ai);
-  var task=norm(ai.taskType||'');
-  var action=norm(ai.action||'');
-
-  /* The AI has already performed open-vocabulary semantic reasoning. This
-     validator must NOT re-interpret the raw user sentence. It only checks
-     the semantic plan against the canonical merchant KB. */
   var exclusions=[].concat(item.exclude||[]).map(norm).filter(Boolean);
-  if(exclusions.some(function(term){return semanticText.indexOf(term)!==-1;}))return false;
 
-  if(key==='takhfifan'&&!/(?:discount|promotion|coupon|offer|تخفیف|کد\s*تخفیف|پیشنهاد\s*ویژه|خدمات\s*تخفیفی)/i.test(semanticText))return false;
+  /* Explicit merchant exclusions remain hard safety boundaries. */
+  if(exclusions.some(function(term){return term&&semanticText.indexOf(term)!==-1;}))return false;
 
-  /* A furniture merchant is not eligible merely because the target object is
-     furniture. For tool/material tasks, evidence must be for the requested
-     product itself. */
-  if((task==='find_tool_for_target'||task==='find_product_for_task'||/(?:تمیز|شست|نظافت|پاک)/i.test(action)) &&
-     ((item.intents||[]).indexOf('furniture')!==-1 || (item.domains||[]).indexOf('furniture')!==-1) &&
-     !semanticStoreEvidence(item,ai)) return false;
-
-  /* Specialist merchants need semantic product evidence. Domain alone is not
-     enough; this is what prevents a mobile-accessory query from selecting a
-     phone-only merchant, or a skincare query from selecting an unrelated
-     health merchant. */
-  if(!isGeneralStore(key) && !semanticStoreEvidence(item,ai)){
-    var domains=Array.isArray(ai.domains)?ai.domains.map(norm):[];
-    var merchantDomains=(item.domains||[]).map(norm);
-    var shared=domains.some(function(d){return merchantDomains.indexOf(d)!==-1;});
-    /* Explicit specialist intent may be enough only when the merchant itself
-       declares that exact intent. */
-    var declaredIntent=(item.intents||[]).map(norm);
-    if(!(shared&&declaredIntent.some(function(i){return domains.indexOf(i)!==-1;})))return false;
+  /* Commercial-policy guards that are unambiguous and merchant-specific. */
+  if(key==='takhfifan' &&
+     !/(?:discount|promotion|coupon|offer|تخفیف|کد\s*تخفیف|پیشنهاد\s*ویژه|خدمات\s*تخفیفی)/i.test(semanticText)){
+    return false;
   }
 
-  if(key==='janebi' && /(?:^|\\s)(?:موبایل|گوشی)(?:\\s|$)/i.test(norm(ai.requestedProduct||'')) &&
-     !/(?:جانبی|اکسسوری|قاب|کاور|شارژر|کابل|گلس|پاوربانک|هندزفری|هدفون|ایرباد|هولدر|مبدل)/i.test(semanticText)) return false;
+  if(key==='janebi' &&
+     /(?:^|\s)(?:موبایل|گوشی)(?:\s|$)/i.test(norm(ai.requestedProduct||'')) &&
+     !/(?:جانبی|اکسسوری|قاب|کاور|شارژر|کابل|گلس|پاوربانک|هندزفری|هدفون|ایرباد|هولدر|مبدل)/i.test(semanticText)){
+    return false;
+  }
 
   return true;
 }
