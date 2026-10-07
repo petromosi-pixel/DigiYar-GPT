@@ -40,7 +40,7 @@ function storeSearchUrl(id,q){
  return null;
 }
 function basalamSearchQuery(q){
- var s=storeSearchTerms(q);
+ var s=storeSearchQuery(q);
  var plan=window.DigiYarShoppingPlan;
  var ai=plan&&plan.ai&&Array.isArray(plan.ai.productTerms)?plan.ai.productTerms:[];
  var required=plan&&plan.ai&&Array.isArray(plan.ai.requiredNameTerms)?plan.ai.requiredNameTerms:[];
