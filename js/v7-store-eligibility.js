@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.46';
+var VERSION='7.0.0-store-eligibility.47';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -309,44 +309,79 @@ function isCleaningTaskQuery(query){
   return /(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی|شستشوی\s*مبل)/i.test(s);
 }
 
+function semanticPlanForQuery(query){
+  try{
+    var p=root.DigiYarShoppingPlan;
+    return p&&norm(p.query)===norm(query)&&p.ai?p.ai:null;
+  }catch(_){return null;}
+}
+
+function semanticPlanText(ai){
+  if(!ai)return '';
+  return norm([ai.semanticNeed,ai.requestedProduct,ai.action,ai.taskType,ai.category,ai.useCase]
+    .concat(Array.isArray(ai.productTerms)?ai.productTerms:[])
+    .concat(Array.isArray(ai.requiredNameTerms)?ai.requiredNameTerms:[])
+    .concat(Array.isArray(ai.attributes)?ai.attributes:[])
+    .join(' '));
+}
+
+function semanticStoreEvidence(item,ai){
+  if(!item||!ai)return false;
+  var requested=norm(ai.requestedProduct||'');
+  var terms=[].concat(ai.productTerms||[],ai.requiredNameTerms||[]).map(norm).filter(Boolean);
+  var itemTerms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]).map(norm).filter(Boolean);
+  if(!requested&&!terms.length)return false;
+  return itemTerms.some(function(it){
+    return requested && (it===requested||requested.indexOf(it)!==-1||it.indexOf(requested)!==-1);
+  }) || terms.some(function(t){
+    return itemTerms.some(function(it){return it===t||t.indexOf(it)!==-1||it.indexOf(t)!==-1;});
+  });
+}
+
 function aiSelectionIsAllowed(query,id){
   var key=String(id||'').toLowerCase();
   var item=kbItem(key);
   if(!item)return false;
-  var s=norm(query);
+  var ai=semanticPlanForQuery(query);
+  if(!ai)return false;
+  var semanticText=semanticPlanText(ai);
+  var task=norm(ai.taskType||'');
+  var action=norm(ai.action||'');
 
-  /* AI may select semantically, but it may not bypass merchant-specific
-     product boundaries. General marketplaces require direct product/alias
-     evidence from their own KB. */
-  if(isGeneralStore(key)){
-    return generalStoreHasCurrentCategoryMatch(query,key);
+  /* The AI has already performed open-vocabulary semantic reasoning. This
+     validator must NOT re-interpret the raw user sentence. It only checks
+     the semantic plan against the canonical merchant KB. */
+  var exclusions=[].concat(item.exclude||[]).map(norm).filter(Boolean);
+  if(exclusions.some(function(term){return semanticText.indexOf(term)!==-1;}))return false;
+
+  if(key==='takhfifan'&&!/(?:discount|promotion|coupon|offer|تخفیف|کد\s*تخفیف|پیشنهاد\s*ویژه|خدمات\s*تخفیفی)/i.test(semanticText))return false;
+
+  /* A furniture merchant is not eligible merely because the target object is
+     furniture. For tool/material tasks, evidence must be for the requested
+     product itself. */
+  if((task==='find_tool_for_target'||task==='find_product_for_task'||/(?:تمیز|شست|نظافت|پاک)/i.test(action)) &&
+     ((item.intents||[]).indexOf('furniture')!==-1 || (item.domains||[]).indexOf('furniture')!==-1) &&
+     !semanticStoreEvidence(item,ai)) return false;
+
+  /* Specialist merchants need semantic product evidence. Domain alone is not
+     enough; this is what prevents a mobile-accessory query from selecting a
+     phone-only merchant, or a skincare query from selecting an unrelated
+     health merchant. */
+  if(!isGeneralStore(key) && !semanticStoreEvidence(item,ai)){
+    var domains=Array.isArray(ai.domains)?ai.domains.map(norm):[];
+    var merchantDomains=(item.domains||[]).map(norm);
+    var shared=domains.some(function(d){return merchantDomains.indexOf(d)!==-1;});
+    /* Explicit specialist intent may be enough only when the merchant itself
+       declares that exact intent. */
+    var declaredIntent=(item.intents||[]).map(norm);
+    if(!(shared&&declaredIntent.some(function(i){return domains.indexOf(i)!==-1;})))return false;
   }
 
-  /* A cleaning-task query must never promote a furniture-only merchant just
-     because the target object (e.g. «مبل») appears in that merchant's catalog. */
-  if(isCleaningTaskQuery(query) && ((item.intents||[]).indexOf('furniture')!==-1 || (item.domains||[]).indexOf('furniture')!==-1)){
-    var cleaningProducts=[].concat(item.products||[],item.aliases||[]);
-    var hasCleaningProduct=cleaningProducts.some(function(term){
-      var t=norm(term);
-      return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(t);
-    });
-    if(!hasCleaningProduct)return false;
-  }
-
-  /* Respect explicit merchant exclusions before accepting an AI decision. */
-  var exclusions=[].concat(item.exclude||[]);
-  if(exclusions.some(function(term){
-    var t=norm(term);
-    return t&&s.indexOf(t)!==-1;
-  }))return false;
-
-  /* Takhfifan is a promotion/service marketplace, not a default product
-     destination merely because it lists a product category. */
-  if(key==='takhfifan'&&!/(?:تخفیف|کد\s*تخفیف|پیشنهاد\s*ویژه|خدمات\s*تخفیفی)/i.test(s))return false;
+  if(key==='janebi' && /(?:^|\\s)(?:موبایل|گوشی)(?:\\s|$)/i.test(norm(ai.requestedProduct||'')) &&
+     !/(?:جانبی|اکسسوری|قاب|کاور|شارژر|کابل|گلس|پاوربانک|هندزفری|هدفون|ایرباد|هولدر|مبدل)/i.test(semanticText)) return false;
 
   return true;
 }
-
 function aiSelectedStores(query,list){
   try{
     var p=root.DigiYarShoppingPlan;
