@@ -87,7 +87,7 @@
   }
 
   async function callAI(query,context){
-    const endpoint=window.DigiYarAIEndpoint||'/api/ai-shopping';
+    const endpoint=window.DigiYarAIEndpoint||'https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping';
     const storeCatalog=buildStoreCatalog();
     const response=await fetch(endpoint,{
       method:'POST',
