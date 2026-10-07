@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.47';
+var VERSION='7.0.0-store-eligibility.48';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -469,9 +469,16 @@ function storesForQuery(query, stores){
    * This is the critical boundary between "AI selection" and "fallback
    * resolver".
    */
+  var semanticPlan=semanticPlanForQuery(query);
   var aiSelected=aiSelectedStores(query,list);
-  if(aiSelected&&aiSelected.length){
-    return orderStoresSpecialistFirst(aiSelected);
+  /*
+   * Once semantic AI has answered, its merchant set is authoritative.
+   * An empty set is still an answer: do not resurrect the legacy keyword
+   * resolver, broad defaults, or specialist expansion. The only local work
+   * permitted here is validation against the canonical merchant KB.
+   */
+  if(semanticPlan&&Array.isArray(semanticPlan.eligibleStoreIds)){
+    return orderStoresSpecialistFirst(aiSelected||[]);
   }
   /* Deterministic KB rules remain authoritative for known vocabulary. AI is
    * used only to expand that boundary when it can semantically identify an
