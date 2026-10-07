@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.45';
+var VERSION='7.0.0-store-eligibility.46';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
