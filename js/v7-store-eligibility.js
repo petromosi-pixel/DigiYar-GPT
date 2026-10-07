@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.42';
+var VERSION='7.0.0-store-eligibility.43';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -259,6 +259,11 @@ function aiSpecialtyMatches(query,list){
   }catch(_){return [];}
 }
 
+function isCleaningTaskQuery(query){
+  var s=norm(query);
+  return /(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی|شستشوی\s*مبل)/i.test(s);
+}
+
 function aiSelectionIsAllowed(query,id){
   var key=String(id||'').toLowerCase();
   var item=kbItem(key);
@@ -270,6 +275,17 @@ function aiSelectionIsAllowed(query,id){
      evidence from their own KB. */
   if(isGeneralStore(key)){
     return generalStoreHasDirectProductMatch(query,key);
+  }
+
+  /* A cleaning-task query must never promote a furniture-only merchant just
+     because the target object (e.g. «مبل») appears in that merchant's catalog. */
+  if(isCleaningTaskQuery(query) && item.intents && item.intents.indexOf('furniture')!==-1){
+    var cleaningProducts=[].concat(item.products||[],item.aliases||[]);
+    var hasCleaningProduct=cleaningProducts.some(function(term){
+      var t=norm(term);
+      return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(t);
+    });
+    if(!hasCleaningProduct)return false;
   }
 
   /* Respect explicit merchant exclusions before accepting an AI decision. */
