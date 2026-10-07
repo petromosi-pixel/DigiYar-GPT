@@ -9,7 +9,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.14';
+  const VERSION='7.0.0-ai-shopping-orchestrator.15';
 
   const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
 
@@ -138,31 +138,41 @@
         const businessRoot=window.DigiYarStoreBusinessDomains;
         const businessCatalog=businessRoot&&typeof businessRoot.forAI==='function'?businessRoot.forAI():{};
         const storeCatalog={};
-        /* Business-domain knowledge is the primary grounding source. Visual
-         * Popular Stores metadata is only supplemental context and must never
-         * replace the detailed merchant knowledge base. */
+
+        /* One source of truth: send the canonical merchant KB to the AI.
+         * The AI must reason over the same record used by Store Eligibility:
+         * business domains, specialties, product families, products/aliases,
+         * exclusions and merchant match policy. Current store categories and
+         * Popular Stores labels are supplemental evidence only. */
         Object.keys(businessCatalog).forEach(function(id){
           const b=businessCatalog[id]||{};
           storeCatalog[id]={
+            id:id,
             name:String(b.name||id),
-            businessDomain:b.domains||[],
-            specialties:b.specialties||[],
-            productFamilies:b.products||[],
-            aliases:b.aliases||[],
-            exclusions:b.exclude||[]
+            domains:Array.isArray(b.domains)?b.domains.slice():[],
+            businessDomain:Array.isArray(b.domains)?b.domains.slice():[],
+            specialties:Array.isArray(b.specialties)?b.specialties.slice():[],
+            productFamilies:Array.isArray(b.productFamilies)?b.productFamilies.slice():[],
+            products:Array.isArray(b.products)?b.products.slice():[],
+            aliases:Array.isArray(b.aliases)?b.aliases.slice():[],
+            querySignals:Array.isArray(b.querySignals)?b.querySignals.slice():[],
+            exclusions:Array.isArray(b.exclude)?b.exclude.slice():[],
+            matchPolicy:b.matchPolicy||null,
+            semanticText:String(b.semanticText||'')
           };
         });
+
         Object.keys(categories).forEach(function(id){
           const key=String(id).toLowerCase();
-          const subtitle=Array.isArray(categories[id])?categories[id].slice():[];
-          const existing=storeCatalog[key]||{name:key};
-          existing.categories=subtitle;
+          const existing=storeCatalog[key]||{id:key,name:key};
+          existing.categories=Array.isArray(categories[id])?categories[id].slice():[];
           storeCatalog[key]=existing;
         });
+
         popular.forEach(function(store){
           if(!store||!store.id)return;
           const id=String(store.id).toLowerCase();
-          const existing=storeCatalog[id]||{name:id};
+          const existing=storeCatalog[id]||{id:id,name:id};
           storeCatalog[id]={
             ...existing,
             name:String(store.name||existing.name||id),
@@ -171,28 +181,7 @@
             tag:String(store.tag||'').trim()
           };
         });
-        /* Mobile specialists that must remain visible for any clear mobile/phone
-         * intent. Their domain metadata is also supplied to AI even when a store
-         * is not present in Popular Stores at submit time. */
-        const mobileCatalog={
-          digido:{name:'دیجی‌دو',tagline:'موبایل و لوازم جانبی',categories:['digital']},
-          janebi:{name:'جانبی',tagline:'فروشگاه اینترنتی لوازم جانبی',categories:['digital']},
-          digiland:{name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',categories:['digital']},
-          takhfifan:{name:'تخفیفان',tagline:'پیشنهادها و تخفیف‌های آنلاین',categories:['digital']},
-          berozkala:{name:'بروز کالا',tagline:'کالای دیجیتال و ماشین اداری',categories:['digital']},
-          gooshishop:{name:'گوشی شاپ',tagline:'فروشگاه اینترنتی موبایل',categories:['digital']},
-          technolife:{name:'تکنولایف',tagline:'فروشگاه آنلاین موبایل و کالاهای دیجیتال',categories:['digital']},
-          meghdadit:{name:'مقداد آی‌تی',tagline:'فروشگاه اینترنتی آی‌تی، موبایل و کالای دیجیتال',categories:['digital']}
-        };
-        Object.keys(mobileCatalog).forEach(function(id){
-          if(!storeCatalog[id])storeCatalog[id]=mobileCatalog[id];
-        });
-        const domainCatalog=window.DigiYarStoreEligibility&&window.DigiYarStoreEligibility.storeDomains||{};
-        Object.keys(domainCatalog).forEach(function(id){
-          const key=String(id).toLowerCase();
-          if(!storeCatalog[key])storeCatalog[key]={name:key,description:'',categories:[],domains:domainCatalog[id]};
-          else storeCatalog[key].domains=domainCatalog[id];
-        });
+
         const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:storeCatalog});
         if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)&&aiPlan.eligibleStoreIds.length){
           plan.ai=aiPlan;
