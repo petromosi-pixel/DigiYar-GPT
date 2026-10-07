@@ -12,7 +12,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.16';
+  const VERSION='7.0.0-ai-shopping-orchestrator.17';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
