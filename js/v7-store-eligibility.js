@@ -164,41 +164,49 @@ function currentStoreCategories(id){
 function generalStoreHasCurrentCategoryMatch(query,id){
   var cats=currentStoreCategories(id).map(norm);
   if(!cats.length)return false;
-  var s=norm(query);
-  var p=root.DigiYarShoppingPlan;
-  var ai=p&&norm(p.query)===s&&p.ai?p.ai:null;
+  var ai=semanticPlanForQuery(query);
+  var text=ai?semanticPlanText(ai):norm(query);
   var domains=ai&&Array.isArray(ai.domains)?ai.domains.map(norm):[];
-  var productTerms=ai&&Array.isArray(ai.productTerms)?ai.productTerms.map(norm):[];
-  var text=productTerms.concat([ai&&ai.category||'',ai&&ai.useCase||'']).map(norm).filter(Boolean).join(' ');
-  if(isCleaningTaskQuery(query)){
-    /* In an action query, the object being cleaned is not the requested
-       product. Only current categories that actually describe cleaning,
-       household-cleaning or hygiene products may qualify a general store. */
-    return cats.some(function(c){return /(?:شوینده|نظافت|بهداشت|خانه|آشپزخانه|سوپرمارکت)/i.test(c);}) &&
-      /(?:شوینده|تمیزکننده|نظافت|پاک\s*کننده|مبل\s*شویی|بخارشوی|جارو)/i.test(text||s.replace(/مبل|مبلمان/g,'').trim());
-  }
+  var requested=ai?norm(ai.requestedProduct||''):text;
+  var productTerms=ai&&Array.isArray(ai.productTerms)?ai.productTerms.map(norm).filter(Boolean):[];
+  var task=ai?norm(ai.taskType||''):'';
+
+  /* In AI mode, categories are matched against the semantic need — never the
+     raw conversational sentence. targetObject is deliberately excluded. */
   var domainMatchers={
-    digital:/(?:دیجیتال|موبایل|لپ.?تاپ|کامپیوتر|صوتی|تصویری|لوازم\s*جانبی)/i,
-    furniture:/(?:خانه|آشپزخانه|مبلمان|لوازم\s*خانه)/i,
-    home:/(?:خانه|آشپزخانه|لوازم\s*خانه|لوازم\s*خانگی|لوازم\s*برقی)/i,
+    digital:/(?:دیجیتال|موبایل|لپ.?تاپ|کامپیوتر|صوتی|تصویری|لوازم\\s*جانبی)/i,
+    furniture:/(?:خانه|آشپزخانه|مبلمان|لوازم\\s*خانه)/i,
+    home:/(?:خانه|آشپزخانه|لوازم\\s*خانه|لوازم\\s*خانگی|لوازم\\s*برقی)/i,
     fashion:/(?:مد|پوشاک|کفش|اکسسوری)/i,
-    beauty:/(?:آرایشی|زیبایی|مراقبت\s*پوست|مراقبت\s*مو)/i,
+    beauty:/(?:آرایشی|زیبایی|مراقبت\\s*پوست|مراقبت\\s*مو)/i,
     health:/(?:سلامت|پزشکی|بهداشت|مراقبت)/i,
     medicine:/(?:سلامت|پزشکی|دارو|مکمل|بهداشت)/i,
-    supermarket:/(?:سوپرمارکت|مواد\s*غذایی|میوه|لبنیات|نوشیدنی|شوینده)/i,
-    sports:/(?:ورزش|سفر|تناسب\s*اندام)/i,
+    supermarket:/(?:سوپرمارکت|مواد\\s*غذایی|میوه|لبنیات|نوشیدنی|شوینده)/i,
+    sports:/(?:ورزش|سفر|تناسب\\s*اندام)/i,
     kids:/(?:کودک|نوزاد|اسباب.?بازی)/i,
-    books:/(?:کتاب|فرهنگی|هنری|لوازم\s*تحریر)/i,
-    auto:/(?:خودرو|وسایل\s*نقلیه)/i,
-    accessories:/(?:اکسسوری|لوازم\s*جانبی)/i
+    books:/(?:کتاب|فرهنگی|هنری|لوازم\\s*تحریر)/i,
+    auto:/(?:خودرو|وسایل\\s*نقلیه)/i,
+    accessories:/(?:اکسسوری|لوازم\\s*جانبی)/i,
+    travel_ticket:/(?:بلیط|سفر|قطار|اتوبوس|هواپیما)/i,
+    lodging:/(?:اقامت|هتل|ویلا|سوئیت|اقامتگاه)/i,
+    education:/(?:آموزش|دوره|کلاس|مهارت)/i,
+    auto_service:/(?:تعمیر|سرویس|قطعه|کارواش)/i
   };
-  if(domains.some(function(d){return domainMatchers[d]&&cats.some(function(c){return domainMatchers[d].test(c);});}))return true;
-  /* A specific product term is stronger evidence than the broad domain. */
-  return productTerms.some(function(t){
-    if(!t)return false;
-    var tokens=t.split(/\\s+/).filter(function(x){return x.length>=3;});
-    return tokens.length&&cats.some(function(c){return tokens.some(function(tok){return c.indexOf(tok)!==-1;});});
-  });
+  if(ai){
+    if((task==='find_tool_for_target'||task==='find_product_for_task') && /(?:مبل|مبلمان|فرش|پارچه)/i.test(norm(ai.targetObject||''))){
+      /* Target object is not a product category. Match the requested product
+         instead; this blocks furniture marketplaces from cleaning-tool tasks. */
+      if(!/(?:شوینده|نظافت|بهداشت|تمیزکننده|پاک\\s*کننده|بخارشوی|جارو)/i.test(text))return false;
+    }
+    if(domains.length && domains.some(function(d){return domainMatchers[d]&&cats.some(function(c){return domainMatchers[d].test(c);});}))return true;
+    if(requested && cats.some(function(c){return c.indexOf(requested)!==-1 || requested.indexOf(c)!==-1;}))return true;
+    return productTerms.some(function(t){return cats.some(function(c){
+      return c.indexOf(t)!==-1 || t.indexOf(c)!==-1;
+    });});
+  }
+  /* Deterministic fallback for provider failure retains the old raw-query path. */
+  var s=norm(query);
+  return cats.some(function(c){return c.indexOf(s)!==-1 || s.indexOf(c)!==-1;});
 }
 function generalStoreHasDirectProductMatch(query,id){
   var item=kbItem(id);
