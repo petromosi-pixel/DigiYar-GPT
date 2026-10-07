@@ -63,6 +63,15 @@ function kbMatchedStoreIds(query){
      * word such as «موبایل» from promoting Esam/MeMarket into specialist
      * results for a more specific query. */
     if(isGeneralStore(id))return;
+    /* A cleaning/cleaning-equipment request is an action/task, not a request to buy the furniture itself. Do not let literal matches such as «مبل» promote furniture merchants. */
+    if(isCleaningTaskQuery(s) && item.intents && item.intents.indexOf('furniture')!==-1){
+      var cleaningProducts=[].concat(item.products||[],item.aliases||[]);
+      var hasCleaningProduct=cleaningProducts.some(function(term){
+        var t=norm(term);
+        return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(t);
+      });
+      if(!hasCleaningProduct)return;
+    }
     if(item.rankAfterGeneral && /(?:قاب|کاور|گلس|محافظ|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|مبدل|لوازم\s*جانبی|اکسسوری)/i.test(s)){
       directMatch=false;
     }
