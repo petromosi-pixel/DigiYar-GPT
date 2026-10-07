@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.44';
+var VERSION='7.0.0-store-eligibility.45';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -180,7 +180,7 @@ function generalStoreHasCurrentCategoryMatch(query,id){
   var domainMatchers={
     digital:/(?:دیجیتال|موبایل|لپ.?تاپ|کامپیوتر|صوتی|تصویری|لوازم\s*جانبی)/i,
     furniture:/(?:خانه|آشپزخانه|مبلمان|لوازم\s*خانه)/i,
-    home:/(?:خانه|آشپزخانه|لوازم\s*خانه|لوازم\s*خانگی)/i,
+    home:/(?:خانه|آشپزخانه|لوازم\s*خانه|لوازم\s*خانگی|لوازم\s*برقی)/i,
     fashion:/(?:مد|پوشاک|کفش|اکسسوری)/i,
     beauty:/(?:آرایشی|زیبایی|مراقبت\s*پوست|مراقبت\s*مو)/i,
     health:/(?:سلامت|پزشکی|بهداشت|مراقبت)/i,
