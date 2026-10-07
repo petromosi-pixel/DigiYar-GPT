@@ -1,213 +1,136 @@
-/* DigiYar V7 — AI Shopping Orchestrator
- * Small, provider-agnostic shopping brain.
- * Current mode is deterministic/local: it never invents product data
- * and never performs network/store API calls.
+/* DigiYar V7 — Hooshyar semantic AI orchestrator
+ * Hooshyar is the semantic brain of DigiYar.
  *
- * A future AI provider can be attached through:
- *   window.DigiYarAIProvider = { understand(query, context) { ... } }
+ * Architecture:
+ * user language -> AI semantic understanding -> canonical DigiYar KB
+ * -> semantic merchant reasoning -> merchant search plan -> Store Browser.
+ *
+ * This file deliberately contains NO product/merchant keyword rules.
+ * The AI endpoint owns open-vocabulary interpretation. The local layer only
+ * assembles canonical knowledge and safely publishes the returned plan.
  */
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.15';
-
-  const STORE_IDS=['digikala','snappshop','torob','basalam','esam','technolife','digido','gooshishop','berozkala','janebi','khanoumi','banimode','modiseh','pinket','solokala','dayan','memarket'];
-
-  const TYPE_PATTERNS=[
-    {type:'mobile',words:['موبایل','گوشی','smartphone','mobile']},
-    {type:'laptop',words:['لپ تاپ','لپ‌تاپ','نوت بوک','notebook','laptop']},
-    {type:'tablet',words:['تبلت','tablet']},
-    {type:'monitor',words:['مانیتور','monitor']},
-    {type:'tv',words:['تلویزیون','tv','تلوزیون']},
-    {type:'furniture',words:['مبل','مبلمان','صندلی','میز','میز اداری','مبلمان اداری']},
-    {type:'clothing',words:['لباس','پیراهن','شلوار','کفش','کت','هودی','مانتو']},
-    {type:'home-appliance',words:['یخچال','لباسشویی','جاروبرقی','مایکروویو','لوازم خانگی']},
-    {type:'digital',words:['کالای دیجیتال','هارد','فلش','هدفون','هندزفری','کیبورد','ماوس']}
-  ];
-
-  const BRAND_PATTERNS=[
-    'سامسونگ','اپل','شیائومی','هواوی','آنر','ایسوس','لنوو','اچ‌پی','hp',
-    'دل','dell','سونی','ال‌جی','lg','پارس خزر','جی‌پلاس','اسنوا'
-  ];
-
-  function normalizeDigits(value){
-    return String(value||'').replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c)));
-  }
+  const VERSION='7.0.0-ai-shopping-orchestrator.16';
 
   function clean(value){
-    return String(value||'').replace(/\s+/g,' ').trim();
+    return String(value==null?'':value).replace(/\s+/g,' ').trim();
   }
 
-  function parseMoney(query){
-    const q=normalizeDigits(query).replace(/,/g,'');
-    const nums=[...q.matchAll(/(\d+(?:\.\d+)?)\s*(میلیون|م|هزار|تومان|ریال)?/gi)];
-    if(!nums.length)return {min:null,max:null,currency:'toman'};
-    const values=nums.map(m=>{
-      let n=Number(m[1]);
-      const unit=(m[2]||'').toLowerCase();
-      if(unit==='میلیون'||unit==='م')n*=1000000;
-      else if(unit==='هزار')n*=1000;
-      return n;
+  function buildStoreCatalog(){
+    const popular=Array.isArray(window.DigiYarPopularAffiliateStores)
+      ?window.DigiYarPopularAffiliateStores:[];
+    const categories=window.DigiYarStoreCategories&&typeof window.DigiYarStoreCategories==='object'
+      ?window.DigiYarStoreCategories:{};
+    const root=window.DigiYarStoreBusinessDomains;
+    const businessCatalog=root&&typeof root.forAI==='function'?root.forAI():{};
+    const catalog={};
+
+    Object.keys(businessCatalog||{}).forEach(function(id){
+      const b=businessCatalog[id]||{};
+      catalog[String(id).toLowerCase()]={
+        id:String(id).toLowerCase(),
+        name:String(b.name||id),
+        domains:Array.isArray(b.domains)?b.domains.slice():[],
+        businessDomain:Array.isArray(b.domains)?b.domains.slice():[],
+        intents:Array.isArray(b.intents)?b.intents.slice():[],
+        specialties:Array.isArray(b.specialties)?b.specialties.slice():[],
+        productFamilies:Array.isArray(b.productFamilies)?b.productFamilies.slice():[],
+        products:Array.isArray(b.products)?b.products.slice():[],
+        aliases:Array.isArray(b.aliases)?b.aliases.slice():[],
+        querySignals:Array.isArray(b.querySignals)?b.querySignals.slice():[],
+        exclusions:Array.isArray(b.exclude)?b.exclude.slice():[],
+        matchPolicy:b.matchPolicy||null,
+        semanticText:String(b.semanticText||'')
+      };
     });
-    if(/\b(?:تا|الی|-|و)\b|تا/.test(q) && values.length>=2){
-      return {min:Math.min(values[0],values[1]),max:Math.max(values[0],values[1]),currency:'toman'};
-    }
-    if(/زیر|حداکثر|تا/.test(q))return {min:null,max:values[0],currency:'toman'};
-    if(/بالای|بیشتر از|حداقل/.test(q))return {min:values[0],max:null,currency:'toman'};
-    return {min:null,max:values[0],currency:'toman'};
+
+    Object.keys(categories).forEach(function(id){
+      const key=String(id).toLowerCase();
+      const existing=catalog[key]||{id:key,name:key};
+      existing.categories=Array.isArray(categories[id])?categories[id].slice():[];
+      catalog[key]=existing;
+    });
+
+    popular.forEach(function(store){
+      if(!store||!store.id)return;
+      const id=String(store.id).toLowerCase();
+      const existing=catalog[id]||{id:id,name:id};
+      catalog[id]={
+        ...existing,
+        name:String(store.name||existing.name||id),
+        tagline:String(store.tagline||'').trim(),
+        dealText:String(store.dealText||'').trim(),
+        tag:String(store.tag||'').trim()
+      };
+    });
+
+    return catalog;
   }
 
-  function firstMatch(q, patterns){
-    const found=patterns.find(x=>x.words.some(w=>q.toLowerCase().includes(w.toLowerCase())));
-    return found?found.type:null;
-  }
-
-  function findBrand(q){
-    const lower=q.toLowerCase();
-    return BRAND_PATTERNS.find(b=>lower.includes(b.toLowerCase()))||null;
-  }
-
-  function understand(query, context){
+  function buildPlan(query,context){
     const raw=clean(query);
-    const q=normalizeDigits(raw);
-    const budget=parseMoney(q);
-    const type=firstMatch(q,TYPE_PATTERNS);
-    const brand=findBrand(q);
-    const useCaseMatch=q.match(/برای\s+(.{2,35}?)(?=\s+(?:با|در|تا|حدود|بودجه)|$)/);
     return {
       version:VERSION,
       query:raw,
       intent:'shopping_search',
-      category:type,
-      brand:brand,
-      budget:budget,
-      useCase:useCaseMatch?clean(useCaseMatch[1]):null,
-      keywords:raw.split(/\s+/).filter(Boolean).slice(0,18),
-      constraints:context&&context.constraints||{},
-      confidence:{category:type?0.9:0.35,brand:brand?0.95:0.2,budget:(budget.min||budget.max)?0.9:0.2}
-    };
-  }
-
-  function storesFor(plan){
-    const eligibility=window.DigiYarStoreEligibility;
-    if(eligibility&&typeof eligibility.storesForQuery==='function'){
-      try{
-        const source=window.DigiYarPopularAffiliateStores;
-        const list=Array.isArray(source)?source:[];
-        return eligibility.storesForQuery(plan.query,list).filter(x=>x&&x.id).map(x=>x.id);
-      }catch(_){}
-    }
-    return STORE_IDS.slice();
-  }
-
-  function buildPlan(query,context){
-    const understanding=understand(query,context);
-    return {
-      ...understanding,
+      context:context&&typeof context==='object'?context:{},
       tools:[
-        {name:'search_products',enabled:true,source:'existing-result-set-or-local-producer'},
+        {name:'search_products',enabled:true,source:'store-browser'},
         {name:'compare_products',enabled:true,source:'existing-result-set'},
-        {name:'get_store_status',enabled:true,source:'store-eligibility'},
+        {name:'get_store_status',enabled:true,source:'merchant-registry'},
         {name:'get_affiliate_link',enabled:true,source:'affiliate-registry'}
       ],
-      candidateStores:[],
-      dataPolicy:'product facts must come from the Result Set; AI may interpret but never invent them'
+      dataPolicy:'AI interprets intent and merchant relevance; product facts come only from store results; AI must not invent products, prices or availability.'
     };
+  }
+
+  async function callAI(query,context){
+    const endpoint=window.DigiYarAIEndpoint||'/api/ai-shopping';
+    const storeCatalog=buildStoreCatalog();
+    const response=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        query:query,
+        context:context||{},
+        storeCatalog:storeCatalog
+      })
+    });
+    if(!response.ok)throw Error('AI endpoint '+response.status);
+    const data=await response.json();
+    return data&&data.plan&&typeof data.plan==='object'?data.plan:null;
   }
 
   async function run(query,context){
-    const plan=buildPlan(query,context);
-    const provider=window.DigiYarAIProvider || {
-      async understand(q,ctx){
-        const endpoint=window.DigiYarAIEndpoint||'/api/ai-shopping';
-        const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,context:ctx||{}})});
-        if(!r.ok)throw Error('AI endpoint '+r.status);
-        const data=await r.json(); return data&&data.plan?data.plan:null;
-      }
-    };
-    if(provider&&typeof provider.understand==='function'){
-      try{
-        /* Build the AI catalog independently of the Popular Stores runtime.
-         * The Hooshyar submit can fire before the Popular Stores array has been
-         * populated, while DigiYarStoreCategories is already the canonical
-         * store-domain source. An empty catalog makes the API's allowed-id
-         * filter erase every eligibleStoreId and produces the misleading
-         * "no related store" message. */
-        const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
-        const categories=window.DigiYarStoreCategories&&typeof window.DigiYarStoreCategories==='object'?window.DigiYarStoreCategories:{};
-        const businessRoot=window.DigiYarStoreBusinessDomains;
-        const businessCatalog=businessRoot&&typeof businessRoot.forAI==='function'?businessRoot.forAI():{};
-        const storeCatalog={};
+    const raw=clean(query);
+    const plan=buildPlan(raw,context);
+    try{
+      const aiPlan=await callAI(raw,context);
+      if(!aiPlan)throw Error('empty_ai_plan');
 
-        /* One source of truth: send the canonical merchant KB to the AI.
-         * The AI must reason over the same record used by Store Eligibility:
-         * business domains, specialties, product families, products/aliases,
-         * exclusions and merchant match policy. Current store categories and
-         * Popular Stores labels are supplemental evidence only. */
-        Object.keys(businessCatalog).forEach(function(id){
-          const b=businessCatalog[id]||{};
-          storeCatalog[id]={
-            id:id,
-            name:String(b.name||id),
-            domains:Array.isArray(b.domains)?b.domains.slice():[],
-            businessDomain:Array.isArray(b.domains)?b.domains.slice():[],
-            specialties:Array.isArray(b.specialties)?b.specialties.slice():[],
-            productFamilies:Array.isArray(b.productFamilies)?b.productFamilies.slice():[],
-            products:Array.isArray(b.products)?b.products.slice():[],
-            aliases:Array.isArray(b.aliases)?b.aliases.slice():[],
-            querySignals:Array.isArray(b.querySignals)?b.querySignals.slice():[],
-            exclusions:Array.isArray(b.exclude)?b.exclude.slice():[],
-            matchPolicy:b.matchPolicy||null,
-            semanticText:String(b.semanticText||'')
-          };
-        });
-
-        Object.keys(categories).forEach(function(id){
-          const key=String(id).toLowerCase();
-          const existing=storeCatalog[key]||{id:key,name:key};
-          existing.categories=Array.isArray(categories[id])?categories[id].slice():[];
-          storeCatalog[key]=existing;
-        });
-
-        popular.forEach(function(store){
-          if(!store||!store.id)return;
-          const id=String(store.id).toLowerCase();
-          const existing=storeCatalog[id]||{id:id,name:id};
-          storeCatalog[id]={
-            ...existing,
-            name:String(store.name||existing.name||id),
-            tagline:String(store.tagline||'').trim(),
-            dealText:String(store.dealText||'').trim(),
-            tag:String(store.tag||'').trim()
-          };
-        });
-
-        const aiPlan=await provider.understand(query,{plan,context:context||{},storeCatalog:storeCatalog});
-        if(aiPlan&&typeof aiPlan==='object'&&Array.isArray(aiPlan.eligibleStoreIds)&&aiPlan.eligibleStoreIds.length){
-          plan.ai=aiPlan;
-          plan.candidateStores=aiPlan.eligibleStoreIds.slice();
-          /* The AI result is authoritative for store selection when it is
-           * present. Do not append merchants merely because their broad
-           * intent/category happens to match. That expansion caused unrelated
-           * stores to leak into otherwise precise queries. */
-          plan.provider='external-ai';
-        }else{
-          /* An empty/failed AI answer must not erase the proven V6/V7
-           * deterministic eligibility path. Leaving plan.ai unset makes
-           * Store Eligibility continue with its semantic/domain resolver. */
-          delete plan.ai;
-          plan.candidateStores=[];
-          plan.provider='external-ai-empty-fallback';
-        }
-      }catch(error){
-        console.warn('DigiYar AI provider unavailable; restoring deterministic store eligibility.',error);
-        /* A transport/provider failure is not an AI answer. Keep plan.ai absent
-           so v7-store-eligibility can execute its deterministic/domain fallback. */
-        delete plan.ai;
-        plan.candidateStores=[];
-        plan.provider='external-ai-error-fallback';
-      }
+      /*
+       * The AI plan is authoritative even when eligibleStoreIds is empty.
+       * An empty semantic answer means "no merchant has enough evidence";
+       * it must not trigger the old keyword/default-store expansion.
+       */
+      plan.ai=aiPlan;
+      plan.candidateStores=Array.isArray(aiPlan.eligibleStoreIds)
+        ?aiPlan.eligibleStoreIds.slice():[];
+      plan.provider='semantic-ai';
+      plan.semantic=true;
+    }catch(error){
+      /*
+       * Provider outage is operational failure, not a semantic answer.
+       * Keep ai absent so the safety resolver may provide a degraded result.
+       */
+      plan.provider='semantic-ai-error-fallback';
+      plan.semantic=false;
+      plan.aiError=String(error&&error.message||error||'ai_error');
+      console.warn('Hooshyar semantic AI unavailable; using safety fallback.',error);
     }
+
     window.DigiYarShoppingPlan=plan;
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
     return plan;
@@ -215,7 +138,7 @@
 
   window.DigiYarShoppingOrchestrator={
     version:VERSION,
-    understand:understand,
+    buildStoreCatalog:buildStoreCatalog,
     buildPlan:buildPlan,
     run:run
   };
