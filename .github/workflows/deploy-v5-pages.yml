@@ -12,9 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+# A stale Pages run must never block the newest main deployment.
+# Keep concurrency scoped to this workflow and branch, and cancel an older run
+# whenever a newer commit arrives.
 concurrency:
-  group: pages-main
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
