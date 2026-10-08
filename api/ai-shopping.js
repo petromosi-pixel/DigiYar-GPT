@@ -1,35 +1,137 @@
 // DigiYar V7 — semantic AI shopping planner endpoint
+// The endpoint uses Vercel AI SDK so Vercel OIDC authentication is handled
+// by the Gateway integration instead of manually forwarding environment tokens.
+const { generateText } = require('ai');
+
+const MODEL='openai/gpt-5.6-sol';
+
+function send(res,status,payload){
+  return res.status(status).json(payload);
+}
+
 module.exports = async function handler(req,res){
   res.setHeader('Access-Control-Allow-Origin','*');
   res.setHeader('Access-Control-Allow-Headers','Content-Type');
   res.setHeader('Access-Control-Allow-Methods','POST,OPTIONS');
-  if(req.method==='OPTIONS') return res.status(204).end();
-  if(req.method!=='POST') return res.status(405).json({error:'method_not_allowed'});
-  const key=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_AI_GATEWAY_KEY||process.env.VERCEL_OIDC_TOKEN;
-  if(!key)return res.status(503).json({error:'ai_not_configured'});
+
+  if(req.method==='OPTIONS')return res.status(204).end();
+  if(req.method!=='POST')return send(res,405,{error:'method_not_allowed'});
+
   let body={};
-  try{body=typeof req.body==='object'&&req.body?req.body:JSON.parse(req.body||'{}');}catch(_){return res.status(400).json({error:'invalid_json'});}
+  try{
+    body=typeof req.body==='object'&&req.body?req.body:JSON.parse(req.body||'{}');
+  }catch(_){
+    return send(res,400,{error:'invalid_json'});
+  }
+
   const query=String(body.query||'').trim();
-  if(!query)return res.status(400).json({error:'query_required'});
+  if(!query)return send(res,400,{error:'query_required'});
+
   const catalog=body.storeCatalog&&typeof body.storeCatalog==='object'?body.storeCatalog:{};
-  const schema={type:'object',properties:{
-    category:{type:'string'},brand:{type:['string','null']},minBudgetToman:{type:['number','null']},maxBudgetToman:{type:['number','null']},useCase:{type:['string','null']},domains:{type:'array',items:{type:'string'}},taskType:{type:'string'},action:{type:'string'},eligibleStoreIds:{type:'array',items:{type:'string'}},productTerms:{type:'array',items:{type:'string'}},requiredNameTerms:{type:'array',items:{type:'string'}},excludedTerms:{type:'array',items:{type:'string'}},semanticNeed:{type:'string'},requestedProduct:{type:'string'},targetObject:{type:['string','null']},attributes:{type:'array',items:{type:'string'}},searchQueries:{type:'object',additionalProperties:{type:'string'}},confidence:{type:'number'}
-  },required:['category','brand','minBudgetToman','maxBudgetToman','useCase','domains','taskType','action','eligibleStoreIds','productTerms','requiredNameTerms','excludedTerms','semanticNeed','requestedProduct','targetObject','attributes','searchQueries','confidence'],additionalProperties:false};
-  const prompt=`تو مغز معنایی خرید دیجی‌یار هستی، نه استخراج‌کننده کلمات کلیدی. معنی واقعی درخواست را بفهم و بر اساس کاتالوگ واقعی فروشگاه‌ها فروشگاه‌های واقعاً مرتبط را انتخاب کن. برای عبارت‌های جدید، محاوره‌ای و مترادف‌ها نیز استدلال معنایی انجام بده و به Ruleهای لفظی وابسته نباش.
-requestedProduct چیزی است که کاربر واقعاً می‌خواهد بخرد؛ targetObject فقط شیئی است که محصول برای آن استفاده می‌شود. «چیزی برای تمیز کردن مبل پارچه‌ای» یعنی مبل targetObject است و محصول ابزار/ماده نظافت است، نه مبل. «تصفیه هوای مناسب اتاق خواب» یعنی تصفیه هوا محصول و اتاق خواب useCase است. «لوازم جانبی موبایل» یعنی لوازم جانبی محصول است.
-eligibleStoreIds مهم‌ترین خروجی است: فقط فروشگاه‌هایی را انتخاب کن که با نیاز دقیق ارتباط مستقیم و معنادار دارند. فروشگاه عمومی را فقط با categories فعلی یا شاهد مستقیم انتخاب کن؛ صرف عمومی بودن یا domain کافی نیست. فروشگاه تخصصی را با domains,intents,specialties,productFamilies,products,aliases,querySignals,semanticText ارزیابی کن. جانبی فقط برای accessories، تخفیفان فقط با درخواست صریح تخفیف، و فروشگاه خودرو فقط برای نیاز واقعی خودرو/خدمت خودرو انتخاب شود. برای نیاز ترکیبی همه ویژگی‌های اصلی را همزمان در نظر بگیر. برای هر فروشگاه انتخاب‌شده searchQueries یک عبارت کوتاه و محصول‌محور بساز؛ بودجه، targetObject و useCase را مگر بخشی از نام محصول باشند وارد نکن. فقط شناسه‌های موجود در catalog را استفاده کن.
-کاتالوگ:
+  const catalogIds=Object.keys(catalog).map(x=>String(x).toLowerCase());
+
+  const prompt=`تو مغز معنایی خرید دیجی‌یار هستی، نه استخراج‌کننده کلمات کلیدی و نه Rule Engine.
+معنی واقعی درخواست کاربر را بفهم و با استدلال معنایی، فقط فروشگاه‌هایی را انتخاب کن که واقعاً برای نیاز او مناسب‌اند.
+برای عبارت‌های کاملاً جدید، محاوره‌ای، مترادف‌ها و ترکیب‌های جدید نیز باید بدون داشتن Rule لفظی قبلی استدلال کنی.
+
+تعریف دقیق:
+- requestedProduct = چیزی که کاربر واقعاً می‌خواهد بخرد یا تهیه کند.
+- targetObject = شیئی که محصول برای آن استفاده می‌شود؛ خودش الزاماً محصول درخواستی نیست.
+- useCase = کاربرد یا موقعیت استفاده.
+مثال: «یه چیزی برای تمیز کردن مبل پارچه‌ای» یعنی محصولِ نظافت درخواستی است و «مبل» فقط targetObject است؛ فروشگاه مبلمان به‌خاطر کلمه مبل نباید انتخاب شود.
+مثال: «تصفیه هوای مناسب اتاق خواب» یعنی تصفیه هوا محصول و اتاق خواب useCase است.
+مثال: «لوازم جانبی موبایل» یعنی accessories محصول درخواستی است.
+
+قانون اصلی eligibleStoreIds:
+فقط شناسه فروشگاه‌هایی را برگردان که با نیاز واقعی کاربر ارتباط مستقیم و معنادار دارند.
+- فروشگاه عمومی را فقط وقتی انتخاب کن که categories فعلی آن یا شواهد مستقیم KB نشان دهد کالای درخواستی را پوشش می‌دهد.
+- صرف عمومی بودن فروشگاه، وجود یک domain کلی یا شباهت یک کلمه کافی نیست.
+- فروشگاه تخصصی را با domains, intents, specialties, productFamilies, products, aliases, querySignals, semanticText ارزیابی کن.
+- targetObject را با requestedProduct اشتباه نکن.
+- برای نیازهای خرید خودرو، فروشگاه‌های عمومی را بی‌دلیل اضافه نکن.
+- «جانبی» فقط برای لوازم جانبی/اکسسوری واقعی انتخاب شود.
+- «تخفیفان» فقط وقتی درخواست صریح تخفیف/کوپن/پیشنهاد ویژه وجود دارد.
+- فروشگاه‌های تخصصی سفر فقط برای نیاز واقعی سفر/بلیط/رزرو انتخاب شوند.
+- برای نیاز ترکیبی، همه ویژگی‌های اصلی درخواست را همزمان لحاظ کن.
+- هرگز شناسه‌ای خارج از catalog برنگردان.
+
+searchQueries:
+برای هر فروشگاه انتخاب‌شده، یک query کوتاه و محصول‌محور بساز که همان محصول واقعی را جست‌وجو کند.
+قیدهای کاربردی مثل targetObject/useCase و بودجه را فقط اگر جزئی از نام محصول‌اند وارد query نکن.
+
+خروجی فقط JSON معتبر با این ساختار باشد:
+{
+  "category": string,
+  "brand": string|null,
+  "minBudgetToman": number|null,
+  "maxBudgetToman": number|null,
+  "useCase": string|null,
+  "domains": string[],
+  "taskType": string,
+  "action": string,
+  "eligibleStoreIds": string[],
+  "productTerms": string[],
+  "requiredNameTerms": string[],
+  "excludedTerms": string[],
+  "semanticNeed": string,
+  "requestedProduct": string,
+  "targetObject": string|null,
+  "attributes": string[],
+  "searchQueries": {"storeId":"query"},
+  "confidence": number
+}
+
+کاتالوگ واقعی فروشگاه‌ها:
 ${JSON.stringify(catalog)}
+
 عبارت کاربر:
 ${query}`;
+
   try{
-    const r=await fetch('https://ai-gateway.vercel.sh/v1/responses',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'openai/gpt-5.4',input:prompt,text:{format:{type:'json_schema',name:'digiyar_shopping_plan',strict:true,schema}},max_output_tokens:1400})});
-    const data=await r.json();
-    if(!r.ok)return res.status(502).json({error:'ai_gateway_error',detail:data&&data.error?data.error:null});
-    const raw=String(data.output_text||'').trim();
-    let plan;try{plan=JSON.parse(raw);}catch(_){return res.status(502).json({error:'ai_invalid_json'});}
-    const allowed=new Set(Object.keys(catalog).map(x=>String(x).toLowerCase()));
-    plan.eligibleStoreIds=Array.isArray(plan.eligibleStoreIds)?plan.eligibleStoreIds.map(x=>String(x||'').toLowerCase()).filter((x,i,a)=>allowed.has(x)&&a.indexOf(x)===i):[];
-    return res.status(200).json({ok:true,provider:'vercel-ai-gateway',model:'openai/gpt-5.4',plan});
-  }catch(e){return res.status(502).json({error:'ai_request_failed'});}
+    const result=await generateText({
+      model:MODEL,
+      prompt,
+      maxOutputTokens:1800
+    });
+
+    const raw=String(result.text||'').trim()
+      .replace(/^\`\`\`json\s*/i,'')
+      .replace(/^\`\`\`\s*/,'')
+      .replace(/\s*\`\`\`$/,'')
+      .trim();
+
+    let plan;
+    try{
+      plan=JSON.parse(raw);
+    }catch(_){
+      return send(res,502,{error:'ai_invalid_json',provider:'vercel-ai-sdk',model:MODEL});
+    }
+
+    if(!plan||typeof plan!=='object'){
+      return send(res,502,{error:'ai_invalid_plan',provider:'vercel-ai-sdk',model:MODEL});
+    }
+
+    plan.eligibleStoreIds=Array.isArray(plan.eligibleStoreIds)
+      ?plan.eligibleStoreIds
+        .map(x=>String(x||'').toLowerCase())
+        .filter((x,i,a)=>catalogIds.indexOf(x)!==-1&&a.indexOf(x)===i)
+      :[];
+
+    if(!plan.searchQueries||typeof plan.searchQueries!=='object')plan.searchQueries={};
+
+    return send(res,200,{
+      ok:true,
+      provider:'vercel-ai-sdk',
+      model:MODEL,
+      plan
+    });
+  }catch(error){
+    console.error('Hooshyar AI Gateway failure',error&&error.message||error);
+    return send(res,502,{
+      error:'ai_request_failed',
+      provider:'vercel-ai-sdk',
+      model:MODEL,
+      detail:String(error&&error.message||'gateway_failure').slice(0,500)
+    });
+  }
 };
