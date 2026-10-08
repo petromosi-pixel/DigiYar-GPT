@@ -4,6 +4,7 @@
 const { generateText } = require('ai');
 
 const MODEL='openai/gpt-5.6-luna';
+const MAX_LATENCY_MS=10000;
 
 function send(res,status,payload){
   return res.status(status).json(payload);
@@ -29,6 +30,25 @@ module.exports = async function handler(req,res){
 
   const catalog=body.storeCatalog&&typeof body.storeCatalog==='object'?body.storeCatalog:{};
   const catalogIds=Object.keys(catalog).map(x=>String(x).toLowerCase());
+  // Keep the full KB on the client, but send a compact semantic projection to the model.
+  // The previous request serialized every merchant field (including duplicated signals),
+  // which made the planner unnecessarily slow.
+  const modelCatalog={};
+  Object.keys(catalog).forEach(function(id){
+    const s=catalog[id]||{};
+    modelCatalog[id]={
+      id:String(s.id||id).toLowerCase(),name:String(s.name||id),
+      domains:Array.isArray(s.domains)?s.domains.slice():[],
+      intents:Array.isArray(s.intents)?s.intents.slice():[],
+      specialties:Array.isArray(s.specialties)?s.specialties.slice():[],
+      productFamilies:Array.isArray(s.productFamilies)?s.productFamilies.slice():[],
+      products:Array.isArray(s.products)?s.products.slice():[],
+      aliases:Array.isArray(s.aliases)?s.aliases.slice():[],
+      exclusions:Array.isArray(s.exclusions)?s.exclusions.slice():[],
+      categories:Array.isArray(s.categories)?s.categories.slice():[],
+      semanticText:String(s.semanticText||'')
+    };
+  });
 
   const prompt=`تو مغز معنایی خرید دیجی‌یار هستی، نه استخراج‌کننده کلمات کلیدی و نه Rule Engine.
 معنی واقعی درخواست کاربر را بفهم و با استدلال معنایی، فقط فروشگاه‌هایی را انتخاب کن که واقعاً برای نیاز او مناسب‌اند.
@@ -82,7 +102,7 @@ searchQueries:
 }
 
 کاتالوگ واقعی فروشگاه‌ها:
-${JSON.stringify(catalog)}
+${JSON.stringify(modelCatalog)}
 
 عبارت کاربر:
 ${query}`;
@@ -91,8 +111,9 @@ ${query}`;
     const result=await generateText({
       model:MODEL,
       prompt,
-      reasoning:'low',
-      maxOutputTokens:900
+      reasoning:'none',
+      maxOutputTokens:650,
+      abortSignal:AbortSignal.timeout(MAX_LATENCY_MS)
     });
 
     const raw=String(result.text||'').trim()
