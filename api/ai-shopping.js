@@ -3,7 +3,7 @@
 // by the Gateway integration instead of manually forwarding environment tokens.
 const { generateText } = require('ai');
 
-const MODEL='openai/gpt-6.1-sol';
+const MODEL='openai/gpt-5.6-luna';
 
 function send(res,status,payload){
   return res.status(status).json(payload);
@@ -91,7 +91,8 @@ ${query}`;
     const result=await generateText({
       model:MODEL,
       prompt,
-      maxOutputTokens:1800
+      reasoning:'low',
+      maxOutputTokens:900
     });
 
     const raw=String(result.text||'').trim()
