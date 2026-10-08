@@ -3,7 +3,7 @@
 // by the Gateway integration instead of manually forwarding environment tokens.
 const { generateText } = require('ai');
 
-const MODEL='openai/gpt-5.6-luna';
+const MODEL='openai/gpt-5.5';
 const MAX_LATENCY_MS=10000;
 
 function send(res,status,payload){
