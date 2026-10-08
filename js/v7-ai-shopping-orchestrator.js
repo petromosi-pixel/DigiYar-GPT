@@ -12,7 +12,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-ai-shopping-orchestrator.18';
+  const VERSION='7.0.0-ai-shopping-orchestrator.19';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -125,10 +125,30 @@
        * Provider outage is operational failure, not a semantic answer.
        * Keep ai absent so the safety resolver may provide a degraded result.
        */
-      plan.provider='semantic-ai-error-fallback';
+      /*
+       * A failed AI call is NOT a semantic answer.
+       * Publish an explicit empty AI plan so the legacy deterministic resolver
+       * cannot silently resurrect the old merchant-selection behavior.
+       */
+      plan.ai={
+        semanticNeed:'',
+        requestedProduct:'',
+        targetObject:null,
+        attributes:[],
+        domains:[],
+        taskType:'ai_unavailable',
+        action:'no_semantic_result',
+        eligibleStoreIds:[],
+        productTerms:[],
+        requiredNameTerms:[],
+        excludedTerms:[],
+        searchQueries:{},
+        confidence:0
+      };
+      plan.provider='semantic-ai-error';
       plan.semantic=false;
       plan.aiError=String(error&&error.message||error||'ai_error');
-      console.warn('Hooshyar semantic AI unavailable; using safety fallback.',error);
+      console.warn('Hooshyar semantic AI unavailable; no legacy merchant fallback will run.',error);
     }
 
     window.DigiYarShoppingPlan=plan;
