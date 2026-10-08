@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='6.0.0-store-browser.46';
+const VERSION='7.0.0-store-browser.50';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -177,10 +177,6 @@ function openBrowser(query,list){
  function finishProcessing(onComplete){
    if(processingFinished)return;
    processingFinished=true;
-   if(semanticRefreshHandler){
-     window.removeEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
-     semanticRefreshHandler=null;
-   }
    const savedDetails=processing.querySelector('.v6-auto-processing-details');
    processing.innerHTML='';
    const toggle=document.createElement('button');
@@ -233,10 +229,20 @@ function openBrowser(query,list){
 
  function renderResults(){
    try{
-     /* Always resolve from the canonical Popular Stores/KB universe.
-        The AI plan is intentionally not used as the source list here; otherwise
-        stale or over-broad eligibleStoreIds can leak unrelated merchants into
-        the visible tabs before the KB gate runs. */
+     /*
+      * Production V7 is semantic-AI authoritative.
+      * The legacy deterministic merchant resolver is intentionally NOT allowed
+      * to produce visible Store Browser tabs. This prevents stale/default
+      * merchants from appearing while the AI plan is pending or unavailable.
+      */
+     const semanticPlan=window.DigiYarShoppingPlan&&
+       String(window.DigiYarShoppingPlan.query||'').trim()===String(query||'').trim()
+       ?window.DigiYarShoppingPlan.ai:null;
+     if(!semanticPlan){
+       box.style.display='block';
+       tabsAndResults([]);
+       return;
+     }
      let canonicalList=Array.isArray(window.DigiYarPopularAffiliateStores)
        ? window.DigiYarPopularAffiliateStores
        : (Array.isArray(list)?list:stores());
@@ -267,10 +273,21 @@ function openBrowser(query,list){
  semanticRefreshHandler=function(event){
    const plan=event&&event.detail;
    if(!plan||String(plan.query||'').trim()!==String(query||'').trim())return;
-   if(!plan.ai)return;
-   /* The semantic plan is now authoritative. Re-render immediately instead of
-      waiting for the legacy 7-second presentation timer to finish. */
-   finishProcessing(renderResults);
+   /*
+    * The event is the synchronization barrier between Hooshyar AI and the
+    * Browser. It is emitted for both success and operational failure.
+    * Success replaces the visible merchant set; failure deliberately renders
+    * an empty semantic result instead of resurrecting the legacy resolver.
+    */
+   if(processingFinished){
+     renderResults();
+   }else{
+     finishProcessing(renderResults);
+   }
+   if(semanticRefreshHandler){
+     window.removeEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
+     semanticRefreshHandler=null;
+   }
  };
  window.addEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
 
