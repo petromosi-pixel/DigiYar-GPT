@@ -3,7 +3,7 @@
 // by the Gateway integration instead of manually forwarding environment tokens.
 const { generateText } = require('ai');
 
-const MODEL='openai/gpt-5.6-sol';
+const MODEL='openai/gpt-6.1-sol';
 
 function send(res,status,payload){
   return res.status(status).json(payload);
