@@ -175,6 +175,12 @@ function openBrowser(query,list){
  const processingList=processing.querySelector('ul');
 
  function finishProcessing(onComplete){
+   if(processingFinished)return;
+   processingFinished=true;
+   if(semanticRefreshHandler){
+     window.removeEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
+     semanticRefreshHandler=null;
+   }
    const savedDetails=processing.querySelector('.v6-auto-processing-details');
    processing.innerHTML='';
    const toggle=document.createElement('button');
@@ -194,6 +200,8 @@ function openBrowser(query,list){
  }
 
  let processingIndex=0;
+ let processingFinished=false;
+ let semanticRefreshHandler=null;
  function typeProcessingMessage(textValue,done){
    const li=document.createElement('li');
    processingList.appendChild(li);
@@ -255,6 +263,16 @@ function openBrowser(query,list){
    }
  }
 
+
+ semanticRefreshHandler=function(event){
+   const plan=event&&event.detail;
+   if(!plan||String(plan.query||'').trim()!==String(query||'').trim())return;
+   if(!plan.ai)return;
+   /* The semantic plan is now authoritative. Re-render immediately instead of
+      waiting for the legacy 7-second presentation timer to finish. */
+   finishProcessing(renderResults);
+ };
+ window.addEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
 
  function tabsAndResults(usable){
    if(!Array.isArray(usable)||!usable.length){
