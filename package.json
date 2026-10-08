@@ -6,7 +6,7 @@
     "dev": "vercel dev",
     "deploy": "vercel deploy --prod",
     "test:v5.1": "node tests/v5.1-health.test.mjs",
-    "audit:v5.1": "node tests/v5.1-catalog-audit.mjs",
+    "audit:v5.1": "node tests/v5.1-catalog-audit.test.mjs",
     "test:v5.1:e2e": "node tests/v5.1-e2e-resolver.test.mjs",
     "test:v5.1:revenue": "node tests/v5.1-revenue-e2e.test.mjs",
     "test:v5.1:mission": "node tests/v5.1-full-mission-e2e.test.mjs",
@@ -22,6 +22,7 @@
     "test:v7:product-result-producer": "node tests/v7-product-result-producer.test.mjs"
   },
   "dependencies": {
-    "@vercel/node": "^2.0.0"
+    "@vercel/node": "^2.0.0",
+    "ai": "^5.0.0"
   }
 }
