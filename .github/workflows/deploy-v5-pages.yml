@@ -1,4 +1,5 @@
 name: Deploy DigiYar Web App to GitHub Pages
+# V7 semantic brain deployment trigger: keep Pages artifact synchronized with main.
 
 on:
   push:
