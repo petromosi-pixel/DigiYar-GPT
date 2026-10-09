@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.19';
+var VERSION='7.0.0-store-business-domains.20';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
@@ -242,6 +242,46 @@ Object.keys(C).forEach(function(id){
  };
 });
 
-root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
+
+/* Canonical business-domain taxonomy, derived from each merchant's domains.
+ * Each category keeps both the heading and its merchant IDs for semantic retrieval. */
+var DOMAIN_TITLES={
+ digital:'دیجیتال و موبایل',
+ accessories:'لوازم جانبی دیجیتال',
+ furniture:'مبلمان و دکوراسیون',
+ fashion:'پوشاک، کیف و کفش',
+ beauty:'زیبایی و آرایشی',
+ health:'سلامت و محصولات بهداشتی',
+ medicine:'دارو و تجهیزات سلامت',
+ supermarket:'سوپرمارکت و مواد غذایی',
+ home:'خانه، آشپزخانه و ساختمان',
+ sports:'ورزش و تجهیزات ورزشی',
+ kids:'کودک و نوزاد',
+ books:'کتاب و محصولات فرهنگی',
+ auto:'خودرو و قطعات یدکی',
+ auto_service:'خدمات خودرو',
+ travel_ticket:'بلیط و حمل‌ونقل',
+ lodging:'اقامت و هتل',
+ education:'آموزش و یادگیری',
+ affiliate_network:'شبکه‌های همکاری در فروش'
+};
+var BY_DOMAIN={};
+Object.keys(DOMAIN_TITLES).forEach(function(domain){
+ BY_DOMAIN[domain]={id:domain,title:DOMAIN_TITLES[domain],storeIds:[],stores:[]};
+});
+Object.keys(C).forEach(function(id){
+ var s=C[id];
+ (s.domains||[]).forEach(function(domain){
+   if(!BY_DOMAIN[domain])BY_DOMAIN[domain]={id:domain,title:domain,storeIds:[],stores:[]};
+   BY_DOMAIN[domain].storeIds.push(id);
+   BY_DOMAIN[domain].stores.push({id:id,name:s.name,homepage:s.homepage||'',specialties:s.specialties||[],products:s.products||[]});
+ });
+});
+Object.keys(BY_DOMAIN).forEach(function(domain){
+ BY_DOMAIN[domain].storeIds=Array.from(new Set(BY_DOMAIN[domain].storeIds));
+ BY_DOMAIN[domain].stores.sort(function(a,b){return a.name.localeCompare(b.name,'fa');});
+});
+
+root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,domainTitles:DOMAIN_TITLES,byDomain:BY_DOMAIN,domains:function(){return BY_DOMAIN;},storesForDomain:function(domain){return BY_DOMAIN[String(domain||'').toLowerCase()]||null;},get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
 if(typeof module!=='undefined'&&module.exports)module.exports=root.DigiYarStoreBusinessDomains;
 })(typeof window!=='undefined'?window:globalThis);
