@@ -3,6 +3,10 @@
 
 const MODEL = 'openai/gpt-5.5';
 const MAX_LATENCY_MS = 10000;
+const ALLOWED_ORIGINS = new Set(['https://petromosi-pixel.github.io']);
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 20;
+const requestBuckets = new Map();
 
 function send(res, status, payload) {
   return res.status(status).json(payload);
@@ -14,6 +18,24 @@ function asArray(value) {
 
 function clean(value) {
   return String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
+}
+
+
+function isAllowedOrigin(origin) {
+  return ALLOWED_ORIGINS.has(clean(origin));
+}
+
+function allowRequest(req) {
+  const forwarded = clean(req.headers['x-forwarded-for']);
+  const ip = forwarded ? forwarded.split(',')[0].trim() : clean(req.socket && req.socket.remoteAddress) || 'unknown';
+  const now = Date.now();
+  const current = requestBuckets.get(ip);
+  if (!current || now - current.startedAt >= RATE_LIMIT_WINDOW_MS) {
+    requestBuckets.set(ip, { startedAt: now, count: 1 });
+    return true;
+  }
+  current.count += 1;
+  return current.count <= RATE_LIMIT_MAX;
 }
 
 function parseModelJson(text) {
@@ -33,12 +55,20 @@ function parseModelJson(text) {
 }
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = clean(req.headers.origin);
+  if (!isAllowedOrigin(origin)) return send(res, 403, { error: 'origin_not_allowed' });
+
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
+  if (!allowRequest(req)) {
+    res.setHeader('Retry-After', '60');
+    return send(res, 429, { error: 'rate_limit_exceeded' });
+  }
 
   let body = {};
   try {
