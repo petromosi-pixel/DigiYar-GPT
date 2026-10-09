@@ -9,13 +9,13 @@
   const VERSION='7.0.0-hooshyar-local.1';
 
   function clean(value){
-    return String(value==null?'':value).replace(/\\s+/g,' ').trim();
+    return String(value==null?'':value).replace(/\s+/g,' ').trim();
   }
   function norm(value){
     return clean(value).replace(/[يى]/g,'ی').replace(/ك/g,'ک')
-      .replace(/[\\u200c]/g,' ').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+      .replace(/[\u200c]/g,' ').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
       .replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))
-      .replace(/\\s+/g,' ').toLowerCase();
+      .replace(/\s+/g,' ').toLowerCase();
   }
 
   function buildStoreCatalog(){
@@ -57,7 +57,7 @@
 
   function localNeed(query,catalog,eligibleIds){
     const q=norm(query);
-    const cleaning=/(تمیز\\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\\s*کردن|پاکسازی|مبل\\s*شویی|شستشوی\\s*مبل)/i.test(q);
+    const cleaning=/(تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی|شستشوی\s*مبل)/i.test(q);
     const productMatches=[];
     Object.keys(catalog).forEach(id=>{
       const item=catalog[id]||{};
