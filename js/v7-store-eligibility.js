@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.48';
+var VERSION='7.0.0-store-eligibility.50';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -362,6 +362,13 @@ function aiSelectionIsAllowed(query,id){
    */
   var semanticText=semanticPlanText(ai);
   var exclusions=[].concat(item.exclude||[]).map(norm).filter(Boolean);
+  /* Janebi sells mobile accessories: the word «mobile» in an accessory query
+     must not trigger the merchant's phone-device exclusion. */
+  if(key==='janebi' && /(?:جانبی|اکسسوری|قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|ایرباد|هولدر|مبدل)/i.test(semanticText)){
+    exclusions=exclusions.filter(function(term){
+      return !/(?:^|\\s)(?:موبایل|گوشی)(?:\\s|$)/i.test(term);
+    });
+  }
 
   /* Explicit merchant exclusions remain hard safety boundaries. */
   if(exclusions.some(function(term){return term&&semanticText.indexOf(term)!==-1;}))return false;
