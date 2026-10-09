@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2a4169">
+<title>پنل تست هوش‌یار V7 | دیجی‌یار</title>
+<style>
+:root{color-scheme:light;--navy:#20385f;--line:#d9e0eb;--muted:#617087;--bg:#f4f6fa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:#17243a;line-height:1.8}
+main{max-width:980px;margin:auto;padding:18px}
+header,.toolbar,.test{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+h1{font-size:1.35rem;margin:0 0 4px;color:var(--navy)}h2{font-size:1rem;margin:0 0 8px}
+p{margin:4px 0;color:var(--muted);font-size:.9rem}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:10px 16px;background:var(--navy);color:white}
+button.secondary{background:#e8edf5;color:var(--navy)}button:disabled{opacity:.55;cursor:wait}
+#overall{font-weight:bold;margin-inline-start:auto}
+.test{padding:14px}.test-top{display:flex;gap:10px;align-items:flex-start}.num{background:#e8edf5;color:var(--navy);border-radius:8px;padding:1px 9px;font-weight:bold}
+.query{font-weight:bold;margin:4px 0 10px}.status{font-weight:bold}.status.ok{color:#167348}.status.bad{color:#b42318}.status.wait{color:#976500}
+.result{background:#f7f9fc;border-radius:8px;padding:10px;margin-top:8px;overflow-wrap:anywhere}.small{font-size:.82rem;color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.pill{border:1px solid #d8e0eb;border-radius:999px;padding:2px 9px;font-size:.82rem;background:white}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.78rem;max-height:260px;overflow:auto}
+.note{font-size:.82rem}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>پنل تست خودکار هوش‌یار V7</h1>
+<p>شش سناریو با یک کلیک؛ بدون کپی‌پیست عبارت‌ها. این صفحه فقط نتیجهٔ معنایی API را بررسی می‌کند و کارت مقایسه یا منطق اصلی برنامه را تغییر نمی‌دهد.</p>
+<p class="note">برای اجرای تست‌ها، اتصال اینترنت لازم است. اگر API در دسترس نباشد، خطای سرویس جدا از خطای انتخاب فروشگاه نشان داده می‌شود.</p>
+</header>
+<section class="toolbar">
+<button id="runAll">اجرای هر ۶ تست</button>
+<button id="runFailed" class="secondary">اجرای دوبارهٔ تست‌های ناموفق</button>
+<button id="clear" class="secondary">پاک کردن نتایج</button>
+<span id="overall">آمادهٔ اجرا</span>
+</section>
+<div id="tests"></div>
+</main>
+<script src="./js/store-business-domains.js?v=7.0.0-store-business-domains.16"></script>
+<script src="./js/v7-ai-shopping-orchestrator.js?v=7.0.0-ai-shopping-orchestrator.19"></script>
+<script>
+(function(){
+'use strict';
+const cases=[
+{id:'air',title:'تصفیه هوای اتاق خواب',query:'دنبال یک دستگاه تصفیه هوای مناسب اتاق خواب هستم',checks:[
+{name:'محصول درخواستی مشخص شده باشد',test:p=>!!p.requestedProduct&&/تصفیه|هوا|air/i.test(p.requestedProduct)},
+{name:'فروشگاه مبلمان به‌خاطر اتاق خواب انتخاب نشود',test:(p,c)=>!p.eligibleStoreIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id))}
+]},
+{id:'accessories',title:'لوازم جانبی موبایل',query:'لوازم جانبی موبایل',checks:[
+{name:'فروشگاه‌های عمومی نامرتبط یا MiMarket وارد نشوند',test:p=>!p.eligibleStoreIds.includes('mimarket')},
+{name:'فروشگاه جانبی فقط با قصد اکسسوری سنجیده شود',test:p=>!p.eligibleStoreIds.includes('janebi')||/اکسسوری|لوازم جانبی|accessor/i.test([p.requestedProduct,p.semanticNeed,...(p.productTerms||[])].join(' '))}
+]},
+{id:'train',title:'بلیط قطار تهران–مشهد',query:'برای خرید بلیط قطار تهران مشهد دنبال سایت مناسب می‌گردم',checks:[
+{name:'شَب انتخاب شده باشد',test:p=>p.eligibleStoreIds.includes('shab')},
+{name:'سفرمی انتخاب شده باشد',test:p=>p.eligibleStoreIds.includes('safarme')},
+{name:'فروشگاه مبلمان انتخاب نشود',test:p=>!p.eligibleStoreIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id))}
+]},
+{id:'sofa',title:'محصول نظافت مبل پارچه‌ای',query:'یه چیزی می‌خوام که برای تمیز کردن مبل پارچه‌ای مناسب باشه',checks:[
+{name:'مبل به‌عنوان شیء هدف تشخیص داده شود، نه محصول خرید',test:p=>!!p.requestedProduct&&!!p.targetObject},
+{name:'فروشگاه‌های مبلمان انتخاب نشوند',test:p=>!p.eligibleStoreIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id))}
+]},
+{id:'skincare',title:'کرم مرطوب‌کننده ضدآفتاب',query:'کرم مرطوب‌کننده ضدآفتاب',checks:[
+{name:'دستهٔ محصول مرتبط با مراقبت پوست تشخیص داده شود',test:p=>/کرم|پوست|مرطوب|ضدآفتاب|sunscreen|moistur/i.test([p.category,p.requestedProduct,p.semanticNeed,...(p.productTerms||[])].join(' '))},
+{name:'فروشگاه‌های مبلمان انتخاب نشوند',test:p=>!p.eligibleStoreIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id))}
+]},
+{id:'car',title:'پراید کم‌کار برای اسنپ',query:'یه پراید کم کار می خوام برای کار در اسنپ',checks:[
+{name:'فروشگاه عمومی دیجیتال بی‌دلیل انتخاب نشود',test:p=>!p.eligibleStoreIds.some(id=>['digikala','snappshop','torob','basalam'].includes(id))},
+{name:'فروشگاه جانبی/اکسسوری انتخاب نشود',test:p=>!p.eligibleStoreIds.includes('janebi')}
+]}
+];
+const root=document.getElementById('tests'),overall=document.getElementById('overall');
+const results={};
+function el(tag,cls,txt){const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
+function makeCards(){cases.forEach((c,i)=>{const card=el('section','test');card.id='case-'+c.id;const top=el('div','test-top');top.append(el('span','num',String(i+1)));const body=el('div','');body.style.flex='1';body.append(el('h2','',c.title),el('div','query','«'+c.query+'»'));const status=el('div','status wait','هنوز اجرا نشده');status.id='status-'+c.id;body.append(status);const result=el('div','result','نتیجه پس از اجرا اینجا نمایش داده می‌شود.');result.id='result-'+c.id;body.append(result);top.append(body);card.append(top);root.append(card)})}
+function updateOverall(){const done=cases.filter(c=>results[c.id]).length;const pass=cases.filter(c=>results[c.id]?.pass).length;const fail=cases.filter(c=>results[c.id]&&!results[c.id].pass).length;overall.textContent=done===0?'آمادهٔ اجرا':done+' از '+cases.length+' اجرا شد | '+pass+' موفق | '+fail+' ناموفق'}
+function render(c,data){results[c.id]=data;const status=document.getElementById('status-'+c.id),box=document.getElementById('result-'+c.id);status.className='status '+(data.pass?'ok':'bad');status.textContent=data.pass?'✓ بررسی‌های این سناریو قبول شد':'✕ این سناریو نیاز به بررسی دارد';box.replaceChildren();
+if(data.error){box.append(el('strong','', 'خطای سرویس: '),el('span','',data.error));}
+else{
+const p=data.plan;box.append(el('div','small','فروشگاه‌های انتخاب‌شده ('+p.eligibleStoreIds.length+')'));
+const pills=el('div','pills');if(!p.eligibleStoreIds.length)pills.append(el('span','pill','هیچ فروشگاهی انتخاب نشد'));p.eligibleStoreIds.forEach(id=>pills.append(el('span','pill',(data.names[id]||id)+' · '+id)));box.append(pills);
+box.append(el('p','small','محصول: '+(p.requestedProduct||'—')+' | شیء هدف: '+(p.targetObject||'—')+' | دسته: '+(p.category||'—')+' | اطمینان: '+(p.confidence??'—')));
+const checkList=el('div','');c.checks.forEach((ch,i)=>{const ok=data.checks[i];checkList.append(el('div',ok?'small':'small', (ok?'✓ ':'✕ ')+ch.name))});box.append(checkList);
+const details=el('details','');details.append(el('summary','','جزئیات فنی پاسخ'));const pre=el('pre','',JSON.stringify({provider:data.provider,model:data.model,semanticNeed:p.semanticNeed,domains:p.domains,eligibleStoreIds:p.eligibleStoreIds,searchQueries:p.searchQueries},null,2));details.append(pre);box.append(details)
+}updateOverall()}
+async function runOne(c){const status=document.getElementById('status-'+c.id),box=document.getElementById('result-'+c.id);status.className='status wait';status.textContent='در حال ارسال به هوش‌یار…';box.textContent='در حال دریافت پاسخ API…';try{
+if(!window.DigiYarShoppingOrchestrator)throw Error('فایل‌های هوش‌یار بارگذاری نشده‌اند؛ صفحه را دوباره بارگذاری کنید.');
+const plan=await window.DigiYarShoppingOrchestrator.run(c.query,{testMode:true,source:'hooshyar-regression-panel'});
+const raw=plan&&plan.ai;
+if(!plan||plan.semantic!==true||!raw)throw Error('پاسخ معنایی معتبر دریافت نشد؛ وضعیت: '+(plan?.provider||'نامشخص')+'؛ '+(plan?.aiError||''));
+const catalog=window.DigiYarShoppingOrchestrator.buildStoreCatalog();const names={};Object.keys(catalog).forEach(id=>names[id]=catalog[id].name||id);
+const checks=c.checks.map(ch=>{try{return !!ch.test(raw,c)}catch(_){return false}});
+render(c,{pass:checks.every(Boolean),checks,plan:raw,names,provider:plan.provider,model:raw.model});
+}catch(e){render(c,{pass:false,error:String(e&&e.message||e),checks:[]})}}
+async function runList(list){document.getElementById('runAll').disabled=true;document.getElementById('runFailed').disabled=true;for(const c of list)await runOne(c);document.getElementById('runAll').disabled=false;document.getElementById('runFailed').disabled=false;updateOverall()}
+document.getElementById('runAll').addEventListener('click',()=>runList(cases));
+document.getElementById('runFailed').addEventListener('click',()=>runList(cases.filter(c=>!results[c.id]||!results[c.id].pass)));
+document.getElementById('clear').addEventListener('click',()=>{Object.keys(results).forEach(k=>delete results[k]);cases.forEach(c=>{document.getElementById('status-'+c.id).className='status wait';document.getElementById('status-'+c.id).textContent='هنوز اجرا نشده';document.getElementById('result-'+c.id).textContent='نتیجه پس از اجرا اینجا نمایش داده می‌شود.'});updateOverall()});
+makeCards();
+})();
+</script>
+</body></html>
