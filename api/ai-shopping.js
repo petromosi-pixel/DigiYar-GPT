@@ -1,83 +1,114 @@
-// DigiYar V7 — semantic AI shopping planner endpoint
-// The endpoint uses Vercel AI SDK so Vercel OIDC authentication is handled
-// by the Gateway integration instead of manually forwarding environment tokens.
+// DigiYar V7 — canonical semantic shopping planner
+// AI interprets the user's need; the merchant KB supplies evidence and hard exclusions.
 const { generateText } = require('ai');
 
-const MODEL='openai/gpt-5.5';
-const MAX_LATENCY_MS=10000;
+const MODEL = 'openai/gpt-5.5';
+const MAX_LATENCY_MS = 10000;
 
-function send(res,status,payload){
+function send(res, status, payload) {
   return res.status(status).json(payload);
 }
 
-module.exports = async function handler(req,res){
-  res.setHeader('Access-Control-Allow-Origin','*');
-  res.setHeader('Access-Control-Allow-Headers','Content-Type');
-  res.setHeader('Access-Control-Allow-Methods','POST,OPTIONS');
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
+}
 
-  if(req.method==='OPTIONS')return res.status(204).end();
-  if(req.method!=='POST')return send(res,405,{error:'method_not_allowed'});
+function clean(value) {
+  return String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
+}
 
-  let body={};
-  try{
-    body=typeof req.body==='object'&&req.body?req.body:JSON.parse(req.body||'{}');
-  }catch(_){
-    return send(res,400,{error:'invalid_json'});
+function parseModelJson(text) {
+  const raw = String(text || '')
+    .trim()
+    .replace(/^\`\`\`(?:json)?\s*/i, '')
+    .replace(/\s*\`\`\`$/, '')
+    .trim();
+  try {
+    return JSON.parse(raw);
+  } catch (_) {
+    const start = raw.indexOf('{');
+    const end = raw.lastIndexOf('}');
+    if (start >= 0 && end > start) return JSON.parse(raw.slice(start, end + 1));
+    throw new Error('ai_invalid_json');
+  }
+}
+
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
+
+  let body = {};
+  try {
+    body = typeof req.body === 'object' && req.body
+      ? req.body
+      : JSON.parse(req.body || '{}');
+  } catch (_) {
+    return send(res, 400, { error: 'invalid_json' });
   }
 
-  const query=String(body.query||'').trim();
-  if(!query)return send(res,400,{error:'query_required'});
+  const query = clean(body.query);
+  if (!query) return send(res, 400, { error: 'query_required' });
 
-  const catalog=body.storeCatalog&&typeof body.storeCatalog==='object'?body.storeCatalog:{};
-  const catalogIds=Object.keys(catalog).map(x=>String(x).toLowerCase());
-  // Keep the full KB on the client, but send a compact semantic projection to the model.
-  // The previous request serialized every merchant field (including duplicated signals),
-  // which made the planner unnecessarily slow.
-  const modelCatalog={};
-  Object.keys(catalog).forEach(function(id){
-    const s=catalog[id]||{};
-    modelCatalog[id]={
-      id:String(s.id||id).toLowerCase(),name:String(s.name||id),
-      domains:Array.isArray(s.domains)?s.domains.slice():[],
-      intents:Array.isArray(s.intents)?s.intents.slice():[],
-      specialties:Array.isArray(s.specialties)?s.specialties.slice():[],
-      productFamilies:Array.isArray(s.productFamilies)?s.productFamilies.slice():[],
-      products:Array.isArray(s.products)?s.products.slice():[],
-      aliases:Array.isArray(s.aliases)?s.aliases.slice():[],
-      exclusions:Array.isArray(s.exclusions)?s.exclusions.slice():[],
-      categories:Array.isArray(s.categories)?s.categories.slice():[],
-      semanticText:String(s.semanticText||'')
+  const catalog = body.storeCatalog && typeof body.storeCatalog === 'object'
+    ? body.storeCatalog
+    : {};
+  const catalogIds = Object.keys(catalog).map(id => String(id).toLowerCase());
+  if (!catalogIds.length) {
+    return send(res, 400, { error: 'merchant_catalog_required' });
+  }
+
+  // Send one canonical, compact projection. Keep querySignals and hard exclusions:
+  // both were present in the browser KB but missing/misaligned in the model payload.
+  const modelCatalog = {};
+  Object.keys(catalog).forEach(id => {
+    const s = catalog[id] || {};
+    modelCatalog[String(id).toLowerCase()] = {
+      id: String(s.id || id).toLowerCase(),
+      name: String(s.name || id),
+      domains: asArray(s.domains),
+      intents: asArray(s.intents),
+      specialties: asArray(s.specialties),
+      productFamilies: asArray(s.productFamilies),
+      products: asArray(s.products),
+      aliases: asArray(s.aliases),
+      querySignals: asArray(s.querySignals),
+      categories: asArray(s.categories),
+      semanticText: String(s.semanticText || ''),
+      matchPolicy: s.matchPolicy || null,
+      exclude: asArray(s.exclusions || s.exclude)
     };
   });
 
-  const prompt=`تو مغز معنایی خرید دیجی‌یار هستی، نه استخراج‌کننده کلمات کلیدی و نه Rule Engine.
-معنی واقعی درخواست کاربر را بفهم و با استدلال معنایی، فقط فروشگاه‌هایی را انتخاب کن که واقعاً برای نیاز او مناسب‌اند.
-برای عبارت‌های کاملاً جدید، محاوره‌ای، مترادف‌ها و ترکیب‌های جدید نیز باید بدون داشتن Rule لفظی قبلی استدلال کنی.
+  const prompt = `تو مغز معنایی خرید دیجی‌یار هستی، نه استخراج‌کنندهٔ کلمات کلیدی و نه Rule Engine.
+درخواست کاربر را با توجه به مفهوم، هدف و کاربرد واقعی آن بفهم. برای عبارت‌های محاوره‌ای، مترادف‌ها و ترکیب‌های تازه نیز استدلال معنایی انجام بده؛ واژه‌برداری سطحی کافی نیست.
 
-تعریف دقیق:
-- requestedProduct = چیزی که کاربر واقعاً می‌خواهد بخرد یا تهیه کند.
-- targetObject = شیئی که محصول برای آن استفاده می‌شود؛ خودش الزاماً محصول درخواستی نیست.
-- useCase = کاربرد یا موقعیت استفاده.
-مثال: «یه چیزی برای تمیز کردن مبل پارچه‌ای» یعنی محصولِ نظافت درخواستی است و «مبل» فقط targetObject است؛ فروشگاه مبلمان به‌خاطر کلمه مبل نباید انتخاب شود.
-مثال: «تصفیه هوای مناسب اتاق خواب» یعنی تصفیه هوا محصول و اتاق خواب useCase است.
-مثال: «لوازم جانبی موبایل» یعنی accessories محصول درخواستی است.
+تعریف فیلدها:
+- requestedProduct: چیزی که کاربر واقعاً می‌خواهد بخرد یا تهیه کند.
+- targetObject: شیئی که محصول برای آن استفاده می‌شود؛ الزاماً محصول درخواستی نیست.
+- useCase: کاربرد یا موقعیت استفاده.
+نمونه: «یه چیزی برای تمیز کردن مبل پارچه‌ای» یعنی محصول نظافت درخواستی است و مبل فقط targetObject است؛ فروشگاه مبلمان نباید انتخاب شود.
+نمونه: «تصفیه هوای مناسب اتاق خواب» یعنی تصفیه هوا محصول است و اتاق خواب کاربرد است.
+نمونه: «لوازم جانبی موبایل» یعنی لوازم جانبی محصول درخواستی است.
 
-قانون اصلی eligibleStoreIds:
-فقط شناسه فروشگاه‌هایی را برگردان که با نیاز واقعی کاربر ارتباط مستقیم و معنادار دارند.
-- فروشگاه عمومی را فقط وقتی انتخاب کن که categories فعلی آن یا شواهد مستقیم KB نشان دهد کالای درخواستی را پوشش می‌دهد.
-- صرف عمومی بودن فروشگاه، وجود یک domain کلی یا شباهت یک کلمه کافی نیست.
-- فروشگاه تخصصی را با domains, intents, specialties, productFamilies, products, aliases, querySignals, semanticText ارزیابی کن.
-- targetObject را با requestedProduct اشتباه نکن.
-- برای نیازهای خرید خودرو، فروشگاه‌های عمومی را بی‌دلیل اضافه نکن.
-- «جانبی» فقط برای لوازم جانبی/اکسسوری واقعی انتخاب شود.
-- «تخفیفان» فقط وقتی درخواست صریح تخفیف/کوپن/پیشنهاد ویژه وجود دارد.
-- فروشگاه‌های تخصصی سفر فقط برای نیاز واقعی سفر/بلیط/رزرو انتخاب شوند.
-- برای نیاز ترکیبی، همه ویژگی‌های اصلی درخواست را همزمان لحاظ کن.
-- هرگز شناسه‌ای خارج از catalog برنگردان.
+قواعد انتخاب فروشگاه:
+1. فقط فروشگاه‌هایی را انتخاب کن که برای نیاز واقعی کاربر ارتباط مستقیم و قابل دفاع دارند.
+2. فقط از شناسه‌های موجود در کاتالوگ استفاده کن.
+3. فروشگاه عمومی را تنها وقتی انتخاب کن که categories، products یا شواهد مستقیم کاتالوگ پوشش کالای درخواستی را تأیید کند؛ عمومی بودن به‌تنهایی کافی نیست.
+4. برای فروشگاه تخصصی، domains، intents، specialties، productFamilies، products، aliases، querySignals و semanticText را با هم ارزیابی کن.
+5. فیلد exclude و matchPolicy.hardExclude محدودیت صریح فروشگاه‌اند؛ اگر نیاز کاربر با آن‌ها تعارض دارد، آن فروشگاه را انتخاب نکن.
+6. targetObject را با requestedProduct اشتباه نگیر. کلمهٔ «مبل» در درخواست نظافت، دلیل انتخاب فروشگاه مبلمان نیست.
+7. برای خرید خودرو، فروشگاه‌های عمومی دیجیتال را بی‌دلیل انتخاب نکن.
+8. «جانبی» فقط برای قصد واقعی لوازم جانبی/اکسسوری انتخاب شود.
+9. «تخفیفان» فقط وقتی قصد تخفیف، کوپن یا پیشنهاد ویژه وجود دارد.
+10. فروشگاه‌های سفر فقط برای نیاز واقعی سفر، بلیت یا رزرو انتخاب شوند.
+11. اگر شواهد کافی برای فروشگاهی نداری، آن را حذف کن؛ حدس نزن و صرفاً برای زیاد شدن نتایج فروشگاه اضافه نکن.
 
 searchQueries:
-برای هر فروشگاه انتخاب‌شده، یک query کوتاه و محصول‌محور بساز که همان محصول واقعی را جست‌وجو کند.
-قیدهای کاربردی مثل targetObject/useCase و بودجه را فقط اگر جزئی از نام محصول‌اند وارد query نکن.
+برای هر فروشگاه انتخاب‌شده، یک عبارت کوتاه و محصول‌محور بساز که همان محصول واقعی را جست‌وجو کند. کاربرد و شیء هدف را فقط در صورتی وارد کن که برای تشخیص خود محصول لازم باشد.
 
 خروجی فقط JSON معتبر با این ساختار باشد:
 {
@@ -101,59 +132,98 @@ searchQueries:
   "confidence": number
 }
 
-کاتالوگ واقعی فروشگاه‌ها:
+کاتالوگ معتبر فروشگاه‌ها:
 ${JSON.stringify(modelCatalog)}
 
 عبارت کاربر:
 ${query}`;
 
-  try{
-    const result=await generateText({
-      model:MODEL,
+  try {
+    const result = await generateText({
+      model: MODEL,
       prompt,
-      reasoning:'none',
-      maxOutputTokens:650,
-      abortSignal:AbortSignal.timeout(MAX_LATENCY_MS)
+      reasoning: 'none',
+      maxOutputTokens: 900,
+      abortSignal: AbortSignal.timeout(MAX_LATENCY_MS)
     });
-
-    const raw=String(result.text||'').trim()
-      .replace(/^\`\`\`json\s*/i,'')
-      .replace(/^\`\`\`\s*/,'')
-      .replace(/\s*\`\`\`$/,'')
-      .trim();
 
     let plan;
-    try{
-      plan=JSON.parse(raw);
-    }catch(_){
-      return send(res,502,{error:'ai_invalid_json',provider:'vercel-ai-sdk',model:MODEL});
+    try {
+      plan = parseModelJson(result.text);
+    } catch (_) {
+      return send(res, 502, {
+        error: 'ai_invalid_json',
+        provider: 'vercel-ai-sdk',
+        model: MODEL
+      });
     }
 
-    if(!plan||typeof plan!=='object'){
-      return send(res,502,{error:'ai_invalid_plan',provider:'vercel-ai-sdk',model:MODEL});
+    if (!plan || typeof plan !== 'object' || Array.isArray(plan)) {
+      return send(res, 502, {
+        error: 'ai_invalid_plan',
+        provider: 'vercel-ai-sdk',
+        model: MODEL
+      });
     }
 
-    plan.eligibleStoreIds=Array.isArray(plan.eligibleStoreIds)
-      ?plan.eligibleStoreIds
-        .map(x=>String(x||'').toLowerCase())
-        .filter((x,i,a)=>catalogIds.indexOf(x)!==-1&&a.indexOf(x)===i)
-      :[];
+    // Validate IDs and enforce explicit merchant-specific KB exclusions after AI reasoning.
+    const semanticText = clean([
+      query,
+      plan.semanticNeed,
+      plan.requestedProduct,
+      plan.taskType,
+      plan.action,
+      ...asArray(plan.productTerms),
+      ...asArray(plan.attributes)
+    ].join(' ')).toLowerCase();
 
-    if(!plan.searchQueries||typeof plan.searchQueries!=='object')plan.searchQueries={};
+    const eligible = asArray(plan.eligibleStoreIds)
+      .map(id => String(id || '').toLowerCase())
+      .filter((id, index, all) => catalogIds.includes(id) && all.indexOf(id) === index)
+      .filter(id => {
+        const merchant = modelCatalog[id];
+        const exclusions = asArray(merchant && merchant.exclude)
+          .map(clean)
+          .filter(Boolean);
+        return !exclusions.some(term => term && semanticText.includes(term.toLowerCase()));
+      });
 
-    return send(res,200,{
-      ok:true,
-      provider:'vercel-ai-sdk',
-      model:MODEL,
+    plan.eligibleStoreIds = eligible;
+    if (!plan.searchQueries || typeof plan.searchQueries !== 'object' || Array.isArray(plan.searchQueries)) {
+      plan.searchQueries = {};
+    }
+
+    // Do not expose queries for merchants removed by catalog validation/exclusions.
+    Object.keys(plan.searchQueries).forEach(id => {
+      if (!eligible.includes(String(id).toLowerCase())) delete plan.searchQueries[id];
+    });
+
+    plan.category = clean(plan.category);
+    plan.requestedProduct = clean(plan.requestedProduct);
+    plan.semanticNeed = clean(plan.semanticNeed);
+    plan.targetObject = plan.targetObject == null ? null : clean(plan.targetObject);
+    plan.domains = asArray(plan.domains).map(clean).filter(Boolean);
+    plan.productTerms = asArray(plan.productTerms).map(clean).filter(Boolean);
+    plan.requiredNameTerms = asArray(plan.requiredNameTerms).map(clean).filter(Boolean);
+    plan.excludedTerms = asArray(plan.excludedTerms).map(clean).filter(Boolean);
+    plan.attributes = asArray(plan.attributes).map(clean).filter(Boolean);
+    plan.confidence = Number.isFinite(Number(plan.confidence))
+      ? Math.max(0, Math.min(1, Number(plan.confidence)))
+      : 0;
+
+    return send(res, 200, {
+      ok: true,
+      provider: 'vercel-ai-sdk',
+      model: MODEL,
       plan
     });
-  }catch(error){
-    console.error('Hooshyar AI Gateway failure',error&&error.message||error);
-    return send(res,502,{
-      error:'ai_request_failed',
-      provider:'vercel-ai-sdk',
-      model:MODEL,
-      detail:String(error&&error.message||'gateway_failure').slice(0,500)
+  } catch (error) {
+    console.error('Hooshyar AI Gateway failure', error && error.message || error);
+    return send(res, 502, {
+      error: 'ai_request_failed',
+      provider: 'vercel-ai-sdk',
+      model: MODEL,
+      detail: String(error && error.message || 'gateway_failure').slice(0, 500)
     });
   }
 };
