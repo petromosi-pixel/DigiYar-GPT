@@ -39,8 +39,7 @@ shab:{name:'شب',domains:['lodging','travel_ticket'],products:['ویلا','سو
 safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هواپیما','بلیط قطار','بلیط اتوبوس','پرواز','سفر'],aliases:['پرواز','بلیط هواپیما'],exclude:['کالای فیزیکی']},
 eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار','رویداد آنلاین','سمینار'],aliases:['وبینار','آموزش آنلاین'],exclude:['کالای فیزیکی']},
 maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دوره آموزشی','دوره برنامه نویسی','آموزش مهارتی','کلاس آنلاین'],aliases:['دوره آنلاین','آموزش'],exclude:['کالای فیزیکی']},
-karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']}
-};
+karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']},
 iransetkor:{name:'ایران ستکور',homepage:'https://iransetkor.com/',domains:["furniture","home"],products:["میز و صندلی","تخت خواب","مبل تخت خواب شو","کمد","تشک","میز تحریر"],aliases:["مبلمان و دکوراسیون","خانه"]},
 '19kala':{name:'۱۹کالا',homepage:'https://www.19kala.com/',domains:["digital"],products:["موبایل","تبلت","ساعت هوشمند","لوازم جانبی موبایل","لوازم خانگی","کالای دیجیتال"],aliases:["کالای دیجیتال"]},
 banistyle:{name:'بانی استایل',homepage:'https://banistyle.com/',domains:["fashion"],products:["لباس زنانه","لباس مردانه","کفش","پوشاک","اکسسوری"],aliases:["پوشاک"]},
@@ -72,6 +71,8 @@ hamrahmechanic:{name:'همراه مکانیک',homepage:'https://www.hamrah-mech
 khodro45:{name:'خودرو۴۵',homepage:'https://khodro45.com/',domains:["auto_service"],products:["فروش خودرو","خرید خودرو","کارشناسی خودرو"],aliases:["خدمات خودرو"]},
 bama:{name:'باما',homepage:'https://bama.ir/',domains:["auto","auto_service"],products:["خرید خودرو","فروش خودرو","قیمت خودرو","خودرو کارکرده"],aliases:["خودرو","خدمات خودرو"]},
 aytol:{name:'آیتول',homepage:'https://aytol.com/',domains:["auto_service"],products:["خدمات خودرو","بیمه خودرو","خلافی خودرو","عوارض خودرو"],aliases:["خدمات خودرو"]},
+};
+
 /*
  * Semantic enrichment layer.
  * The catalog above remains the merchant-specific source of truth.
