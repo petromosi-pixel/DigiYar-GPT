@@ -50,7 +50,7 @@ function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.ca
 function homepage(id,store){return (store&&store.homepage)||((window.DigiYarStoreBrowser&&window.DigiYarStoreBrowser.storesByDomain)?'':'')||'';}
 function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
 function featuredFor(domain,catalog){var ids=FEATURED[domain]||[];var seen={};var out=[];ids.forEach(function(entry){var id=entry[0],s=catalog[id];if(!s||seen[id])return;seen[id]=true;out.push({id:id,name:s.name||id,homepage:s.homepage||'',tagline:entry[1]||'برای بررسی این دسته از محصولات'});});return out;}
-function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return (catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'});}
+function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return (catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'};});}
 function render(){
  var root=document.getElementById('v7PopularDiscovery');if(!root)return;
  var catalog=getCatalog(),domains=availableDomains(catalog);
