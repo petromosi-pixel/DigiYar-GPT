@@ -83,7 +83,8 @@
       });
     });
     const unique=Array.from(new Set(productMatches)).sort((a,b)=>b.length-a.length);
-    let requestedProduct=classified&&classified.product||unique[0]||'';
+    const combinedSkincare=/(?:مرطوب\\s*کننده|آبرسان)/i.test(q)&&/(?:ضد\\s*آفتاب|ضدآفتاب)/i.test(q);
+    let requestedProduct=classified&&classified.product||(combinedSkincare?'کرم مرطوب کننده ضد آفتاب':(unique[0]||''));
     let targetObject=classified&&classified.targetObject||null;
     if(cleaning&&/(مبل|مبلمان|پارچه)/i.test(q)){
       targetObject='مبل پارچه‌ای';
@@ -98,7 +99,8 @@
     }
     const ids=Array.isArray(eligibleIds)?eligibleIds.slice():[];
     const queries={};
-    ids.forEach(id=>{queries[id]=requestedProduct||clean(query);});
+    const storeProductQuery=combinedSkincare?'کرم مرطوب کننده ضد آفتاب':(requestedProduct||clean(query));
+    ids.forEach(id=>{queries[id]=storeProductQuery;});
     const domains=classified?classified.domains.slice():[];
     if(!classified){
       ids.forEach(id=>{
