@@ -57,10 +57,10 @@
 
   function classifyLocalNeed(query){
     const q=norm(query);
-    if(/(?:تصفیه\\s*هوا|دستگاه\\s*تصفیه|پاکسازی\\s*هوا)/i.test(q)){
+    if(/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا)/i.test(q)){
       return {kind:'air_purifier',product:'دستگاه تصفیه هوا',category:'home',domains:['home','digital'],stores:['digikala','snappshop','torob','basalam'],targetObject:null,taskType:'shopping_search'};
     }
-    if(/(?:پراید|خودرو|ماشین)/i.test(q) && /(?:می\\s*خوام|می\\s*خواهم|خرید|بخر|کم\\s*کار|کار\\s*کرده|اسنپ|تپسی)/i.test(q)){
+    if(/(?:پراید|خودرو|ماشین)/i.test(q) && /(?:می\s*خوام|می\s*خواهم|خرید|بخر|کم\s*کار|کار\s*کرده|اسنپ|تپسی)/i.test(q)){
       const model=(q.match(/پراید/)||[])[0];
       return {kind:'used_vehicle',product:model?'پراید کارکرده':'خودرو کارکرده',category:'auto_service',domains:['auto_service'],stores:['karnameh'],targetObject:null,taskType:'vehicle_purchase'};
     }
