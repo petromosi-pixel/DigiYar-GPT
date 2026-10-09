@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.50';
+var VERSION='7.0.0-store-eligibility.51';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -115,6 +115,9 @@ function norm(v){
   return String(v==null?'':v)
     .replace(/[يى]/g,'ی').replace(/ك/g,'ک')
     .replace(/[‌\u200c]/g,' ')
+    .replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب')
+    .replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده')
+    .replace(/آب\s*رسان/g,'آبرسان')
     .replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);})
     .replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d);})
     .replace(/\s+/g,' ').trim().toLowerCase();
