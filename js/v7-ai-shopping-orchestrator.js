@@ -83,7 +83,7 @@
       });
     });
     const unique=Array.from(new Set(productMatches)).sort((a,b)=>b.length-a.length);
-    const combinedSkincare=/(?:مرطوب\\s*کننده|آبرسان)/i.test(q)&&/(?:ضد\\s*آفتاب|ضدآفتاب)/i.test(q);
+    const combinedSkincare=/(?:مرطوب\s*کننده|آبرسان)/i.test(q)&&/(?:ضد\s*آفتاب|ضدآفتاب)/i.test(q);
     let requestedProduct=classified&&classified.product||(combinedSkincare?'کرم مرطوب کننده ضد آفتاب':(unique[0]||''));
     let targetObject=classified&&classified.targetObject||null;
     if(cleaning&&/(مبل|مبلمان|پارچه)/i.test(q)){
