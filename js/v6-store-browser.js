@@ -34,8 +34,8 @@ function storeSearchUrl(id,q){
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(s);
  if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(s);
  if(key==='modiseh'&&/کیف/i.test(s))return 'https://www.modiseh.com/catalogsearch/result/?q='+encodeURIComponent('کیف اداری');
- if(key==='dayan'&&/کیف/i.test(s))return 'https://dayanshop.com/?s='+encodeURIComponent('کیف اداری');
- if(key==='memarket'&&/کیف/i.test(s))return 'https://www.google.com/search?q='+encodeURIComponent('site:memarket24.ir "کیف اداری"');
+ if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(s);
+ if(key==='memarket')return 'https://www.google.com/search?q='+encodeURIComponent('site:memarketshop.ir '+s);
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
