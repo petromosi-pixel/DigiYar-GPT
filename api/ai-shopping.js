@@ -1,7 +1,8 @@
 // DigiYar V7 — canonical semantic shopping planner
 // AI interprets the user's need; the merchant KB supplies evidence and hard exclusions.
 
-const MODEL = 'openai/gpt-5.5';
+const MODEL = 'gemini-2.5-flash';
+const PROVIDER = 'google-gemini-api';
 const MAX_LATENCY_MS = 10000;
 const ALLOWED_ORIGINS = new Set(['https://petromosi-pixel.github.io']);
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
@@ -168,24 +169,76 @@ ${JSON.stringify(modelCatalog)}
 ${query}`;
 
   try {
-    // Load the ESM AI SDK lazily inside the handler. A top-level require can crash
-    // the Vercel function before it can return even OPTIONS/405 responses.
-    const { generateText } = await import('ai');
-    const result = await generateText({
-      model: MODEL,
-      prompt,
-      reasoning: 'none',
-      maxOutputTokens: 900,
-      abortSignal: AbortSignal.timeout(MAX_LATENCY_MS)
-    });
+    // Use Google's direct Gemini API so the endpoint does not depend on
+    // Vercel AI Gateway billing. GEMINI_API_KEY must be configured in Vercel.
+    const apiKey = clean(process.env.GEMINI_API_KEY);
+    if (!apiKey) {
+      return send(res, 503, {
+        error: 'ai_provider_not_configured',
+        provider: PROVIDER,
+        model: MODEL,
+        detail: 'Set GEMINI_API_KEY in the Vercel project environment.'
+      });
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), MAX_LATENCY_MS);
+    let result;
+    try {
+      result = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.1,
+              maxOutputTokens: 900,
+              responseMimeType: 'application/json'
+            }
+          }),
+          signal: controller.signal
+        }
+      );
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!result.ok) {
+      const providerError = await result.text().catch(() => '');
+      console.error('Hooshyar Gemini API failure', result.status, providerError.slice(0, 400));
+      return send(res, 502, {
+        error: 'ai_request_failed',
+        provider: PROVIDER,
+        model: MODEL,
+        upstreamStatus: result.status,
+        detail: 'Gemini API request failed; inspect Vercel runtime logs.'
+      });
+    }
+
+    const responseData = await result.json();
+    const modelText = asArray(responseData.candidates && responseData.candidates[0] &&
+      responseData.candidates[0].content && responseData.candidates[0].content.parts)
+      .map(part => String(part && part.text || ''))
+      .join('')
+      .trim();
+
+    if (!modelText) {
+      return send(res, 502, {
+        error: 'ai_empty_response',
+        provider: PROVIDER,
+        model: MODEL
+      });
+    }
 
     let plan;
     try {
-      plan = parseModelJson(result.text);
+      plan = parseModelJson(modelText);
     } catch (_) {
       return send(res, 502, {
         error: 'ai_invalid_json',
-        provider: 'vercel-ai-sdk',
+        provider: PROVIDER,
         model: MODEL
       });
     }
@@ -193,7 +246,7 @@ ${query}`;
     if (!plan || typeof plan !== 'object' || Array.isArray(plan)) {
       return send(res, 502, {
         error: 'ai_invalid_plan',
-        provider: 'vercel-ai-sdk',
+        provider: PROVIDER,
         model: MODEL
       });
     }
@@ -245,7 +298,7 @@ ${query}`;
 
     return send(res, 200, {
       ok: true,
-      provider: 'vercel-ai-sdk',
+      provider: PROVIDER,
       model: MODEL,
       plan
     });
@@ -253,7 +306,7 @@ ${query}`;
     console.error('Hooshyar AI Gateway failure', error && error.message || error);
     return send(res, 502, {
       error: 'ai_request_failed',
-      provider: 'vercel-ai-sdk',
+      provider: PROVIDER,
       model: MODEL,
       detail: String(error && error.message || 'gateway_failure').slice(0, 500)
     });
