@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.59';
+const VERSION='7.0.0-store-browser.60';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -30,11 +30,12 @@ function storeSearchUrl(id,q){
  var s=storeSearchQuery(q);
  var hs=s;
  if(key==='khanoumi')return khanoumiSearchUrl(s);
- if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(/کیف/i.test(s)?'کیف لپ تاپ':s);
+ if(key==='janebi'&&/کیف/i.test(s))return 'https://janebi.com/search?q='+encodeURIComponent('کیف اداری');
+ if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(s);
  if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(s);
- if(key==='modiseh'&&/کیف/i.test(s))return 'https://www.modiseh.com/search?q='+encodeURIComponent('کیف اداری');
- if(key==='dayan'&&/کیف/i.test(s))return 'https://dayanshop.com/search?q='+encodeURIComponent('کیف اداری');
- if(key==='memarket'&&/کیف/i.test(s))return 'https://memarket24.ir/search/bag';
+ if(key==='modiseh'&&/کیف/i.test(s))return 'https://www.modiseh.com/catalogsearch/result/?q='+encodeURIComponent('کیف اداری');
+ if(key==='dayan'&&/کیف/i.test(s))return 'https://dayanshop.com/?s='+encodeURIComponent('کیف اداری');
+ if(key==='memarket'&&/کیف/i.test(s))return 'https://www.google.com/search?q='+encodeURIComponent('site:memarket24.ir "کیف اداری"');
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
