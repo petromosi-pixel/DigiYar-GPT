@@ -63,7 +63,7 @@ classino:{name:'کلاسینو',homepage:'https://classino.com/',domains:["educa
 alocom:{name:'الوکام',homepage:'https://alocom.co/',domains:["education"],products:["کلاس آنلاین","جلسه آنلاین","آموزش آنلاین"],aliases:["آموزش آنلاین"]},
 skyroom:{name:'اسکای‌روم',homepage:'https://www.skyroom.online/',domains:["education"],products:["کلاس آنلاین","وبینار","جلسه آنلاین","آموزش آنلاین"],aliases:["آموزش آنلاین"]},
 faradars:{name:'فرادرس',homepage:'https://faradars.org/',domains:["education"],products:["دوره آموزشی","آموزش آنلاین","برنامه نویسی","آموزش مهارتی"],aliases:["آموزش آنلاین"]},
-faranesh:{name:'فرادرس‌نما',homepage:'https://faranesh.com/',domains:["education"],products:["دوره آموزشی","آموزش آنلاین","مهارت"],aliases:["آموزش آنلاین"]},
+faranesh:{name:'فرانش',homepage:'https://faranesh.com/',domains:["education"],products:["دوره آموزشی","آموزش آنلاین","مهارت"],aliases:["آموزش آنلاین"]},
 toplearn:{name:'تاپ‌لرن',homepage:'https://toplearn.com/',domains:["education"],products:["دوره آموزشی","برنامه نویسی","آموزش آنلاین"],aliases:["آموزش آنلاین"]},
 daneshjooyar:{name:'دانشجویار',homepage:'https://daneshjooyar.com/',domains:["education"],products:["دوره آموزشی","برنامه نویسی","آموزش مهارتی"],aliases:["آموزش آنلاین"]},
 divar:{name:'دیوار',homepage:'https://divar.ir/',domains:["auto","auto_service","home","digital","fashion"],products:["خرید و فروش","خودرو","قطعات خودرو","کالای دست دوم"],aliases:["خودرو","خدمات خودرو","خانه","کالای دیجیتال","پوشاک"]},
