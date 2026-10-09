@@ -174,19 +174,19 @@ function generalStoreHasCurrentCategoryMatch(query,id){
   /* In AI mode, categories are matched against the semantic need — never the
      raw conversational sentence. targetObject is deliberately excluded. */
   var domainMatchers={
-    digital:/(?:دیجیتال|موبایل|لپ.?تاپ|کامپیوتر|صوتی|تصویری|لوازم\\s*جانبی)/i,
-    furniture:/(?:خانه|آشپزخانه|مبلمان|لوازم\\s*خانه)/i,
-    home:/(?:خانه|آشپزخانه|لوازم\\s*خانه|لوازم\\s*خانگی|لوازم\\s*برقی)/i,
+    digital:/(?:دیجیتال|موبایل|لپ.?تاپ|کامپیوتر|صوتی|تصویری|لوازم\s*جانبی)/i,
+    furniture:/(?:خانه|آشپزخانه|مبلمان|لوازم\s*خانه)/i,
+    home:/(?:خانه|آشپزخانه|لوازم\s*خانه|لوازم\s*خانگی|لوازم\s*برقی)/i,
     fashion:/(?:مد|پوشاک|کفش|اکسسوری)/i,
-    beauty:/(?:آرایشی|زیبایی|مراقبت\\s*پوست|مراقبت\\s*مو)/i,
+    beauty:/(?:آرایشی|زیبایی|مراقبت\s*پوست|مراقبت\s*مو)/i,
     health:/(?:سلامت|پزشکی|بهداشت|مراقبت)/i,
     medicine:/(?:سلامت|پزشکی|دارو|مکمل|بهداشت)/i,
-    supermarket:/(?:سوپرمارکت|مواد\\s*غذایی|میوه|لبنیات|نوشیدنی|شوینده)/i,
-    sports:/(?:ورزش|سفر|تناسب\\s*اندام)/i,
+    supermarket:/(?:سوپرمارکت|مواد\s*غذایی|میوه|لبنیات|نوشیدنی|شوینده)/i,
+    sports:/(?:ورزش|سفر|تناسب\s*اندام)/i,
     kids:/(?:کودک|نوزاد|اسباب.?بازی)/i,
-    books:/(?:کتاب|فرهنگی|هنری|لوازم\\s*تحریر)/i,
-    auto:/(?:خودرو|وسایل\\s*نقلیه)/i,
-    accessories:/(?:اکسسوری|لوازم\\s*جانبی)/i,
+    books:/(?:کتاب|فرهنگی|هنری|لوازم\s*تحریر)/i,
+    auto:/(?:خودرو|وسایل\s*نقلیه)/i,
+    accessories:/(?:اکسسوری|لوازم\s*جانبی)/i,
     travel_ticket:/(?:بلیط|سفر|قطار|اتوبوس|هواپیما)/i,
     lodging:/(?:اقامت|هتل|ویلا|سوئیت|اقامتگاه)/i,
     education:/(?:آموزش|دوره|کلاس|مهارت)/i,
@@ -196,7 +196,7 @@ function generalStoreHasCurrentCategoryMatch(query,id){
     if((task==='find_tool_for_target'||task==='find_product_for_task') && /(?:مبل|مبلمان|فرش|پارچه)/i.test(norm(ai.targetObject||''))){
       /* Target object is not a product category. Match the requested product
          instead; this blocks furniture marketplaces from cleaning-tool tasks. */
-      if(!/(?:شوینده|نظافت|بهداشت|تمیزکننده|پاک\\s*کننده|بخارشوی|جارو)/i.test(text))return false;
+      if(!/(?:شوینده|نظافت|بهداشت|تمیزکننده|پاک\s*کننده|بخارشوی|جارو)/i.test(text))return false;
     }
     if(domains.length && domains.some(function(d){return domainMatchers[d]&&cats.some(function(c){return domainMatchers[d].test(c);});}))return true;
     if(requested && cats.some(function(c){return c.indexOf(requested)!==-1 || requested.indexOf(c)!==-1;}))return true;
@@ -364,9 +364,9 @@ function aiSelectionIsAllowed(query,id){
   var exclusions=[].concat(item.exclude||[]).map(norm).filter(Boolean);
   /* Janebi sells mobile accessories: the word «mobile» in an accessory query
      must not trigger the merchant's phone-device exclusion. */
-  if(key==='janebi' && /(?:جانبی|اکسسوری|قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|ایرباد|هولدر|مبدل)/i.test(semanticText)){
+  if(key==='janebi' && /(?:جانبی|اکسسوری|قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|ایرباد|هولدر|مبدل)/i.test(semanticText)){
     exclusions=exclusions.filter(function(term){
-      return !/(?:^|\\s)(?:موبایل|گوشی)(?:\\s|$)/i.test(term);
+      return !/(?:^|\s)(?:موبایل|گوشی)(?:\s|$)/i.test(term);
     });
   }
 
