@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.1';
+  const VERSION='7.0.0-hooshyar-local.2';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -55,7 +55,19 @@
     return catalog;
   }
 
-  function localNeed(query,catalog,eligibleIds){
+  function classifyLocalNeed(query){
+    const q=norm(query);
+    if(/(?:تصفیه\\s*هوا|دستگاه\\s*تصفیه|پاکسازی\\s*هوا)/i.test(q)){
+      return {kind:'air_purifier',product:'دستگاه تصفیه هوا',category:'home',domains:['home','digital'],stores:['digikala','snappshop','torob','basalam'],targetObject:null,taskType:'shopping_search'};
+    }
+    if(/(?:پراید|خودرو|ماشین)/i.test(q) && /(?:می\\s*خوام|می\\s*خواهم|خرید|بخر|کم\\s*کار|کار\\s*کرده|اسنپ|تپسی)/i.test(q)){
+      const model=(q.match(/پراید/)||[])[0];
+      return {kind:'used_vehicle',product:model?'پراید کارکرده':'خودرو کارکرده',category:'auto_service',domains:['auto_service'],stores:['karnameh'],targetObject:null,taskType:'vehicle_purchase'};
+    }
+    return null;
+  }
+
+  function localNeed(query,catalog,eligibleIds,classified){
     const q=norm(query);
     const cleaning=/(تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی|شستشوی\s*مبل)/i.test(q);
     const productMatches=[];
@@ -68,8 +80,8 @@
       });
     });
     const unique=Array.from(new Set(productMatches)).sort((a,b)=>b.length-a.length);
-    let requestedProduct=unique[0]||'';
-    let targetObject=null;
+    let requestedProduct=classified&&classified.product||unique[0]||'';
+    let targetObject=classified&&classified.targetObject||null;
     if(cleaning&&/(مبل|مبلمان|پارچه)/i.test(q)){
       targetObject='مبل پارچه‌ای';
       if(!requestedProduct||/(مبل|مبلمان|صندلی|ناهارخوری)/i.test(requestedProduct)){
@@ -84,15 +96,17 @@
     const ids=Array.isArray(eligibleIds)?eligibleIds.slice():[];
     const queries={};
     ids.forEach(id=>{queries[id]=requestedProduct||clean(query);});
-    const domains=[];
-    ids.forEach(id=>{
-      const item=catalog[id]||{};
-      (item.domains||[]).forEach(d=>{if(!domains.includes(d))domains.push(d);});
-    });
+    const domains=classified?classified.domains.slice():[];
+    if(!classified){
+      ids.forEach(id=>{
+        const item=catalog[id]||{};
+        (item.domains||[]).forEach(d=>{if(!domains.includes(d))domains.push(d);});
+      });
+    }
     return {
-      version:VERSION,category:domains[0]||'general',brand:null,
+      version:VERSION,category:classified?classified.category:(domains[0]||'general'),brand:null,
       minBudgetToman:null,maxBudgetToman:null,useCase:targetObject?'نظافت مبل پارچه‌ای':null,
-      domains:domains,taskType:cleaning?'cleaning_task':'shopping_search',
+      domains:domains,taskType:classified?classified.taskType:(cleaning?'cleaning_task':'shopping_search'),
       action:'find_relevant_stores',eligibleStoreIds:ids,
       productTerms:unique.slice(0,12),requiredNameTerms:[],excludedTerms:[],
       semanticNeed:clean(query),requestedProduct:requestedProduct||clean(query),
@@ -125,11 +139,15 @@
     let stores=[];
     const eligibility=window.DigiYarStoreEligibility;
     const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
-    if(eligibility&&typeof eligibility.storesForQuery==='function'){
+    const classified=classifyLocalNeed(raw);
+    if(classified){
+      const catalog=buildStoreCatalog();
+      stores=classified.stores.map(id=>({id,name:(catalog[id]&&catalog[id].name)||id}));
+    }else if(eligibility&&typeof eligibility.storesForQuery==='function'){
       stores=eligibility.storesForQuery(raw,popular);
     }
     const ids=(Array.isArray(stores)?stores:[]).map(x=>String(x&&x.id||'').toLowerCase()).filter((id,i,a)=>id&&a.indexOf(id)===i);
-    plan.ai=localNeed(raw,buildStoreCatalog(),ids);
+    plan.ai=localNeed(raw,buildStoreCatalog(),ids,classified);
     plan.candidateStores=ids.slice();
     plan.provider='local-knowledge-base';
     plan.semantic=false;
@@ -140,6 +158,6 @@
   }
 
   window.DigiYarShoppingOrchestrator={
-    version:VERSION,buildStoreCatalog:buildStoreCatalog,buildPlan:buildPlan,run:run
+    version:VERSION,buildStoreCatalog:buildStoreCatalog,classifyLocalNeed:classifyLocalNeed,buildPlan:buildPlan,run:run
   };
 })(window);
