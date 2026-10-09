@@ -40,7 +40,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.78rem;max-height:260p
 <div id="tests"></div>
 </main>
 <script src="./js/store-business-domains.js?v=7.0.0-store-business-domains.16"></script>
-<script src="./js/v7-store-eligibility.js?v=7.0.0-store-eligibility.50"></script>\n<script src="./js/v7-ai-shopping-orchestrator.js?v=7.0.0-hooshyar-local.2"></script>
+<script src="./js/v7-store-eligibility.js?v=7.0.0-store-eligibility.51"></script>\n<script src="./js/v7-ai-shopping-orchestrator.js?v=7.0.0-hooshyar-local.3"></script>
 <script>
 (function(){
 'use strict';
@@ -63,7 +63,9 @@ const cases=[
 {name:'فروشگاه‌های مبلمان انتخاب نشوند',test:p=>!p.eligibleStoreIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id))}
 ]},
 {id:'skincare',title:'کرم مرطوب‌کننده ضدآفتاب',query:'کرم مرطوب‌کننده ضدآفتاب',checks:[
-{name:'دستهٔ محصول مرتبط با مراقبت پوست تشخیص داده شود',test:p=>/کرم|پوست|مرطوب|ضدآفتاب|sunscreen|moistur/i.test([p.category,p.requestedProduct,p.semanticNeed,...(p.productTerms||[])].join(' '))},
+{name:'دستهٔ محصول مرتبط با مراقبت پوست تشخیص داده شود',test:p=>/کرم|پوست|مرطوب|ضد آفتاب|sunscreen|moistur/i.test([p.category,p.requestedProduct,p.semanticNeed,...(p.productTerms||[])].join(' '))},
+{name:'حداقل یک داروخانه/فروشگاه تخصصی سلامت بررسی شود',test:p=>p.eligibleStoreIds.some(id=>['darukade','mosbatesabz','daroo-online'].includes(id))},
+{name:'عبارت جستجو برای فروشگاه تخصصی حفظ شود',test:p=>['darukade','mosbatesabz','daroo-online'].some(id=>/مرطوب کننده/.test(p.searchQueries[id]||'')&&/ضد آفتاب/.test(p.searchQueries[id]||''))},
 {name:'فروشگاه‌های مبلمان انتخاب نشوند',test:p=>!p.eligibleStoreIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id))}
 ]},
 {id:'car',title:'پراید کم‌کار برای اسنپ',query:'یه پراید کم کار می خوام برای کار در اسنپ',checks:[
