@@ -1,6 +1,5 @@
 // DigiYar V7 — canonical semantic shopping planner
 // AI interprets the user's need; the merchant KB supplies evidence and hard exclusions.
-const { generateText } = require('ai');
 
 const MODEL = 'openai/gpt-5.5';
 const MAX_LATENCY_MS = 10000;
@@ -139,6 +138,9 @@ ${JSON.stringify(modelCatalog)}
 ${query}`;
 
   try {
+    // Load the ESM AI SDK lazily inside the handler. A top-level require can crash
+    // the Vercel function before it can return even OPTIONS/405 responses.
+    const { generateText } = await import('ai');
     const result = await generateText({
       model: MODEL,
       prompt,
