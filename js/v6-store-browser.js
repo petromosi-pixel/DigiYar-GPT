@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.65';
+const VERSION='7.0.0-store-browser.66';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -104,10 +104,62 @@ divar:q=>HOME["divar"],
 hamrahmechanic:q=>HOME["hamrahmechanic"],
 khodro45:q=>HOME["khodro45"],
 bama:q=>HOME["bama"],
-aytol:q=>HOME["aytol"]
+aytol:q=>HOME["aytol"],
+emalls:q=>HOME['emalls'],
+kalatik:q=>HOME['kalatik'],
+mobile140:q=>HOME['mobile140'],
+mobileir:q=>HOME['mobileir'],
+kala360:q=>HOME['kala360'],
+mobliran:q=>HOME['mobliran'],
+choobineh:q=>HOME['choobineh'],
+moblmarket:q=>HOME['moblmarket'],
+digistyle:q=>HOME['digistyle'],
+shixon:q=>HOME['shixon'],
+limoo:q=>HOME['limoo'],
+mootanroo:q=>HOME['mootanroo'],
+zibamoon:q=>HOME['zibamoon'],
+rojashop:q=>HOME['rojashop'],
+safirstore:q=>HOME['safirstore'],
+okala:q=>HOME['okala'],
+ofoghkoroosh:q=>HOME['ofoghkoroosh'],
+janbo:q=>HOME['janbo'],
+shahrvand:q=>HOME['shahrvand'],
+hyperme:q=>HOME['hyperme'],
+ofood:q=>HOME['ofood'],
+homeplus:q=>HOME['homeplus'],
+sakhtemoononline:q=>HOME['sakhtemoononline'],
+khaneyeiran:q=>HOME['khaneyeiran'],
+sportland:q=>HOME['sportland'],
+iransport:q=>HOME['iransport'],
+sporttime:q=>HOME['sporttime'],
+ninimarket:q=>HOME['ninimarket'],
+ninisite:q=>HOME['ninisite'],
+babyland:q=>HOME['babyland'],
+fidibo:q=>HOME['fidibo'],
+taaghche:q=>HOME['taaghche'],
+book30:q=>HOME['book30'],
+yadakmarket:q=>HOME['yadakmarket'],
+yadakyar:q=>HOME['yadakyar'],
+partsaz:q=>HOME['partsaz'],
+sheypoor:q=>HOME['sheypoor'],
+mrbilit:q=>HOME['mrbilit'],
+trip:q=>HOME['trip'],
+flysepehran:q=>HOME['flysepehran'],
+eghamat24:q=>HOME['eghamat24'],
+hotelban:q=>HOME['hotelban'],
+safarmarket:q=>HOME['safarmarket'],
+quera:q=>HOME['quera'],
+roocket:q=>HOME['roocket'],
+sabzlearn:q=>HOME['sabzlearn'],
+hamyarit:q=>HOME['hamyarit'],
+learnfile:q=>HOME['learnfile'],
+azki:q=>HOME['azki'],
+bimebazar:q=>HOME['bimebazar'],
+bimeh:q=>HOME['bimeh'],
+kilid:q=>HOME['kilid']
 };
-const STORE_NAMES={iranmiz:'ایران میز',partochoob:'پرتوچوب',chidahome:'چیدا هوم',tidawood:'تیدا چوب',digikala:'دیجی‌کالا',snappshop:'اسنپ‌شاپ',torob:'ترب',basalam:'باسلام',esam:'ایسام',technolife:'تکنولایف',digiland:'دیجی‌لند',takhfifan:'تخفیفان',meghdadit:'مقداد آی‌تی',digido:'دیجی‌دو',gooshishop:'گوشی‌شاپ',berozkala:'بروزکالا',janebi:'جانبی',khanoumi:'خانومی',banimode:'بانی‌مد',modiseh:'مدیسه',pinket:'پینکت',solokala:'سولوکالا',neshatrokh:'نشاط رخ',dayan:'دایان',memarket:'می‌مارکت',darukade:'داروکده',darmankala:'درمان‌کالا',mosbatesabz:'مثبت سبز','daroo-online':'داروخانه آنلاین',shavaz:'شاواز',jeanswest:'جین وست',sabzgostar:'سبز گستر',shab:'شب',safarme:'سفرمی',eseminar:'ایسمینار',maktabkhooneh:'مکتب‌خونه',karnameh:'کارنامه',iransetkor:'ایران ستکور','19kala':'۱۹کالا',banistyle:'بانی استایل',aysoocollection:'آیسو کالکشن',daru24:'دارو۲۴',betadent:'بتادنت',darupedia:'داروپدیا',darucenter:'داروسنتر',webdaru:'وب‌دارو',saba:'داروخانه صبا',darupost:'داروپست',shider:'شیدر',alibaba:'علی‌بابا',jobama:'جاباما',flytoday:'فلای‌تودی',raja:'رجا',ghasedak24:'قاصدک ۲۴',siroom:'سی‌روم',roomit:'رومیت',classino:'کلاسینو',alocom:'الوکام',skyroom:'اسکای‌روم',faradars:'فرادرس',faranesh:'فرانش',toplearn:'تاپ‌لرن',daneshjooyar:'دانشجویار',divar:'دیوار',hamrahmechanic:'همراه مکانیک',khodro45:'خودرو۴۵',bama:'باما',aytol:'آیتول'};
-const HOME={digikala:'https://www.digikala.com/',snappshop:'https://snapp.shop/',torob:'https://torob.com/',basalam:'https://basalam.com/',technolife:'https://www.technolife.com/',digido:'https://www.digido.ir/',gooshishop:'https://gooshishop.com/',berozkala:'https://berozkala.com/',janebi:'https://janebi.com/',khanoumi:'https://www.khanoumi.com/',banimode:'https://www.banimode.com/',modiseh:'https://www.modiseh.com/',esam:'https://esam.ir/',pinket:'https://pinket.com/',solokala:'https://solokala.com/',iranmiz:'https://www.iranmiz.com/',partochoob:'https://partochoob.com/',chidahome:'https://chidahomestudio.com/',tidawood:'https://tidawood.com/',darukade:'https://www.darukade.com/',darmankala:'https://darmankala.com/',digiland:'https://dgland.com/',takhfifan:'https://takhfifan.com/',meghdadit:'https://meghdadit.com/',neshatrokh:'https://www.neshatrokh.com/',mosbatesabz:'https://mosbatesabz.com/',shavaz:'https://shavaz.ir/','daroo-online':'https://darookhaneonline.com/',dayan:'https://dayanshop.com/',memarket:'https://memarket24.ir/',jeanswest:'https://jeanswest.ir/',sabzgostar:'https://sabzgostar.info/',shab:'https://www.shab.ir/',safarme:'https://www.safarme.ir/',eseminar:'https://eseminar.tv/',maktabkhooneh:'https://maktabkhooneh.org/',karnameh:'https://karnameh.com/',iransetkor:'https://iransetkor.com/','19kala':'https://www.19kala.com/',banistyle:'https://banistyle.com/',aysoocollection:'https://aysoocollection.com/',daru24:'https://daru24.com/',betadent:'https://betadent.com/',darupedia:'https://darupedia.com/',darucenter:'https://darucenter.com/',webdaru:'https://webdaru.com/',saba:'https://sabadaru.com/',darupost:'https://darupost.com/',shider:'https://shider.com/',alibaba:'https://www.alibaba.ir/',jobama:'https://www.jabama.com/',flytoday:'https://www.flytoday.ir/',raja:'https://www.raja.ir/',ghasedak24:'https://ghasedak24.com/',siroom:'https://siroom.ir/',roomit:'https://roomit.ir/',classino:'https://classino.com/',alocom:'https://alocom.co/',skyroom:'https://www.skyroom.online/',faradars:'https://faradars.org/',faranesh:'https://faranesh.com/',toplearn:'https://toplearn.com/',daneshjooyar:'https://daneshjooyar.com/',divar:'https://divar.ir/',hamrahmechanic:'https://www.hamrah-mechanic.com/',khodro45:'https://khodro45.com/',bama:'https://bama.ir/',aytol:'https://aytol.com/'};
+const STORE_NAMES={iranmiz:'ایران میز',partochoob:'پرتوچوب',chidahome:'چیدا هوم',tidawood:'تیدا چوب',digikala:'دیجی‌کالا',snappshop:'اسنپ‌شاپ',torob:'ترب',basalam:'باسلام',esam:'ایسام',technolife:'تکنولایف',digiland:'دیجی‌لند',takhfifan:'تخفیفان',meghdadit:'مقداد آی‌تی',digido:'دیجی‌دو',gooshishop:'گوشی‌شاپ',berozkala:'بروزکالا',janebi:'جانبی',khanoumi:'خانومی',banimode:'بانی‌مد',modiseh:'مدیسه',pinket:'پینکت',solokala:'سولوکالا',neshatrokh:'نشاط رخ',dayan:'دایان',memarket:'می‌مارکت',darukade:'داروکده',darmankala:'درمان‌کالا',mosbatesabz:'مثبت سبز','daroo-online':'داروخانه آنلاین',shavaz:'شاواز',jeanswest:'جین وست',sabzgostar:'سبز گستر',shab:'شب',safarme:'سفرمی',eseminar:'ایسمینار',maktabkhooneh:'مکتب‌خونه',karnameh:'کارنامه',iransetkor:'ایران ستکور','19kala':'۱۹کالا',banistyle:'بانی استایل',aysoocollection:'آیسو کالکشن',daru24:'دارو۲۴',betadent:'بتادنت',darupedia:'داروپدیا',darucenter:'داروسنتر',webdaru:'وب‌دارو',saba:'داروخانه صبا',darupost:'داروپست',shider:'شیدر',alibaba:'علی‌بابا',jobama:'جاباما',flytoday:'فلای‌تودی',raja:'رجا',ghasedak24:'قاصدک ۲۴',siroom:'سی‌روم',roomit:'رومیت',classino:'کلاسینو',alocom:'الوکام',skyroom:'اسکای‌روم',faradars:'فرادرس',faranesh:'فرانش',toplearn:'تاپ‌لرن',daneshjooyar:'دانشجویار',divar:'دیوار',hamrahmechanic:'همراه مکانیک',khodro45:'خودرو۴۵',bama:'باما',aytol:'آیتول',emalls:'ایمالز',kalatik:'کالاتیک',mobile140:'موبایل ۱۴۰',mobileir:'موبایل‌آی‌آر',kala360:'کالا۳۶۰',mobliran:'مبل ایران',choobineh:'چوبینه',moblmarket:'مبل مارکت',digistyle:'دیجی‌استایل',shixon:'شیکسون',limoo:'لیمو',mootanroo:'مو تن رو',zibamoon:'زیبامون',rojashop:'روژا شاپ',safirstore:'سفیر',okala:'اکالا',ofoghkoroosh:'افق کوروش',janbo:'جانبو',shahrvand:'شهروند',hyperme:'هایپرمی',ofood:'اوفود',homeplus:'هوم‌پلاس',sakhtemoononline:'ساختمان آنلاین',khaneyeiran:'خانه ایرانی',sportland:'اسپرت‌لند',iransport:'ایران اسپرت',sporttime:'اسپرت تایم',ninimarket:'نی‌نی مارکت',ninisite:'نی‌نی سایت',babyland:'بیبی‌لند',fidibo:'فیدیبو',taaghche:'طاقچه',book30:'۳۰بوک',yadakmarket:'یدک مارکت',yadakyar:'یدک‌یار',partsaz:'پارت‌ساز',sheypoor:'شیپور',mrbilit:'مستر بلیط',trip:'تریپ',flysepehran:'فلای سپهران',eghamat24:'اقامت ۲۴',hotelban:'هتل‌بان',safarmarket:'سفرمارکت',quera:'کوئرا',roocket:'راکت',sabzlearn:'سبزلرن',hamyarit:'همیار آی‌تی',learnfile:'لرن‌فایل',azki:'ازکی',bimebazar:'بیمه‌بازار',bimeh:'بیمه',kilid:'کلید'};
+const HOME={digikala:'https://www.digikala.com/',snappshop:'https://snapp.shop/',torob:'https://torob.com/',basalam:'https://basalam.com/',technolife:'https://www.technolife.com/',digido:'https://www.digido.ir/',gooshishop:'https://gooshishop.com/',berozkala:'https://berozkala.com/',janebi:'https://janebi.com/',khanoumi:'https://www.khanoumi.com/',banimode:'https://www.banimode.com/',modiseh:'https://www.modiseh.com/',esam:'https://esam.ir/',pinket:'https://pinket.com/',solokala:'https://solokala.com/',iranmiz:'https://www.iranmiz.com/',partochoob:'https://partochoob.com/',chidahome:'https://chidahomestudio.com/',tidawood:'https://tidawood.com/',darukade:'https://www.darukade.com/',darmankala:'https://darmankala.com/',digiland:'https://dgland.com/',takhfifan:'https://takhfifan.com/',meghdadit:'https://meghdadit.com/',neshatrokh:'https://www.neshatrokh.com/',mosbatesabz:'https://mosbatesabz.com/',shavaz:'https://shavaz.ir/','daroo-online':'https://darookhaneonline.com/',dayan:'https://dayanshop.com/',memarket:'https://memarket24.ir/',jeanswest:'https://jeanswest.ir/',sabzgostar:'https://sabzgostar.info/',shab:'https://www.shab.ir/',safarme:'https://www.safarme.ir/',eseminar:'https://eseminar.tv/',maktabkhooneh:'https://maktabkhooneh.org/',karnameh:'https://karnameh.com/',iransetkor:'https://iransetkor.com/','19kala':'https://www.19kala.com/',banistyle:'https://banistyle.com/',aysoocollection:'https://aysoocollection.com/',daru24:'https://daru24.com/',betadent:'https://betadent.com/',darupedia:'https://darupedia.com/',darucenter:'https://darucenter.com/',webdaru:'https://webdaru.com/',saba:'https://sabadaru.com/',darupost:'https://darupost.com/',shider:'https://shider.com/',alibaba:'https://www.alibaba.ir/',jobama:'https://www.jabama.com/',flytoday:'https://www.flytoday.ir/',raja:'https://www.raja.ir/',ghasedak24:'https://ghasedak24.com/',siroom:'https://siroom.ir/',roomit:'https://roomit.ir/',classino:'https://classino.com/',alocom:'https://alocom.co/',skyroom:'https://www.skyroom.online/',faradars:'https://faradars.org/',faranesh:'https://faranesh.com/',toplearn:'https://toplearn.com/',daneshjooyar:'https://daneshjooyar.com/',divar:'https://divar.ir/',hamrahmechanic:'https://www.hamrah-mechanic.com/',khodro45:'https://khodro45.com/',bama:'https://bama.ir/',aytol:'https://aytol.com/',emalls:'https://emalls.ir/',kalatik:'https://kalatik.com/',mobile140:'https://mobile140.com/',mobileir:'https://mobile.ir/',kala360:'https://kala360.com/',mobliran:'https://mobliran.com/',choobineh:'https://choobineh.com/',moblmarket:'https://moblmarket.com/',digistyle:'https://www.digistyle.com/',shixon:'https://shixon.com/',limoo:'https://limoo.com/',mootanroo:'https://mootanroo.com/',zibamoon:'https://zibamoon.com/',rojashop:'https://rojashop.com/',safirstore:'https://safirstore.com/',okala:'https://okala.com/',ofoghkoroosh:'https://www.okcs.com/',janbo:'https://janbo.ir/',shahrvand:'https://shahrvand.ir/',hyperme:'https://hyperme.com/',ofood:'https://ofood.ir/',homeplus:'https://homeplus.ir/',sakhtemoononline:'https://sakhtemoononline.com/',khaneyeiran:'https://khaneyeiran.com/',sportland:'https://sportland.ir/',iransport:'https://iransport.com/',sporttime:'https://sporttime.ir/',ninimarket:'https://ninimarket.com/',ninisite:'https://www.ninisite.com/',babyland:'https://babyland.ir/',fidibo:'https://fidibo.com/',taaghche:'https://taaghche.com/',book30:'https://www.30book.com/',yadakmarket:'https://yadakmarket.com/',yadakyar:'https://yadakyar.com/',partsaz:'https://partsaz.com/',sheypoor:'https://www.sheypoor.com/',mrbilit:'https://mrbilit.com/',trip:'https://www.trip.ir/',flysepehran:'https://flysepehran.com/',eghamat24:'https://www.eghamat24.com/',hotelban:'https://hotelban.com/',safarmarket:'https://safarmarket.com/',quera:'https://quera.org/',roocket:'https://roocket.ir/',sabzlearn:'https://sabzlearn.ir/',hamyarit:'https://hamyarit.com/',learnfile:'https://learnfile.ir/',azki:'https://www.azki.com/',bimebazar:'https://bimebazar.com/',bimeh:'https://bimeh.com/',kilid:'https://kilid.com/'};
 const CATEGORY={
  dayan:{jacket:'https://dayanshop.com/products/men-warm-jacket',knitwear:'https://dayanshop.com/products/men-knitwear',shirt:'https://dayanshop.com/products/men-shirts',tshirt:'https://dayanshop.com/products/men-tshirts',set:'https://dayanshop.com/products/men-sets',trousers:'https://dayanshop.com/products/men-trousers',hoodie:'https://dayanshop.com/products/men-sweatshirts-hoodies',sweatshirt:'https://dayanshop.com/products/men-blouse',tank:'https://dayanshop.com/products/men-tops',sport:'https://dayanshop.com/products/men-sports-shoes','ankle-boots':'https://dayanshop.com/products/men-boots',casual:'https://dayanshop.com/products/men-casual-shoes',formal:'https://dayanshop.com/products/men-formal-shoes',sandal:'https://dayanshop.com/products/men-sandals'},
  memarket:{clothes:'https://memarket24.ir/search/clothes',shirt:'https://memarket24.ir/search/shirt',knitwear:'https://memarket24.ir/search/knitwear',outfit:'https://memarket24.ir/search/outfit',couple:'https://memarket24.ir/search/couple',trousers:'https://memarket24.ir/search/trousers',tshirt:'https://memarket24.ir/search/tshirt',outwear:'https://memarket24.ir/search/outwear',coat:'https://memarket24.ir/search/coat',shoes:'https://memarket24.ir/search/shoes',boots:'https://memarket24.ir/search/boots','formal-shoes':'https://memarket24.ir/search/formal-shoes','sport-shoes':'https://memarket24.ir/search/sport-shoes','flat-shoes':'https://memarket24.ir/search/flat-shoes',college:'https://memarket24.ir/search/college',sandal:'https://memarket24.ir/search/sandal',bag:'https://memarket24.ir/search/bag',watch:'https://memarket24.ir/search/watch',jewelry:'https://memarket24.ir/search/jewelry',household:'https://memarket24.ir/search/household',digital:'https://memarket24.ir/search/digital',personal:'https://memarket24.ir/search/personal',adult:'https://memarket24.ir/search/adult',sale:'https://memarket24.ir/search/sale','one-size':'https://memarket24.ir/search/one-size'}
