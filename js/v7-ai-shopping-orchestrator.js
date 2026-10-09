@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.3';
+  const VERSION='7.0.0-hooshyar-local.4';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -99,7 +99,7 @@
     }
     const ids=Array.isArray(eligibleIds)?eligibleIds.slice():[];
     const queries={};
-    const storeProductQuery=combinedSkincare?'کرم مرطوب کننده ضد آفتاب':(requestedProduct||clean(query));
+    const storeProductQuery=clean(query);
     ids.forEach(id=>{queries[id]=storeProductQuery;});
     const domains=classified?classified.domains.slice():[];
     if(!classified){
