@@ -173,7 +173,7 @@ function openBrowser(query,list){
  const processing=document.createElement('div');
  processing.className='v6-auto-processing';
  processing.setAttribute('aria-live','polite');
- processing.innerHTML='<div class="v6-auto-processing-title">هوش‌یار در حال پردازش درخواست توست...</div><div class="v6-auto-processing-details" style="display:block"><ul></ul></div>';
+ processing.innerHTML='<div class="v6-auto-processing-title">نتایج جست‌وجوی محلی آماده می‌شوند...</div><div class="v6-auto-processing-details" style="display:block"><ul></ul></div>';
  const processingList=processing.querySelector('ul');
 
  function finishProcessing(onComplete){
@@ -185,7 +185,7 @@ function openBrowser(query,list){
    toggle.type='button';
    toggle.className='v6-auto-processing-toggle';
    toggle.setAttribute('aria-expanded','false');
-   toggle.innerHTML='<span class="v6-auto-processing-done">هوش یار به مدت ۷ ثانیه پردازش کرد</span><span class="v6-auto-processing-chevron" aria-hidden="true">›</span>';
+   toggle.innerHTML='<span class="v6-auto-processing-done">جست‌وجوی محلی آماده شد</span><span class="v6-auto-processing-chevron" aria-hidden="true">›</span>';
    processing.appendChild(toggle);
    if(savedDetails)processing.appendChild(savedDetails);
    if(savedDetails)savedDetails.style.display='none';
@@ -227,7 +227,7 @@ function openBrowser(query,list){
  host.appendChild(processing);
  host.appendChild(box);
  box.style.display='none';
- showNextProcessingMessage();
+ finishProcessing(renderResults);
 
  function renderResults(){
    try{
