@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.2';
+  const VERSION='7.0.0-hooshyar-local.3';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -14,6 +14,9 @@
   function norm(value){
     return clean(value).replace(/[يى]/g,'ی').replace(/ك/g,'ک')
       .replace(/[\u200c]/g,' ').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+      .replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب')
+      .replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده')
+      .replace(/آب\s*رسان/g,'آبرسان')
       .replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))
       .replace(/\s+/g,' ').toLowerCase();
   }
