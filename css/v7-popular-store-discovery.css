@@ -1,0 +1,42 @@
+/* DigiYar — Popular Stores discovery module */
+.popular-discovery{--pd-ink:#1d2b49;--pd-muted:#68748a;--pd-line:#e4eaf3;--pd-blue:#355b9a;--pd-soft:#f4f7fc;overflow:hidden}
+.popular-discovery-toggle{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border:0;border-radius:16px;background:linear-gradient(115deg,#20385f,#355b9a);color:#fff;text-align:right;cursor:pointer}
+.popular-discovery-toggle-main{display:flex;align-items:center;gap:12px;min-width:0}
+.popular-discovery-mark{display:grid;place-items:center;flex:0 0 44px;height:44px;border-radius:14px;background:rgba(255,255,255,.13);font-size:22px}
+.popular-discovery-toggle h2{margin:0;font-size:1.04rem;font-weight:800;line-height:1.5}
+.popular-discovery-toggle p{margin:3px 0 0;color:#e2eaff;font-size:.82rem;line-height:1.7}
+.popular-discovery-chevron{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border:1px solid rgba(255,255,255,.35);border-radius:50%;font-size:19px;transition:transform .2s}
+.popular-discovery-toggle[aria-expanded="true"] .popular-discovery-chevron{transform:rotate(180deg)}
+.popular-discovery-panel{padding:18px 0 2px}
+.popular-discovery-intro{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 2px 14px}
+.popular-discovery-intro strong{color:var(--pd-ink);font-size:.94rem}
+.popular-discovery-intro span{color:var(--pd-muted);font-size:.78rem}
+.popular-discovery-search{width:100%;box-sizing:border-box;margin:0 0 14px;padding:12px 14px;border:1px solid var(--pd-line);border-radius:12px;background:#fff;color:var(--pd-ink);font:inherit;outline:none}
+.popular-discovery-search:focus{border-color:#7797d0;box-shadow:0 0 0 3px rgba(53,91,154,.1)}
+.popular-discovery-layout{display:grid;grid-template-columns:minmax(145px,.72fr) minmax(0,2fr);gap:14px;align-items:start}
+.popular-discovery-categories{display:grid;gap:7px}
+.popular-discovery-category{display:flex;align-items:center;gap:9px;width:100%;padding:10px 11px;border:1px solid transparent;border-radius:11px;background:#f4f7fb;color:#34435e;text-align:right;font:inherit;font-size:.83rem;cursor:pointer;transition:background .15s,border-color .15s}
+.popular-discovery-category:hover{border-color:#cfdaeb;background:#edf3fc}
+.popular-discovery-category[aria-pressed="true"]{background:#e7eefb;border-color:#b7c9e9;color:#1e427e;font-weight:800}
+.popular-discovery-category-icon{display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:8px;background:#fff;font-size:15px}
+.popular-discovery-category-count{margin-right:auto;color:#73819a;font-size:.72rem}
+.popular-discovery-results{min-width:0}
+.popular-discovery-domain-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:0 0 12px;padding:2px 0 12px;border-bottom:1px solid var(--pd-line)}
+.popular-discovery-domain-head h3{margin:0;color:var(--pd-ink);font-size:1.05rem}
+.popular-discovery-domain-head p{margin:5px 0 0;color:var(--pd-muted);font-size:.81rem;line-height:1.8}
+.popular-discovery-subcats{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.popular-discovery-subcat{padding:5px 9px;border:1px solid #dfe7f2;border-radius:999px;background:#fff;color:#56657d;font-size:.73rem}
+.popular-discovery-store-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.popular-discovery-store{display:flex;flex-direction:column;min-width:0;padding:13px;border:1px solid var(--pd-line);border-radius:13px;background:#fff;transition:transform .15s,border-color .15s,box-shadow .15s}
+.popular-discovery-store:hover{transform:translateY(-2px);border-color:#c8d6ec;box-shadow:0 7px 20px rgba(29,53,91,.07)}
+.popular-discovery-store-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.popular-discovery-store-monogram{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;background:linear-gradient(145deg,#eef3fc,#dce7fa);color:#294c88;font-weight:900;font-size:.8rem}
+.popular-discovery-store h4{margin:0;color:var(--pd-ink);font-size:.88rem;line-height:1.5}
+.popular-discovery-store small{display:block;margin-top:2px;color:#78849a;font-size:.69rem}
+.popular-discovery-store p{flex:1;margin:0 0 11px;color:#59677e;font-size:.77rem;line-height:1.85}
+.popular-discovery-store-link{display:flex;justify-content:center;align-items:center;gap:6px;padding:8px 10px;border-radius:9px;background:#f0f5fd;color:#244a89;text-decoration:none;font-size:.77rem;font-weight:800}
+.popular-discovery-store-link:hover{background:#e4edfb}
+.popular-discovery-empty{padding:22px;border:1px dashed #cbd6e6;border-radius:12px;color:var(--pd-muted);text-align:center;font-size:.86rem}
+.popular-discovery-footnote{margin:13px 2px 0;color:#8590a3;font-size:.72rem;line-height:1.8}
+@media(max-width:620px){.popular-discovery-toggle{padding:13px}.popular-discovery-toggle h2{font-size:.96rem}.popular-discovery-toggle p{font-size:.75rem}.popular-discovery-panel{padding-top:14px}.popular-discovery-layout{grid-template-columns:1fr;gap:12px}.popular-discovery-categories{display:flex;overflow-x:auto;gap:7px;padding-bottom:4px;scrollbar-width:thin}.popular-discovery-category{flex:0 0 auto;width:auto;white-space:nowrap;padding:8px 10px}.popular-discovery-category-count{margin-right:0}.popular-discovery-store-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.popular-discovery-store{padding:10px}.popular-discovery-store-top{align-items:flex-start;gap:7px}.popular-discovery-store-monogram{flex-basis:31px;width:31px;height:31px}.popular-discovery-store h4{font-size:.82rem}.popular-discovery-store p{font-size:.73rem}.popular-discovery-intro{align-items:flex-start;flex-direction:column;gap:3px}}
+@media(max-width:370px){.popular-discovery-store-grid{grid-template-columns:1fr}}
