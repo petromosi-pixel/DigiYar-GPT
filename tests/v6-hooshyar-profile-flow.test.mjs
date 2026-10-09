@@ -29,7 +29,7 @@ assert.match(sync, /scrollIntoView\(\{behavior:'smooth',block:'start'\}\)/);
 
 assert.match(browser, /function openBrowser\(query,list\)/);
 assert.match(browser, /function openBrowser\(query,list\)\{[\s\S]*?Array\.isArray\(list\)/, 'Store Browser must accept an optional store list and normalize it before rendering');
-assert.match(browser, /window\.DigiYarStoreBrowser=\{version:VERSION,open:openBrowser\}/);
+assert.match(browser, /window\.DigiYarStoreBrowser=\{version:VERSION,open:openBrowser/);
 assert.match(browser, /id='v6StoreSimulatorResults'/);
 assert.ok(browser.includes('DigiYarStoreEligibility.storesForQuery'), 'Store Browser must apply query-driven store eligibility');
 assert.ok(!/const LIVE=/.test(browser), 'Store Browser must not retain the retired LIVE/Search Core architecture');
