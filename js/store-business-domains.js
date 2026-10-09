@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.17';
+var VERSION='7.0.0-store-business-domains.18';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
@@ -41,6 +41,37 @@ eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار'
 maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دوره آموزشی','دوره برنامه نویسی','آموزش مهارتی','کلاس آنلاین'],aliases:['دوره آنلاین','آموزش'],exclude:['کالای فیزیکی']},
 karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']}
 };
+iransetkor:{name:'ایران ستکور',homepage:'https://iransetkor.com/',domains:["furniture","home"],products:["میز و صندلی","تخت خواب","مبل تخت خواب شو","کمد","تشک","میز تحریر"],aliases:["مبلمان و دکوراسیون","خانه"]},
+'19kala':{name:'۱۹کالا',homepage:'https://www.19kala.com/',domains:["digital"],products:["موبایل","تبلت","ساعت هوشمند","لوازم جانبی موبایل","لوازم خانگی","کالای دیجیتال"],aliases:["کالای دیجیتال"]},
+banistyle:{name:'بانی استایل',homepage:'https://banistyle.com/',domains:["fashion"],products:["لباس زنانه","لباس مردانه","کفش","پوشاک","اکسسوری"],aliases:["پوشاک"]},
+aysoocollection:{name:'آیسو کالکشن',homepage:'https://aysoocollection.com/',domains:["fashion"],products:["پوشاک زنانه","پوشاک مردانه","لباس","پوشاک"],aliases:["پوشاک"]},
+daru24:{name:'دارو۲۴',homepage:'https://daru24.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
+betadent:{name:'بتادنت',homepage:'https://betadent.com/',domains:["health","medicine"],products:["دندانپزشکی","تجهیزات دندانپزشکی","محصولات سلامت دهان"],aliases:["سلامت","داروخانه"]},
+darupedia:{name:'داروپدیا',homepage:'https://darupedia.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","اطلاعات دارویی"],aliases:["داروخانه","سلامت"]},
+darucenter:{name:'داروسنتر',homepage:'https://darucenter.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
+webdaru:{name:'وب‌دارو',homepage:'https://webdaru.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
+saba:{name:'داروخانه صبا',homepage:'https://sabadaru.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
+darupost:{name:'داروپست',homepage:'https://darupost.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
+shider:{name:'شیدر',homepage:'https://shider.com/',domains:["beauty","health"],products:["مراقبت پوست","مراقبت مو","آرایشی","بهداشتی","کرم"],aliases:["آرایشی و بهداشتی","سلامت"]},
+alibaba:{name:'علی‌بابا',homepage:'https://www.alibaba.ir/',domains:["travel_ticket"],products:["بلیط هواپیما","بلیط قطار","بلیط اتوبوس","رزرو سفر"],aliases:["بلیط سفر"]},
+jobama:{name:'جاباما',homepage:'https://www.jabama.com/',domains:["lodging","travel_ticket"],products:["رزرو اقامتگاه","ویلا","سوئیت","هتل","اقامتگاه"],aliases:["اقامتگاه","بلیط سفر"]},
+flytoday:{name:'فلای‌تودی',homepage:'https://www.flytoday.ir/',domains:["travel_ticket"],products:["بلیط هواپیما","پرواز","هتل","رزرو سفر"],aliases:["بلیط سفر"]},
+raja:{name:'رجا',homepage:'https://www.raja.ir/',domains:["travel_ticket"],products:["بلیط قطار","رزرو قطار","سفر"],aliases:["بلیط سفر"]},
+ghasedak24:{name:'قاصدک ۲۴',homepage:'https://ghasedak24.com/',domains:["travel_ticket"],products:["بلیط هواپیما","بلیط قطار","بلیط اتوبوس","رزرو سفر"],aliases:["بلیط سفر"]},
+siroom:{name:'سی‌روم',homepage:'https://siroom.ir/',domains:["education"],products:["کلاس آنلاین","آموزش آنلاین","جلسه آنلاین"],aliases:["آموزش آنلاین"]},
+roomit:{name:'رومیت',homepage:'https://roomit.ir/',domains:["education"],products:["کلاس آنلاین","آموزش آنلاین","جلسه آنلاین"],aliases:["آموزش آنلاین"]},
+classino:{name:'کلاسینو',homepage:'https://classino.com/',domains:["education"],products:["کلاس آنلاین","کنکور","آموزش","دوره آموزشی"],aliases:["آموزش آنلاین"]},
+alocom:{name:'الوکام',homepage:'https://alocom.co/',domains:["education"],products:["کلاس آنلاین","جلسه آنلاین","آموزش آنلاین"],aliases:["آموزش آنلاین"]},
+skyroom:{name:'اسکای‌روم',homepage:'https://www.skyroom.online/',domains:["education"],products:["کلاس آنلاین","وبینار","جلسه آنلاین","آموزش آنلاین"],aliases:["آموزش آنلاین"]},
+faradars:{name:'فرادرس',homepage:'https://faradars.org/',domains:["education"],products:["دوره آموزشی","آموزش آنلاین","برنامه نویسی","آموزش مهارتی"],aliases:["آموزش آنلاین"]},
+faranesh:{name:'فرادرس‌نما',homepage:'https://faranesh.com/',domains:["education"],products:["دوره آموزشی","آموزش آنلاین","مهارت"],aliases:["آموزش آنلاین"]},
+toplearn:{name:'تاپ‌لرن',homepage:'https://toplearn.com/',domains:["education"],products:["دوره آموزشی","برنامه نویسی","آموزش آنلاین"],aliases:["آموزش آنلاین"]},
+daneshjooyar:{name:'دانشجویار',homepage:'https://daneshjooyar.com/',domains:["education"],products:["دوره آموزشی","برنامه نویسی","آموزش مهارتی"],aliases:["آموزش آنلاین"]},
+divar:{name:'دیوار',homepage:'https://divar.ir/',domains:["auto","auto_service","home","digital","fashion"],products:["خرید و فروش","خودرو","قطعات خودرو","کالای دست دوم"],aliases:["خودرو","خدمات خودرو","خانه","کالای دیجیتال","پوشاک"]},
+hamrahmechanic:{name:'همراه مکانیک',homepage:'https://www.hamrah-mechanic.com/',domains:["auto_service"],products:["کارشناسی خودرو","قیمت خودرو","خرید خودرو","فروش خودرو","خودرو کارکرده"],aliases:["خدمات خودرو"]},
+khodro45:{name:'خودرو۴۵',homepage:'https://khodro45.com/',domains:["auto_service"],products:["فروش خودرو","خرید خودرو","کارشناسی خودرو"],aliases:["خدمات خودرو"]},
+bama:{name:'باما',homepage:'https://bama.ir/',domains:["auto","auto_service"],products:["خرید خودرو","فروش خودرو","قیمت خودرو","خودرو کارکرده"],aliases:["خودرو","خدمات خودرو"]},
+aytol:{name:'آیتول',homepage:'https://aytol.com/',domains:["auto_service"],products:["خدمات خودرو","بیمه خودرو","خلافی خودرو","عوارض خودرو"],aliases:["خدمات خودرو"]},
 /*
  * Semantic enrichment layer.
  * The catalog above remains the merchant-specific source of truth.
@@ -67,6 +98,74 @@ var DOMAIN_PROFILES={
  education:{specialties:['آموزش آنلاین'],signals:['دوره','کلاس','آموزش','وبینار','سمینار','مهارت','برنامه نویسی']},
  accessories:{specialties:['اکسسوری و لوازم جانبی'],signals:['اکسسوری','لوازم جانبی','قاب','گلس','کیف','ساعت','عینک']}
 };
+if(C['digikala'])C['digikala'].homepage=C['digikala'].homepage||'https://www.digikala.com/';
+if(C['snappshop'])C['snappshop'].homepage=C['snappshop'].homepage||'https://snapp.shop/';
+if(C['torob'])C['torob'].homepage=C['torob'].homepage||'https://torob.com/';
+if(C['basalam'])C['basalam'].homepage=C['basalam'].homepage||'https://basalam.com/';
+if(C['esam'])C['esam'].homepage=C['esam'].homepage||'https://esam.ir/';
+if(C['iranmiz'])C['iranmiz'].homepage=C['iranmiz'].homepage||'https://www.iranmiz.com/';
+if(C['partochoob'])C['partochoob'].homepage=C['partochoob'].homepage||'https://partochoob.com/';
+if(C['chidahome'])C['chidahome'].homepage=C['chidahome'].homepage||'https://chidahomestudio.com/';
+if(C['tidawood'])C['tidawood'].homepage=C['tidawood'].homepage||'https://tidawood.com/';
+if(C['khanoumi'])C['khanoumi'].homepage=C['khanoumi'].homepage||'https://www.khanoumi.com/';
+if(C['banimode'])C['banimode'].homepage=C['banimode'].homepage||'https://www.banimode.com/';
+if(C['modiseh'])C['modiseh'].homepage=C['modiseh'].homepage||'https://www.modiseh.com/';
+if(C['pinket'])C['pinket'].homepage=C['pinket'].homepage||'https://pinket.com/';
+if(C['darukade'])C['darukade'].homepage=C['darukade'].homepage||'https://www.darukade.com/';
+if(C['darmankala'])C['darmankala'].homepage=C['darmankala'].homepage||'https://darmankala.com/';
+if(C['digido'])C['digido'].homepage=C['digido'].homepage||'https://www.digido.ir/';
+if(C['janebi'])C['janebi'].homepage=C['janebi'].homepage||'https://janebi.com/';
+if(C['digiland'])C['digiland'].homepage=C['digiland'].homepage||'https://dgland.com/';
+if(C['takhfifan'])C['takhfifan'].homepage=C['takhfifan'].homepage||'https://takhfifan.com/';
+if(C['berozkala'])C['berozkala'].homepage=C['berozkala'].homepage||'https://berozkala.com/';
+if(C['gooshishop'])C['gooshishop'].homepage=C['gooshishop'].homepage||'https://gooshishop.com/';
+if(C['technolife'])C['technolife'].homepage=C['technolife'].homepage||'https://www.technolife.com/';
+if(C['meghdadit'])C['meghdadit'].homepage=C['meghdadit'].homepage||'https://meghdadit.com/';
+if(C['neshatrokh'])C['neshatrokh'].homepage=C['neshatrokh'].homepage||'https://www.neshatrokh.com/';
+if(C['mosbatesabz'])C['mosbatesabz'].homepage=C['mosbatesabz'].homepage||'https://mosbatesabz.com/';
+if(C['shavaz'])C['shavaz'].homepage=C['shavaz'].homepage||'https://shavaz.ir/';
+if(C['solokala'])C['solokala'].homepage=C['solokala'].homepage||'https://solokala.com/';
+if(C['daroo-online'])C['daroo-online'].homepage=C['daroo-online'].homepage||'https://darookhaneonline.com/';
+if(C['dayan'])C['dayan'].homepage=C['dayan'].homepage||'https://dayanshop.com/';
+if(C['memarket'])C['memarket'].homepage=C['memarket'].homepage||'https://memarket24.ir/';
+if(C['jeanswest'])C['jeanswest'].homepage=C['jeanswest'].homepage||'https://jeanswest.ir/';
+if(C['sabzgostar'])C['sabzgostar'].homepage=C['sabzgostar'].homepage||'https://sabzgostar.info/';
+if(C['shab'])C['shab'].homepage=C['shab'].homepage||'https://www.shab.ir/';
+if(C['safarme'])C['safarme'].homepage=C['safarme'].homepage||'https://www.safarme.ir/';
+if(C['eseminar'])C['eseminar'].homepage=C['eseminar'].homepage||'https://eseminar.tv/';
+if(C['maktabkhooneh'])C['maktabkhooneh'].homepage=C['maktabkhooneh'].homepage||'https://maktabkhooneh.org/';
+if(C['karnameh'])C['karnameh'].homepage=C['karnameh'].homepage||'https://karnameh.com/';
+if(C['iransetkor'])C['iransetkor'].homepage=C['iransetkor'].homepage||'https://iransetkor.com/';
+if(C['19kala'])C['19kala'].homepage=C['19kala'].homepage||'https://www.19kala.com/';
+if(C['banistyle'])C['banistyle'].homepage=C['banistyle'].homepage||'https://banistyle.com/';
+if(C['aysoocollection'])C['aysoocollection'].homepage=C['aysoocollection'].homepage||'https://aysoocollection.com/';
+if(C['daru24'])C['daru24'].homepage=C['daru24'].homepage||'https://daru24.com/';
+if(C['betadent'])C['betadent'].homepage=C['betadent'].homepage||'https://betadent.com/';
+if(C['darupedia'])C['darupedia'].homepage=C['darupedia'].homepage||'https://darupedia.com/';
+if(C['darucenter'])C['darucenter'].homepage=C['darucenter'].homepage||'https://darucenter.com/';
+if(C['webdaru'])C['webdaru'].homepage=C['webdaru'].homepage||'https://webdaru.com/';
+if(C['saba'])C['saba'].homepage=C['saba'].homepage||'https://sabadaru.com/';
+if(C['darupost'])C['darupost'].homepage=C['darupost'].homepage||'https://darupost.com/';
+if(C['shider'])C['shider'].homepage=C['shider'].homepage||'https://shider.com/';
+if(C['alibaba'])C['alibaba'].homepage=C['alibaba'].homepage||'https://www.alibaba.ir/';
+if(C['jobama'])C['jobama'].homepage=C['jobama'].homepage||'https://www.jabama.com/';
+if(C['flytoday'])C['flytoday'].homepage=C['flytoday'].homepage||'https://www.flytoday.ir/';
+if(C['raja'])C['raja'].homepage=C['raja'].homepage||'https://www.raja.ir/';
+if(C['ghasedak24'])C['ghasedak24'].homepage=C['ghasedak24'].homepage||'https://ghasedak24.com/';
+if(C['siroom'])C['siroom'].homepage=C['siroom'].homepage||'https://siroom.ir/';
+if(C['roomit'])C['roomit'].homepage=C['roomit'].homepage||'https://roomit.ir/';
+if(C['classino'])C['classino'].homepage=C['classino'].homepage||'https://classino.com/';
+if(C['alocom'])C['alocom'].homepage=C['alocom'].homepage||'https://alocom.co/';
+if(C['skyroom'])C['skyroom'].homepage=C['skyroom'].homepage||'https://www.skyroom.online/';
+if(C['faradars'])C['faradars'].homepage=C['faradars'].homepage||'https://faradars.org/';
+if(C['faranesh'])C['faranesh'].homepage=C['faranesh'].homepage||'https://faranesh.com/';
+if(C['toplearn'])C['toplearn'].homepage=C['toplearn'].homepage||'https://toplearn.com/';
+if(C['daneshjooyar'])C['daneshjooyar'].homepage=C['daneshjooyar'].homepage||'https://daneshjooyar.com/';
+if(C['divar'])C['divar'].homepage=C['divar'].homepage||'https://divar.ir/';
+if(C['hamrahmechanic'])C['hamrahmechanic'].homepage=C['hamrahmechanic'].homepage||'https://www.hamrah-mechanic.com/';
+if(C['khodro45'])C['khodro45'].homepage=C['khodro45'].homepage||'https://khodro45.com/';
+if(C['bama'])C['bama'].homepage=C['bama'].homepage||'https://bama.ir/';
+if(C['aytol'])C['aytol'].homepage=C['aytol'].homepage||'https://aytol.com/';
 Object.keys(C).forEach(function(id){
  var s=C[id], profiles=(s.domains||[]).map(function(d){return DOMAIN_PROFILES[d]||null;}).filter(Boolean);
  var specialties=[].concat.apply([],profiles.map(function(p){return p.specialties||[];}));
