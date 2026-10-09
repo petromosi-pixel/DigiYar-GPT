@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.67';
+const VERSION='7.0.0-store-browser.68';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -24,6 +24,17 @@ function healthSearchQuery(q){
  for(var i=0;i<patterns.length;i++){var m=s.match(patterns[i]);if(m)return m[0].replace(/\s+/g,' ');}
  return s.split(/\s+/).slice(0,4).join(' ');
 }
+function genericMerchantSearchUrl(id,q){
+ var catalog=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};
+ var item=catalog[String(id||'').toLowerCase()]||{};
+ var home=HOME[String(id||'').toLowerCase()]||item.homepage||'';
+ var host='';
+ try{if(home)host=new URL(home).hostname.replace(/^www\\./i,'');}catch(e){}
+ var term=String(q||'').trim();
+ if(host)return 'https://www.google.com/search?q='+encodeURIComponent('site:'+host+' '+term);
+ var name=STORE_NAMES[String(id||'').toLowerCase()]||item.name||id;
+ return 'https://www.google.com/search?q='+encodeURIComponent(String(name)+' '+term);
+}
 function storeSearchUrl(id,q){
  var key=String(id||'').toLowerCase();
  window.__DigiYarCurrentStoreSearchId=key;
@@ -44,7 +55,7 @@ function storeSearchUrl(id,q){
  if(key==='solokala')return 'https://solokala.com/?s='+encodeURIComponent(hs);
  if(key==='daroo-online')return 'https://daroo-online.com/?s='+encodeURIComponent(hs);
  if(SEARCH[key])return SEARCH[key](s);
- return null;
+ return genericMerchantSearchUrl(key,s);
 }
 function basalamSearchQuery(q){
  var s=storeSearchQuery(q);
@@ -187,7 +198,7 @@ function stores(){
  const plan=window.DigiYarShoppingPlan;
  const aiIds=plan&&plan.ai&&Array.isArray(plan.ai.eligibleStoreIds)?plan.ai.eligibleStoreIds.map(function(x){return String(x||'').toLowerCase();}).filter(Boolean):[];
  if(aiIds.length){
-   return aiIds.filter(function(id){return !!SEARCH[id];}).map(function(id){return {id:id,name:STORE_NAMES[id]||id};});
+   return aiIds.map(function(id){return {id:id,name:STORE_NAMES[id]||id};});
  }
  const a=window.DigiYarPopularAffiliateStores;
  if(Array.isArray(a)&&a.length)return a.filter(x=>x&&x.id&&x.name);
@@ -357,7 +368,7 @@ function openBrowser(query,list){
        if(x&&x.id)mergedById[String(x.id).toLowerCase()]=x;
      });
      const sourceList=Object.keys(mergedById).map(function(id){return mergedById[id];});
-     const usable=sourceList.filter(function(x){return x&&SEARCH[String(x.id||'').toLowerCase()];})
+     const usable=sourceList.filter(function(x){var id=String(x&&x.id||'').toLowerCase();var kb=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};return !!(x&&(SEARCH[id]||HOME[id]||(kb[id]&&kb[id].homepage)));})
        .map(function(x){
          var id=String(x.id||'').toLowerCase();
          return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
