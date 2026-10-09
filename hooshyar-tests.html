@@ -28,8 +28,8 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.78rem;max-height:260p
 <main>
 <header>
 <h1>پنل تست خودکار هوش‌یار V7</h1>
-<p>شش سناریو با یک کلیک؛ بدون کپی‌پیست عبارت‌ها. این صفحه فقط نتیجهٔ معنایی API را بررسی می‌کند و کارت مقایسه یا منطق اصلی برنامه را تغییر نمی‌دهد.</p>
-<p class="note">برای اجرای تست‌ها، اتصال اینترنت لازم است. اگر API در دسترس نباشد، خطای سرویس جدا از خطای انتخاب فروشگاه نشان داده می‌شود.</p>
+<p>شش سناریو با یک کلیک؛ بدون API و بدون هزینه. این صفحه مسیر محلی هوش‌یار و انتخاب فروشگاه بر پایهٔ دانش‌نامهٔ دیجی‌یار را بررسی می‌کند؛ کارت مقایسه را تغییر نمی‌دهد.</p>
+<p class="note">این آزمون‌ها از دانش‌نامه و موتور انتخاب فروشگاه داخل برنامه استفاده می‌کنند و به کلید API نیاز ندارند.</p>
 </header>
 <section class="toolbar">
 <button id="runAll">اجرای هر ۶ تست</button>
@@ -40,7 +40,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.78rem;max-height:260p
 <div id="tests"></div>
 </main>
 <script src="./js/store-business-domains.js?v=7.0.0-store-business-domains.16"></script>
-<script src="./js/v7-ai-shopping-orchestrator.js?v=7.0.0-ai-shopping-orchestrator.20"></script>
+<script src="./js/v7-store-eligibility.js?v=7.0.0-store-eligibility.49"></script>\n<script src="./js/v7-ai-shopping-orchestrator.js?v=7.0.0-hooshyar-local.1"></script>
 <script>
 (function(){
 'use strict';
@@ -83,16 +83,16 @@ const p=data.plan;box.append(el('div','small','فروشگاه‌های انتخ�
 const pills=el('div','pills');if(!p.eligibleStoreIds.length)pills.append(el('span','pill','هیچ فروشگاهی انتخاب نشد'));p.eligibleStoreIds.forEach(id=>pills.append(el('span','pill',(data.names[id]||id)+' · '+id)));box.append(pills);
 box.append(el('p','small','محصول: '+(p.requestedProduct||'—')+' | شیء هدف: '+(p.targetObject||'—')+' | دسته: '+(p.category||'—')+' | اطمینان: '+(p.confidence??'—')));
 const checkList=el('div','');c.checks.forEach((ch,i)=>{const ok=data.checks[i];checkList.append(el('div',ok?'small':'small', (ok?'✓ ':'✕ ')+ch.name))});box.append(checkList);
-const details=el('details','');details.append(el('summary','','جزئیات فنی پاسخ'));const pre=el('pre','',JSON.stringify({provider:data.provider,model:data.model,semanticNeed:p.semanticNeed,domains:p.domains,eligibleStoreIds:p.eligibleStoreIds,searchQueries:p.searchQueries},null,2));details.append(pre);box.append(details)
+const details=el('details','');details.append(el('summary','','جزئیات فنی پاسخ'));const pre=el('pre','',JSON.stringify({provider:data.provider,mode:p.mode,semanticNeed:p.semanticNeed,domains:p.domains,eligibleStoreIds:p.eligibleStoreIds,searchQueries:p.searchQueries},null,2));details.append(pre);box.append(details)
 }updateOverall()}
-async function runOne(c){const status=document.getElementById('status-'+c.id),box=document.getElementById('result-'+c.id);status.className='status wait';status.textContent='در حال ارسال به هوش‌یار…';box.textContent='در حال دریافت پاسخ API…';try{
+async function runOne(c){const status=document.getElementById('status-'+c.id),box=document.getElementById('result-'+c.id);status.className='status wait';status.textContent='در حال بررسی با موتور محلی هوش‌یار…';box.textContent='در حال بررسی دانش‌نامه و فروشگاه‌های مرتبط…';try{
 if(!window.DigiYarShoppingOrchestrator)throw Error('فایل‌های هوش‌یار بارگذاری نشده‌اند؛ صفحه را دوباره بارگذاری کنید.');
 const plan=await window.DigiYarShoppingOrchestrator.run(c.query,{testMode:true,source:'hooshyar-regression-panel'});
 const raw=plan&&plan.ai;
-if(!plan||plan.semantic!==true||!raw)throw Error('پاسخ معنایی معتبر دریافت نشد؛ وضعیت: '+(plan?.provider||'نامشخص')+'؛ '+(plan?.aiError||''));
+if(!plan||plan.provider!=='local-knowledge-base'||!raw)throw Error('موتور محلی هوش‌یار اجرا نشد؛ وضعیت: '+(plan?.provider||'نامشخص'));
 const catalog=window.DigiYarShoppingOrchestrator.buildStoreCatalog();const names={};Object.keys(catalog).forEach(id=>names[id]=catalog[id].name||id);
 const checks=c.checks.map(ch=>{try{return !!ch.test(raw,c)}catch(_){return false}});
-render(c,{pass:checks.every(Boolean),checks,plan:raw,names,provider:plan.provider,model:raw.model});
+render(c,{pass:checks.every(Boolean),checks,plan:raw,names,provider:plan.provider,model:'محلی / بدون API'});
 }catch(e){render(c,{pass:false,error:String(e&&e.message||e),checks:[]})}}
 async function runList(list){document.getElementById('runAll').disabled=true;document.getElementById('runFailed').disabled=true;for(const c of list)await runOne(c);document.getElementById('runAll').disabled=false;document.getElementById('runFailed').disabled=false;updateOverall()}
 document.getElementById('runAll').addEventListener('click',()=>runList(cases));
