@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.56';
+const VERSION='7.0.0-store-browser.57';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -28,7 +28,7 @@ function storeSearchUrl(id,q){
  var key=String(id||'').toLowerCase();
  window.__DigiYarCurrentStoreSearchId=key;
  var s=storeSearchQuery(q);
- var hs=healthSearchQuery(s);
+ var hs=s;
  if(key==='khanoumi')return khanoumiSearchUrl(s);
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(janebiSearchQuery(s));
  if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(basalamSearchQuery(s));
@@ -91,13 +91,10 @@ function storeSearchQuery(q){
  const ai=plan&&plan.ai;
  const current=plan&&String(plan.query||'').trim()===String(q||'').trim();
  const id=window.__DigiYarCurrentStoreSearchId;
+ /* Preserve Hooshyar's complete natural-language query for every store.
+    Store-specific optimization belongs only in explicit adapters below. */
  if(current&&ai&&ai.searchQueries&&id&&typeof ai.searchQueries[id]==='string'&&ai.searchQueries[id].trim()) return ai.searchQueries[id].trim();
- let s=String(q||'').trim();
- s=s.replace(/(?:از\s*)?\d[\d۰-۹.,]*\s*(?:تا|الی|-)??\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)\s*(?:تومان|ریال)?/gi,' ');
- s=s.replace(/(?:تا|زیر|حدود|حداکثر|حداقل)\s*\d[\d۰-۹.,]*\s*(?:میلیون|م|هزار|تومان|ریال)?/gi,' ');
- s=s.replace(/\b(?:برای|جهت)\s+(?:محل\s+کار|کار|خانه|خونه|دفتر|استفاده|دانشگاه|دانشجویی|بازی|گیم|عکاسی|فیلم|اداری)\b/gi,' ');
- s=s.replace(/\s+/g,' ').replace(/[،,؛;]+/g,' ').trim();
- return s||String(q||'').trim();
+ return String(q||'').trim();
 }
 function stores(){
  const plan=window.DigiYarShoppingPlan;
