@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.52';
+const VERSION='7.0.0-store-browser.53';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -245,23 +245,29 @@ function openBrowser(query,list){
        tabsAndResults([]);
        return;
      }
-     let canonicalList=Array.isArray(window.DigiYarPopularAffiliateStores)
+     const canonicalList=Array.isArray(window.DigiYarPopularAffiliateStores)
        ? window.DigiYarPopularAffiliateStores
        : (Array.isArray(list)?list:stores());
-     let sourceList=canonicalList;
-     if(window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function'){
-       sourceList=window.DigiYarStoreEligibility.storesForQuery(query,canonicalList);
-     }
-     let usable=sourceList.filter(x=>x&&SEARCH[x.id]);
-     if(!usable.length){
-       /* Strict V7 rule: never inject the four general stores as a fallback.
-          If no merchant is classified as relevant, show no merchant tab. */
-       usable=[];
-     }
-     usable=usable.map(function(x){
-       var id=String(x.id||'').toLowerCase();
-       return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
+     const canonicalById=Object.create(null);
+     canonicalList.forEach(function(x){
+       if(x&&x.id)canonicalById[String(x.id).toLowerCase()]=x;
      });
+     /*
+      * The local orchestrator has already made the eligibility decision.
+      * Do not run a second, legacy eligibility pass here: it can discard
+      * valid local-plan stores and leave the results panel empty.
+      */
+     const plannedIds=Array.isArray(semanticPlan.eligibleStoreIds)
+       ? semanticPlan.eligibleStoreIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean)
+       : [];
+     const sourceList=plannedIds.length
+       ? plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||id};})
+       : canonicalList;
+     const usable=sourceList.filter(function(x){return x&&SEARCH[String(x.id||'').toLowerCase()];})
+       .map(function(x){
+         var id=String(x.id||'').toLowerCase();
+         return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
+       });
      box.style.display='block';
      tabsAndResults(usable);
    }catch(error){
