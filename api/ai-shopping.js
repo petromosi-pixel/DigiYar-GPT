@@ -1,8 +1,8 @@
 // DigiYar V7 — canonical semantic shopping planner
 // AI interprets the user's need; the merchant KB supplies evidence and hard exclusions.
 
-const MODEL = 'gemini-2.5-flash';
-const PROVIDER = 'google-gemini-api';
+const MODEL = 'openrouter/free';
+const PROVIDER = 'openrouter';
 const MAX_LATENCY_MS = 10000;
 const ALLOWED_ORIGINS = new Set(['https://petromosi-pixel.github.io']);
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
@@ -169,15 +169,15 @@ ${JSON.stringify(modelCatalog)}
 ${query}`;
 
   try {
-    // Use Google's direct Gemini API so the endpoint does not depend on
-    // Vercel AI Gateway billing. GEMINI_API_KEY must be configured in Vercel.
-    const apiKey = clean(process.env.GEMINI_API_KEY);
+    // Use OpenRouter's free-model router directly; no Vercel AI Gateway or
+    // provider billing integration is used. OPENROUTER_API_KEY is required.
+    const apiKey = clean(process.env.OPENROUTER_API_KEY);
     if (!apiKey) {
       return send(res, 503, {
         error: 'ai_provider_not_configured',
         provider: PROVIDER,
         model: MODEL,
-        detail: 'Set GEMINI_API_KEY in the Vercel project environment.'
+        detail: 'Set OPENROUTER_API_KEY in the Vercel project environment.'
       });
     }
 
@@ -185,29 +185,29 @@ ${query}`;
     const timeout = setTimeout(() => controller.abort(), MAX_LATENCY_MS);
     let result;
     try {
-      result = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.1,
-              maxOutputTokens: 900,
-              responseMimeType: 'application/json'
-            }
-          }),
-          signal: controller.signal
-        }
-      );
+      result = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://petromosi-pixel.github.io/DigiYar-GPT/',
+          'X-OpenRouter-Title': 'DigiYar Hooshyar'
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.1,
+          max_tokens: 900
+        }),
+        signal: controller.signal
+      });
     } finally {
       clearTimeout(timeout);
     }
 
     if (!result.ok) {
       const providerError = await result.text().catch(() => '');
-      console.error('Hooshyar Gemini API failure', result.status, providerError.slice(0, 400));
+      console.error('Hooshyar OpenRouter API failure', result.status, providerError.slice(0, 400));
       return send(res, 502, {
         error: 'ai_request_failed',
         provider: PROVIDER,
@@ -218,11 +218,8 @@ ${query}`;
     }
 
     const responseData = await result.json();
-    const modelText = asArray(responseData.candidates && responseData.candidates[0] &&
-      responseData.candidates[0].content && responseData.candidates[0].content.parts)
-      .map(part => String(part && part.text || ''))
-      .join('')
-      .trim();
+    const modelText = String(responseData.choices && responseData.choices[0] &&
+      responseData.choices[0].message && responseData.choices[0].message.content || '').trim();
 
     if (!modelText) {
       return send(res, 502, {
@@ -303,7 +300,7 @@ ${query}`;
       plan
     });
   } catch (error) {
-    console.error('Hooshyar AI Gateway failure', error && error.message || error);
+    console.error('Hooshyar OpenRouter request failure', error && error.message || error);
     return send(res, 502, {
       error: 'ai_request_failed',
       provider: PROVIDER,
