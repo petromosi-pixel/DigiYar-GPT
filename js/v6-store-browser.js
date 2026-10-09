@@ -29,7 +29,7 @@ function genericMerchantSearchUrl(id,q){
  var item=catalog[String(id||'').toLowerCase()]||{};
  var home=HOME[String(id||'').toLowerCase()]||item.homepage||'';
  var host='';
- try{if(home)host=new URL(home).hostname.replace(/^www\\./i,'');}catch(e){}
+ try{if(home)host=new URL(home).hostname.replace(/^www[.]/i,'');}catch(e){}
  var term=String(q||'').trim();
  if(host)return 'https://www.google.com/search?q='+encodeURIComponent('site:'+host+' '+term);
  var name=STORE_NAMES[String(id||'').toLowerCase()]||item.name||id;
