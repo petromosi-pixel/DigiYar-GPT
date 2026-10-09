@@ -1,8 +1,8 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.50';
-function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
+const VERSION='7.0.0-store-browser.51';
+function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
  if(/ضد\s*آفتاب|ضدآفتاب/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/sun-block-sun-protecter';
@@ -18,7 +18,9 @@ function siteSearchUrl(domain,q){
 }
 function healthSearchQuery(q){
  var s=storeQueryTerms(q);
- var patterns=[/ضد\s*آفتاب|ضدآفتاب/i,/مرطوب\s*کننده|آبرسان/i,/شوینده|پاک\s*کننده|میسلار|تونر/i,/سرم/i,/کرم/i,/شامپو/i];
+ /* Preserve combined skincare intent instead of dropping all but the first matched term. */
+ if(/مرطوب\s*کننده/i.test(s)&&/ضد\s*آفتاب/i.test(s))return 'کرم مرطوب کننده ضد آفتاب';
+ var patterns=[/ضد\s*آفتاب/i,/مرطوب\s*کننده|آبرسان/i,/شوینده|پاک\s*کننده|میسلار|تونر/i,/سرم/i,/کرم/i,/شامپو/i];
  for(var i=0;i<patterns.length;i++){var m=s.match(patterns[i]);if(m)return m[0].replace(/\s+/g,' ');}
  return s.split(/\s+/).slice(0,4).join(' ');
 }
