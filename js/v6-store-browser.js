@@ -260,7 +260,7 @@ function openBrowser(query,list){
      const plannedIds=Array.isArray(semanticPlan.eligibleStoreIds)
        ? semanticPlan.eligibleStoreIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean)
        : [];
-     const sourceList=plannedIds.length
+     const sourceList=Array.isArray(semanticPlan.eligibleStoreIds)
        ? plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||id};})
        : canonicalList;
      const usable=sourceList.filter(function(x){return x&&SEARCH[String(x.id||'').toLowerCase()];})
