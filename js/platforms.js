@@ -6,7 +6,8 @@ const platforms=[
 {id:'snappshop',name:'اسنپ‌شاپ',tag:'خرید آنلاین',logo:'assets/snappshop.png',url:'https://snapp.shop/'},
 {id:'torob',name:'ترب',tag:'مقایسه قیمت',logo:'assets/torob.png',url:'https://torob.com/'},
 {id:'basalam',name:'باسلام',tag:'بازار آنلاین',logo:'assets/basalam.png',url:'https://basalam.com/'},
-{id:'digiland',name:'دیجی‌لند',tag:'کالای دیجیتال و گیمینگ',logo:'assets/store-logos/دیجی لند.webp',url:'https://dgland.com/'}
+{id:'digiland',name:'دیجی‌لند',tag:'کالای دیجیتال و گیمینگ',logo:'assets/store-logos/دیجی لند.webp',url:'https://dgland.com/'},
+{id:'sabzgostar',name:'سبز گستر',tag:'شبکه همکاری در فروش',logo:'https://www.google.com/s2/favicons?domain=sabzgostar.info&sz=128',url:'http://sabzgostar.info'}
 ];
 const popularAffiliateStores=[
 {id:'digikala',name:'دیجی‌کالا',tagline:'لبخند به خانه می‌رسد',logo:'assets/digikala.png',mark:'DK',url:'https://www.digikala.com/',heroImage:'https://nopardazco.com/uploads/posts/2025-02/1740420674_digikalaonlinestore.webp',dealUrl:'https://www.digikala.com/incredible-offers/',accent:'#e6123d',dealLabel:'پیشنهادهای شگفت‌انگیز',dealText:'تخفیف‌های روز و پیشنهادهای ویژه دیجی‌کالا',dealIcon:'★'},
@@ -39,7 +40,8 @@ const popularAffiliateStores=[
 {id:'technolife',name:'تکنولایف',tagline:'فروشگاه آنلاین کالا',logo:'assets/store-logos/%D8%AA%DA%A9%D9%86%D9%88%D9%84%D8%A7%DB%8C%D9%81.webp',mark:'TL',url:'https://www.technolife.com/',accent:'#111827',dealLabel:'خرید آنلاین',dealText:'موبایل، لپ‌تاپ، لوازم دیجیتال و بیشتر',dealIcon:'⌁'},
 {id:'solokala',name:'سولوکالا',tagline:'لوازم آرایشی، بهداشتی و اکسسوری',logo:'assets/store-logos/%D8%B3%D9%88%D9%84%D9%88%20%DA%A9%D8%A7%D9%84%D8%A7.webp',mark:'SK',url:'https://solokala.com/',accent:'#e11d48',dealLabel:'آرایشی و بهداشتی',dealText:'محصولات آرایشی، بهداشتی، عطر و اکسسوری',dealIcon:'♡'},
 {id:'dayan',name:'دایان شاپ',tagline:'انتخاب‌های متنوع برای خرید آنلاین',logo:'assets/store-logos/دایان شاپ.webp',mark:'DY',url:'http://noura1393.affdn.ir/',accent:'#16a34a',dealLabel:'دایان شاپ',dealText:'ورود به فروشگاه اختصاصی دایان شاپ',dealIcon:'◆'},
-{id:'memarket',name:'می‌مارکت',tagline:'خرید آنلاین با انتخاب‌های متنوع',logo:'assets/store-logos/می مارکت.webp',mark:'MM',url:'https://aff.memarket24.ir/dashboard',accent:'#7c3aed',dealLabel:'می‌مارکت',dealText:'ورود به پنل و فروشگاه می‌مارکت',dealIcon:'◆'}
+{id:'memarket',name:'می‌مارکت',tagline:'خرید آنلاین با انتخاب‌های متنوع',logo:'assets/store-logos/می مارکت.webp',mark:'MM',url:'https://aff.memarket24.ir/dashboard',accent:'#7c3aed',dealLabel:'می‌مارکت',dealText:'ورود به پنل و فروشگاه می‌مارکت',dealIcon:'◆'},
+{id:'sabzgostar',name:'سبز گستر',tagline:'شبکه همکاری در فروش',logo:'https://www.google.com/s2/favicons?domain=sabzgostar.info&sz=128',mark:'SG',url:'http://sabzgostar.info',accent:'#0f766e',dealLabel:'شبکه همکاری در فروش',dealText:'ورود به وب‌سایت سبز گستر',dealIcon:'↗'}
 ];
 const moreStores={name:'فروشگاه‌های بیشتر',tagline:'هر روز انتخاب‌های بیشتری در راه است',dealLabel:'به‌زودی',dealText:'فروشگاه‌های بیشتری به دیجی‌یار اضافه می‌شوند',dealIcon:'＋'};
 const affiliateUrls={digikala:{url:'https://aflo.ir/1GS4wzEjY',mode:'campaign'},snappshop:{url:'https://aflo.ir/13iJlKJaK',mode:'campaign'},dayan:{url:'http://noura1393.affdn.ir/',mode:'direct'},memarket:{url:'https://aff.memarket24.ir/dashboard',mode:'direct'}};
