@@ -42,4 +42,18 @@ const unknown = eligibility.explain('یک محصول عجیب و ناشناخت�
 assert.equal(unknown.domain, null);
 assert.ok(unknown.eligibleCount >= 0);
 
-console.log('V7 store eligibility tests: PASS — furniture specialists included');
+const samsung = eligibility.explain('گوشی سامسونگ', stores);
+['digido','digiland','berozkala','gooshishop','technolife','meghdadit','emalls','kalatik','mobile140','mobileir','kala360'].forEach(id=>assert.ok(samsung.eligibleIds.includes(id), `missing mobile-related merchant: ${id}`));
+assert.ok(!samsung.eligibleIds.includes('khanoumi'));
+
+const accessories = eligibility.explain('لوازم جانبی موبایل', stores);
+['janebi','digido','technolife'].forEach(id=>assert.ok(accessories.eligibleIds.includes(id), `missing accessory merchant: ${id}`));
+
+const train = eligibility.explain('بلیط قطار تهران مشهد', stores);
+['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket'].forEach(id=>assert.ok(train.eligibleIds.includes(id), `missing train-ticket merchant: ${id}`));
+
+const purifier = eligibility.explain('دستگاه تصفیه هوای مناسب اتاق خواب', stores);
+['digikala','snappshop','torob','basalam','memarket'].forEach(id=>assert.ok(purifier.eligibleIds.includes(id), `missing general marketplace for air purifier: ${id}`));
+assert.ok(!purifier.eligibleIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id)));
+
+console.log('V7 store eligibility tests: PASS — old/new merchant coverage and comma-separated product matching');
