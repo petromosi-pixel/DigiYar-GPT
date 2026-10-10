@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.21';
+var VERSION='7.0.0-store-business-domains.22';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین'],aliases:['خرید آنلاین عمومی']},
@@ -71,11 +71,11 @@ hamrahmechanic:{name:'همراه مکانیک',homepage:'https://www.hamrah-mech
 khodro45:{name:'خودرو۴۵',homepage:'https://khodro45.com/',domains:["auto_service"],products:["فروش خودرو","خرید خودرو","کارشناسی خودرو"],aliases:["خدمات خودرو"]},
 bama:{name:'باما',homepage:'https://bama.ir/',domains:["auto","auto_service"],products:["خرید خودرو","فروش خودرو","قیمت خودرو","خودرو کارکرده"],aliases:["خودرو","خدمات خودرو"]},
 aytol:{name:'آیتول',homepage:'https://aytol.com/',domains:["auto_service"],products:["خدمات خودرو","بیمه خودرو","خلافی خودرو","عوارض خودرو"],aliases:["خدمات خودرو"]},
-emalls:{name:'ایمالز',homepage:'https://emalls.ir/',domains:["digital"],products:["موبایل،لپ تاپ،لوازم خانگی،مقایسه قیمت"],aliases:["کالای دیجیتال"]},
-kalatik:{name:'کالاتیک',homepage:'https://kalatik.com/',domains:["digital"],products:["موبایل،تبلت،لوازم جانبی موبایل"],aliases:["کالای دیجیتال"]},
-mobile140:{name:'موبایل ۱۴۰',homepage:'https://mobile140.com/',domains:["digital"],products:["موبایل،تبلت،لوازم جانبی"],aliases:["کالای دیجیتال"]},
-mobileir:{name:'موبایل‌آی‌آر',homepage:'https://mobile.ir/',domains:["digital"],products:["موبایل،قیمت موبایل،مشخصات گوشی"],aliases:["کالای دیجیتال"]},
-kala360:{name:'کالا۳۶۰',homepage:'https://kala360.com/',domains:["digital","home"],products:["کالای دیجیتال،لوازم خانگی،موبایل"],aliases:["کالای دیجیتال","خانه و آشپزخانه"]},
+emalls:{name:'ایمالز',intents:['mobile'],homepage:'https://emalls.ir/',domains:["digital"],products:["موبایل،لپ تاپ،لوازم خانگی،مقایسه قیمت"],aliases:["کالای دیجیتال"]},
+kalatik:{name:'کالاتیک',intents:['mobile'],homepage:'https://kalatik.com/',domains:["digital"],products:["موبایل،تبلت،لوازم جانبی موبایل"],aliases:["کالای دیجیتال"]},
+mobile140:{name:'موبایل ۱۴۰',intents:['mobile'],homepage:'https://mobile140.com/',domains:["digital"],products:["موبایل،تبلت،لوازم جانبی"],aliases:["کالای دیجیتال"]},
+mobileir:{name:'موبایل‌آی‌آر',intents:['mobile'],homepage:'https://mobile.ir/',domains:["digital"],products:["موبایل،قیمت موبایل،مشخصات گوشی"],aliases:["کالای دیجیتال"]},
+kala360:{name:'کالا۳۶۰',intents:['mobile'],homepage:'https://kala360.com/',domains:["digital","home"],products:["کالای دیجیتال،لوازم خانگی،موبایل"],aliases:["کالای دیجیتال","خانه و آشپزخانه"]},
 mobliran:{name:'مبل ایران',homepage:'https://mobliran.com/',domains:["furniture","home"],products:["مبل،مبلمان،سرویس خواب،میز ناهارخوری"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
 choobineh:{name:'چوبینه',homepage:'https://choobineh.com/',domains:["furniture","home"],products:["مبلمان،محصولات چوبی،میز،صندلی"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
 moblmarket:{name:'مبل مارکت',homepage:'https://moblmarket.com/',domains:["furniture","home"],products:["مبل،مبلمان،میز،سرویس خواب"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
@@ -109,7 +109,7 @@ yadakyar:{name:'یدک‌یار',homepage:'https://yadakyar.com/',domains:["auto
 partsaz:{name:'پارت‌ساز',homepage:'https://partsaz.com/',domains:["auto","auto_service"],products:["قطعات خودرو،لوازم یدکی،قطعات بدنه"],aliases:["خودرو","خدمات خودرو"]},
 sheypoor:{name:'شیپور',homepage:'https://www.sheypoor.com/',domains:["auto","home","digital","fashion"],products:["خودرو،ملک،موبایل،لوازم خانه،خرید و فروش"],aliases:["خودرو","خانه و آشپزخانه","کالای دیجیتال","پوشاک و مد"]},
 mrbilit:{name:'مستر بلیط',homepage:'https://mrbilit.com/',domains:["travel_ticket"],products:["بلیط هواپیما،بلیط قطار،بلیط اتوبوس"],aliases:["بلیط سفر"]},
-trip:{name:'تریپ',homepage:'https://www.trip.ir/',domains:["travel_ticket","lodging"],products:["بلیط هواپیما،هتل،رزرو سفر،تور"],aliases:["بلیط سفر","اقامتگاه"]},
+trip:{name:'تریپ',homepage:'https://www.trip.ir/',domains:["travel_ticket","lodging"],products:["بلیط هواپیما،بلیط قطار،هتل،رزرو سفر،تور"],aliases:["بلیط سفر","اقامتگاه"]},
 flysepehran:{name:'فلای سپهران',homepage:'https://flysepehran.com/',domains:["travel_ticket"],products:["بلیط هواپیما،پرواز،رزرو بلیط"],aliases:["بلیط سفر"]},
 eghamat24:{name:'اقامت ۲۴',homepage:'https://www.eghamat24.com/',domains:["lodging","travel_ticket"],products:["رزرو هتل،اقامتگاه،هتل داخلی"],aliases:["اقامتگاه","بلیط سفر"]},
 hotelban:{name:'هتل‌بان',homepage:'https://hotelban.com/',domains:["lodging"],products:["رزرو هتل،اقامت،هتل"],aliases:["اقامتگاه"]},
