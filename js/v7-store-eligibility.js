@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.51';
+var VERSION='7.0.0-store-eligibility.52';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -20,7 +20,7 @@ function hydrateKnowledgeBase(){
     if(Array.isArray(item.domains)&&item.domains.length) STORE_DOMAINS[id]=item.domains.slice();
     (item.domains||[]).forEach(function(domain){
       if(!DOMAINS[domain])DOMAINS[domain]=[];
-      [].concat(item.querySignals||[],item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]).forEach(function(term){
+      expandTerms([].concat(item.querySignals||[],item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).forEach(function(term){
         if(term&&DOMAINS[domain].indexOf(term)===-1)DOMAINS[domain].push(term);
       });
     });
@@ -30,8 +30,15 @@ function hydrateKnowledgeBase(){
 hydrateKnowledgeBase();
 
 function kbItem(id){return getKB()[String(id||'').toLowerCase()]||null;}
+function expandTerms(values){
+  return [].concat(values||[]).reduce(function(out,value){
+    if(value==null)return out;
+    String(value).split(/[,،;؛\n]+/).map(function(term){return term.trim();}).filter(Boolean).forEach(function(term){out.push(term);});
+    return out;
+  },[]);
+}
 function kbSignals(item){
-  return item?Array.from(new Set([].concat(item.querySignals||[],item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]))):[];
+  return item?Array.from(new Set(expandTerms([].concat(item.querySignals||[],item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])))):[];
 }
 function kbMatchedStoreIds(query){
   var s=norm(query),out=[];
@@ -44,7 +51,7 @@ function kbMatchedStoreIds(query){
      * merchant enters the result set only when the query directly matches
      * one of its declared products/aliases.
      */
-    var terms=[].concat(item.products||[],item.aliases||[]);
+    var terms=expandTerms([].concat(item.products||[],item.aliases||[]));
     var directMatch=terms.some(function(term){
       var t=norm(term);
       return t&&s.indexOf(t)!==-1;
@@ -215,7 +222,7 @@ function generalStoreHasDirectProductMatch(query,id){
   var item=kbItem(id);
   if(!item)return false;
   var s=norm(query);
-  var terms=[].concat(item.products||[],item.aliases||[]);
+  var terms=expandTerms([].concat(item.products||[],item.aliases||[]));
   var genericTerms=['موبایل','گوشی','دیجیتال','لپ تاپ','تبلت','خانه','پوشاک','لوازم جانبی'];
   return terms.some(function(term){
     var t=norm(term);
@@ -342,7 +349,7 @@ function semanticStoreEvidence(item,ai){
   if(!item||!ai)return false;
   var requested=norm(ai.requestedProduct||'');
   var terms=[].concat(ai.productTerms||[],ai.requiredNameTerms||[]).map(norm).filter(Boolean);
-  var itemTerms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]).map(norm).filter(Boolean);
+  var itemTerms=expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).map(norm).filter(Boolean);
   if(!requested&&!terms.length)return false;
   return itemTerms.some(function(it){
     return requested && (it===requested||requested.indexOf(it)!==-1||it.indexOf(requested)!==-1);
