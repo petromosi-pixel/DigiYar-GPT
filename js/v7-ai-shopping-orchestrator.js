@@ -6,10 +6,17 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.4';
+  const VERSION='7.0.0-hooshyar-local.5';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
+  }
+  function expandTerms(values){
+    return [].concat(values||[]).reduce((out,value)=>{
+      if(value==null)return out;
+      String(value).split(/[,،;؛\n]+/).map(term=>term.trim()).filter(Boolean).forEach(term=>out.push(term));
+      return out;
+    },[]);
   }
   function norm(value){
     return clean(value).replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -61,7 +68,7 @@
   function classifyLocalNeed(query){
     const q=norm(query);
     if(/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا)/i.test(q)){
-      return {kind:'air_purifier',product:'دستگاه تصفیه هوا',category:'home',domains:['home','digital'],stores:['digikala','snappshop','torob','basalam'],targetObject:null,taskType:'shopping_search'};
+      return {kind:'air_purifier',product:'دستگاه تصفیه هوا',category:'home',domains:['home','digital'],stores:['digikala','snappshop','torob','basalam','memarket'],targetObject:null,taskType:'shopping_search'};
     }
     if(/(?:پراید|خودرو|ماشین)/i.test(q) && /(?:می\s*خوام|می\s*خواهم|خرید|بخر|کم\s*کار|کار\s*کرده|اسنپ|تپسی)/i.test(q)){
       const model=(q.match(/پراید/)||[])[0];
@@ -77,7 +84,7 @@
     Object.keys(catalog).forEach(id=>{
       const item=catalog[id]||{};
       if(cleaning&&Array.isArray(item.intents)&&item.intents.includes('furniture'))return;
-      [].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]).forEach(term=>{
+      expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).forEach(term=>{
         const t=norm(term);
         if(t&&t.length>=3&&q.includes(t))productMatches.push(t);
       });
