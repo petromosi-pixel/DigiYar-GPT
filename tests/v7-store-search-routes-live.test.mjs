@@ -22,7 +22,8 @@ const query = 'دستگاه تصفیه هوا';
 const apiScenarios = [
   {name:'train-ticket',query:'از تهران می‌خوام برم مشهد با قطار',expected:['raja','ghasedak24','mrbilit','safarmarket']},
   {name:'furniture-cleaning',query:'یه چیزی می‌خوام که برای تمیز کردن مبل پارچه‌ای مناسب باشه',expected:['digikala','snappshop','torob','basalam'],forbidden:['iranmiz','partochoob','chidahome','tidawood']},
-  {name:'samsung-phone',query:'یه گوشی سامسونگ می‌خوام',expected:['digikala','snappshop','torob','digido','digiland','technolife']},
+  {name:'samsung-phone',query:'یه گوشی سامسونگ می‌خوام',expected:['digikala','snappshop','torob','basalam','digido','digiland','berozkala','gooshishop','technolife','meghdadit','takhfifan','esam'],forbidden:['emalls','kalatik','mobile140','mobileir','kala360','memarket']},
+  {name:'mobile-accessories',query:'لوازم جانبی موبایل',expected:['digido','janebi','gooshishop','technolife','digikala','snappshop','torob','basalam'],forbidden:['digiland','meghdadit','takhfifan','esam','memarket']},
   {name:'air-purifier-natural-language',query:'می‌خوام هوای اتاق خواب تمیز و پاک باشه',expected:['digikala','snappshop','torob','basalam']}
 ];
 const apiSmokeResults = [];
