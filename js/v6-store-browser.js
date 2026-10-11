@@ -51,12 +51,12 @@ function storeSearchUrl(id,q){
  var s=storeSearchQuery(q);
  var hs=s;
  if(key==='khanoumi')return khanoumiSearchUrl(s);
- if(key==='janebi'&&/کیف\\s*اداری/i.test(s))return 'https://janebi.com/search?q='+encodeURIComponent('کیف اداری');
+ if(key==='janebi'&&/کیف\s*اداری/i.test(s))return 'https://janebi.com/search?q='+encodeURIComponent('کیف اداری');
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(s);
  /* Use indexed merchant-specific search when direct endpoints rate-limit or return transient 5xx. */
  if(key==='basalam')return siteSearchUrl('basalam.com',s);
  if(key==='snappshop')return siteSearchUrl('snappshop.ir',s);
- if(key==='modiseh'&&/کیف\\s*اداری/i.test(s))return genericMerchantSearchUrl(key,'کیف اداری');
+ if(key==='modiseh'&&/کیف\s*اداری/i.test(s))return genericMerchantSearchUrl(key,'کیف اداری');
  if(key==='modiseh')return genericMerchantSearchUrl(key,s);
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
  if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(s.replace(/\s+/g,'-'));
@@ -85,13 +85,13 @@ function basalamSearchQuery(q){
  var preferred=[/تصفیه\s*هوا/i,/رطوبت\s*ساز/i,/جارو\s*برقی/i,/بخارشوی/i,/ماشین\s*لباسشویی/i,/یخچال/i,/پنکه/i,/کولر/i,/تلویزیون/i,/لپ.?تاپ/i,/موبایل|گوشی/i,/شارژر/i,/پاوربانک/i,/هندزفری|هدفون/i,/کابل/i];
  for(var i=0;i<preferred.length;i++){
    var m=s.match(preferred[i]);
-   if(m)return m[0].replace(/\\s+/g,' ').trim();
+   if(m)return m[0].replace(/\s+/g,' ').trim();
  }
  for(var j=0;j<candidates.length;j++){
    var t=candidates[j].replace(/^(?:دستگاه|یک|یه|یک\s+عدد)\s+/i,'').trim();
    if(t.length>=3)return t;
  }
- return s.split(/\\s+/).filter(function(x){return x.length>=2;}).slice(0,4).join(' ');
+ return s.split(/\s+/).filter(function(x){return x.length>=2;}).slice(0,4).join(' ');
 }
 function janebiSearchQuery(q){
  var s=storeQueryTerms(q);
