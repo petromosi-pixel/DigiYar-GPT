@@ -93,3 +93,5 @@ jobs:
         run: npm run test:v7:store-eligibility
       - name: Verify merchant search routes and semantic phrases
         run: npm run test:v7:store-search-routes
+      - name: Probe generated search URLs against live sites
+        run: npm run test:v7:store-search-routes:live
