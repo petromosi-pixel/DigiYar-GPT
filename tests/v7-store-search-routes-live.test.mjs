@@ -32,11 +32,15 @@ try {
     const data = await response.json();
     apiSmoke.provider = data.provider || null;
     if (!data.ok || !data.plan || !Array.isArray(data.plan.eligibleStoreIds)) apiSmoke.error = 'invalid_semantic_plan';
+    else if (!['openrouter','local-knowledge-base'].includes(data.provider)) apiSmoke.error = 'unexpected_provider';
+    else if (data.provider === 'local-knowledge-base' && data.warning !== 'semantic_ai_unconfigured') apiSmoke.error = 'fallback_not_disclosed';
   } else {
     apiSmoke.error = (await response.text()).slice(0, 180);
   }
 } catch (error) { apiSmoke.error = String(error && error.message || error); }
 console.log('LIVE_SEMANTIC_API_SMOKE ' + JSON.stringify(apiSmoke));
+assert.equal(apiSmoke.status,200,`semantic planner endpoint unavailable: ${JSON.stringify(apiSmoke)}`);
+assert.equal(apiSmoke.error,null,`semantic planner returned invalid response: ${JSON.stringify(apiSmoke)}`);
 const results = [];
 let next = 0;
 async function worker() {
