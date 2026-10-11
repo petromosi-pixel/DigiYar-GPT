@@ -63,4 +63,31 @@ const phone = eligibility.explain('تلفن همراه سامسونگ', []);
 ['digido', 'digiland', 'berozkala', 'technolife', 'meghdadit', 'emalls', 'kalatik', 'mobile140', 'mobileir', 'kala360']
   .forEach(id => assert.ok(phone.eligibleIds.includes(id), `semantic phone synonym omitted ${id}`));
 
-console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked`);
+const originalFetch = globalThis.fetch;
+let sentBody = null;
+globalThis.fetch = async (url, options) => {
+  assert.equal(url, 'https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping');
+  sentBody = JSON.parse(options.body);
+  return { ok: true, json: async () => ({ ok: true, plan: {
+    eligibleStoreIds: ['raja', 'unknown-id', 'mrbilit'],
+    searchQueries: { raja: 'بلیط قطار تهران مشهد', 'unknown-id': 'نامعتبر' },
+    category: 'travel_ticket', domains: ['travel_ticket'], requestedProduct: 'بلیط قطار',
+    semanticNeed: 'سفر با قطار از تهران به مشهد', taskType: 'ticket_search', confidence: 0.91
+  } }) };
+};
+globalThis.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = init && init.detail; } };
+const aiRun = await orchestrator.run('از تهران می‌خوام برم مشهد با قطار');
+assert.equal(aiRun.provider, 'openrouter', 'the live semantic plan should take precedence over local rules');
+assert.equal(aiRun.semantic, true);
+assert.deepEqual(aiRun.ai.eligibleStoreIds, ['raja', 'mrbilit']);
+assert.deepEqual(Object.keys(aiRun.ai.searchQueries), ['raja']);
+assert.equal(sentBody.query, 'از تهران می‌خوام برم مشهد با قطار');
+assert.ok(sentBody.storeCatalog.digikala && sentBody.storeCatalog.raja, 'full merchant KB must be sent to semantic AI');
+globalThis.fetch = async () => { throw new Error('simulated offline provider'); };
+const fallback = await orchestrator.run('بلیط قطار تهران مشهد');
+assert.equal(fallback.provider, 'local-knowledge-base', 'provider failures must retain deterministic fallback');
+assert.equal(fallback.semantic, false);
+assert.ok(fallback.ai.eligibleStoreIds.includes('raja'));
+globalThis.fetch = originalFetch;
+
+console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; semantic API routing and fallback verified`);
