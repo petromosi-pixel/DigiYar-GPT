@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.10';
+  const VERSION='7.0.0-hooshyar-local.11';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -99,6 +99,15 @@
     }
     if(/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|هوای\s*(?:اتاق|خانه).{0,18}(?:تمیز|پاک|آلوده|گرد\s*و\s*غبار))/i.test(q)){
       return {kind:'air_purifier',product:'دستگاه تصفیه هوا',category:'home',domains:['home','digital'],stores:['digikala','snappshop','torob','basalam','memarket'],targetObject:null,taskType:'shopping_search'};
+    }
+    const accessoryIntent=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(q);
+    if(!accessoryIntent&&/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(q)){
+      const brand=/(?:سامسونگ|samsung)/i.test(q)?'سامسونگ':/(?:آیفون|iphone)/i.test(q)?'آیفون':/(?:شیائومی|xiaomi)/i.test(q)?'شیائومی':'موبایل';
+      const model=(q.match(/(?:galaxy\s*[a-z]?\s*\d{1,3}|iphone\s*\d{1,2}(?:\s*(?:pro|max|plus|ultra))?|\b[a-z]{1,4}\s*\d{1,3}\b)/i)||[])[0];
+      const product='گوشی '+brand+(model?' '+model:'');
+      return {kind:'mobile_phone',product:product,category:'digital',domains:['digital'],
+        stores:['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'],
+        targetObject:null,taskType:'shopping_search'};
     }
     if(/(?:پراید|خودرو|ماشین)/i.test(q) && /(?:می\s*خوام|می\s*خواهم|خرید|بخر|کم\s*کار|کار\s*کرده|اسنپ|تپسی)/i.test(q)){
       const model=(q.match(/پراید/)||[])[0];
