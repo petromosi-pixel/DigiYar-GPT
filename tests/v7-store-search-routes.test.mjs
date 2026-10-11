@@ -64,6 +64,14 @@ const airPhrase = orchestrator.classifyLocalNeed('می‌خوام هوای ات�
 assert.equal(airPhrase && airPhrase.kind, 'air_purifier', 'natural-language clean-air need should resolve to air-purifier shopping');
 
 const eligibility = window.DigiYarStoreEligibility;
+const officeBag = eligibility.explain('کیف اداری', []);
+['modiseh', 'janebi', 'dayan'].forEach(id => assert.ok(officeBag.eligibleIds.includes(id), `office-bag need omitted ${id}`));
+const accessory = eligibility.explain('لوازم جانبی موبایل', []);
+['digido', 'janebi', 'gooshishop', 'technolife', 'digikala', 'snappshop', 'torob', 'basalam'].forEach(id => assert.ok(accessory.eligibleIds.includes(id), `mobile-accessory need omitted ${id}`));
+['meghdadit', 'takhfifan', 'esam'].forEach(id => assert.ok(!accessory.eligibleIds.includes(id), `unrelated merchant leaked into mobile accessories: ${id}`));
+const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف اداری'));
+assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
+assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
 const phone = eligibility.explain('تلفن همراه سامسونگ', []);
 ['digido', 'digiland', 'berozkala', 'technolife', 'meghdadit', 'emalls', 'kalatik', 'mobile140', 'mobileir', 'kala360']
   .forEach(id => assert.ok(phone.eligibleIds.includes(id), `semantic phone synonym omitted ${id}`));
@@ -73,7 +81,7 @@ let sentBody = null;
 globalThis.fetch = async (url, options) => {
   assert.equal(url, 'https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping');
   sentBody = JSON.parse(options.body);
-  return { ok: true, json: async () => ({ ok: true, plan: {
+  return { ok: true, json: async () => ({ ok: true, provider: 'openrouter', plan: {
     eligibleStoreIds: ['raja', 'unknown-id', 'mrbilit'],
     searchQueries: { raja: 'بلیط قطار تهران مشهد', 'unknown-id': 'نامعتبر' },
     category: 'travel_ticket', domains: ['travel_ticket'], requestedProduct: 'بلیط قطار',
@@ -82,7 +90,10 @@ globalThis.fetch = async (url, options) => {
 };
 globalThis.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = init && init.detail; } };
 const aiRun = await orchestrator.run('از تهران می‌خوام برم مشهد با قطار');
-assert.equal(aiRun.provider, 'openrouter', 'the live semantic plan should take precedence over local rules');
+assert.equal(aiRun.provider, 'local-knowledge-base', 'local results must be available before any provider response');
+assert.equal(aiRun.semantic, false);
+await new Promise(resolve => setTimeout(resolve, 0));
+assert.equal(aiRun.provider, 'openrouter', 'a valid semantic response may improve the local plan in the background');
 assert.equal(aiRun.semantic, true);
 assert.deepEqual(aiRun.ai.eligibleStoreIds, ['raja', 'mrbilit']);
 assert.deepEqual(Object.keys(aiRun.ai.searchQueries), ['raja']);
@@ -95,4 +106,4 @@ assert.equal(fallback.semantic, false);
 assert.ok(fallback.ai.eligibleStoreIds.includes('raja'));
 globalThis.fetch = originalFetch;
 
-console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; semantic API routing and fallback verified`);
+console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; local-first fallback, optional semantic upgrade, office bags and mobile accessories verified`);
