@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.70';
+const VERSION='7.0.0-store-browser.71';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -53,7 +53,9 @@ function storeSearchUrl(id,q){
  if(key==='khanoumi')return khanoumiSearchUrl(s);
  if(key==='janebi'&&/کیف/i.test(s))return 'https://janebi.com/search?q='+encodeURIComponent('کیف اداری');
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(s);
- if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(s);
+ /* Use indexed merchant-specific search when direct endpoints rate-limit or return transient 5xx. */
+ if(key==='basalam')return siteSearchUrl('basalam.com',s);
+ if(key==='snappshop')return siteSearchUrl('snappshop.ir',s);
  if(key==='modiseh'&&/کیف/i.test(s))return 'https://www.modiseh.com/catalogsearch/result/?q='+encodeURIComponent('کیف اداری');
  if(key==='modiseh')return genericMerchantSearchUrl(key,s);
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
