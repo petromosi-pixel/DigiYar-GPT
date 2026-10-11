@@ -237,6 +237,14 @@ function generalStoreHasKnowledgeMatch(query,id){
   var item=kbItem(id);
   if(!item)return false;
   var s=norm(query);
+  /* Accessory intent is a narrower product class than the digital domain.
+     Keep only the four public marketplaces and merchants with direct
+     accessory evidence; do not promote auction/general resale stores by
+     matching the incidental word «موبایل». */
+  if(/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(s)){
+    return ['digikala','snappshop','torob','basalam'].indexOf(String(id||'').toLowerCase())!==-1 &&
+      (item.domains||[]).some(function(domain){return ['digital','home','accessories'].indexOf(domain)!==-1;});
+  }
   /* General marketplaces get a broader semantic eligibility window:
      their KB business domains describe broad inventory coverage, while the
      specialist path remains strictly product/alias driven. */
