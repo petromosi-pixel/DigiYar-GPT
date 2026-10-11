@@ -26,7 +26,8 @@ async function worker() {
     const index = next++;
     if (index >= ids.length) return;
     const id = ids[index];
-    const url = resolver(id, query);
+    const storeQuery = id === 'modiseh' || id === 'janebi' ? 'کیف اداری' : id === 'dayan' ? 'لباس مردانه' : query;
+    const url = resolver(id, storeQuery);
     try {
       const response = await fetch(url, {
         method: 'GET',
