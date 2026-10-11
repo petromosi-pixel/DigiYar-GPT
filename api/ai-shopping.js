@@ -22,9 +22,9 @@ function clean(value) {
 }
 
 function normalize(value) {
-  return clean(value).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ')
-    .replace(/تلفن\\s*همراه/g,'موبایل').replace(/گوشی\\s*هوشمند/g,'گوشی').replace(/بلیت/g,'بلیط')
-    .replace(/ضد\\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/\\s+/g,' ').toLowerCase();
+  return clean(value).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ')
+    .replace(/تلفن\s*همراه/g,'موبایل').replace(/گوشی\s*هوشمند/g,'گوشی').replace(/بلیت/g,'بلیط')
+    .replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/\s+/g,' ').toLowerCase();
 }
 
 function localFallbackPlan(query, catalog) {
@@ -34,15 +34,15 @@ function localFallbackPlan(query, catalog) {
   const selected=[];
   const add=id=>{if(has(id)&&!selected.includes(id))selected.push(id);};
   let product=clean(query),category='general',taskType='shopping_search',domains=[],targetObject=null;
-  const isAccessory=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(q);
-  if(/(?:بلیط|بلیت|رزرو|سفر|می\\s*خوام\\s*برم|می\\s*خواهم\\s*بروم)/i.test(q)&&/(?:قطار|ریل|هواپیما|پرواز|اتوبوس)/i.test(q)){
+  const isAccessory=/(?:قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(q);
+  if(/(?:بلیط|بلیت|رزرو|سفر|می\s*خوام\s*برم|می\s*خواهم\s*بروم)/i.test(q)&&/(?:قطار|ریل|هواپیما|پرواز|اتوبوس)/i.test(q)){
     const mode=/(?:قطار|ریل)/i.test(q)?'قطار':/(?:اتوبوس)/i.test(q)?'اتوبوس':'هواپیما';
     product='بلیط '+mode; category='travel_ticket'; taskType='ticket_search'; domains=['travel_ticket'];
     (mode==='قطار'?['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket','alibaba']:mode==='اتوبوس'?['ghasedak24','mrbilit','safarmarket','alibaba']:['alibaba','flytoday','ghasedak24','mrbilit','safarmarket','trip','flysepehran']).forEach(add);
-  } else if(/(?:تصفیه\\s*هوا|دستگاه\\s*تصفیه|هوای\\s*(?:اتاق|خانه).{0,18}(?:تمیز|پاک|آلوده|گرد\\s*و\\s*غبار))/i.test(q)){
+  } else if(/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|هوای\s*(?:اتاق|خانه).{0,18}(?:تمیز|پاک|آلوده|گرد\s*و\s*غبار))/i.test(q)){
     product='دستگاه تصفیه هوا'; category='home'; domains=['home','digital'];
     ['digikala','snappshop','torob','basalam','memarket'].forEach(add);
-  } else if(/(?:تمیز\\s*کردن|تمیزکاری|شستشو|شستن|نظافت|پاک\\s*کردن|مبل\\s*شویی|شستشوی\\s*مبل)/i.test(q)&&/(?:مبل|مبلمان|پارچه)/i.test(q)){
+  } else if(/(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|پاک\s*کردن|مبل\s*شویی|شستشوی\s*مبل)/i.test(q)&&/(?:مبل|مبلمان|پارچه)/i.test(q)){
     product='محصول نظافت مبل پارچه‌ای'; targetObject='مبل پارچه‌ای'; category='home'; taskType='cleaning_task'; domains=['home'];
     ['digikala','snappshop','torob','basalam'].forEach(add);
   } else if(/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(q)){
@@ -57,11 +57,11 @@ function localFallbackPlan(query, catalog) {
     }
   } else {
     const terms=[];
-    ids.forEach(id=>{const s=catalog[id]||{};asArray(s.products).concat(asArray(s.aliases),asArray(s.specialties),asArray(s.productFamilies),asArray(s.querySignals)).forEach(v=>String(v).split(/[,،;؛\\n]+/).forEach(t=>{const term=normalize(t);if(term.length>=3&&q.includes(term))terms.push({id,term});}));});
+    ids.forEach(id=>{const s=catalog[id]||{};asArray(s.products).concat(asArray(s.aliases),asArray(s.specialties),asArray(s.productFamilies),asArray(s.querySignals)).forEach(v=>String(v).split(/[,،;؛\n]+/).forEach(t=>{const term=normalize(t);if(term.length>=3&&q.includes(term))terms.push({id,term});}));});
     terms.sort((a,b)=>b.term.length-a.term.length);
     if(terms.length){product=terms[0].term;terms.forEach(t=>add(t.id));}
-    if(/(?:تخفیف|کد\\s*تخفیف|کوپن|آفر)/i.test(q))add('takhfifan');
-    if(/(?:موبایل|گوشی|لپ\\s*تاپ|تبلت|تصفیه\\s*هوا|لوازم\\s*خانگی|مبل|میز|کیف|کفش|لباس)/i.test(q))['digikala','snappshop','torob','basalam'].forEach(add);
+    if(/(?:تخفیف|کد\s*تخفیف|کوپن|آفر)/i.test(q))add('takhfifan');
+    if(/(?:موبایل|گوشی|لپ\s*تاپ|تبلت|تصفیه\s*هوا|لوازم\s*خانگی|مبل|میز|کیف|کفش|لباس)/i.test(q))['digikala','snappshop','torob','basalam'].forEach(add);
   }
   selected.forEach(id=>{const s=catalog[id]||{};asArray(s.domains).forEach(d=>{if(!domains.includes(d))domains.push(d);});});
   const searchQueries={};selected.forEach(id=>{searchQueries[id]=product||clean(query);});
