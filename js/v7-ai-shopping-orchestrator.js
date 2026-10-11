@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.5';
+  const VERSION='7.0.0-hooshyar-local.6';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -67,7 +67,15 @@
 
   function classifyLocalNeed(query){
     const q=norm(query);
-    if(/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا)/i.test(q)){
+    const ticketIntent=/(?:بلیط|بلیت|رزرو|سفر|می\s*خوام\s*برم|می\s*خواهم\s*بروم|حرکت\s*از)/i.test(q);
+    if(ticketIntent&&/(?:قطار|ریل|هواپیما|پرواز|اتوبوس)/i.test(q)){
+      const mode=/(?:قطار|ریل)/i.test(q)?'قطار':(/(?:اتوبوس)/i.test(q)?'اتوبوس':'هواپیما');
+      const stores=mode==='قطار'
+        ?['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket','alibaba']
+        :mode==='اتوبوس'?['ghasedak24','mrbilit','safarmarket','alibaba']:['alibaba','flytoday','ghasedak24','mrbilit','safarmarket','trip','flysepehran'];
+      return {kind:'travel_ticket',product:'بلیط '+mode,category:'travel_ticket',domains:['travel_ticket'],stores:stores,targetObject:null,taskType:'ticket_search'};
+    }
+    if(/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|هوای\s*(?:اتاق|خانه).{0,18}(?:تمیز|پاک|آلوده|گرد\s*و\s*غبار))/i.test(q)){
       return {kind:'air_purifier',product:'دستگاه تصفیه هوا',category:'home',domains:['home','digital'],stores:['digikala','snappshop','torob','basalam','memarket'],targetObject:null,taskType:'shopping_search'};
     }
     if(/(?:پراید|خودرو|ماشین)/i.test(q) && /(?:می\s*خوام|می\s*خواهم|خرید|بخر|کم\s*کار|کار\s*کرده|اسنپ|تپسی)/i.test(q)){
