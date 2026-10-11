@@ -10,7 +10,7 @@ function khanoumiSearchUrl(q){
  if(/(?:شوینده|پاک\s*کننده|میسلار|تونر)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/cleanser';
  if(/(?:سرم|روغن)\s*(?:صورت|پوست)?/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/serum';
  if(/(?:شامپو|نرم\s*کننده|ماسک\s*مو|سرم\s*مو)/i.test(s))return 'https://www.khanoumi.com/categories/hair-care';
- return 'https://www.khanoumi.com/';
+ return genericMerchantSearchUrl('khanoumi',s);
 }
 function siteSearchUrl(domain,q){
  var s=storeQueryTerms(q);
