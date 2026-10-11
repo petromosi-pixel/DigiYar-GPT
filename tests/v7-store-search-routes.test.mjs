@@ -69,6 +69,11 @@ const officeBag = eligibility.explain('کیف اداری', []);
 const accessory = eligibility.explain('لوازم جانبی موبایل', []);
 ['digido', 'janebi', 'gooshishop', 'technolife', 'digikala', 'snappshop', 'torob', 'basalam'].forEach(id => assert.ok(accessory.eligibleIds.includes(id), `mobile-accessory need omitted ${id}`));
 ['meghdadit', 'takhfifan', 'esam'].forEach(id => assert.ok(!accessory.eligibleIds.includes(id), `unrelated merchant leaked into mobile accessories: ${id}`));
+for (const [id,host] of [['modiseh','modiseh.com'],['memarket','memarket24.ir']]) {
+  const url = new URL(browser.resolveSearchUrl(id, 'کیف اداری'));
+  assert.equal(url.hostname, 'www.google.com', `${id} should avoid broken/registration pages and use site-specific search`);
+  assert.ok(url.searchParams.get('q').includes(`site:${host}`), `${id} fallback must be restricted to its own domain`);
+}
 const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف اداری'));
 assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
 assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
