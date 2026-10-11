@@ -46,7 +46,7 @@ function localFallbackPlan(query, catalog) {
     product='محصول نظافت مبل پارچه‌ای'; targetObject='مبل پارچه‌ای'; category='home'; taskType='cleaning_task'; domains=['home'];
     ['digikala','snappshop','torob','basalam'].forEach(add);
   } else if(/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(q)){
-    product=isAccessory?'لوازم جانبی موبایل':(q.match(/(?:سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i)||['گوشی'])[0];
+    product=isAccessory?'لوازم جانبی موبایل':('گوشی '+((q.match(/(?:سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i)||['موبایل'])[0]));
     category='digital'; domains=['digital'];
     if(isAccessory){
       ids.forEach(id=>{const s=catalog[id]||{};if((s.intents||[]).includes('mobile_accessories'))add(id);});
@@ -256,7 +256,7 @@ ${query}`;
         provider: PROVIDER,
         model: MODEL,
         upstreamStatus: result.status,
-        detail: 'Gemini API request failed; inspect Vercel runtime logs.'
+        detail: 'OpenRouter API request failed; inspect Vercel runtime logs.'
       });
     }
 
