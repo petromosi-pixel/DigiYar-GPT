@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.7';
+  const VERSION='7.0.0-hooshyar-local.8';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -81,7 +81,7 @@
       if(!response.ok)return null;
       const payload=await response.json();
       if(!payload||payload.ok!==true||!payload.plan||typeof payload.plan!=='object')return null;
-      payload.plan.__provider=String(payload.provider||'openrouter');
+      payload.plan.__provider=String(payload.provider||'unknown');
       return payload.plan;
     }catch(_){return null;}
     finally{clearTimeout(timeout);}
@@ -136,7 +136,11 @@
     }
     const ids=Array.isArray(eligibleIds)?eligibleIds.slice():[];
     const queries={};
-    const storeProductQuery=clean(query);
+    const storeProductQuery=classified&&classified.product
+      ?clean(classified.product)
+      :((cleaning&&/(مبل|مبلمان|پارچه)/i.test(q))?'تمیزکننده مبل پارچه‌ای'
+        :( /(?:قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(q)&&/(?:موبایل|گوشی|سامسونگ|آیفون|samsung|iphone)/i.test(q)
+          ?'لوازم جانبی موبایل':clean(query)));
     ids.forEach(id=>{queries[id]=storeProductQuery;});
     const domains=classified?classified.domains.slice():[];
     if(!classified){
@@ -172,41 +176,11 @@
     };
   }
 
-  async function run(query,context){
+  function localPlanFor(query,context){
     const raw=clean(query);
     const plan=buildPlan(raw,context);
     const catalog=buildStoreCatalog();
-    // Publish the query immediately so the Browser can reject stale plans.
     window.DigiYarShoppingPlan=plan;
-
-    // Prefer the actual semantic AI API. The deterministic local resolver below
-    // is an explicit resilience fallback for provider/network failures only.
-    const aiPlan=await requestSemanticPlan(raw,catalog);
-    if(aiPlan&&Array.isArray(aiPlan.eligibleStoreIds)){
-      const validIds=aiPlan.eligibleStoreIds.map(id=>String(id||'').toLowerCase())
-        .filter((id,index,all)=>catalog[id]&&all.indexOf(id)===index);
-      if(validIds.length){
-        const queries={};
-        Object.keys(aiPlan.searchQueries&&typeof aiPlan.searchQueries==='object'?aiPlan.searchQueries:{}).forEach(id=>{
-          const key=String(id||'').toLowerCase();
-          const value=clean(aiPlan.searchQueries[id]);
-          if(validIds.includes(key)&&value)queries[key]=value;
-        });
-        aiPlan.eligibleStoreIds=validIds;
-        aiPlan.searchQueries=queries;
-        const sourceProvider=String(aiPlan.__provider||'openrouter');
-        delete aiPlan.__provider;
-        plan.ai=aiPlan;
-        plan.candidateStores=validIds.slice();
-        plan.provider=sourceProvider;
-        plan.semantic=sourceProvider==='openrouter';
-        plan.mode=plan.semantic?'semantic-ai':'local-api-fallback';
-        window.DigiYarShoppingPlan=plan;
-        window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
-        return plan;
-      }
-    }
-
     let stores=[];
     const eligibility=window.DigiYarStoreEligibility;
     const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
@@ -216,14 +190,57 @@
     }else if(eligibility&&typeof eligibility.storesForQuery==='function'){
       stores=eligibility.storesForQuery(raw,popular);
     }
-    const ids=(Array.isArray(stores)?stores:[]).map(x=>String(x&&x.id||'').toLowerCase()).filter((id,i,a)=>id&&a.indexOf(id)===i);
+    const ids=(Array.isArray(stores)?stores:[])
+      .map(x=>String(x&&x.id||'').toLowerCase())
+      .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
     plan.ai=localNeed(raw,catalog,ids,classified);
     plan.candidateStores=ids.slice();
     plan.provider='local-knowledge-base';
     plan.semantic=false;
     plan.mode='local-fallback';
     window.DigiYarShoppingPlan=plan;
+    return {plan,catalog,raw};
+  }
+
+  function applySemanticPlan(plan,aiPlan,catalog){
+    if(!aiPlan||aiPlan.__provider!=='openrouter'||!Array.isArray(aiPlan.eligibleStoreIds))return false;
+    const validIds=aiPlan.eligibleStoreIds.map(id=>String(id||'').toLowerCase())
+      .filter((id,index,all)=>catalog[id]&&all.indexOf(id)===index);
+    if(!validIds.length)return false;
+    const queries={};
+    Object.keys(aiPlan.searchQueries&&typeof aiPlan.searchQueries==='object'?aiPlan.searchQueries:{}).forEach(id=>{
+      const key=String(id||'').toLowerCase();
+      const value=clean(aiPlan.searchQueries[id]);
+      if(validIds.includes(key)&&value)queries[key]=value;
+    });
+    aiPlan.eligibleStoreIds=validIds;
+    aiPlan.searchQueries=queries;
+    delete aiPlan.__provider;
+    plan.ai=aiPlan;
+    plan.candidateStores=validIds.slice();
+    plan.provider='openrouter';
+    plan.semantic=true;
+    plan.mode='semantic-ai';
+    window.DigiYarShoppingPlan=plan;
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
+    return true;
+  }
+
+  async function run(query,context){
+    const built=localPlanFor(query,context);
+    const plan=built.plan;
+    const catalog=built.catalog;
+    const raw=built.raw;
+
+    // Never make shopping depend on an AI vendor. The local knowledge-base
+    // plan is dispatched immediately; a configured free semantic model may
+    // improve it in the background, but cannot block or erase the fallback.
+    window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
+    requestSemanticPlan(raw,catalog).then(function(aiPlan){
+      if(applySemanticPlan(plan,aiPlan,catalog))return;
+      // A provider's own local fallback is deliberately ignored: our browser
+      // resolver has the full current KB and must remain the source of truth.
+    }).catch(function(){});
     return plan;
   }
 
