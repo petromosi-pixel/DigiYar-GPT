@@ -51,12 +51,12 @@ function storeSearchUrl(id,q){
  var s=storeSearchQuery(q);
  var hs=s;
  if(key==='khanoumi')return khanoumiSearchUrl(s);
- if(key==='janebi'&&/کیف/i.test(s))return 'https://janebi.com/search?q='+encodeURIComponent('کیف اداری');
+ if(key==='janebi'&&/کیف\\s*اداری/i.test(s))return 'https://janebi.com/search?q='+encodeURIComponent('کیف اداری');
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(s);
  /* Use indexed merchant-specific search when direct endpoints rate-limit or return transient 5xx. */
  if(key==='basalam')return siteSearchUrl('basalam.com',s);
  if(key==='snappshop')return siteSearchUrl('snappshop.ir',s);
- if(key==='modiseh'&&/کیف/i.test(s))return 'https://www.modiseh.com/catalogsearch/result/?q='+encodeURIComponent('کیف اداری');
+ if(key==='modiseh'&&/کیف\\s*اداری/i.test(s))return genericMerchantSearchUrl(key,'کیف اداری');
  if(key==='modiseh')return genericMerchantSearchUrl(key,s);
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
  if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(s.replace(/\s+/g,'-'));
