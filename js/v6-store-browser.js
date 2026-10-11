@@ -59,7 +59,7 @@ function storeSearchUrl(id,q){
  if(key==='modiseh'&&/کیف\s*اداری/i.test(s))return genericMerchantSearchUrl(key,'کیف اداری');
  if(key==='modiseh')return genericMerchantSearchUrl(key,s);
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
- if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(s.replace(/\s+/g,'-'));
+ if(key==='memarket')return genericMerchantSearchUrl(key,s);
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
