@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.9';
+  const VERSION='7.0.0-hooshyar-local.10';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -236,11 +236,13 @@
     // plan is dispatched immediately; a configured free semantic model may
     // improve it in the background, but cannot block or erase the fallback.
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
-    requestSemanticPlan(raw,catalog).then(function(aiPlan){
-      if(applySemanticPlan(plan,aiPlan,catalog))return;
-      // A provider's own local fallback is deliberately ignored: our browser
-      // resolver has the full current KB and must remain the source of truth.
-    }).catch(function(){});
+    if(window.DigiYarHooshyarSemanticApiEnabled===true){
+      requestSemanticPlan(raw,catalog).then(function(aiPlan){
+        if(applySemanticPlan(plan,aiPlan,catalog))return;
+        // A provider's own local fallback is deliberately ignored: our browser
+        // resolver has the full current KB and remains the source of truth.
+      }).catch(function(){});
+    }
     return plan;
   }
 
