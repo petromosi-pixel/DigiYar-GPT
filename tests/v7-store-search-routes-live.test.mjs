@@ -64,19 +64,25 @@ async function worker() {
     const id = ids[index];
     const storeQuery = id === 'modiseh' || id === 'janebi' ? 'کیف اداری' : id === 'dayan' ? 'لباس مردانه' : query;
     const url = resolver(id, storeQuery);
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        redirect: 'follow',
-        signal: AbortSignal.timeout(7000),
-        headers: { 'user-agent': 'DigiYar-RouteSmokeTest/1.0', 'accept': 'text/html,application/xhtml+xml' }
-      });
-      const status = response.status;
-      try { await response.body?.cancel(); } catch {}
-      results.push({ id, status, url: response.url || url });
-    } catch (error) {
-      results.push({ id, status: 'unverified', error: String(error && error.message || error), url });
+    let last = { id, status: 'unverified', url };
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          redirect: 'follow',
+          signal: AbortSignal.timeout(10000),
+          headers: { 'user-agent': 'DigiYar-RouteSmokeTest/1.0', 'accept': 'text/html,application/xhtml+xml' }
+        });
+        const status = response.status;
+        try { await response.body?.cancel(); } catch {}
+        last = { id, status, url: response.url || url, attempts: attempt };
+        if (![404, 410].includes(status) && !(status >= 500)) break;
+      } catch (error) {
+        last = { id, status: 'unverified', error: String(error && error.message || error), url, attempts: attempt };
+      }
+      if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 350 * attempt));
     }
+    results.push(last);
   }
 }
 await Promise.all(Array.from({ length: 8 }, worker));
@@ -88,9 +94,9 @@ const unverified = results.filter(x => x.status === 'unverified');
 console.log(JSON.stringify({
   checked: results.length,
   reachable: reachable.length,
-  restrictedBySite: restricted.length,
-  serverErrors: serverErrors.length,
-  unverified: unverified.length,
+  restrictedBySite: restricted,
+  serverErrors,
+  unverified,
   deadRoutes: dead
 }, null, 2));
 assert.equal(results.length, ids.length, 'every catalog merchant must be probed');
