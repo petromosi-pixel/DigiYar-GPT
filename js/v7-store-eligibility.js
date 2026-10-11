@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.53';
+var VERSION='7.0.0-store-eligibility.54';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -316,7 +316,7 @@ function domainForQuery(query){
 function aiDomainHints(query){
   try{
     var p=root.DigiYarShoppingPlan;
-    if(!p||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.domains)) return [];
+    if(!p||p.semantic!==true||norm(p.query)!==norm(query)||!p.ai||!Array.isArray(p.ai.domains)) return [];
     return p.ai.domains.map(function(x){return norm(x);}).filter(function(x){return !!DOMAINS[x]||x==='accessories';});
   }catch(_){return [];}
 }
@@ -341,7 +341,7 @@ function isCleaningTaskQuery(query){
 function semanticPlanForQuery(query){
   try{
     var p=root.DigiYarShoppingPlan;
-    return p&&norm(p.query)===norm(query)&&p.ai?p.ai:null;
+    return p&&p.semantic===true&&norm(p.query)===norm(query)&&p.ai?p.ai:null;
   }catch(_){return null;}
 }
 
