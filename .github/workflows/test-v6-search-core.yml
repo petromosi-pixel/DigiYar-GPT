@@ -91,3 +91,5 @@ jobs:
           node-version: 20
       - name: Run V7 store eligibility contract
         run: npm run test:v7:store-eligibility
+      - name: Verify merchant search routes and semantic phrases
+        run: npm run test:v7:store-search-routes
