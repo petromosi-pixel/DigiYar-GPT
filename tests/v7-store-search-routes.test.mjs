@@ -83,6 +83,7 @@ const phone = eligibility.explain('تلفن همراه سامسونگ', []);
 
 const originalFetch = globalThis.fetch;
 let sentBody = null;
+window.DigiYarHooshyarSemanticApiEnabled = false;
 globalThis.fetch = async (url, options) => {
   assert.equal(url, 'https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping');
   sentBody = JSON.parse(options.body);
@@ -94,6 +95,11 @@ globalThis.fetch = async (url, options) => {
   } }) };
 };
 globalThis.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = init && init.detail; } };
+const localOnly = await orchestrator.run('کیف اداری');
+assert.equal(localOnly.provider, 'local-knowledge-base', 'local results must work without an AI provider');
+assert.equal(localOnly.semantic, false);
+assert.equal(sentBody, null, 'AI API must not be called unless explicitly enabled');
+window.DigiYarHooshyarSemanticApiEnabled = true;
 const aiRun = await orchestrator.run('از تهران می‌خوام برم مشهد با قطار');
 assert.equal(aiRun.provider, 'local-knowledge-base', 'local results must be available before any provider response');
 assert.equal(aiRun.semantic, false);
@@ -104,11 +110,15 @@ assert.deepEqual(aiRun.ai.eligibleStoreIds, ['raja', 'mrbilit']);
 assert.deepEqual(Object.keys(aiRun.ai.searchQueries), ['raja']);
 assert.equal(sentBody.query, 'از تهران می‌خوام برم مشهد با قطار');
 assert.ok(sentBody.storeCatalog.digikala && sentBody.storeCatalog.raja, 'full merchant KB must be sent to semantic AI');
+window.DigiYarHooshyarSemanticApiEnabled = true;
 globalThis.fetch = async () => { throw new Error('simulated offline provider'); };
 const fallback = await orchestrator.run('بلیط قطار تهران مشهد');
 assert.equal(fallback.provider, 'local-knowledge-base', 'provider failures must retain deterministic fallback');
 assert.equal(fallback.semantic, false);
 assert.ok(fallback.ai.eligibleStoreIds.includes('raja'));
+await new Promise(resolve => setTimeout(resolve, 0));
+assert.equal(fallback.provider, 'local-knowledge-base', 'provider failure must never erase the local result');
+window.DigiYarHooshyarSemanticApiEnabled = false;
 globalThis.fetch = originalFetch;
 
 console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; local-first fallback, optional semantic upgrade, office bags and mobile accessories verified`);
