@@ -19,6 +19,24 @@ const catalog = window.DigiYarStoreBusinessDomains.catalog;
 const resolver = window.DigiYarStoreBrowser.resolveSearchUrl;
 const ids = Object.keys(catalog);
 const query = 'دستگاه تصفیه هوا';
+const apiSmoke = { status: 'unverified', provider: null, error: null };
+try {
+  const catalogPayload = Object.fromEntries(Object.entries(catalog).map(([id,item]) => [id, item]));
+  const response = await fetch('https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping', {
+    method: 'POST', redirect: 'follow', signal: AbortSignal.timeout(12000),
+    headers: { 'content-type': 'application/json', origin: 'https://petromosi-pixel.github.io' },
+    body: JSON.stringify({ query: 'از تهران می‌خوام برم مشهد با قطار', storeCatalog: catalogPayload })
+  });
+  apiSmoke.status = response.status;
+  if (response.ok) {
+    const data = await response.json();
+    apiSmoke.provider = data.provider || null;
+    if (!data.ok || !data.plan || !Array.isArray(data.plan.eligibleStoreIds)) apiSmoke.error = 'invalid_semantic_plan';
+  } else {
+    apiSmoke.error = (await response.text()).slice(0, 180);
+  }
+} catch (error) { apiSmoke.error = String(error && error.message || error); }
+console.log('LIVE_SEMANTIC_API_SMOKE ' + JSON.stringify(apiSmoke));
 const results = [];
 let next = 0;
 async function worker() {
