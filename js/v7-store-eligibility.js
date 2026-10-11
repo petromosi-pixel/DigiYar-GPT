@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.55';
+var VERSION='7.0.0-store-eligibility.56';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -500,7 +500,7 @@ function storesForQuery(query, stores){
   /* A defined merchant set prevents generic marketplace taxonomy from
      flooding the results with every store that happens to mention phones. */
   var phoneText=norm(query);
-  var accessoryIntent=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(phoneText);
+  var accessoryIntent=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(phoneText);
   var phoneIntent=/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(phoneText);
   if(phoneIntent&&!accessoryIntent){
     var phoneStoreIds=['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
