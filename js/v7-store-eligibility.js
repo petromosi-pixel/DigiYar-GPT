@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.54';
+var VERSION='7.0.0-store-eligibility.55';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -161,6 +161,7 @@ function orderStoresSpecialistFirst(list){
     var aid=String(a&&a.id||'').toLowerCase(),bid=String(b&&b.id||'').toLowerCase();
     var at=AFTER_GENERAL_STORE_IDS.indexOf(aid)!==-1,bt=AFTER_GENERAL_STORE_IDS.indexOf(bid)!==-1;
     if(at!==bt)return at?1:-1;
+    if(at&&bt)return AFTER_GENERAL_STORE_IDS.indexOf(aid)-AFTER_GENERAL_STORE_IDS.indexOf(bid);
     var as=isSpecialistStore(a&&a.id),bs=isSpecialistStore(b&&b.id);
     return as===bs?0:(as?-1:1);
   });
