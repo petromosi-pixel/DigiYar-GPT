@@ -1,12 +1,12 @@
-/* DigiYar V7 — unified local Hooshyar planner
- * No external AI provider and no API request.
- * The legacy local merchant KB + eligibility resolver selects relevant stores.
+/* DigiYar V7 — provider-independent local-first Hooshyar planner.
+ * A local merchant KB resolver always produces results immediately. A free
+ * semantic API may refine them in the background, but never blocks search.
  * Product facts and prices still come only from the existing Store Browser.
  */
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.8';
+  const VERSION='7.0.0-hooshyar-local.9';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
