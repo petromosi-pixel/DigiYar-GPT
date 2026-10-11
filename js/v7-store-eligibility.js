@@ -496,6 +496,15 @@ function storesForQuery(query, stores){
   if(semanticPlan&&Array.isArray(semanticPlan.eligibleStoreIds)){
     return orderStoresSpecialistFirst(aiSelected||[]);
   }
+  /* A defined merchant set prevents generic marketplace taxonomy from
+     flooding the results with every store that happens to mention phones. */
+  var phoneText=norm(query);
+  var accessoryIntent=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(phoneText);
+  var phoneIntent=/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(phoneText);
+  if(phoneIntent&&!accessoryIntent){
+    var phoneStoreIds=['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
+    return orderStoresSpecialistFirst(list.filter(function(store){return phoneStoreIds.indexOf(String(store&&store.id||'').toLowerCase())!==-1;}));
+  }
   /* Deterministic KB rules remain authoritative for known vocabulary. AI is
    * used only to expand that boundary when it can semantically identify an
    * already-known merchant for a new/unlisted expression. */
