@@ -55,14 +55,18 @@ for (const scenario of apiScenarios) {
 console.log('LIVE_SEMANTIC_API_SMOKE '+JSON.stringify(apiSmokeResults));
 assert.ok(apiSmokeResults.every(x=>x.status===200&&x.error===null),
   `semantic planner scenarios failed: ${JSON.stringify(apiSmokeResults)}`);
+const routeCases = apiScenarios.flatMap((scenario,index) =>
+  apiSmokeResults[index].eligibleStoreIds.map(id => ({ id, query: scenario.query, scenario: scenario.name }))
+);
 const results = [];
 let next = 0;
 async function worker() {
   while (true) {
     const index = next++;
-    if (index >= ids.length) return;
-    const id = ids[index];
-    const storeQuery = id === 'modiseh' || id === 'janebi' ? 'کیف اداری' : id === 'dayan' ? 'لباس مردانه' : query;
+    if (index >= routeCases.length) return;
+    const testCase = routeCases[index];
+    const id = testCase.id;
+    const storeQuery = testCase.query;
     const url = resolver(id, storeQuery);
     let last = { id, status: 'unverified', url };
     for (let attempt = 1; attempt <= 3; attempt++) {
@@ -99,5 +103,5 @@ console.log(JSON.stringify({
   unverified,
   deadRoutes: dead
 }, null, 2));
-assert.equal(results.length, ids.length, 'every catalog merchant must be probed');
+assert.equal(results.length, routeCases.length, 'every selected merchant/query pair must be probed');
 assert.deepEqual(dead, [], 'dead 404/410 merchant routes must be corrected');
