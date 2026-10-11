@@ -43,11 +43,13 @@ assert.equal(unknown.domain, null);
 assert.ok(unknown.eligibleCount >= 0);
 
 const samsung = eligibility.explain('گوشی سامسونگ', stores);
-['digido','digiland','berozkala','gooshishop','technolife','meghdadit','emalls','kalatik','mobile140','mobileir','kala360'].forEach(id=>assert.ok(samsung.eligibleIds.includes(id), `missing mobile-related merchant: ${id}`));
+['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'].forEach(id=>assert.ok(samsung.eligibleIds.includes(id), `missing mobile-related merchant: ${id}`));
+['emalls','kalatik','mobile140','mobileir','kala360','memarket'].forEach(id=>assert.ok(!samsung.eligibleIds.includes(id), `unrelated mobile merchant leaked: ${id}`));
 assert.ok(!samsung.eligibleIds.includes('khanoumi'));
 
 const accessories = eligibility.explain('لوازم جانبی موبایل', stores);
-['janebi','digido','technolife'].forEach(id=>assert.ok(accessories.eligibleIds.includes(id), `missing accessory merchant: ${id}`));
+['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(id=>assert.ok(accessories.eligibleIds.includes(id), `missing accessory merchant: ${id}`));
+['digiland','meghdadit','takhfifan','esam','memarket'].forEach(id=>assert.ok(!accessories.eligibleIds.includes(id), `unrelated accessory merchant leaked: ${id}`));
 
 const train = eligibility.explain('بلیط قطار تهران مشهد', stores);
 ['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket'].forEach(id=>assert.ok(train.eligibleIds.includes(id), `missing train-ticket merchant: ${id}`));
