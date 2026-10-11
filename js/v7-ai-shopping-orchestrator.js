@@ -81,6 +81,7 @@
       if(!response.ok)return null;
       const payload=await response.json();
       if(!payload||payload.ok!==true||!payload.plan||typeof payload.plan!=='object')return null;
+      payload.plan.__provider=String(payload.provider||'openrouter');
       return payload.plan;
     }catch(_){return null;}
     finally{clearTimeout(timeout);}
@@ -193,11 +194,13 @@
         });
         aiPlan.eligibleStoreIds=validIds;
         aiPlan.searchQueries=queries;
+        const sourceProvider=String(aiPlan.__provider||'openrouter');
+        delete aiPlan.__provider;
         plan.ai=aiPlan;
         plan.candidateStores=validIds.slice();
-        plan.provider='openrouter';
-        plan.semantic=true;
-        plan.mode='semantic-ai';
+        plan.provider=sourceProvider;
+        plan.semantic=sourceProvider==='openrouter';
+        plan.mode=plan.semantic?'semantic-ai':'local-api-fallback';
         window.DigiYarShoppingPlan=plan;
         window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
         return plan;
