@@ -25,6 +25,11 @@ const browser = window.DigiYarStoreBrowser;
 assert.ok(browser && typeof browser.resolveSearchUrl === 'function', 'Store Browser must expose the real URL resolver');
 
 const query = 'دستگاه تصفیه هوا';
+for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]) {
+  const url = new URL(browser.resolveSearchUrl(id, query));
+  assert.equal(url.hostname, 'www.google.com', `${id} should use resilient site-specific search when its direct endpoint is restricted/unavailable`);
+  assert.ok(url.searchParams.get('q').includes(`site:${host}`), `${id} fallback must be restricted to its own domain`);
+}
 const ids = Object.keys(catalog);
 assert.ok(ids.length >= 100, `expected old and new merchant catalog, got ${ids.length}`);
 
