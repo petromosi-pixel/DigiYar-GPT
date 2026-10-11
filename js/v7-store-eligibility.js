@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.52';
+var VERSION='7.0.0-store-eligibility.53';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -120,7 +120,8 @@ function knowledgeSpecialistsForQuery(query,list){
 
 function norm(v){
   return String(v==null?'':v)
-    .replace(/[يى]/g,'ی').replace(/ك/g,'ک')
+     .replace(/[يى]/g,'ی').replace(/ك/g,'ک')
+    .replace(/تلفن\s*همراه/g,'موبایل').replace(/گوشی\s*هوشمند/g,'گوشی').replace(/بلیت/g,'بلیط').replace(/سفر\s*ریلی/g,'قطار')
     .replace(/[‌\u200c]/g,' ')
     .replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب')
     .replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده')
