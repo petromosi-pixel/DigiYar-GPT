@@ -100,6 +100,10 @@ globalThis.CustomEvent = class { constructor(type, init) { this.type = type; thi
 const localOnly = await orchestrator.run('کیف اداری');
 assert.equal(localOnly.provider, 'local-knowledge-base', 'local results must work without an AI provider');
 assert.equal(localOnly.semantic, false);
+const localPhone = await orchestrator.run('یه گوشی سامسونگ می‌خوام');
+const expectedPhoneIds = ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
+assert.deepEqual(localPhone.ai.eligibleStoreIds, expectedPhoneIds, 'local phone plan must preserve the exact relevant merchant set');
+assert.deepEqual(window.DigiYarStoreEligibility.storesForQuery('یه گوشی سامسونگ می‌خوام', []).map(x=>x.id), expectedPhoneIds, 'local plans must not be incorrectly revalidated as AI plans');
 assert.equal(sentBody, null, 'AI API must not be called unless explicitly enabled');
 window.DigiYarHooshyarSemanticApiEnabled = true;
 const aiRun = await orchestrator.run('از تهران می‌خوام برم مشهد با قطار');
