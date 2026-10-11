@@ -137,7 +137,7 @@
     const ids=Array.isArray(eligibleIds)?eligibleIds.slice():[];
     const queries={};
     const storeProductQuery=classified&&classified.product
-      ?clean(classified.product)
+      ?(classified.taskType==='ticket_search'?clean(query):clean(classified.product))
       :((cleaning&&/(مبل|مبلمان|پارچه)/i.test(q))?'تمیزکننده مبل پارچه‌ای'
         :( /(?:قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(q)&&/(?:موبایل|گوشی|سامسونگ|آیفون|samsung|iphone)/i.test(q)
           ?'لوازم جانبی موبایل':clean(query)));
