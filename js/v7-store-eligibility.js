@@ -241,7 +241,7 @@ function generalStoreHasKnowledgeMatch(query,id){
      Keep only the four public marketplaces and merchants with direct
      accessory evidence; do not promote auction/general resale stores by
      matching the incidental word «موبایل». */
-  if(/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(s)){
+  if(/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(s)){
     return ['digikala','snappshop','torob','basalam'].indexOf(String(id||'').toLowerCase())!==-1 &&
       (item.domains||[]).some(function(domain){return ['digital','home','accessories'].indexOf(domain)!==-1;});
   }
