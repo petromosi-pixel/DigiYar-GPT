@@ -78,8 +78,10 @@ const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف ادار
 assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
 assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
 const phone = eligibility.explain('تلفن همراه سامسونگ', []);
-['digido', 'digiland', 'berozkala', 'technolife', 'meghdadit', 'emalls', 'kalatik', 'mobile140', 'mobileir', 'kala360']
+['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam']
   .forEach(id => assert.ok(phone.eligibleIds.includes(id), `semantic phone synonym omitted ${id}`));
+['emalls','kalatik','mobile140','mobileir','kala360','memarket']
+  .forEach(id => assert.ok(!phone.eligibleIds.includes(id), `unrelated phone merchant leaked: ${id}`));
 
 const originalFetch = globalThis.fetch;
 let sentBody = null;
