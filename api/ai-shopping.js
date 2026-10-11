@@ -21,6 +21,53 @@ function clean(value) {
   return String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
 }
 
+function normalize(value) {
+  return clean(value).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ')
+    .replace(/تلفن\\s*همراه/g,'موبایل').replace(/گوشی\\s*هوشمند/g,'گوشی').replace(/بلیت/g,'بلیط')
+    .replace(/ضد\\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/\\s+/g,' ').toLowerCase();
+}
+
+function localFallbackPlan(query, catalog) {
+  const q=normalize(query);
+  const ids=Object.keys(catalog||{}).map(id=>id.toLowerCase());
+  const has=id=>ids.includes(id);
+  const selected=[];
+  const add=id=>{if(has(id)&&!selected.includes(id))selected.push(id);};
+  let product=clean(query),category='general',taskType='shopping_search',domains=[],targetObject=null;
+  const isAccessory=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(q);
+  if(/(?:بلیط|بلیت|رزرو|سفر|می\\s*خوام\\s*برم|می\\s*خواهم\\s*بروم)/i.test(q)&&/(?:قطار|ریل|هواپیما|پرواز|اتوبوس)/i.test(q)){
+    const mode=/(?:قطار|ریل)/i.test(q)?'قطار':/(?:اتوبوس)/i.test(q)?'اتوبوس':'هواپیما';
+    product='بلیط '+mode; category='travel_ticket'; taskType='ticket_search'; domains=['travel_ticket'];
+    (mode==='قطار'?['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket','alibaba']:mode==='اتوبوس'?['ghasedak24','mrbilit','safarmarket','alibaba']:['alibaba','flytoday','ghasedak24','mrbilit','safarmarket','trip','flysepehran']).forEach(add);
+  } else if(/(?:تصفیه\\s*هوا|دستگاه\\s*تصفیه|هوای\\s*(?:اتاق|خانه).{0,18}(?:تمیز|پاک|آلوده|گرد\\s*و\\s*غبار))/i.test(q)){
+    product='دستگاه تصفیه هوا'; category='home'; domains=['home','digital'];
+    ['digikala','snappshop','torob','basalam','memarket'].forEach(add);
+  } else if(/(?:تمیز\\s*کردن|تمیزکاری|شستشو|شستن|نظافت|پاک\\s*کردن|مبل\\s*شویی|شستشوی\\s*مبل)/i.test(q)&&/(?:مبل|مبلمان|پارچه)/i.test(q)){
+    product='محصول نظافت مبل پارچه‌ای'; targetObject='مبل پارچه‌ای'; category='home'; taskType='cleaning_task'; domains=['home'];
+    ['digikala','snappshop','torob','basalam'].forEach(add);
+  } else if(/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(q)){
+    product=isAccessory?'لوازم جانبی موبایل':(q.match(/(?:سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i)||['گوشی'])[0];
+    category='digital'; domains=['digital'];
+    if(isAccessory){
+      ids.forEach(id=>{const s=catalog[id]||{};if((s.intents||[]).includes('mobile_accessories'))add(id);});
+      ['janebi','digido','digiland','technolife','meghdadit'].forEach(add);
+    } else {
+      ids.forEach(id=>{const s=catalog[id]||{};if((s.intents||[]).some(v=>normalize(v)==='mobile'))add(id);});
+      ['digikala','snappshop','torob','basalam','digido','digiland','berozkala','gooshishop','technolife','meghdadit','emalls','kalatik','mobile140','mobileir','kala360'].forEach(add);
+    }
+  } else {
+    const terms=[];
+    ids.forEach(id=>{const s=catalog[id]||{};asArray(s.products).concat(asArray(s.aliases),asArray(s.specialties),asArray(s.productFamilies),asArray(s.querySignals)).forEach(v=>String(v).split(/[,،;؛\\n]+/).forEach(t=>{const term=normalize(t);if(term.length>=3&&q.includes(term))terms.push({id,term});}));});
+    terms.sort((a,b)=>b.term.length-a.term.length);
+    if(terms.length){product=terms[0].term;terms.forEach(t=>add(t.id));}
+    if(/(?:تخفیف|کد\\s*تخفیف|کوپن|آفر)/i.test(q))add('takhfifan');
+    if(/(?:موبایل|گوشی|لپ\\s*تاپ|تبلت|تصفیه\\s*هوا|لوازم\\s*خانگی|مبل|میز|کیف|کفش|لباس)/i.test(q))['digikala','snappshop','torob','basalam'].forEach(add);
+  }
+  selected.forEach(id=>{const s=catalog[id]||{};asArray(s.domains).forEach(d=>{if(!domains.includes(d))domains.push(d);});});
+  const searchQueries={};selected.forEach(id=>{searchQueries[id]=product||clean(query);});
+  return {category,brand:null,minBudgetToman:null,maxBudgetToman:null,useCase:targetObject?'نظافت مبل پارچه‌ای':null,domains,taskType,action:'find_relevant_stores',eligibleStoreIds:selected,productTerms:[product],requiredNameTerms:[],excludedTerms:[],semanticNeed:clean(query),requestedProduct:product||clean(query),targetObject,attributes:[],searchQueries,confidence:selected.length?0.62:0.2,mode:'local-knowledge-base'};
+}
+
 
 function isAllowedOrigin(origin) {
   return ALLOWED_ORIGINS.has(clean(origin));
@@ -173,12 +220,8 @@ ${query}`;
     // provider billing integration is used. OPENROUTER_API_KEY is required.
     const apiKey = clean(process.env.OPENROUTER_API_KEY);
     if (!apiKey) {
-      return send(res, 503, {
-        error: 'ai_provider_not_configured',
-        provider: PROVIDER,
-        model: MODEL,
-        detail: 'Set OPENROUTER_API_KEY in the Vercel project environment.'
-      });
+      const plan=localFallbackPlan(query,modelCatalog);
+      return send(res,200,{ok:true,provider:'local-knowledge-base',model:null,warning:'semantic_ai_unconfigured',plan});
     }
 
     const controller = new AbortController();
