@@ -49,11 +49,12 @@ function localFallbackPlan(query, catalog) {
     product=isAccessory?'لوازم جانبی موبایل':('گوشی '+((q.match(/(?:سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i)||['موبایل'])[0]));
     category='digital'; domains=['digital'];
     if(isAccessory){
-      ids.forEach(id=>{const s=catalog[id]||{};if((s.intents||[]).includes('mobile_accessories'))add(id);});
-      ['janebi','digido','digiland','technolife','meghdadit'].forEach(add);
+      ['digido','janebi','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(add);
+      product='لوازم جانبی موبایل';
     } else {
-      ids.forEach(id=>{const s=catalog[id]||{};if((s.intents||[]).some(v=>normalize(v)==='mobile'))add(id);});
-      ['digikala','snappshop','torob','basalam','digido','digiland','berozkala','gooshishop','technolife','meghdadit','emalls','kalatik','mobile140','mobileir','kala360'].forEach(add);
+      ['digido','digiland','berozkala','gooshishop','technolife','meghdadit',
+       'digikala','snappshop','torob','basalam','takhfifan','esam'].forEach(add);
+      product='گوشی '+((q.match(/(?:سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i)||['موبایل'])[0]);
     }
   } else {
     const terms=[];
