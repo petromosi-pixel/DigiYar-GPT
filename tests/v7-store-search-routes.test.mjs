@@ -31,7 +31,9 @@ for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]
   assert.ok(url.searchParams.get('q').includes(`site:${host}`), `${id} fallback must be restricted to its own domain`);
 }
 const ids = Object.keys(catalog);
-assert.ok(ids.length >= 100, `expected old and new merchant catalog, got ${ids.length}`);
+assert.equal(ids.length, 120, `all 120 stores must be present in the canonical KB, got ${ids.length}`);
+assert.ok(catalog['19kala'], '19kala must be represented in the canonical KB');
+assert.ok(catalog['daroo-online'], 'daroo-online must be represented in the canonical KB');
 
 const failures = [];
 for (const id of ids) {
@@ -127,4 +129,4 @@ assert.equal(fallback.provider, 'local-knowledge-base', 'provider failure must n
 window.DigiYarHooshyarSemanticApiEnabled = false;
 globalThis.fetch = originalFetch;
 
-console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; local-first fallback, optional semantic upgrade, office bags and mobile accessories verified`);
+console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; all 120 KB stores, local-first fallback, optional semantic upgrade, office bags and mobile accessories verified`);
