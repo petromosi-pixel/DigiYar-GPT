@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.2';
+var VERSION='7.0.0-popular-store-discovery.3';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -49,7 +49,18 @@ function normalize(s){return String(s||'').toLowerCase().replace(/[يى]/g,'ی')
 function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.catalog?kb.catalog:{};}
 function homepage(id,store){return (store&&store.homepage)||((window.DigiYarStoreBrowser&&window.DigiYarStoreBrowser.storesByDomain)?'':'')||'';}
 function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
-function featuredFor(domain,catalog){var ids=FEATURED[domain]||[];var seen={};var out=[];ids.forEach(function(entry){var id=entry[0],s=catalog[id];if(!s||seen[id])return;seen[id]=true;out.push({id:id,name:s.name||id,homepage:s.homepage||'',tagline:entry[1]||'برای بررسی این دسته از محصولات'});});return out;}
+function featuredFor(domain,catalog){
+ var seen={},out=[],featured=FEATURED[domain]||[];
+ function add(id,tagline){
+  var s=catalog[id];if(!s||seen[id]||!Array.isArray(s.domains)||s.domains.indexOf(domain)<0)return;
+  seen[id]=true;out.push({id:id,name:s.name||id,homepage:s.homepage||'',tagline:tagline||((s.specialties||[]).slice(0,2).join('، '))||((s.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain});
+ }
+ featured.forEach(function(entry){add(entry[0],entry[1]);});
+ /* Featured entries are only a visual priority, never a whitelist.
+    Append every remaining merchant in this domain from the canonical KB. */
+ Object.keys(catalog).forEach(function(id){var s=catalog[id]||{};if((s.domains||[]).indexOf(domain)>=0)add(id,'');});
+ return out;
+}
 function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return (catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'};});}
 function render(){
  var root=document.getElementById('v7PopularDiscovery');if(!root)return;
@@ -59,8 +70,13 @@ function render(){
  var q=normalize(state.query);
  var nav=domains.map(function(domain){var m=DOMAIN_META[domain]||{title:domain,icon:'🏬'};var count=Object.keys(catalog).filter(function(id){return (catalog[id].domains||[]).indexOf(domain)>=0;}).length;return '<button type="button" class="popular-discovery-category" data-domain="'+esc(domain)+'" aria-pressed="'+(state.domain===domain?'true':'false')+'"><span class="popular-discovery-category-icon">'+esc(m.icon)+'</span><span>'+esc(m.title)+'</span><span class="popular-discovery-category-count">'+count+'</span></button>';}).join('');
  var meta=DOMAIN_META[state.domain]||{title:state.domain,icon:'🏬',subtitle:'فروشگاه‌های این حوزه',sub:[]};
- var stores=featuredFor(state.domain,catalog);if(!stores.length)stores=fallbackStores(state.domain,catalog);
- if(q){stores=stores.filter(function(s){var c=catalog[s.id]||{};return normalize([s.name,s.tagline,(c.products||[]).join(' '),(c.aliases||[]).join(' '),(c.specialties||[]).join(' ')].join(' ')).indexOf(q)>=0;});}
+ var stores;
+ if(q){
+  /* The discovery search is global: query every canonical merchant, not only featured cards or the active category. */
+  stores=Object.keys(catalog).map(function(id){var c=catalog[id]||{};var domain=(c.domains||[]).indexOf(state.domain)>=0?state.domain:((c.domains||[])[0]||'');return {id:id,name:c.name||id,homepage:c.homepage||'',tagline:((c.specialties||[]).slice(0,2).join('، '))||((c.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain};}).filter(function(s){var c=catalog[s.id]||{};return normalize([s.name,s.tagline,(c.products||[]).join(' '),(c.aliases||[]).join(' '),(c.specialties||[]).join(' '),(c.productFamilies||[]).join(' '),(c.querySignals||[]).join(' ')].join(' ')).indexOf(q)>=0;});
+ }else{
+  stores=featuredFor(state.domain,catalog);if(!stores.length)stores=fallbackStores(state.domain,catalog);
+ }
  var cards=stores.map(function(s){var url=s.homepage||catalog[s.id].homepage||'';var initials=String(s.name).replace(/[‌\s]/g,'').slice(0,2);return '<article class="popular-discovery-store"><div class="popular-discovery-store-top"><span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span><div><h4>'+esc(s.name)+'</h4><small>'+esc(meta.title)+'</small></div></div><p>'+esc(s.tagline)+'</p>'+(url?'<a class="popular-discovery-store-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">ورود به فروشگاه <span aria-hidden="true">↗</span></a>':'<span class="popular-discovery-store-link">نشانی در حال تکمیل</span>')+'</article>';}).join('');
  root.innerHTML='<div class="popular-discovery-intro"><strong>به دیجی‌یار خوش اومدی؛ همه فروشگاه‌های محبوبت اینجان</strong><span>از حوزهٔ کاری شروع کن و به فروشگاه مناسب برس</span></div><input class="popular-discovery-search" type="search" id="popularDiscoverySearch" value="'+esc(state.query)+'" placeholder="نام فروشگاه یا محصول را جست‌وجو کن…" aria-label="جست‌وجو در فروشگاه‌های محبوب"><div class="popular-discovery-layout"><nav class="popular-discovery-categories" aria-label="حوزه‌های کاری">'+nav+'</nav><section class="popular-discovery-results" aria-live="polite"><header class="popular-discovery-domain-head"><div><h3>'+esc(meta.icon)+' '+esc(meta.title)+'</h3><p>'+esc(meta.subtitle||'فروشگاه‌های پیشنهادی این حوزه')+'</p></div></header><div class="popular-discovery-subcats">'+(meta.sub||[]).map(function(s){return '<span class="popular-discovery-subcat">'+esc(s)+'</span>';}).join('')+'</div><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این حوزه پیدا نشد. عبارت دیگری را امتحان کن.</div>')+'</div></section></div><p class="popular-discovery-footnote">توضیح‌های کوتاه کارت‌ها، راهنمای انتخاب دیجی‌یار هستند و لزوماً شعار رسمی فروشگاه‌ها نیستند. دسته‌بندی و موجودی فروشگاه‌ها ممکن است تغییر کند.</p>';
  root.querySelectorAll('[data-domain]').forEach(function(btn){btn.addEventListener('click',function(){state.domain=btn.getAttribute('data-domain');render();});});
