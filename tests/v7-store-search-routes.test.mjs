@@ -152,6 +152,7 @@ const comparison = await orchestrator.compareEngines('کیف اداری برای
 assert.equal(comparison.local.engine, 'three-engine-local');
 assert.ok(comparison.catalogCount >= 120, 'comparison must include the canonical 120-store catalog');
 assert.equal(providerRequestBody.provider, 'deepseek', 'DeepSeek selection must be sent to the server');
+assert.equal(comparison.ai, null, 'local API fallback must not be reported as a real semantic provider result');
 window.DigiYarHooshyarAIProvider = 'openrouter';
 providerRequestBody = null;
 await orchestrator.compareEngines('دستگاه تصفیه هوا');
