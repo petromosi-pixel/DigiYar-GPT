@@ -259,7 +259,8 @@
     const built=localPlanFor(query,context);
     const provider=window.DigiYarHooshyarAIProvider||'deepseek';
     const aiPlan=await requestSemanticPlan(built.raw,built.catalog,provider);
-    return {query:built.raw,local:{engine:'three-engine-local',plan:built.plan},ai:aiPlan?{provider:aiPlan.__provider||'unknown',plan:aiPlan}:null,catalogCount:Object.keys(built.catalog).length};
+    const actualProvider=aiPlan&&['deepseek','openrouter'].includes(aiPlan.__provider)?aiPlan.__provider:null;
+    return {query:built.raw,local:{engine:'three-engine-local',plan:built.plan},ai:actualProvider?{provider:actualProvider,plan:aiPlan}:null,catalogCount:Object.keys(built.catalog).length};
   }
 
   async function run(query,context){
