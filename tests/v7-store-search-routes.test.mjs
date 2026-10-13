@@ -141,7 +141,23 @@ assert.equal(fallback.semantic, false);
 assert.ok(fallback.ai.eligibleStoreIds.includes('raja'));
 await new Promise(resolve => setTimeout(resolve, 0));
 assert.equal(fallback.provider, 'local-knowledge-base', 'provider failure must never erase the local result');
+// Provider selection is explicit; the local three-engine plan remains available for comparison.
+window.DigiYarHooshyarAIProvider = 'deepseek';
+let providerRequestBody = null;
+globalThis.fetch = async (_url, options) => {
+  providerRequestBody = JSON.parse(options.body);
+  return {ok:true,json:async()=>({ok:true,provider:'local-knowledge-base',plan:{eligibleStoreIds:[]}})};
+};
+const comparison = await orchestrator.compareEngines('کیف اداری برای محل کارم می‌خوام');
+assert.equal(comparison.local.engine, 'three-engine-local');
+assert.ok(comparison.catalogCount >= 120, 'comparison must include the canonical 120-store catalog');
+assert.equal(providerRequestBody.provider, 'deepseek', 'DeepSeek selection must be sent to the server');
+window.DigiYarHooshyarAIProvider = 'openrouter';
+providerRequestBody = null;
+await orchestrator.compareEngines('دستگاه تصفیه هوا');
+assert.equal(providerRequestBody.provider, 'openrouter', 'OpenRouter remains an optional comparison provider');
+window.DigiYarHooshyarAIProvider = 'deepseek';
 window.DigiYarHooshyarSemanticApiEnabled = false;
 globalThis.fetch = originalFetch;
 
-console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; all 120 KB stores, local-first fallback, optional semantic upgrade, office bags and mobile accessories verified`);
+console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; all 120 KB stores, local-first fallback, three-engine vs DeepSeek/OpenRouter selection, 120-store catalog, office bags and mobile accessories verified`);
