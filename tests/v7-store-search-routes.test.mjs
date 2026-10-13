@@ -17,6 +17,7 @@ globalThis.document = {
 
 await import('../js/store-business-domains.js');
 await import('../js/v7-store-eligibility.js');
+await import('../js/v7-hooshyar-three-engine.js');
 await import('../js/v7-ai-shopping-orchestrator.js');
 await import('../js/v6-store-browser.js');
 
@@ -54,6 +55,20 @@ for (const id of ids) {
 }
 assert.deepEqual(failures, [], `invalid merchant search routes:\n${failures.join('\n')}`);
 
+const threeEngine = window.DigiYarHooshyarThreeEngine;
+assert.ok(threeEngine && typeof threeEngine.resolve === 'function', 'three-engine local resolver must be loaded');
+for (const [phrase, expected, excluded] of [
+  ['یه کیف اداری برای محل کارم می‌خوام', ['modiseh','janebi','dayan'], ['iranmiz','partochoob']],
+  ['دستگاهی می‌خوام که هوای اتاق خواب را پاک کند', ['digikala','snappshop','torob'], ['iranmiz','partochoob']],
+  ['یه چیزی برای تمیز کردن مبل پارچه‌ای می‌خوام', ['digikala','snappshop','torob'], ['iranmiz','partochoob','chidahome','tidachoob']],
+  ['لوازم جانبی گوشی سامسونگ', ['janebi','digikala','snappshop'], ['meghdadit','takhfifan','esam']]
+]) {
+  const resolved = threeEngine.resolve(phrase, catalog, [], window.DigiYarShoppingOrchestrator.classifyLocalNeed(phrase));
+  expected.forEach(id => assert.ok(resolved.eligibleStoreIds.includes(id), `three-engine omitted ${id} for ${phrase}; got ${resolved.eligibleStoreIds.join(',')}`));
+  excluded.forEach(id => assert.ok(!resolved.eligibleStoreIds.includes(id), `three-engine leaked ${id} for ${phrase}`));
+  assert.ok(resolved.need.concept, `three-engine failed to parse concept for ${phrase}`);
+}
+assert.equal(threeEngine.parseNeed('کیف اداری تا ۳ میلیون تومان').maxBudgetToman, 3000000, 'Persian budget must be parsed into toman');
 const orchestrator = window.DigiYarShoppingOrchestrator;
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
