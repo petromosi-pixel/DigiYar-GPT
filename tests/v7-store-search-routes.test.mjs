@@ -69,6 +69,9 @@ for (const [phrase, expected, excluded] of [
   assert.ok(resolved.need.concept, `three-engine failed to parse concept for ${phrase}`);
 }
 assert.equal(threeEngine.parseNeed('کیف اداری تا ۳ میلیون تومان').maxBudgetToman, 3000000, 'Persian budget must be parsed into toman');
+const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
+const expandedOffice = threeEngine.resolve('کیف اداری برای محل کارم', expandedCatalog, [], orchestrator.classifyLocalNeed('کیف اداری برای محل کارم'));
+assert.ok(expandedOffice.eligibleStoreIds.includes('testoffice'), 'a direct KB product match outside the curated list must not be filtered out');
 const orchestrator = window.DigiYarShoppingOrchestrator;
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
