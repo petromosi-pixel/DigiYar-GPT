@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.12';
+  const VERSION='7.0.0-hooshyar-local.13';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -68,14 +68,14 @@
   const AI_ENDPOINT='https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping';
   const AI_TIMEOUT_MS=10500;
 
-  async function requestSemanticPlan(query,catalog){
+  async function requestSemanticPlan(query,catalog,provider){
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),AI_TIMEOUT_MS);
     try{
       const response=await fetch(AI_ENDPOINT,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({query:query,storeCatalog:catalog}),
+        body:JSON.stringify({query:query,storeCatalog:catalog,provider:provider||window.DigiYarHooshyarAIProvider||'deepseek'}),
         signal:controller.signal
       });
       if(!response.ok)return null;
@@ -231,7 +231,7 @@
   }
 
   function applySemanticPlan(plan,aiPlan,catalog){
-    if(!aiPlan||aiPlan.__provider!=='openrouter'||!Array.isArray(aiPlan.eligibleStoreIds))return false;
+    if(!aiPlan||!['openrouter','deepseek'].includes(aiPlan.__provider)||!Array.isArray(aiPlan.eligibleStoreIds))return false;
     const validIds=aiPlan.eligibleStoreIds.map(id=>String(id||'').toLowerCase())
       .filter((id,index,all)=>catalog[id]&&all.indexOf(id)===index);
     if(!validIds.length)return false;
@@ -246,12 +246,19 @@
     delete aiPlan.__provider;
     plan.ai=aiPlan;
     plan.candidateStores=validIds.slice();
-    plan.provider='openrouter';
+    plan.provider=aiPlan.__provider;
     plan.semantic=true;
     plan.mode='semantic-ai';
     window.DigiYarShoppingPlan=plan;
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
     return true;
+  }
+
+  async function compareEngines(query,context){
+    const built=localPlanFor(query,context);
+    const provider=window.DigiYarHooshyarAIProvider||'deepseek';
+    const aiPlan=await requestSemanticPlan(built.raw,built.catalog,provider);
+    return {query:built.raw,local:{engine:'three-engine-local',plan:built.plan},ai:aiPlan?{provider:aiPlan.__provider||'unknown',plan:aiPlan}:null,catalogCount:Object.keys(built.catalog).length};
   }
 
   async function run(query,context){
@@ -265,7 +272,7 @@
     // improve it in the background, but cannot block or erase the fallback.
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
     if(window.DigiYarHooshyarSemanticApiEnabled!==false){
-      requestSemanticPlan(raw,catalog).then(function(aiPlan){
+      requestSemanticPlan(raw,catalog,window.DigiYarHooshyarAIProvider||'deepseek').then(function(aiPlan){
         if(applySemanticPlan(plan,aiPlan,catalog))return;
         // A provider's own local fallback is deliberately ignored: our browser
         // resolver has the full current KB and remains the source of truth.
@@ -275,6 +282,6 @@
   }
 
   window.DigiYarShoppingOrchestrator={
-    version:VERSION,buildStoreCatalog:buildStoreCatalog,classifyLocalNeed:classifyLocalNeed,buildPlan:buildPlan,requestSemanticPlan:requestSemanticPlan,run:run
+    version:VERSION,buildStoreCatalog:buildStoreCatalog,classifyLocalNeed:classifyLocalNeed,buildPlan:buildPlan,requestSemanticPlan:requestSemanticPlan,compareEngines:compareEngines,run:run
   };
 })(window);
