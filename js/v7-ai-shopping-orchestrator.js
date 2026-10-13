@@ -199,10 +199,29 @@
     }else if(eligibility&&typeof eligibility.storesForQuery==='function'){
       stores=eligibility.storesForQuery(raw,popular);
     }
-    const ids=(Array.isArray(stores)?stores:[])
+    let ids=(Array.isArray(stores)?stores:[])
       .map(x=>String(x&&x.id||'').toLowerCase())
       .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+    const threeEngine=window.DigiYarHooshyarThreeEngine;
+    const threeEngineResult=threeEngine&&typeof threeEngine.resolve==='function'
+      ?threeEngine.resolve(raw,catalog,ids,classified):null;
+    if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)&&threeEngineResult.eligibleStoreIds.length){
+      ids=threeEngineResult.eligibleStoreIds.filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+    }
     plan.ai=localNeed(raw,catalog,ids,classified);
+    if(threeEngineResult){
+      plan.ai.engine='three-engine-local';
+      plan.ai.semanticNeed=threeEngineResult.need.requestedProduct||plan.ai.semanticNeed;
+      plan.ai.requestedProduct=threeEngineResult.need.requestedProduct||plan.ai.requestedProduct;
+      plan.ai.brand=threeEngineResult.need.brand||null;
+      plan.ai.maxBudgetToman=threeEngineResult.need.maxBudgetToman||null;
+      plan.ai.attributes=threeEngineResult.need.attributes||[];
+      plan.ai.targetObject=threeEngineResult.need.targetObject||plan.ai.targetObject;
+      plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
+      plan.ai.searchQueries=threeEngineResult.searchQueries;
+      plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
+      plan.ai.engineTrace=threeEngineResult.trace;
+    }
     plan.candidateStores=ids.slice();
     plan.provider='local-knowledge-base';
     plan.semantic=false;
