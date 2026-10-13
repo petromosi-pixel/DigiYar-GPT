@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.3';
+var VERSION='7.0.0-hooshyar-three-engine.4';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -118,7 +118,13 @@ function resolve(query,catalog,eligibleIds,classified){
   if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(id)>=0)return;
   candidates.push({id:id,name:catalog[id].name||id,score:8,directMatch:false,domainMatch:(catalog[id].domains||[]).indexOf(need.domain)>=0,general:GENERAL.has(id),proof:['curated-concept-match'],homepage:catalog[id].homepage||''});
  });
+ /* For concepts with a reviewed merchant set, the set is a hard relevance
+    boundary; raw domain tags alone must not pull unrelated stores back in. */
+ if(preferred.length)candidates=candidates.filter(function(item){return preferred.indexOf(item.id)>=0;});
  var ranked=rankCandidates(need,candidates,seedIds);
+ if(need.concept==='mobile_phone'||need.concept==='mobile_accessory'){
+  ranked.sort(function(a,b){return preferred.indexOf(a.id)-preferred.indexOf(b.id);});
+ }
  var ids=ranked.map(function(x){return x.id;});
  var queries={};
  ids.forEach(function(id){
