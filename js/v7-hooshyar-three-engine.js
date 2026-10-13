@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.2';
+var VERSION='7.0.0-hooshyar-three-engine.3';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -27,6 +27,14 @@ var CONCEPTS=[
  {key:'clothing',label:'پوشاک',domain:'fashion',terms:['لباس','پوشاک','شلوار','مانتو','پیراهن'],patterns:/(?:لباس|پوشاک|شلوار|مانتو|پیراهن|کاپشن)/i}
 ];
 var GENERAL=new Set(['digikala','snappshop','torob','basalam','memarket','takhfifan','esam']);
+var CONCEPT_STORES={
+ train_ticket:['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket','alibaba'],
+ air_purifier:['digikala','snappshop','torob','basalam','memarket'],
+ sofa_cleaning:['digikala','snappshop','torob','basalam','memarket'],
+ office_bag:['modiseh','janebi','dayan','digikala','snappshop','torob','basalam'],
+ mobile_accessory:['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'],
+ mobile_phone:['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam']
+};
 var DOMAIN_SYNONYMS={
  fashion:['مد','پوشاک','کیف','کفش','لباس','اکسسوری'],digital:['دیجیتال','موبایل','گوشی','تلفن همراه','لوازم جانبی'],
  home:['خانه','منزل','لوازم خانگی','نظافت'],beauty:['زیبایی','آرایشی','مراقبت پوست'],health:['سلامت','بهداشتی','دارو'],
@@ -98,7 +106,18 @@ function resolve(query,catalog,eligibleIds,classified){
  if(!seedIds.length&&root.DigiYarStoreEligibility&&typeof root.DigiYarStoreEligibility.storesForQuery==='function'){
   try{seedIds=root.DigiYarStoreEligibility.storesForQuery(query,[]).map(function(s){return String(s&&s.id||s||'').toLowerCase();});}catch(_){seedIds=[];}
  }
+ var preferred=CONCEPT_STORES[need.concept]||[];
+ seedIds=seedIds.filter(function(id){
+  var s=catalog[String(id&&id.id||id).toLowerCase()]||{};
+  var sid=String(id&&id.id||id).toLowerCase();
+  return preferred.indexOf(sid)>=0||GENERAL.has(sid)||(need.domain&&(s.domains||[]).indexOf(need.domain)>=0);
+ }).map(function(id){return String(id&&id.id||id).toLowerCase();});
  var candidates=retrieveCandidates(need,catalog,seedIds);
+ preferred.forEach(function(id){
+  if(!catalog[id]||candidates.some(function(c){return c.id===id;}))return;
+  if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(id)>=0)return;
+  candidates.push({id:id,name:catalog[id].name||id,score:8,directMatch:false,domainMatch:(catalog[id].domains||[]).indexOf(need.domain)>=0,general:GENERAL.has(id),proof:['curated-concept-match'],homepage:catalog[id].homepage||''});
+ });
  var ranked=rankCandidates(need,candidates,seedIds);
  var ids=ranked.map(function(x){return x.id;});
  var queries={};
