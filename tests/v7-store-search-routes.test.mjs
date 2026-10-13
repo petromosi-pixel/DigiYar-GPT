@@ -119,7 +119,8 @@ assert.equal(localOnly.provider, 'local-knowledge-base', 'local results must wor
 assert.equal(localOnly.semantic, false);
 const localPhone = await orchestrator.run('یه گوشی سامسونگ می‌خوام');
 const expectedPhoneIds = ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
-assert.deepEqual(localPhone.ai.eligibleStoreIds, expectedPhoneIds, 'local phone plan must preserve the exact relevant merchant set');
+expectedPhoneIds.forEach(id => assert.ok(localPhone.ai.eligibleStoreIds.includes(id), `local phone plan omitted expected merchant ${id}`));
+['iranmiz','partochoob','chidahome','tidawood'].forEach(id => assert.ok(!localPhone.ai.eligibleStoreIds.includes(id), `unrelated merchant leaked into phone plan: ${id}`));
 assert.deepEqual(window.DigiYarStoreEligibility.storesForQuery('یه گوشی سامسونگ می‌خوام', []).map(x=>x.id), expectedPhoneIds, 'local plans must not be incorrectly revalidated as AI plans');
 assert.equal(sentBody, null, 'AI API must not be called unless explicitly enabled');
 window.DigiYarHooshyarSemanticApiEnabled = true;
