@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.1';
+var VERSION='7.0.0-hooshyar-three-engine.2';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -92,8 +92,14 @@ function rankCandidates(need,candidates,eligibleIds){
 function resolve(query,catalog,eligibleIds,classified){
  var need=parseNeed(query);
  if(classified&&classified.kind==='travel_ticket'){need.concept='train_ticket';need.requestedProduct=classified.product||need.requestedProduct;need.domain='travel_ticket';need.domains=['travel_ticket'];need.taskType='ticket_search';}
- var candidates=retrieveCandidates(need,catalog,eligibleIds);
- var ranked=rankCandidates(need,candidates,eligibleIds);
+ /* Reuse the established eligibility contract as one evidence source, then
+    enrich/rank those candidates with the three-stage resolver. */
+ var seedIds=Array.isArray(eligibleIds)?eligibleIds.slice():[];
+ if(!seedIds.length&&root.DigiYarStoreEligibility&&typeof root.DigiYarStoreEligibility.storesForQuery==='function'){
+  try{seedIds=root.DigiYarStoreEligibility.storesForQuery(query,[]).map(function(s){return String(s&&s.id||s||'').toLowerCase();});}catch(_){seedIds=[];}
+ }
+ var candidates=retrieveCandidates(need,catalog,seedIds);
+ var ranked=rankCandidates(need,candidates,seedIds);
  var ids=ranked.map(function(x){return x.id;});
  var queries={};
  ids.forEach(function(id){
