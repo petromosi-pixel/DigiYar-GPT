@@ -241,12 +241,13 @@
       const value=clean(aiPlan.searchQueries[id]);
       if(validIds.includes(key)&&value)queries[key]=value;
     });
+    const semanticProvider=aiPlan.__provider;
     aiPlan.eligibleStoreIds=validIds;
     aiPlan.searchQueries=queries;
     delete aiPlan.__provider;
     plan.ai=aiPlan;
     plan.candidateStores=validIds.slice();
-    plan.provider=aiPlan.__provider;
+    plan.provider=semanticProvider;
     plan.semantic=true;
     plan.mode='semantic-ai';
     window.DigiYarShoppingPlan=plan;
