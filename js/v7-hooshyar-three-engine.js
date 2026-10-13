@@ -19,8 +19,8 @@ var CONCEPTS=[
  {key:'train_ticket',label:'بلیط قطار',domain:'travel_ticket',terms:['بلیط قطار','بلیت قطار','قطار','سفر ریلی','رزرو قطار'],patterns:/(?:بلیط|بلیت|رزرو|سفر|برم|بروم).{0,30}(?:قطار|ریل)|(?:قطار|ریل).{0,30}(?:بلیط|بلیت|تهران|مشهد)|قطار/i},
  {key:'air_purifier',label:'دستگاه تصفیه هوا',domain:'home',terms:['تصفیه هوا','دستگاه تصفیه','پاکسازی هوا','هوای پاک','تصفیه کننده هوا'],patterns:/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|هوای\s*(?:اتاق|خانه).{0,20}(?:تمیز|پاک|آلوده))/i},
  {key:'sofa_cleaning',label:'محصول نظافت مبل پارچه‌ای',domain:'home',terms:['تمیزکننده مبل پارچه‌ای','شوینده مبل','بخارشوی مبل','نظافت مبل'],patterns:/(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی).{0,35}(?:مبل|مبلمان|پارچه)|(?:مبل|مبلمان).{0,35}(?:تمیز|شستن|شستشو|نظافت|پارچه)/i},
- {key:'office_bag',label:'کیف اداری',domain:'fashion',terms:['کیف اداری','کیف کاری','کیف رسمی','کیف محل کار'],patterns:/(?:کیف\s*(?:اداری|کاری|رسمی)|کیف.{0,15}(?:محل\s*کار|محل\s*کارم))/i},
- {key:'mobile_accessory',label:'لوازم جانبی موبایل',domain:'digital',terms:['لوازم جانبی موبایل','قاب گوشی','کاور گوشی','گلس گوشی','شارژر موبایل','پاوربانک','هندزفری'],patterns:/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری).{0,25}(?:موبایل|گوشی|سامسونگ|آیفون)?/i},
+ {key:'office_bag',label:'کیف اداری',domain:'fashion',terms:['کیف اداری','کیف کاری','کیف رسمی','کیف محل کار','کیف'],patterns:/(?:کیف\s*(?:اداری|کاری|رسمی)|کیف.{0,15}(?:محل\s*کار|محل\s*کارم))/i},
+ {key:'mobile_accessory',label:'لوازم جانبی موبایل',domain:'digital',terms:['لوازم جانبی موبایل','لوازم جانبی','اکسسوری','قاب گوشی','کاور گوشی','گلس گوشی','شارژر موبایل','پاوربانک','هندزفری'],patterns:/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری).{0,25}(?:موبایل|گوشی|سامسونگ|آیفون)?/i},
  {key:'mobile_phone',label:'گوشی موبایل',domain:'digital',terms:['موبایل','گوشی هوشمند','تلفن همراه'],patterns:/(?:موبایل|گوشی|تلفن\s*همراه|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i},
  {key:'skincare',label:'محصول مراقبت پوست',domain:'beauty',terms:['مرطوب کننده','آبرسان','ضد آفتاب','کرم پوست','مراقبت پوست'],patterns:/(?:مرطوب\s*کننده|آبرسان|ضد\s*آفتاب|ضدآفتاب|مراقبت\s*پوست|کرم\s*پوست)/i},
  {key:'shoe',label:'کفش',domain:'fashion',terms:['کفش','کتانی','اسنیکر','کفش ورزشی'],patterns:/(?:کفش|کتانی|اسنیکر)/i},
@@ -69,6 +69,8 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(domainWords.some(function(w){return need.normalized.indexOf(norm(w))>=0;})&&domainHit)score+=1;
   var isGeneral=GENERAL.has(sid);
   if(isGeneral&&domainHit&&direct)score+=1;
+  if(need.concept==='sofa_cleaning'&&isGeneral&&domainHit)score+=3;
+  if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(sid)>=0)score=-100;
   var furnitureOnly=(s.domains||[]).length===1&&(s.domains||[])[0]==='furniture';
   if(need.concept==='sofa_cleaning'&&(furnitureOnly||(s.intents||[]).indexOf('furniture')>=0)){score=-100;proof=[];}
   var excluded=(s.exclude||s.exclusions||[]).some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
