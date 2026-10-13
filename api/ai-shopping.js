@@ -217,31 +217,41 @@ ${JSON.stringify(modelCatalog)}
 ${query}`;
 
   try {
-    // Use OpenRouter's free-model router directly; no Vercel AI Gateway or
-    // provider billing integration is used. OPENROUTER_API_KEY is required.
-    const apiKey = clean(process.env.OPENROUTER_API_KEY);
+    // Provider is opt-in. DeepSeek's consumer chat may be free, but its API is
+    // metered; never enable it implicitly or spend funds without an explicit deployment setting.
+    const selectedProvider = clean(process.env.HOOSHYAR_AI_PROVIDER).toLowerCase();
+    const useDeepSeek = selectedProvider === 'deepseek';
+    const useOpenRouter = selectedProvider === 'openrouter';
+    const provider = useDeepSeek ? 'deepseek' : (useOpenRouter ? 'openrouter' : 'local-knowledge-base');
+    const model = useDeepSeek ? 'deepseek-flash' : (useOpenRouter ? MODEL : null);
+    const apiKey = useDeepSeek ? clean(process.env.DEEPSEEK_API_KEY)
+      : (useOpenRouter ? clean(process.env.OPENROUTER_API_KEY) : '');
     if (!apiKey) {
       const plan=localFallbackPlan(query,modelCatalog);
       return send(res,200,{ok:true,provider:'local-knowledge-base',model:null,warning:'semantic_ai_unconfigured',plan});
     }
 
+    const endpoint = useDeepSeek
+      ? 'https://api.deepseek.com/chat/completions'
+      : 'https://openrouter.ai/api/v1/chat/completions';
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), MAX_LATENCY_MS);
     let result;
     try {
-      result = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const headers = {'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json'};
+      if (useOpenRouter) {
+        headers['HTTP-Referer'] = 'https://petromosi-pixel.github.io/DigiYar-GPT/';
+        headers['X-OpenRouter-Title'] = 'DigiYar Hooshyar';
+      }
+      result = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://petromosi-pixel.github.io/DigiYar-GPT/',
-          'X-OpenRouter-Title': 'DigiYar Hooshyar'
-        },
+        headers,
         body: JSON.stringify({
-          model: MODEL,
+          model: model,
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.1,
-          max_tokens: 900
+          max_tokens: 900,
+          response_format: {type: 'json_object'}
         }),
         signal: controller.signal
       });
@@ -251,13 +261,13 @@ ${query}`;
 
     if (!result.ok) {
       const providerError = await result.text().catch(() => '');
-      console.error('Hooshyar OpenRouter API failure', result.status, providerError.slice(0, 400));
+      console.error('Hooshyar semantic provider API failure', result.status, providerError.slice(0, 400));
       return send(res, 502, {
         error: 'ai_request_failed',
-        provider: PROVIDER,
-        model: MODEL,
+        provider: provider,
+        model: model,
         upstreamStatus: result.status,
-        detail: 'OpenRouter API request failed; inspect Vercel runtime logs.'
+        detail: 'Semantic provider API request failed; inspect Vercel runtime logs.'
       });
     }
 
@@ -268,8 +278,8 @@ ${query}`;
     if (!modelText) {
       return send(res, 502, {
         error: 'ai_empty_response',
-        provider: PROVIDER,
-        model: MODEL
+        provider: provider,
+        model: model
       });
     }
 
@@ -279,16 +289,16 @@ ${query}`;
     } catch (_) {
       return send(res, 502, {
         error: 'ai_invalid_json',
-        provider: PROVIDER,
-        model: MODEL
+        provider: provider,
+        model: model
       });
     }
 
     if (!plan || typeof plan !== 'object' || Array.isArray(plan)) {
       return send(res, 502, {
         error: 'ai_invalid_plan',
-        provider: PROVIDER,
-        model: MODEL
+        provider: provider,
+        model: model
       });
     }
 
@@ -339,16 +349,16 @@ ${query}`;
 
     return send(res, 200, {
       ok: true,
-      provider: PROVIDER,
-      model: MODEL,
+      provider: provider,
+      model: model,
       plan
     });
   } catch (error) {
-    console.error('Hooshyar OpenRouter request failure', error && error.message || error);
+    console.error('Hooshyar semantic provider request failure', error && error.message || error);
     return send(res, 502, {
       error: 'ai_request_failed',
-      provider: PROVIDER,
-      model: MODEL,
+      provider: provider,
+      model: model,
       detail: String(error && error.message || 'gateway_failure').slice(0, 500)
     });
   }
