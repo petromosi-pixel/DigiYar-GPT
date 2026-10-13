@@ -2,6 +2,7 @@
 // AI interprets the user's need; the merchant KB supplies evidence and hard exclusions.
 
 const MODEL = 'openrouter/free';
+const DEEPSEEK_MODEL = 'deepseek-flash';
 const PROVIDER = 'openrouter';
 const MAX_LATENCY_MS = 10000;
 const ALLOWED_ORIGINS = new Set(['https://petromosi-pixel.github.io']);
@@ -217,13 +218,17 @@ ${JSON.stringify(modelCatalog)}
 ${query}`;
 
   try {
-    // Provider is opt-in. DeepSeek's consumer chat may be free, but its API is
-    // metered; never enable it implicitly or spend funds without an explicit deployment setting.
-    const selectedProvider = clean(process.env.HOOSHYAR_AI_PROVIDER).toLowerCase();
+    // Provider is opt-in. DeepSeek's consumer chat is free, but its API is metered.
+    // A client may request a provider only when its server-side API key is configured; no key is ever sent to the browser.
+    const requestedProvider = clean(body.provider).toLowerCase();
+    const configuredProvider = clean(process.env.HOOSHYAR_AI_PROVIDER).toLowerCase();
+    const selectedProvider = ['deepseek','openrouter'].includes(requestedProvider)
+      ? requestedProvider
+      : (['deepseek','openrouter'].includes(configuredProvider) ? configuredProvider : '');
     const useDeepSeek = selectedProvider === 'deepseek';
     const useOpenRouter = selectedProvider === 'openrouter';
     const provider = useDeepSeek ? 'deepseek' : (useOpenRouter ? 'openrouter' : 'local-knowledge-base');
-    const model = useDeepSeek ? 'deepseek-flash' : (useOpenRouter ? MODEL : null);
+    const model = useDeepSeek ? DEEPSEEK_MODEL : (useOpenRouter ? MODEL : null);
     const apiKey = useDeepSeek ? clean(process.env.DEEPSEEK_API_KEY)
       : (useOpenRouter ? clean(process.env.OPENROUTER_API_KEY) : '');
     if (!apiKey) {
