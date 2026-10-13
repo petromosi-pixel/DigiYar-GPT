@@ -19,7 +19,7 @@ var CONCEPTS=[
  {key:'train_ticket',label:'بلیط قطار',domain:'travel_ticket',terms:['بلیط قطار','بلیت قطار','قطار','سفر ریلی','رزرو قطار'],patterns:/(?:بلیط|بلیت|رزرو|سفر|برم|بروم).{0,30}(?:قطار|ریل)|(?:قطار|ریل).{0,30}(?:بلیط|بلیت|تهران|مشهد)|قطار/i},
  {key:'air_purifier',label:'دستگاه تصفیه هوا',domain:'home',terms:['تصفیه هوا','دستگاه تصفیه','پاکسازی هوا','هوای پاک','تصفیه کننده هوا'],patterns:/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|هوای\s*(?:اتاق|خانه).{0,20}(?:تمیز|پاک|آلوده))/i},
  {key:'sofa_cleaning',label:'محصول نظافت مبل پارچه‌ای',domain:'home',terms:['تمیزکننده مبل پارچه‌ای','شوینده مبل','بخارشوی مبل','نظافت مبل'],patterns:/(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی).{0,35}(?:مبل|مبلمان|پارچه)|(?:مبل|مبلمان).{0,35}(?:تمیز|شستن|شستشو|نظافت|پارچه)/i},
- {key:'office_bag',label:'کیف اداری',domain:'fashion',terms:['کیف اداری','کیف کاری','کیف رسمی','کیف محل کار','کیف'],patterns:/(?:کیف\s*(?:اداری|کاری|رسمی)|کیف.{0,15}(?:محل\s*کار|محل\s*کارم))/i},
+ {key:'office_bag',label:'کیف اداری',domain:'fashion',terms:['کیف اداری','کیف کاری','کیف رسمی','کیف محل کار'],patterns:/(?:کیف\s*(?:اداری|کاری|رسمی)|کیف.{0,15}(?:محل\s*کار|محل\s*کارم))/i},
  {key:'mobile_accessory',label:'لوازم جانبی موبایل',domain:'digital',terms:['لوازم جانبی موبایل','لوازم جانبی','اکسسوری','قاب گوشی','کاور گوشی','گلس گوشی','شارژر موبایل','پاوربانک','هندزفری'],patterns:/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری).{0,25}(?:موبایل|گوشی|سامسونگ|آیفون)?/i},
  {key:'mobile_phone',label:'گوشی موبایل',domain:'digital',terms:['موبایل','گوشی هوشمند','تلفن همراه'],patterns:/(?:موبایل|گوشی|تلفن\s*همراه|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i},
  {key:'skincare',label:'محصول مراقبت پوست',domain:'beauty',terms:['مرطوب کننده','آبرسان','ضد آفتاب','کرم پوست','مراقبت پوست'],patterns:/(?:مرطوب\s*کننده|آبرسان|ضد\s*آفتاب|ضدآفتاب|مراقبت\s*پوست|کرم\s*پوست)/i},
@@ -83,7 +83,8 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='sofa_cleaning'&&(furnitureOnly||(s.intents||[]).indexOf('furniture')>=0)){score=-100;proof=[];}
   var excluded=(s.exclude||s.exclusions||[]).some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
-  if(score>=3)candidates.push({id:sid,name:s.name||sid,score:score,directMatch:direct,domainMatch:domainHit,general:isGeneral,proof:Array.from(new Set(proof)),homepage:s.homepage||''});
+  /* A domain tag or seed-list membership alone is not product evidence. Keep a merchant only when its KB directly names the requested product, or it is in the reviewed fallback set for this concept. */
+  if(score>=3&&(direct||((CONCEPT_STORES[need.concept]||[]).indexOf(sid)>=0)))candidates.push({id:sid,name:s.name||sid,score:score,directMatch:direct,domainMatch:domainHit,general:isGeneral,proof:Array.from(new Set(proof)),homepage:s.homepage||''});
  });
  return candidates;
 }
@@ -118,9 +119,9 @@ function resolve(query,catalog,eligibleIds,classified){
   if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(id)>=0)return;
   candidates.push({id:id,name:catalog[id].name||id,score:8,directMatch:false,domainMatch:(catalog[id].domains||[]).indexOf(need.domain)>=0,general:GENERAL.has(id),proof:['curated-concept-match'],homepage:catalog[id].homepage||''});
  });
- /* For concepts with a reviewed merchant set, the set is a hard relevance
-    boundary; raw domain tags alone must not pull unrelated stores back in. */
- if(preferred.length)candidates=candidates.filter(function(item){return preferred.indexOf(item.id)>=0;});
+ /* The reviewed set is a fallback and ranking hint, not a hard boundary.
+    Keep direct product matches from every merchant in the canonical KB, even
+    when the merchant was not pre-listed for this concept. */
  var ranked=rankCandidates(need,candidates,seedIds);
  if(need.concept==='mobile_phone'||need.concept==='mobile_accessory'){
   ranked.sort(function(a,b){return preferred.indexOf(a.id)-preferred.indexOf(b.id);});
