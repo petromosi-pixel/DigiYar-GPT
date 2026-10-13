@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.4';
+var VERSION='7.0.0-hooshyar-three-engine.5';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -124,7 +124,7 @@ function resolve(query,catalog,eligibleIds,classified){
     when the merchant was not pre-listed for this concept. */
  var ranked=rankCandidates(need,candidates,seedIds);
  if(need.concept==='mobile_phone'||need.concept==='mobile_accessory'){
-  ranked.sort(function(a,b){return preferred.indexOf(a.id)-preferred.indexOf(b.id);});
+  ranked.sort(function(a,b){var ai=preferred.indexOf(a.id),bi=preferred.indexOf(b.id);if(ai<0)ai=9999;if(bi<0)bi=9999;return ai-bi;});
  }
  var ids=ranked.map(function(x){return x.id;});
  var queries={};
