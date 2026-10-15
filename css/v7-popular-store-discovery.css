@@ -197,3 +197,6 @@ html.dark .popular-discovery .popular-discovery-type-tabs button,body.dark .popu
 html.dark .popular-discovery .popular-discovery-accordion,body.dark .popular-discovery .popular-discovery-accordion,[data-theme="dark"] .popular-discovery .popular-discovery-accordion,html.dark .popular-discovery .popular-discovery-store,body.dark .popular-discovery .popular-discovery-store,[data-theme="dark"] .popular-discovery .popular-discovery-store{background:var(--pd-panel)!important;border-color:var(--pd-border)!important}
 html.dark .popular-discovery .popular-discovery-store-logo,body.dark .popular-discovery .popular-discovery-store-logo,[data-theme="dark"] .popular-discovery .popular-discovery-store-logo{background:#fff!important}
 html.dark .popular-discovery .popular-discovery-store-link,body.dark .popular-discovery .popular-discovery-store-link,[data-theme="dark"] .popular-discovery .popular-discovery-store-link{background:#2c3d56!important;color:#e8effb!important}
+
+/* Respect native hidden state for failed-logo fallbacks. */
+.popular-discovery-store-monogram[hidden],.popular-discovery-store-logo[hidden]{display:none!important}
