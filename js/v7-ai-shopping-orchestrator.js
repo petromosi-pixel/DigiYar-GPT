@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.14';
+  const VERSION='7.0.0-hooshyar-local.15';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -122,7 +122,12 @@
     const productMatches=[];
     Object.keys(catalog).forEach(id=>{
       const item=catalog[id]||{};
-      if(cleaning&&Array.isArray(item.intents)&&item.intents.includes('furniture'))return;
+      const furnitureMerchant=(Array.isArray(item.intents)&&item.intents.includes('furniture'))||(Array.isArray(item.domains)&&item.domains.includes('furniture'));
+      if(cleaning&&furnitureMerchant){
+        const terms=expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]));
+        const hasCleaningProduct=terms.some(term=>/(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(norm(term)));
+        if(!hasCleaningProduct)return;
+      }
       expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).forEach(term=>{
         const t=norm(term);
         if(t&&t.length>=3&&q.includes(t))productMatches.push(t);
