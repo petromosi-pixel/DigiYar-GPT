@@ -99,7 +99,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
      new merchants without adding a per-query allowlist. */
   var evidence=evidenceTerms(need.normalized,s);
   /* The query can say «گوشی» while the merchant KB declares «موبایل». A declared mobile-accessories specialty is valid evidence only when the parsed need is explicitly an accessory request. */
-  if(/(?:قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(need.normalized)&&(s.intents||[]).indexOf('mobile_accessories')!==-1){evidence.push('mobile-accessories-specialty');}
+  if(/(?:قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized)&&(s.intents||[]).indexOf('mobile_accessories')!==-1){evidence.push('mobile-accessories-specialty');}
   evidence.forEach(function(term){
    if(proof.some(function(p){return norm(p)===norm(term);}))return;
    score+=4;direct=true;proof.push(term);
@@ -114,7 +114,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(sid)>=0)score=-100;
   var furnitureMerchant=!isGeneral&&((s.domains||[]).indexOf('furniture')>=0||(s.intents||[]).indexOf('furniture')>=0);
   var hasAirPurifierProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
-   return /(?:تصفیه\\s*هوا|دستگاه\\s*تصفیه|پاکسازی\\s*هوا|تصفیه\\s*کننده\\s*هوا|air\\s*purifier)/i.test(norm(v));
+   return /(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|تصفیه\s*کننده\s*هوا|air\s*purifier)/i.test(norm(v));
   });
   /* Furniture-domain overlap is never evidence for an air purifier. Allow an unusual cross-category merchant only when its KB explicitly lists air-purifier products. */
   if(need.concept==='air_purifier'&&furnitureMerchant&&!hasAirPurifierProduct){score=-100;proof=[];}
@@ -123,9 +123,9 @@ function retrieveCandidates(need,catalog,eligibleIds){
   });
   if(need.concept==='sofa_cleaning'&&hasCleaningProduct&&!direct){score+=4;direct=true;proof.push('sofa-cleaning-appliance');}
   if(need.concept==='sofa_cleaning'&&furnitureMerchant&&!hasCleaningProduct){score=-100;proof=[];}
-  var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(need.normalized);
+  var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized);
   var exclusions=Array.isArray(s.exclude||s.exclusions)?(s.exclude||s.exclusions).slice():[];
-  if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
+  if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
   var excluded=exclusions.some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
   /* Domain tags and curated seed lists are not sufficient: require direct product or use-case evidence. */
