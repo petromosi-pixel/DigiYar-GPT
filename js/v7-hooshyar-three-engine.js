@@ -65,7 +65,10 @@ function retrieveCandidates(need,catalog,eligibleIds){
  function evidenceTerms(query,item){
   var q=norm(query),out=[];
   var genericProductWords=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد'];
-  var terms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[],item.querySignals||[]);
+  var terms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[],item.querySignals||[]).reduce(function(all,value){
+   String(value==null?'':value).split(/[,،;؛\\n]+/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){all.push(x);});
+   return all;
+  },[]);
   terms.forEach(function(raw){
    var term=norm(raw);
    if(!term||term.length<3)return;
