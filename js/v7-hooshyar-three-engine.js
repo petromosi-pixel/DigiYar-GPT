@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.5';
+var VERSION='7.0.0-hooshyar-three-engine.6';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -61,6 +61,22 @@ function parseNeed(query){
 function retrieveCandidates(need,catalog,eligibleIds){
  var base=Array.isArray(eligibleIds)?eligibleIds.map(function(x){return String(x&&x.id||x||'').toLowerCase();}):[];
  var candidates=[];
+ var broadTerms=['خانه','دیجیتال','کالا','محصول','فروشگاه','عمومی','لوازم','پوشاک','سلامت','بهداشت','اکسسوری','مد','ورزش','سفر','خرید','فروش'];
+ function evidenceTerms(query,item){
+  var q=norm(query),out=[];
+  var terms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[],item.querySignals||[]);
+  terms.forEach(function(raw){
+   var term=norm(raw);
+   if(!term||term.length<3)return;
+   if(q.indexOf(term)>=0){out.push(raw);return;}
+   var words=term.split(/[^\u0600-\u06FFa-z0-9]+/i).filter(Boolean)
+    .filter(function(w){return w.length>=3&&broadTerms.indexOf(w)<0;});
+   if(words.length>=2&&words.every(function(w){return q.indexOf(w)>=0;})){out.push(raw);return;}
+   if(words.length===1&&words[0].length>=4&&broadTerms.indexOf(words[0])<0&&
+      new RegExp('(?:^|[^\u0600-\u06FFa-z0-9])'+words[0]+'(?:$|[^\u0600-\u06FFa-z0-9])','i').test(q)){out.push(raw);}
+  });
+  return Array.from(new Set(out));
+ }
  Object.keys(catalog||{}).forEach(function(id){
   var s=catalog[id]||{},sid=String(id).toLowerCase();
   var fields=[s.name].concat(s.domains||[],s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[],s.semanticText||[]);
@@ -70,6 +86,15 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var direct=false;
   productTerms.forEach(function(term){
    var t=norm(term);if(t&&t.length>2&&text.indexOf(t)>=0){score+=s.specialties&&s.specialties.some(function(v){return norm(v).indexOf(t)>=0;})?7:5;direct=true;proof.push(term);}
+  });
+  /* Shared open-catalog retrieval: inspect every merchant's declared product
+     evidence, not only concept-specific seed lists. Exact phrases, or a
+     complete match of a multi-word product's meaningful tokens, can admit
+     new merchants without adding a per-query allowlist. */
+  var evidence=evidenceTerms(need.normalized,s);
+  evidence.forEach(function(term){
+   if(proof.some(function(p){return norm(p)===norm(term);}))return;
+   score+=4;direct=true;proof.push(term);
   });
   var domainHit=!!(need.domain&&(s.domains||[]).indexOf(need.domain)>=0);
   if(domainHit)score+=2;
