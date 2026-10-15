@@ -367,11 +367,17 @@ function semanticStoreEvidence(item,ai){
   var requested=norm(ai.requestedProduct||'');
   var terms=[].concat(ai.productTerms||[],ai.requiredNameTerms||[]).map(norm).filter(Boolean);
   var itemTerms=expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).map(norm).filter(Boolean);
+  var generic=['محصول','کالا','لوازم','دیجیتال','خانه','پوشاک','مد','کیف','لباس','کفش','موبایل','گوشی','اکسسوری','زیبایی','بهداشتی','سلامت','مراقبت'];
+  function compatible(a,b){
+    if(!a||!b)return false;
+    if(a===b)return true;
+    /* A broad KB label must never prove a narrower request. */
+    if(generic.indexOf(a)!==-1)return false;
+    return a.length>=4 && (a.indexOf(b)!==-1 || b.indexOf(a)!==-1);
+  }
   if(!requested&&!terms.length)return false;
   return itemTerms.some(function(it){
-    return requested && (it===requested||requested.indexOf(it)!==-1||it.indexOf(requested)!==-1);
-  }) || terms.some(function(t){
-    return itemTerms.some(function(it){return it===t||t.indexOf(it)!==-1||it.indexOf(t)!==-1;});
+    return compatible(it,requested) || terms.some(function(t){return compatible(it,t);});
   });
 }
 
@@ -399,6 +405,11 @@ function aiSelectionIsAllowed(query,id){
 
   /* Explicit merchant exclusions remain hard safety boundaries. */
   if(exclusions.some(function(term){return term&&semanticText.indexOf(term)!==-1;}))return false;
+
+  /* Hard relevance gate: an AI-selected merchant must have product-level
+     evidence in the canonical KB. A shared domain or a generic word such as
+     «کیف» is not enough to qualify for «کیف اداری». */
+  if(!semanticStoreEvidence(item,ai))return false;
 
   /* Commercial-policy guards that are unambiguous and merchant-specific. */
   if(key==='takhfifan' &&
