@@ -27,7 +27,10 @@ assert.ok(office.eligibleIds.includes('basalam'));
 assert.ok(!office.eligibleIds.includes('meghdadit'));
 assert.ok(!office.eligibleIds.includes('technolife'));
 assert.ok(!office.eligibleIds.includes('khanoumi'));
-['iranmiz','partochoob','chidahome','tidawood'].forEach(id=>assert.ok(office.eligibleIds.includes(id)));
+assert.ok(office.eligibleIds.includes('iranmiz'), 'Iranmiz declares office furniture in its KB');
+assert.ok(!office.eligibleIds.includes('partochoob'), 'Partochoob must not qualify for office furniture without explicit product evidence');
+assert.ok(!office.eligibleIds.includes('chidahome'), 'Chida Home must not qualify for office furniture without explicit product evidence');
+assert.ok(!office.eligibleIds.includes('tidawood'), 'Tida Wood must not qualify for office furniture without explicit product evidence');
 
 const dining = eligibility.explain('میز ناهارخوری چوبی ۶ نفره', stores);
 assert.equal(dining.domain, 'furniture');
