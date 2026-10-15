@@ -132,8 +132,8 @@
  .popular-discovery-store-link{min-width:46px!important;padding:8px 7px!important}
 }
 @media(max-width:350px){
- .popular-discovery-accordion-title-wrap{flex-wrap:wrap!important;gap:2px!important}
- .popular-discovery-accordion-title-wrap small{flex-basis:100%!important}
+ .popular-discovery-accordion-title-wrap{flex-wrap:nowrap!important;gap:4px!important}
+ .popular-discovery-accordion-title-wrap small{flex-basis:auto!important}
  .popular-discovery-store{flex-wrap:wrap!important}
  .popular-discovery-store-link{margin-right:auto!important}
 }
