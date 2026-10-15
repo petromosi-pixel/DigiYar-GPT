@@ -50,3 +50,10 @@
 .popular-discovery-search{border-color:rgba(213,29,59,.18)}
 .popular-discovery-search:focus{border-color:#e04b60;box-shadow:0 0 0 3px rgba(213,29,59,.10)}
 @media(max-width:620px){.popular-discovery{padding:8px}.popular-discovery-panel{padding:10px}.popular-discovery-store{border-radius:12px}}
+
+/* General/specialist classification controls */
+.popular-discovery-type-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.popular-discovery-type-tabs button{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--pd-line);border-radius:11px;background:#fff;color:var(--pd-ink);font:inherit;font-size:.82rem;font-weight:750;cursor:pointer}
+.popular-discovery-type-tabs button[aria-pressed="true"]{border-color:#f1a5b2;background:linear-gradient(135deg,#fff0f2,#ffe1e6);color:#a70f2b}
+.popular-discovery-type-tabs button span{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:7px;background:rgba(213,29,59,.09);font-size:.72rem}
+.popular-discovery-layout:not(:has(> .popular-discovery-categories)){grid-template-columns:minmax(0,1fr)}
