@@ -75,3 +75,65 @@
 .popular-discovery-accordion-panel[hidden]{display:none}
 .popular-discovery-accordion-panel .popular-discovery-store-grid{margin:0}
 @media(max-width:620px){.popular-discovery-accordion-list{gap:8px}.popular-discovery-accordion-trigger{min-height:62px;padding:10px;gap:9px}.popular-discovery-accordion-title-wrap strong{font-size:.84rem}.popular-discovery-accordion-title-wrap small{font-size:.69rem}.popular-discovery-accordion-icon{flex-basis:34px;width:34px;height:34px}.popular-discovery-accordion-panel{padding:9px}}
+
+
+/* V7.7 popular-store layout refinements */
+.popular-discovery{background:#fff!important;border:1px solid #e4e9f1!important;box-shadow:0 4px 14px rgba(16,28,53,.05)!important;border-radius:16px!important;padding:12px!important;color:#1d2b49}
+.popular-discovery-toggle{display:flex!important;justify-content:flex-start!important;align-items:center!important;width:100%;padding:7px 8px!important;background:#fff!important;box-shadow:none!important;border:0!important;border-radius:10px!important;color:#1d2b49!important;text-align:right!important}
+.popular-discovery-toggle-main{display:flex;align-items:center;gap:10px;min-width:0;width:100%}
+.popular-discovery-mark{flex:0 0 34px!important;width:34px!important;height:34px!important;border-radius:10px!important;background:#f0f4f9!important;color:#29456e!important;font-size:19px!important}
+.popular-discovery-toggle h2{margin:0!important;color:#1d2b49!important;font-size:.96rem!important;font-weight:850!important;line-height:1.55!important}
+.popular-discovery-toggle p{display:none!important}
+.popular-discovery-bottom-toggle{display:grid;place-items:center;width:38px;height:25px;margin:5px auto 0;padding:0;border:0;border-radius:9px;background:#f2f5f9;color:#526782;font:inherit;font-size:21px;line-height:1;cursor:pointer;transition:transform .18s ease,background .18s ease}
+.popular-discovery-bottom-toggle[aria-expanded="true"]{transform:rotate(180deg);background:#e8eef7}
+.popular-discovery-panel{padding:10px 0 2px!important;background:#fff!important;border:0!important;border-radius:12px!important;backdrop-filter:none!important}
+.popular-discovery-type-tabs{display:flex!important;flex-wrap:nowrap!important;gap:8px!important;margin:0 0 10px!important}
+.popular-discovery-type-tabs button{display:flex!important;flex:1 1 0!important;justify-content:center!important;align-items:center!important;min-width:0!important;min-height:42px!important;padding:8px 5px!important;border:1px solid #e1e7f0!important;border-radius:11px!important;background:#f6f8fb!important;color:#31425d!important;font:inherit!important;font-size:.82rem!important;font-weight:800!important;white-space:nowrap!important}
+.popular-discovery-type-tabs button[aria-pressed="true"]{border-color:#9bb0ce!important;background:#eaf0f8!important;color:#233f68!important}
+.popular-discovery-type-tabs button span{display:none!important}
+.popular-discovery-accordion-list{gap:9px!important;margin-top:0!important}
+.popular-discovery-accordion{display:flex;flex-direction:column;overflow:visible!important;border:1px solid #e2e8f0!important;border-radius:13px!important;background:#fff!important;box-shadow:0 3px 10px rgba(16,28,53,.045)!important}
+.popular-discovery-accordion-trigger{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;min-height:0!important;padding:9px 11px 5px!important;border:0!important;border-radius:12px 12px 0 0!important;background:#fff!important;color:#1d2b49!important;text-align:right!important;font:inherit!important;cursor:pointer!important;touch-action:manipulation}
+.popular-discovery-accordion.is-open>.popular-discovery-accordion-trigger{background:#fff!important;border-bottom:0!important}
+.popular-discovery-accordion-icon{display:grid!important;place-items:center!important;flex:0 0 29px!important;width:29px!important;height:29px!important;border-radius:9px!important;background:#f2f5f9!important;border:1px solid #e7ecf3!important;font-size:17px!important}
+.popular-discovery-accordion-title-wrap{display:flex!important;flex:1 1 auto!important;min-width:0!important;flex-direction:row!important;align-items:baseline!important;gap:8px!important;flex-wrap:nowrap!important}
+.popular-discovery-accordion-title-wrap strong{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:.86rem!important;line-height:1.4!important}
+.popular-discovery-accordion-title-wrap small{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;margin:0!important;color:#78849a!important;font-size:.69rem!important;line-height:1.4!important}
+.popular-discovery-accordion-count{display:none!important}
+.popular-discovery-accordion-chevron{display:grid!important;place-items:center!important;align-self:center!important;flex:0 0 25px!important;width:25px!important;height:21px!important;margin:0 auto 5px!important;padding:0!important;border:0!important;border-radius:7px!important;background:#f2f5f9!important;color:#60718a!important;font:inherit!important;font-size:19px!important;line-height:1!important;cursor:pointer!important;transition:transform .18s ease,background .18s ease!important}
+.popular-discovery-accordion-chevron[aria-expanded="true"]{transform:rotate(180deg)!important;background:#e8eef7!important;color:#29456e!important}
+.popular-discovery-accordion-panel{padding:9px!important;border-top:1px solid #edf0f5!important}
+.popular-discovery-accordion-panel[hidden]{display:none!important}
+.popular-discovery-accordion-panel .popular-discovery-store-grid{margin:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.popular-discovery-store{display:flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;min-width:0!important;padding:11px!important;border:1px solid #e2e8f0!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 14px rgba(16,28,53,.05)!important;backdrop-filter:none!important}
+.popular-discovery-store:hover{transform:translateY(-1px)!important;border-color:#cbd7e7!important;box-shadow:0 7px 18px rgba(16,28,53,.08)!important}
+.popular-discovery-store-monogram{display:grid!important;place-items:center!important;flex:0 0 48px!important;width:48px!important;height:48px!important;border:1px solid #e1e7f0!important;border-radius:12px!important;background:#f8fafc!important;color:#29456e!important;font-size:.88rem!important;font-weight:900!important}
+.popular-discovery-store-info{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;justify-content:center!important;gap:4px!important;min-width:0!important}
+.popular-discovery-store h4{overflow:hidden!important;margin:0!important;color:#1d2b49!important;font-size:.84rem!important;font-weight:850!important;line-height:1.5!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.popular-discovery-store p{overflow:hidden!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;margin:0!important;color:#68748a!important;font-size:.71rem!important;line-height:1.65!important}
+.popular-discovery-store-link{display:flex!important;justify-content:center!important;align-items:center!important;gap:4px!important;flex:0 0 auto!important;min-width:52px!important;padding:9px 8px!important;border:0!important;border-radius:10px!important;background:#2b456b!important;color:#fff!important;box-shadow:none!important;text-decoration:none!important;font-size:.7rem!important;font-weight:800!important;white-space:nowrap!important}
+.popular-discovery-store-link:hover{background:#213754!important;color:#fff!important}
+.popular-discovery-store-link span{animation:none!important}
+.popular-discovery-empty{border-color:#dce4ee!important;background:#fff!important}
+@media(max-width:620px){
+ .popular-discovery{padding:9px!important}
+ .popular-discovery-toggle h2{font-size:.88rem!important}
+ .popular-discovery-type-tabs button{font-size:.76rem!important}
+ .popular-discovery-accordion-trigger{gap:7px!important;padding:8px 8px 4px!important}
+ .popular-discovery-accordion-icon{flex-basis:27px!important;width:27px!important;height:27px!important;font-size:16px!important}
+ .popular-discovery-accordion-title-wrap{gap:6px!important}
+ .popular-discovery-accordion-title-wrap strong{font-size:.79rem!important}
+ .popular-discovery-accordion-title-wrap small{font-size:.64rem!important}
+ .popular-discovery-store-grid,.popular-discovery-accordion-panel .popular-discovery-store-grid{grid-template-columns:1fr!important;gap:7px!important}
+ .popular-discovery-store{gap:9px!important;padding:9px!important}
+ .popular-discovery-store-monogram{flex-basis:42px!important;width:42px!important;height:42px!important}
+ .popular-discovery-store h4{font-size:.81rem!important}
+ .popular-discovery-store p{font-size:.69rem!important}
+ .popular-discovery-store-link{min-width:46px!important;padding:8px 7px!important}
+}
+@media(max-width:350px){
+ .popular-discovery-accordion-title-wrap{flex-wrap:wrap!important;gap:2px!important}
+ .popular-discovery-accordion-title-wrap small{flex-basis:100%!important}
+ .popular-discovery-store{flex-wrap:wrap!important}
+ .popular-discovery-store-link{margin-right:auto!important}
+}
