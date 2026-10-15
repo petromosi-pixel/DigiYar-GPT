@@ -203,3 +203,8 @@ assert.ok(strictOffice.eligibleIds.includes('modiseh'),
 assert.ok(!strictOffice.eligibleIds.includes('iranmiz'),
   'a furniture merchant must not pass office-bag matching from broad domain/word overlap');
 window.DigiYarShoppingPlan = priorPlan;
+
+['shavaz','jeanswest','sabzgostar','meghdadit'].forEach(id => {
+  assert.equal(browser.resolveSearchUrl(id, 'کیف اداری'), '',
+    `${id} must not expose an unverified guessed search route`);
+});
