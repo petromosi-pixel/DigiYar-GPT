@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.75';
+const VERSION='7.0.0-store-browser.76';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -389,14 +389,9 @@ function openBrowser(query,list){
        : [];
      /* Keep the query-driven KB eligibility hook active for compatibility,
         but let the local plan's store IDs survive a legacy filtering mismatch. */
-     const eligibleByQuery=window.DigiYarStoreEligibility&&typeof window.DigiYarStoreEligibility.storesForQuery==='function'
-       ? window.DigiYarStoreEligibility.storesForQuery(query,canonicalList)
-       : [];
-     const mergedById=Object.create(null);
-     plannedList.concat(Array.isArray(eligibleByQuery)?eligibleByQuery:[]).forEach(function(x){
-       if(x&&x.id)mergedById[String(x.id).toLowerCase()]=x;
-     });
-     const sourceList=Object.keys(mergedById).map(function(id){return mergedById[id];});
+     /* The three-engine local plan is the single source of merchant eligibility.
+        Do not merge legacy eligibility results back in: that reintroduced unrelated stores. */
+     const sourceList=plannedList;
      const usable=sourceList.filter(function(x){
          if(!x||!x.id)return false;
          var id=String(x.id).toLowerCase();
