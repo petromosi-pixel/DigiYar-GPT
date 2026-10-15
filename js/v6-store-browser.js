@@ -445,8 +445,10 @@ function openBrowser(query,list){
      const searchQuery=storeSearchQuery(query);
      const sub=document.getElementById('v5Subcategory');
      const selectedSub=sub&&sub.value?String(sub.value):'';
-     const categoryUrl=CATEGORY[active.id]&&CATEGORY[active.id][selectedSub];
-     const u=categoryUrl||storeSearchUrl(active.id,searchQuery);
+     /* Never let a category landing page bypass the verified merchant-search
+        resolver. Subcategory selection may inform the query, but it cannot
+        promote a homepage/category URL into a confirmed search result. */
+     const u=storeSearchUrl(active.id,searchQuery);
      if(!u){resultBody.innerHTML='<div class="v6-auto-status">مسیر جست‌وجوی مستقیم این فروشگاه هنوز تأیید نشده؛ برای جلوگیری از نمایش صفحهٔ اصلی یا لینک نامرتبط، نتیجهٔ مستقیم ارائه نمی‌شود.</div><div class="v6-auto-actions"><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';return;}
      resultBody.innerHTML='<div class="v6-auto-status">این لینک مستقیماً جست‌وجوی محصول در فروشگاه را باز می‌کند.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
    }
