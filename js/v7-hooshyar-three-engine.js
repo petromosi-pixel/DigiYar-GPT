@@ -110,8 +110,11 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(isGeneral&&domainHit&&direct)score+=1;
   if(need.concept==='sofa_cleaning'&&isGeneral&&domainHit)score+=3;
   if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(sid)>=0)score=-100;
-  var furnitureOnly=(s.domains||[]).length===1&&(s.domains||[])[0]==='furniture';
-  if(need.concept==='sofa_cleaning'&&(furnitureOnly||(s.intents||[]).indexOf('furniture')>=0)){score=-100;proof=[];}
+  var furnitureMerchant=!isGeneral&&((s.domains||[]).indexOf('furniture')>=0||(s.intents||[]).indexOf('furniture')>=0);
+  var hasCleaningProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
+   return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(norm(v));
+  });
+  if(need.concept==='sofa_cleaning'&&furnitureMerchant&&!hasCleaningProduct){score=-100;proof=[];}
   var excluded=(s.exclude||s.exclusions||[]).some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
   /* A domain tag or seed-list membership alone is not product evidence. Keep a merchant only when its KB directly names the requested product, or it is in the reviewed fallback set for this concept. */
