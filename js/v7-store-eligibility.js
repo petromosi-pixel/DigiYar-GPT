@@ -409,7 +409,12 @@ function aiSelectionIsAllowed(query,id){
   /* Hard relevance gate: an AI-selected merchant must have product-level
      evidence in the canonical KB. A shared domain or a generic word such as
      «کیف» is not enough to qualify for «کیف اداری». */
-  if(!semanticStoreEvidence(item,ai))return false;
+  var accessoryRequest=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(semanticText);
+  var mobileDeviceRequest=/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi|تبلت)/i.test(semanticText)&&!accessoryRequest;
+  var mobileMerchantEvidence=(item.intents||[]).indexOf('mobile')!==-1 ||
+    (item.domains||[]).indexOf('digital')!==-1 &&
+    expandTerms([].concat(item.products||[],item.aliases||[])).some(function(term){return /(?:موبایل|گوشی|تبلت|کالای\\s*دیجیتال)/i.test(norm(term));});
+  if(!semanticStoreEvidence(item,ai) && !(mobileDeviceRequest&&mobileMerchantEvidence))return false;
 
   /* Commercial-policy guards that are unambiguous and merchant-specific. */
   if(key==='takhfifan' &&
