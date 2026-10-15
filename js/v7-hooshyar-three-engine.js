@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.8';
+var VERSION='7.0.0-hooshyar-three-engine.9';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -118,7 +118,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var excluded=(s.exclude||s.exclusions||[]).some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
   /* A domain tag or seed-list membership alone is not product evidence. Keep a merchant only when its KB directly names the requested product, or it is in the reviewed fallback set for this concept. */
-  if(score>=3&&(direct||((CONCEPT_STORES[need.concept]||[]).indexOf(sid)>=0)))candidates.push({id:sid,name:s.name||sid,score:score,directMatch:direct,domainMatch:domainHit,general:isGeneral,proof:Array.from(new Set(proof)),homepage:s.homepage||''});
+  if(score>=3&&direct)candidates.push({id:sid,name:s.name||sid,score:score,directMatch:direct,domainMatch:domainHit,general:isGeneral,proof:Array.from(new Set(proof)),homepage:s.homepage||''});
  });
  return candidates;
 }
@@ -142,20 +142,10 @@ function resolve(query,catalog,eligibleIds,classified){
   try{seedIds=root.DigiYarStoreEligibility.storesForQuery(query,[]).map(function(s){return String(s&&s.id||s||'').toLowerCase();});}catch(_){seedIds=[];}
  }
  var preferred=CONCEPT_STORES[need.concept]||[];
- seedIds=seedIds.filter(function(id){
-  var s=catalog[String(id&&id.id||id).toLowerCase()]||{};
-  var sid=String(id&&id.id||id).toLowerCase();
-  return preferred.indexOf(sid)>=0||GENERAL.has(sid)||(need.domain&&(s.domains||[]).indexOf(need.domain)>=0);
- }).map(function(id){return String(id&&id.id||id).toLowerCase();});
+ seedIds=seedIds.map(function(id){return String(id&&id.id||id).toLowerCase();});
  var candidates=retrieveCandidates(need,catalog,seedIds);
- preferred.forEach(function(id){
-  if(!catalog[id]||candidates.some(function(c){return c.id===id;}))return;
-  if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(id)>=0)return;
-  candidates.push({id:id,name:catalog[id].name||id,score:8,directMatch:false,domainMatch:(catalog[id].domains||[]).indexOf(need.domain)>=0,general:GENERAL.has(id),proof:['curated-concept-match'],homepage:catalog[id].homepage||''});
- });
- /* The reviewed set is a fallback and ranking hint, not a hard boundary.
-    Keep direct product matches from every merchant in the canonical KB, even
-    when the merchant was not pre-listed for this concept. */
+ /* Curated store lists are ranking hints only; never add a merchant without
+    direct product/use-case evidence in the canonical merchant KB. */
  var ranked=rankCandidates(need,candidates,seedIds);
  if(need.concept==='mobile_phone'||need.concept==='mobile_accessory'){
   ranked.sort(function(a,b){var ai=preferred.indexOf(a.id),bi=preferred.indexOf(b.id);if(ai<0)ai=9999;if(bi<0)bi=9999;return ai-bi;});
