@@ -102,9 +102,8 @@ const accessory = eligibility.explain('لوازم جانبی موبایل', []);
 ['meghdadit', 'takhfifan', 'esam'].forEach(id => assert.ok(!accessory.eligibleIds.includes(id), `unrelated merchant leaked into mobile accessories: ${id}`));
 assert.equal(browser.resolveSearchUrl('modiseh', 'کیف اداری'), '',
   'Modiseh must be withheld until its reported 404 search route is verified');
-const memarketUrl = new URL(browser.resolveSearchUrl('memarket', 'کیف اداری'));
-assert.equal(memarketUrl.hostname, 'memarket24.ir', 'MiMarket must use its own domain, never an affiliate-registration or Google page');
-assert.ok(memarketUrl.pathname.startsWith('/search/'), 'MiMarket must use a product-search route');
+assert.equal(browser.resolveSearchUrl('memarket', 'کیف اداری'), '',
+  'MiMarket must be withheld until a direct product-search route is confirmed; its homepage alone is not sufficient');
 const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف اداری'));
 assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
 assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
