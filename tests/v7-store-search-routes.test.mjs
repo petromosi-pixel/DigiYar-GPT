@@ -104,6 +104,8 @@ assert.equal(browser.resolveSearchUrl('modiseh', 'کیف اداری'), '',
   'Modiseh must be withheld until its reported 404 search route is verified');
 assert.equal(browser.resolveSearchUrl('memarket', 'کیف اداری'), '',
   'MiMarket must be withheld until a direct product-search route is confirmed; its homepage alone is not sufficient');
+assert.equal(browser.resolveSearchUrl('khanoumi', 'ضد آفتاب'), '',
+  'Khanoumi category landing pages must not be presented as verified search results');
 const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف اداری'));
 assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
 assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
