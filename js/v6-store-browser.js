@@ -4,13 +4,9 @@
 const VERSION='7.0.0-store-browser.80';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
- var s=storeQueryTerms(q);
- if(/ضد\s*آفتاب|ضدآفتاب/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/sun-block-sun-protecter';
- if(/(?:مرطوب\s*کننده|آبرسان)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/moisturizer';
- if(/(?:شوینده|پاک\s*کننده|میسلار|تونر)/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/cleanser';
- if(/(?:سرم|روغن)\s*(?:صورت|پوست)?/i.test(s))return 'https://www.khanoumi.com/categories/skincare/face-care/serum';
- if(/(?:شامپو|نرم\s*کننده|ماسک\s*مو|سرم\s*مو)/i.test(s))return 'https://www.khanoumi.com/categories/hair-care';
- return genericMerchantSearchUrl('khanoumi',s);
+ /* Category landing pages are not verified search endpoints. Fail closed until
+    Khanoumi's actual query-search URL is confirmed. */
+ return genericMerchantSearchUrl('khanoumi',storeQueryTerms(q));
 }
 function siteSearchUrl(domain,q){
  var s=storeQueryTerms(q);
