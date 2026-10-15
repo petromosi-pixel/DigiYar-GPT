@@ -118,7 +118,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='sofa_cleaning'&&furnitureMerchant&&!hasCleaningProduct){score=-100;proof=[];}
   var excluded=(s.exclude||s.exclusions||[]).some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
-  /* A domain tag or seed-list membership alone is not product evidence. Keep a merchant only when its KB directly names the requested product, or it is in the reviewed fallback set for this concept. */
+  /* Domain tags and curated seed lists are not sufficient: require direct product or use-case evidence. */
   if(score>=3&&direct)candidates.push({id:sid,name:s.name||sid,score:score,directMatch:direct,domainMatch:domainHit,general:isGeneral,proof:Array.from(new Set(proof)),homepage:s.homepage||''});
  });
  return candidates;
