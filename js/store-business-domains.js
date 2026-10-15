@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.27';
+var VERSION='7.0.0-store-business-domains.28';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین عمومی']},
@@ -288,6 +288,21 @@ Object.keys(C).forEach(function(id){C[id].storeType=GENERAL_STORE_IDS.indexOf(St
 var BY_TYPE={general:{id:'general',title:'فروشگاه‌های عمومی',storeIds:[],stores:[]},specialist:{id:'specialist',title:'فروشگاه‌های تخصصی',storeIds:[],stores:[]}};
 Object.keys(C).forEach(function(id){var s=C[id],type=s.storeType;BY_TYPE[type].storeIds.push(id);BY_TYPE[type].stores.push({id:id,name:s.name,homepage:s.homepage||'',domains:s.domains||[],specialties:s.specialties||[],products:s.products||[]});});
 Object.keys(BY_TYPE).forEach(function(type){BY_TYPE[type].stores.sort(function(a,b){return a.name.localeCompare(b.name,'fa');});});
-root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,domainTitles:DOMAIN_TITLES,byDomain:BY_DOMAIN,byType:BY_TYPE,generalStoreIds:GENERAL_STORE_IDS.slice(),domains:function(){return BY_DOMAIN;},storesForType:function(type){return BY_TYPE[String(type||'').toLowerCase()]||null;},storesForDomain:function(domain){return BY_DOMAIN[String(domain||'').toLowerCase()]||null;},get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
+/* Specialist-only taxonomy is additive. Preserve legacy byDomain for Hooshyar's existing retrieval contracts. */
+var SPECIALIST_BY_DOMAIN={};
+Object.keys(DOMAIN_TITLES).forEach(function(domain){SPECIALIST_BY_DOMAIN[domain]={id:domain,title:DOMAIN_TITLES[domain],storeIds:[],stores:[]};});
+Object.keys(C).forEach(function(id){
+ var s=C[id];if(s.storeType!=='specialist')return;
+ (s.domains||[]).forEach(function(domain){
+  if(!SPECIALIST_BY_DOMAIN[domain])SPECIALIST_BY_DOMAIN[domain]={id:domain,title:DOMAIN_TITLES[domain]||domain,storeIds:[],stores:[]};
+  SPECIALIST_BY_DOMAIN[domain].storeIds.push(id);
+  SPECIALIST_BY_DOMAIN[domain].stores.push({id:id,name:s.name,homepage:s.homepage||'',specialties:s.specialties||[],products:s.products||[]});
+ });
+});
+Object.keys(SPECIALIST_BY_DOMAIN).forEach(function(domain){
+ SPECIALIST_BY_DOMAIN[domain].storeIds=Array.from(new Set(SPECIALIST_BY_DOMAIN[domain].storeIds));
+ SPECIALIST_BY_DOMAIN[domain].stores.sort(function(a,b){return a.name.localeCompare(b.name,'fa');});
+});
+root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,domainTitles:DOMAIN_TITLES,byDomain:BY_DOMAIN,specialistByDomain:SPECIALIST_BY_DOMAIN,byType:BY_TYPE,generalStoreIds:GENERAL_STORE_IDS.slice(),domains:function(){return BY_DOMAIN;},specialistDomains:function(){return SPECIALIST_BY_DOMAIN;},storesForSpecialistDomain:function(domain){return SPECIALIST_BY_DOMAIN[String(domain||'').toLowerCase()]||null;},storesForType:function(type){return BY_TYPE[String(type||'').toLowerCase()]||null;},storesForDomain:function(domain){return BY_DOMAIN[String(domain||'').toLowerCase()]||null;},get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
 if(typeof module!=='undefined'&&module.exports)module.exports=root.DigiYarStoreBusinessDomains;
 })(typeof window!=='undefined'?window:globalThis);
