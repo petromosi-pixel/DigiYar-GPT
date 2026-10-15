@@ -69,10 +69,13 @@ for (const [phrase, expected, excluded] of [
   assert.ok(resolved.need.concept, `three-engine failed to parse concept for ${phrase}`);
 }
 assert.equal(threeEngine.parseNeed('کیف اداری تا ۳ میلیون تومان').maxBudgetToman, 3000000, 'Persian budget must be parsed into toman');
+const orchestrator = window.DigiYarShoppingOrchestrator;
 const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
 const expandedOffice = threeEngine.resolve('کیف اداری برای محل کارم', expandedCatalog, [], orchestrator.classifyLocalNeed('کیف اداری برای محل کارم'));
 assert.ok(expandedOffice.eligibleStoreIds.includes('testoffice'), 'a direct KB product match outside the curated list must not be filtered out');
-const orchestrator = window.DigiYarShoppingOrchestrator;
+const expandedDeskCatalog = {...catalog, testdesk: {name: 'فروشگاه آزمایشی میز تنظیم ارتفاع', domains: ['home'], products: ['میز تنظیم ارتفاع'], aliases: []}};
+const expandedDesk = threeEngine.resolve('یه میز تنظیم ارتفاع برای کار می‌خوام', expandedDeskCatalog, [], orchestrator.classifyLocalNeed('یه میز تنظیم ارتفاع برای کار می‌خوام'));
+assert.ok(expandedDesk.eligibleStoreIds.includes('testdesk'), 'shared retrieval must discover a newly added merchant for a product outside the predefined concepts');
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
   assert.equal(intent && intent.kind, 'travel_ticket', `train intent not recognized: ${phrase}`);
