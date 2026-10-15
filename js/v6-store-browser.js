@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.74';
+const VERSION='7.0.0-store-browser.75';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -42,7 +42,8 @@ function genericMerchantSearchUrl(id,q){
  if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(term);
  if(key==='esam')return 'https://esam.ir/search/?kw='+encodeURIComponent(term);
  if(key==='modiseh')return 'https://www.modiseh.com/search?q='+encodeURIComponent(term);
- if(host)return 'https://'+host+'/search?q='+encodeURIComponent(term);
+ /* Do not guess /search?q= endpoints from a merchant homepage. An unverified
+    search route is unavailable and must not be replaced with Google/homepage. */
  return '';
 }
 function isHomepageOnlyUrl(id,url){
@@ -396,8 +397,11 @@ function openBrowser(query,list){
        if(x&&x.id)mergedById[String(x.id).toLowerCase()]=x;
      });
      const sourceList=Object.keys(mergedById).map(function(id){return mergedById[id];});
-     const usable=sourceList.filter(function(x){var id=String(x&&x.id||'').toLowerCase();var kb=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};return !!(x&&(SEARCH[id]||HOME[id]||kb[id]||x.name));})
-       .map(function(x){
+     const usable=sourceList.filter(function(x){
+         if(!x||!x.id)return false;
+         var id=String(x.id).toLowerCase();
+         return !!storeSearchUrl(id,query);
+       }).map(function(x){
          var id=String(x.id||'').toLowerCase();
          return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
        });
@@ -448,8 +452,9 @@ function openBrowser(query,list){
      const sub=document.getElementById('v5Subcategory');
      const selectedSub=sub&&sub.value?String(sub.value):'';
      const categoryUrl=CATEGORY[active.id]&&CATEGORY[active.id][selectedSub];
-     const u=categoryUrl||storeSearchUrl(active.id,searchQuery)||HOME[active.id]||(SEARCH[active.id]&&SEARCH[active.id](searchQuery));
-     resultBody.innerHTML='<div class="v6-auto-status">با انتخاب اسم هر فروشگاه از سربرگ و لمس دکمه پایین، نتایج ظاهر میشن</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
+     const u=categoryUrl||storeSearchUrl(active.id,searchQuery);
+     if(!u){resultBody.innerHTML='<div class="v6-auto-status">مسیر جست‌وجوی مستقیم این فروشگاه هنوز تأیید نشده؛ برای جلوگیری از نمایش صفحهٔ اصلی یا لینک نامرتبط، نتیجهٔ مستقیم ارائه نمی‌شود.</div><div class="v6-auto-actions"><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';return;}
+     resultBody.innerHTML='<div class="v6-auto-status">این لینک مستقیماً جست‌وجوی محصول در فروشگاه را باز می‌کند.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
    }
    usable.forEach(x=>{const t=document.createElement('button');t.type='button';t.className='v6-auto-tab';t.dataset.id=x.id;t.textContent=x.name;t.addEventListener('click',()=>{active=x;render();});tabs.appendChild(t);});
    render();
