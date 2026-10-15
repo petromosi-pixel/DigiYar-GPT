@@ -14,7 +14,7 @@ function khanoumiSearchUrl(q){
 }
 function siteSearchUrl(domain,q){
  var s=storeQueryTerms(q);
- var host=String(domain||'').replace(/^https?:\\/\\//i,'').replace(/\\/$/,'');
+ var host=String(domain||'').replace(/^https?:\/\//i,'').replace(/\/$/,'');
  return host?'https://'+host+'/search?q='+encodeURIComponent(s):'';
 }
 function healthSearchQuery(q){
@@ -33,10 +33,8 @@ function genericMerchantSearchUrl(id,q){
  var host='';
  try{if(home)host=new URL(home).hostname.replace(/^www[.]/i,'');}catch(e){}
  var term=String(q||'').trim();
- /* Dayan's active catalogue endpoint is hosted on its product platform,
-    not the dayanshop.com homepage/search page. */
  if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
- if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(term.replace(/\\s+/g,'-'));
+ if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(term.replace(/\s+/g,'-'));
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(term);
  if(key==='digikala')return 'https://www.digikala.com/search/?q='+encodeURIComponent(term);
  if(key==='snappshop')return 'https://snappshop.ir/search?query='+encodeURIComponent(term);
@@ -45,8 +43,6 @@ function genericMerchantSearchUrl(id,q){
  if(key==='esam')return 'https://esam.ir/search/?kw='+encodeURIComponent(term);
  if(key==='modiseh')return 'https://www.modiseh.com/search?q='+encodeURIComponent(term);
  if(host)return 'https://'+host+'/search?q='+encodeURIComponent(term);
- /* Do not disguise a Google result as a merchant result. If a merchant has
-    no configured host, return an empty route so caller can flag it. */
  return '';
 }
 function isHomepageOnlyUrl(id,url){
@@ -74,6 +70,7 @@ function storeSearchUrl(id,q){
  if(key==='modiseh')return genericMerchantSearchUrl(key,s);
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
  if(key==='memarket')return genericMerchantSearchUrl(key,s);
+ if(['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket','khaneyeiran','iransetkor'].indexOf(key)>=0)return genericMerchantSearchUrl(key,s);
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
