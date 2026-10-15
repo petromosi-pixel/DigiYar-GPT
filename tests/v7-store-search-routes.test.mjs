@@ -28,8 +28,10 @@ assert.ok(browser && typeof browser.resolveSearchUrl === 'function', 'Store Brow
 const query = 'دستگاه تصفیه هوا';
 for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]) {
   const url = new URL(browser.resolveSearchUrl(id, query));
-  assert.equal(url.hostname, 'www.google.com', `${id} should use resilient site-specific search when its direct endpoint is restricted/unavailable`);
-  assert.ok(url.searchParams.get('q').includes(`site:${host}`), `${id} fallback must be restricted to its own domain`);
+  assert.equal(url.hostname, host, \`\${id} must open its own search page, not Google\`);
+  assert.equal(url.pathname, '/search', \`\${id} must use the merchant search route\`);
+  assert.ok((url.searchParams.get('q') || url.searchParams.get('query') || '').includes(query),
+    \`\${id} search URL must preserve the requested product phrase\`);
 }
 const ids = Object.keys(catalog);
 assert.equal(ids.length, 120, `all 120 stores must be present in the canonical KB, got ${ids.length}`);
@@ -45,10 +47,9 @@ for (const id of ids) {
     assert.ok(url.hostname, 'route must have a hostname');
     assert.ok(!(url.pathname === '/' && !url.search && !url.hash),
       'homepage-only URLs must not be presented as product-search results');
-    if (url.hostname.endsWith('google.com')) {
-      assert.equal(url.pathname, '/search', 'generic fallback must open Google search, not a homepage');
-      assert.ok((url.searchParams.get('q') || '').length > 0, 'generic fallback must carry the user query');
-    }
+    assert.ok(!url.hostname.endsWith('google.com'), \`\${id} must not send the user to Google instead of the merchant\`);
+    assert.ok(url.pathname !== '/' || url.search || url.hash,
+      \`\${id} must not fall back to a homepage without a product-search query\`);
   } catch (error) {
     failures.push(`${id}: ${error.message}`);
   }
@@ -76,6 +77,9 @@ assert.ok(expandedOffice.eligibleStoreIds.includes('testoffice'), 'a direct KB p
 const expandedDeskCatalog = {...catalog, testdesk: {name: 'فروشگاه آزمایشی میز تنظیم ارتفاع', domains: ['home'], products: ['میز تنظیم ارتفاع'], aliases: []}};
 const expandedDesk = threeEngine.resolve('یه میز تنظیم ارتفاع برای کار می‌خوام', expandedDeskCatalog, [], orchestrator.classifyLocalNeed('یه میز تنظیم ارتفاع برای کار می‌خوام'));
 assert.ok(expandedDesk.eligibleStoreIds.includes('testdesk'), 'shared retrieval must discover a newly added merchant for a product outside the predefined concepts');
+['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket'].forEach(id =>
+  assert.ok(!expandedDesk.eligibleStoreIds.includes(id), `generic furniture merchant ${id} must not match a specific height-adjustable desk query`)
+);
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
   assert.equal(intent && intent.kind, 'travel_ticket', `train intent not recognized: ${phrase}`);
