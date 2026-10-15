@@ -116,6 +116,10 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var hasAirPurifierProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
    return /(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|تصفیه\s*کننده\s*هوا|air\s*purifier)/i.test(norm(v));
   });
+  var hasMobilePhoneProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
+   return /(?:موبایل|گوشی|تلفن\s*همراه|تبلت|کالای\s*دیجیتال|smartphone|mobile\s*phone)/i.test(norm(v));
+  });
+  if(need.concept==='mobile_phone'&&!isGeneral&&!hasMobilePhoneProduct&&(s.domains||[]).indexOf('furniture')>=0){score=-100;proof=[];}
   /* Furniture-domain overlap is never evidence for an air purifier. Allow an unusual cross-category merchant only when its KB explicitly lists air-purifier products. */
   if(need.concept==='air_purifier'&&furnitureMerchant&&!hasAirPurifierProduct){score=-100;proof=[];}
   var hasCleaningProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
