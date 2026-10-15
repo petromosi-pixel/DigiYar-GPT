@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.57';
+var VERSION='7.0.0-store-eligibility.58';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -78,11 +78,11 @@ function kbMatchedStoreIds(query){
      * results for a more specific query. */
     if(isGeneralStore(id))return;
     /* A cleaning/cleaning-equipment request is an action/task, not a request to buy the furniture itself. Do not let literal matches such as «مبل» promote furniture merchants. */
-    if(isCleaningTaskQuery(s) && item.intents && item.intents.indexOf('furniture')!==-1){
-      var cleaningProducts=[].concat(item.products||[],item.aliases||[]);
+    var furnitureMerchant=(item.intents||[]).indexOf('furniture')!==-1||(item.domains||[]).indexOf('furniture')!==-1;
+    if(isCleaningTaskQuery(s)&&furnitureMerchant){
+      var cleaningProducts=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]);
       var hasCleaningProduct=cleaningProducts.some(function(term){
-        var t=norm(term);
-        return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(t);
+        return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|جارو|بخارشوی|فرش\s*شویی)/i.test(norm(term));
       });
       if(!hasCleaningProduct)return;
     }
