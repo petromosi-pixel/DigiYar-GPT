@@ -180,3 +180,26 @@ window.DigiYarHooshyarSemanticApiEnabled = false;
 globalThis.fetch = originalFetch;
 
 console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} KB stores inspected, ${directRouteCount} direct-search routes available; unverified routes fail closed, local matching and office bags/mobile accessories checked`);
+
+
+/* Strict semantic relevance regression: a model-selected furniture merchant
+   must not pass a specific office-bag query on broad-domain overlap alone. */
+const priorPlan = window.DigiYarShoppingPlan;
+window.DigiYarShoppingPlan = {
+  query: 'کیف اداری',
+  semantic: true,
+  ai: {
+    requestedProduct: 'کیف اداری',
+    semanticNeed: 'کیف اداری برای محل کار',
+    productTerms: ['کیف اداری'],
+    requiredNameTerms: ['کیف اداری'],
+    domains: ['fashion'],
+    eligibleStoreIds: ['iranmiz', 'modiseh']
+  }
+};
+const strictOffice = eligibility.explain('کیف اداری', []);
+assert.ok(strictOffice.eligibleIds.includes('modiseh'),
+  'a merchant with explicit office-bag product evidence must remain eligible');
+assert.ok(!strictOffice.eligibleIds.includes('iranmiz'),
+  'a furniture merchant must not pass office-bag matching from broad domain/word overlap');
+window.DigiYarShoppingPlan = priorPlan;
