@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.56';
+var VERSION='7.0.0-store-eligibility.57';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -52,9 +52,16 @@ function kbMatchedStoreIds(query){
      * one of its declared products/aliases.
      */
     var terms=expandTerms([].concat(item.products||[],item.aliases||[]));
+    var genericProductTerms=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد'];
     var directMatch=terms.some(function(term){
       var t=norm(term);
-      return t&&s.indexOf(t)!==-1;
+      if(!t)return false;
+      /* A broad one-word category is not enough evidence for a specific
+         product request. E.g. "کیف" must not qualify every fashion store
+         for "کیف اداری", and "میز" must not qualify every furniture store
+         for "میز تنظیم ارتفاع". */
+      if(genericProductTerms.indexOf(t)>=0&&s!==t)return false;
+      return s.indexOf(t)!==-1;
     });
     /*
      * Intent-aware eligibility closes the gap between a merchant's declared
