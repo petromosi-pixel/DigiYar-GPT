@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.26';
+var VERSION='7.0.0-store-business-domains.27';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین عمومی']},
@@ -283,7 +283,7 @@ Object.keys(BY_DOMAIN).forEach(function(domain){
 });
 
 /* Additive classification metadata; Hooshyar matching fields remain unchanged. */
-var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket'];
+var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket','divar','sheypoor'];
 Object.keys(C).forEach(function(id){C[id].storeType=GENERAL_STORE_IDS.indexOf(String(id).toLowerCase())>=0?'general':'specialist';});
 var BY_TYPE={general:{id:'general',title:'فروشگاه‌های عمومی',storeIds:[],stores:[]},specialist:{id:'specialist',title:'فروشگاه‌های تخصصی',storeIds:[],stores:[]}};
 Object.keys(C).forEach(function(id){var s=C[id],type=s.storeType;BY_TYPE[type].storeIds.push(id);BY_TYPE[type].stores.push({id:id,name:s.name,homepage:s.homepage||'',domains:s.domains||[],specialties:s.specialties||[],products:s.products||[]});});
