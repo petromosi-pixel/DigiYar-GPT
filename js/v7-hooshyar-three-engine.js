@@ -111,6 +111,11 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='sofa_cleaning'&&isGeneral&&domainHit)score+=3;
   if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(sid)>=0)score=-100;
   var furnitureMerchant=!isGeneral&&((s.domains||[]).indexOf('furniture')>=0||(s.intents||[]).indexOf('furniture')>=0);
+  var hasAirPurifierProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
+   return /(?:تصفیه\\s*هوا|دستگاه\\s*تصفیه|پاکسازی\\s*هوا|تصفیه\\s*کننده\\s*هوا|air\\s*purifier)/i.test(norm(v));
+  });
+  /* Furniture-domain overlap is never evidence for an air purifier. Allow an unusual cross-category merchant only when its KB explicitly lists air-purifier products. */
+  if(need.concept==='air_purifier'&&furnitureMerchant&&!hasAirPurifierProduct){score=-100;proof=[];}
   var hasCleaningProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
    return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|دستگاه\s*مبل\s*شوی|بخارشوی|فرش\s*شوی(?:ی)?|جاروبرقی)/i.test(norm(v));
   });
