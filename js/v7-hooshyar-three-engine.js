@@ -98,6 +98,8 @@ function retrieveCandidates(need,catalog,eligibleIds){
      complete match of a multi-word product's meaningful tokens, can admit
      new merchants without adding a per-query allowlist. */
   var evidence=evidenceTerms(need.normalized,s);
+  /* The query can say «گوشی» while the merchant KB declares «موبایل». A declared mobile-accessories specialty is valid evidence only when the parsed need is explicitly an accessory request. */
+  if(need.concept==='mobile_accessory'&&(s.intents||[]).indexOf('mobile_accessories')!==-1){evidence.push('mobile-accessories-specialty');}
   evidence.forEach(function(term){
    if(proof.some(function(p){return norm(p)===norm(term);}))return;
    score+=4;direct=true;proof.push(term);
