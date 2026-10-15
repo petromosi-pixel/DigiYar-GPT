@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.76';
+const VERSION='7.0.0-store-browser.77';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -41,7 +41,7 @@ function genericMerchantSearchUrl(id,q){
  if(key==='torob')return 'https://torob.com/search/?query='+encodeURIComponent(term);
  if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(term);
  if(key==='esam')return 'https://esam.ir/search/?kw='+encodeURIComponent(term);
- if(key==='modiseh')return 'https://www.modiseh.com/search?q='+encodeURIComponent(term);
+
  /* Do not guess /search?q= endpoints from a merchant homepage. An unverified
     search route is unavailable and must not be replaced with Google/homepage. */
  return '';
@@ -106,10 +106,8 @@ function basalamSearchQuery(q){
  return s.split(/\s+/).filter(function(x){return x.length>=2;}).slice(0,4).join(' ');
 }
 function janebiSearchQuery(q){
- var s=storeQueryTerms(q);
- var patterns=[/ضد\s*آفتاب|ضدآفتاب/i,/مرطوب\s*کننده|آبرسان/i,/هندزفری|ایرباد|هدفون/i,/پاوربانک/i,/شارژر/i,/کابل(?:\s+شارژ)?/i,/قاب|کاور|گلس|محافظ\s*صفحه/i,/هولدر/i,/ساعت\s*هوشمند/i,/اسپیکر/i,/دستگاه\s*بخور|رطوبت\s*ساز/i,/جارو\s*شارژی/i,/چراغ\s*خواب/i,/ماساژور/i,/کوله|کیف/i,/چمدان/i];
- for(var i=0;i<patterns.length;i++){var m=s.match(patterns[i]);if(m)return m[0];}
- return s.split(/\s+/).slice(0,4).join(' ');
+ /* Keep the full requested product phrase: office bag is not a laptop bag. */
+ return storeQueryTerms(q);
 }
 
 const SEARCH={iranmiz:q=>'https://www.iranmiz.com/category/%D9%85%DB%8C%D8%B2-%D9%86%D8%A7%D9%87%D8%A7%D8%B1%D8%AE%D9%88%D8%B1%DB%8C',partochoob:q=>'https://partochoob.com/shop/',chidahome:q=>'https://chidahomestudio.com/shop',tidawood:q=>'https://tidawood.com/',
