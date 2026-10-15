@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.6';
+var VERSION='7.0.0-hooshyar-three-engine.7';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -64,13 +64,16 @@ function retrieveCandidates(need,catalog,eligibleIds){
  var broadTerms=['خانه','دیجیتال','کالا','محصول','فروشگاه','عمومی','لوازم','پوشاک','سلامت','بهداشت','اکسسوری','مد','ورزش','سفر','خرید','فروش'];
  function evidenceTerms(query,item){
   var q=norm(query),out=[];
+  var genericProductWords=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد'];
   var terms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[],item.querySignals||[]);
   terms.forEach(function(raw){
    var term=norm(raw);
    if(!term||term.length<3)return;
-   if(q.indexOf(term)>=0){out.push(raw);return;}
    var words=term.split(/[^\u0600-\u06FFa-z0-9]+/i).filter(Boolean)
     .filter(function(w){return w.length>=3&&broadTerms.indexOf(w)<0;});
+   /* Generic category words are not proof of a specific product match. */
+   if(words.length===1&&genericProductWords.indexOf(words[0])>=0&&q!==term)return;
+   if(q.indexOf(term)>=0){out.push(raw);return;}
    if(words.length>=2&&words.every(function(w){return q.indexOf(w)>=0;})){out.push(raw);return;}
    if(words.length===1&&words[0].length>=4&&broadTerms.indexOf(words[0])<0&&
       new RegExp('(?:^|[^\u0600-\u06FFa-z0-9])'+words[0]+'(?:$|[^\u0600-\u06FFa-z0-9])','i').test(q)){out.push(raw);}
