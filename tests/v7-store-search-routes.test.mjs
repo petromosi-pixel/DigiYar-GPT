@@ -28,10 +28,10 @@ assert.ok(browser && typeof browser.resolveSearchUrl === 'function', 'Store Brow
 const query = 'دستگاه تصفیه هوا';
 for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]) {
   const url = new URL(browser.resolveSearchUrl(id, query));
-  assert.equal(url.hostname, host, \`\${id} must open its own search page, not Google\`);
-  assert.equal(url.pathname, '/search', \`\${id} must use the merchant search route\`);
+  assert.equal(url.hostname, host, `${id} must open its own search page, not Google`);
+  assert.equal(url.pathname, '/search', `${id} must use the merchant search route`);
   assert.ok((url.searchParams.get('q') || url.searchParams.get('query') || '').includes(query),
-    \`\${id} search URL must preserve the requested product phrase\`);
+    `${id} search URL must preserve the requested product phrase`);
 }
 const ids = Object.keys(catalog);
 assert.equal(ids.length, 120, `all 120 stores must be present in the canonical KB, got ${ids.length}`);
@@ -47,9 +47,9 @@ for (const id of ids) {
     assert.ok(url.hostname, 'route must have a hostname');
     assert.ok(!(url.pathname === '/' && !url.search && !url.hash),
       'homepage-only URLs must not be presented as product-search results');
-    assert.ok(!url.hostname.endsWith('google.com'), \`\${id} must not send the user to Google instead of the merchant\`);
+    assert.ok(!url.hostname.endsWith('google.com'), `${id} must not send the user to Google instead of the merchant`);
     assert.ok(url.pathname !== '/' || url.search || url.hash,
-      \`\${id} must not fall back to a homepage without a product-search query\`);
+      `${id} must not fall back to a homepage without a product-search query`);
   } catch (error) {
     failures.push(`${id}: ${error.message}`);
   }
