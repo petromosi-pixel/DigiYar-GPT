@@ -99,7 +99,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
      new merchants without adding a per-query allowlist. */
   var evidence=evidenceTerms(need.normalized,s);
   /* The query can say «گوشی» while the merchant KB declares «موبایل». A declared mobile-accessories specialty is valid evidence only when the parsed need is explicitly an accessory request. */
-  if(need.concept==='mobile_accessory'&&(s.intents||[]).indexOf('mobile_accessories')!==-1){evidence.push('mobile-accessories-specialty');}
+  if(/(?:قاب|کاور|گلس|محافظ\\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(need.normalized)&&(s.intents||[]).indexOf('mobile_accessories')!==-1){evidence.push('mobile-accessories-specialty');}
   evidence.forEach(function(term){
    if(proof.some(function(p){return norm(p)===norm(term);}))return;
    score+=4;direct=true;proof.push(term);
