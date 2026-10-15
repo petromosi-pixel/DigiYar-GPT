@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.73';
+const VERSION='7.0.0-store-browser.74';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -14,7 +14,8 @@ function khanoumiSearchUrl(q){
 }
 function siteSearchUrl(domain,q){
  var s=storeQueryTerms(q);
- return 'https://www.google.com/search?q='+encodeURIComponent('site:'+domain+' '+s);
+ var host=String(domain||'').replace(/^https?:\\/\\//i,'').replace(/\\/$/,'');
+ return host?'https://'+host+'/search?q='+encodeURIComponent(s):'';
 }
 function healthSearchQuery(q){
  var s=storeQueryTerms(q);
@@ -25,15 +26,28 @@ function healthSearchQuery(q){
  return s.split(/\s+/).slice(0,4).join(' ');
 }
 function genericMerchantSearchUrl(id,q){
+ var key=String(id||'').toLowerCase();
  var catalog=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};
- var item=catalog[String(id||'').toLowerCase()]||{};
- var home=HOME[String(id||'').toLowerCase()]||item.homepage||'';
+ var item=catalog[key]||{};
+ var home=HOME[key]||item.homepage||'';
  var host='';
  try{if(home)host=new URL(home).hostname.replace(/^www[.]/i,'');}catch(e){}
  var term=String(q||'').trim();
- if(host)return 'https://www.google.com/search?q='+encodeURIComponent('site:'+host+' '+term);
- var name=STORE_NAMES[String(id||'').toLowerCase()]||item.name||id;
- return 'https://www.google.com/search?q='+encodeURIComponent(String(name)+' '+term);
+ /* Dayan's active catalogue endpoint is hosted on its product platform,
+    not the dayanshop.com homepage/search page. */
+ if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
+ if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(term.replace(/\\s+/g,'-'));
+ if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(term);
+ if(key==='digikala')return 'https://www.digikala.com/search/?q='+encodeURIComponent(term);
+ if(key==='snappshop')return 'https://snappshop.ir/search?query='+encodeURIComponent(term);
+ if(key==='torob')return 'https://torob.com/search/?query='+encodeURIComponent(term);
+ if(key==='basalam')return 'https://basalam.com/search?q='+encodeURIComponent(term);
+ if(key==='esam')return 'https://esam.ir/search/?kw='+encodeURIComponent(term);
+ if(key==='modiseh')return 'https://www.modiseh.com/search?q='+encodeURIComponent(term);
+ if(host)return 'https://'+host+'/search?q='+encodeURIComponent(term);
+ /* Do not disguise a Google result as a merchant result. If a merchant has
+    no configured host, return an empty route so caller can flag it. */
+ return '';
 }
 function isHomepageOnlyUrl(id,url){
  var home=HOME[String(id||'').toLowerCase()];
