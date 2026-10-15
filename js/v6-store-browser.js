@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.78';
+const VERSION='7.0.0-store-browser.79';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  var s=storeQueryTerms(q);
@@ -34,7 +34,6 @@ function genericMerchantSearchUrl(id,q){
  try{if(home)host=new URL(home).hostname.replace(/^www[.]/i,'');}catch(e){}
  var term=String(q||'').trim();
  if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
- if(key==='memarket')return 'https://memarket24.ir/search/'+encodeURIComponent(term.replace(/\s+/g,'-'));
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(term);
  if(key==='digikala')return 'https://www.digikala.com/search/?q='+encodeURIComponent(term);
  if(key==='snappshop')return 'https://snappshop.ir/search?query='+encodeURIComponent(term);
@@ -431,7 +430,7 @@ function openBrowser(query,list){
 
  function tabsAndResults(usable){
    if(!Array.isArray(usable)||!usable.length){
-     box.innerHTML='<div class="v6-auto-head">برای این درخواست، فروشگاه مرتبطی با اطمینان کافی پیدا نشد.</div>';
+     box.innerHTML='<div class="v6-auto-head">برای این درخواست، فروشگاهی با مسیر جست‌وجوی مستقیمِ تأییدشده پیدا نشد؛ لینک صفحهٔ اصلی یا جست‌وجوی حدسی نمایش داده نمی‌شود.</div>';
      return;
    }
    box.innerHTML='<div class="v6-auto-head">طبق خواسته‌ات فروشگاه‌های مرتبط با محصول مورد نظرت رو برات لیست کردم</div>';
