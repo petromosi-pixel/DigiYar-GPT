@@ -39,9 +39,12 @@ assert.ok(catalog['19kala'], '19kala must be represented in the canonical KB');
 assert.ok(catalog['daroo-online'], 'daroo-online must be represented in the canonical KB');
 
 const failures = [];
+let directRouteCount = 0;
 for (const id of ids) {
   try {
     const raw = browser.resolveSearchUrl(id, query);
+    if (!raw) continue; // Fail closed: no confirmed direct-search route, no result link.
+    directRouteCount++;
     const url = new URL(raw);
     assert.equal(url.protocol, 'https:', 'route must use HTTPS');
     assert.ok(url.hostname, 'route must have a hostname');
@@ -55,6 +58,7 @@ for (const id of ids) {
   }
 }
 assert.deepEqual(failures, [], `invalid merchant search routes:\n${failures.join('\n')}`);
+assert.ok(directRouteCount > 10, `known direct-search routes should remain available, got ${directRouteCount}`);
 
 const threeEngine = window.DigiYarHooshyarThreeEngine;
 assert.ok(threeEngine && typeof threeEngine.resolve === 'function', 'three-engine local resolver must be loaded');
@@ -96,11 +100,11 @@ const officeBag = eligibility.explain('کیف اداری', []);
 const accessory = eligibility.explain('لوازم جانبی موبایل', []);
 ['digido', 'janebi', 'gooshishop', 'technolife', 'digikala', 'snappshop', 'torob', 'basalam'].forEach(id => assert.ok(accessory.eligibleIds.includes(id), `mobile-accessory need omitted ${id}`));
 ['meghdadit', 'takhfifan', 'esam'].forEach(id => assert.ok(!accessory.eligibleIds.includes(id), `unrelated merchant leaked into mobile accessories: ${id}`));
-for (const [id,host] of [['modiseh','modiseh.com'],['memarket','memarket24.ir']]) {
-  const url = new URL(browser.resolveSearchUrl(id, 'کیف اداری'));
-  assert.equal(url.hostname, 'www.google.com', `${id} should avoid broken/registration pages and use site-specific search`);
-  assert.ok(url.searchParams.get('q').includes(`site:${host}`), `${id} fallback must be restricted to its own domain`);
-}
+assert.equal(browser.resolveSearchUrl('modiseh', 'کیف اداری'), '',
+  'Modiseh must be withheld until its reported 404 search route is verified');
+const memarketUrl = new URL(browser.resolveSearchUrl('memarket', 'کیف اداری'));
+assert.equal(memarketUrl.hostname, 'memarket24.ir', 'MiMarket must use its own domain, never an affiliate-registration or Google page');
+assert.ok(memarketUrl.pathname.startsWith('/search/'), 'MiMarket must use a product-search route');
 const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف اداری'));
 assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
 assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
@@ -172,4 +176,4 @@ window.DigiYarHooshyarAIProvider = 'deepseek';
 window.DigiYarHooshyarSemanticApiEnabled = false;
 globalThis.fetch = originalFetch;
 
-console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} merchant URLs checked; all 120 KB stores, local-first fallback, three-engine vs DeepSeek/OpenRouter selection, 120-store catalog, office bags and mobile accessories verified`);
+console.log(`V7 store search-route and semantic-query tests: PASS — ${ids.length} KB stores inspected, ${directRouteCount} direct-search routes available; unverified routes fail closed, local matching and office bags/mobile accessories checked`);
