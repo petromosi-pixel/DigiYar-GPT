@@ -107,6 +107,10 @@ assert.equal(browser.resolveSearchUrl('memarket', 'کیف اداری'), '',
 const officeBagUrl = new URL(browser.resolveSearchUrl('janebi', 'کیف اداری'));
 assert.ok(decodeURIComponent(officeBagUrl.toString()).includes('کیف اداری'), 'Janebi route must search the requested office bag');
 assert.ok(!decodeURIComponent(officeBagUrl.toString()).includes('کیف لپ تاپ'), 'Janebi route must not substitute a laptop bag');
+const dayanUrl = new URL(browser.resolveSearchUrl('dayan', 'کیف اداری'));
+assert.equal(dayanUrl.hostname, 'noura1393.affdn.ir', 'Dayan must use the reported working product-search endpoint');
+assert.equal(dayanUrl.pathname, '/products', 'Dayan must open product search, not its homepage');
+assert.equal(dayanUrl.searchParams.get('title'), 'کیف اداری', 'Dayan must preserve the exact requested product phrase');
 const phone = eligibility.explain('تلفن همراه سامسونگ', []);
 ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam']
   .forEach(id => assert.ok(phone.eligibleIds.includes(id), `semantic phone synonym omitted ${id}`));
