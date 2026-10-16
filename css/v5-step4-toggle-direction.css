@@ -20,9 +20,3 @@
 .v5-result-card .need-summary{margin-top:10px}
 .v5-result-card .recommendation-loading{text-align:center;padding:14px;color:#69778d}
 .v5-profile-completion .v5-step4-toggle-icon,.v5-popular-card .v5-popular-toggle-icon{color:var(--v5-navy)!important}
-.v6-dark .v5-profile-completion .v5-step4-toggle-icon,.v6-dark .v5-popular-card .v5-popular-toggle-icon,.v6-dark .v5-profile-card .v5-step4-toggle-icon{color:#f8fafc!important;text-shadow:0 0 8px rgba(255,255,255,.18)}
-.v6-dark .v5-result-card .recommendation{border-color:#334155;background:#111827;color:#f8fafc}
-.v6-dark .v5-result-card .recommendation-rank,.v6-dark .v5-result-card .recommendation h3{color:#f8fafc}
-.v6-dark .v5-result-card .recommendation-price{color:#fbbf24}
-.v6-dark .v5-result-card .recommendation-features,.v6-dark .v5-result-card .recommendation-loading{color:#cbd5e1}
-.v6-dark .v5-result-card .recommendation-link{background:#e5e7eb;color:#111827}
