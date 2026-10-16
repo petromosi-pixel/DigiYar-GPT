@@ -390,7 +390,7 @@ function openBrowser(query,list){
      const usable=sourceList.filter(function(x){
          if(!x||!x.id)return false;
          var id=String(x.id).toLowerCase();
-         return !!storeSearchUrl(id,query);
+         return !!storeSearchUrl(id,query)||(semanticPlan&&semanticPlan.directorySearch===true&&!!(window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id]));
        }).map(function(x){
          var id=String(x.id||'').toLowerCase();
          return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
