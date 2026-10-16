@@ -47,7 +47,8 @@ body.v6-dark :where(
   [class*="-wrapper"],[class*="-surface"],[class*="-host"],[class*="-field"],
   [class*="-composer"],[class*="-content"],[class*="-inner"],[class*="-body"],
   [class*="-widget"],[class*="-item"],[class*="-box"],[class*="-list"],
-  [class*="-menu"],[class*="-nav"]
+  [class*="-menu"],[class*="-nav"],[class*="-slot"],[class*="-head"],
+  [class*="-status"],[class*="-section"],[class*="-table"],#v7ComparisonCard
 ):not(button):not(a):not(input):not(select):not(textarea):not(button *){
   color:var(--dy-text);
   border-color:var(--dy-border);
