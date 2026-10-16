@@ -134,3 +134,8 @@ body.v6-dark .popular-discovery .popular-discovery-toggle :where(h2,p,span,svg){
 }
 
 body.v6-dark .v6-auto-frame{color-scheme:dark}
+
+/* Platform logo containers keep neutral logo contrast; text uses the global tokens. */
+body.v6-dark .platform-logo{background:#fff!important;border-color:var(--dy-border)!important}
+body.v6-dark .platform-mark{color:#172033!important}
+body.v6-dark .platform-tagline{color:var(--dy-muted)!important}
