@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.19';
+  const VERSION='7.0.0-hooshyar-local.20';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -216,6 +216,16 @@
     const kb=window.DigiYarStoreBusinessDomains;
     const domainTitles=kb&&kb.domainTitles?kb.domainTitles:{};
     const directoryIntent=/(?:فروشگاه|فروشگاه‌ها|فروشگاهها|سایت|سایت‌ها|حوزه|دسته\\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|کجا\\s*بخرم|از\\s*کجا|حوزه\\s*فعالیت)/i.test(raw);
+    /* A product-aware query must not be misread as a merchant name merely
+       because it contains a short store label (e.g. «جانبی» inside «لوازم جانبی»).
+       Exact broad domain labels remain valid directory searches. */
+    const threeEngine=window.DigiYarHooshyarThreeEngine;
+    const parsedNeed=threeEngine&&typeof threeEngine.parseNeed==='function'?threeEngine.parseNeed(raw):null;
+    const exactBroadDomain=Object.keys(DIRECTORY_TERMS).some(domain=>{
+      const title=norm(domainTitles[domain]||'');
+      return (title&&raw===title)||(DIRECTORY_TERMS[domain]||[]).some(term=>raw===norm(term));
+    });
+    if(!directoryIntent&&!exactBroadDomain&&parsedNeed&&parsedNeed.concept)return null;
     const cleanQuery=raw.replace(/(?:فروشگاه(?:ها|‌ها)?|سایت(?:ها|‌ها)?|حوزه(?:\\s*فعالیت)?|دسته\\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|های|ها|مرتبط|مناسب|رو|را|در|از|برای|و)/g,' ').replace(/\\s+/g,' ').trim();
     const matchedStores=[];
     Object.keys(catalog||{}).forEach(id=>{
