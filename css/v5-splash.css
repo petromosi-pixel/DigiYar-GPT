@@ -19,6 +19,3 @@ body>img,body>.legacy-splash-logo,body>#splashPreview,body>#preSplashLogo,.splas
 /* Prevent the application shell from rendering beneath the splash overlay. */
 body:has(#splashScreen:not([data-dismissed="true"])) .app-shell{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 body .app-shell{transition:opacity .22s ease,visibility .22s ease}
-body.v6-dark .v5-splash-screen{background:#080d16!important;color:#f1f5f9!important;color-scheme:dark!important}
-body.v6-dark .v5-splash-content{color:#f1f5f9!important;color-scheme:dark!important}
-body.v6-dark .v5-splash-brand p{color:#b8c2d1!important}
