@@ -1,0 +1,119 @@
+/* DigiYar global theme contract.
+   The app theme switch writes body.v6-dark; this file makes that single state
+   authoritative for existing and future UI components. New components should
+   consume --dy-* tokens instead of hard-coded light colors. */
+:root{
+  color-scheme:light;
+  --dy-bg:#f3f6fb;
+  --dy-surface:#ffffff;
+  --dy-surface-raised:#ffffff;
+  --dy-control:#ffffff;
+  --dy-text:#1d2b49;
+  --dy-muted:#718096;
+  --dy-border:#dfe6ef;
+  --dy-accent:#2a5db0;
+  --dy-accent-contrast:#ffffff;
+  --dy-shadow:0 8px 25px rgba(15,29,53,.08);
+  --dy-focus:#6aa7ff;
+}
+body.v6-dark{
+  color-scheme:dark;
+  --dy-bg:#080d16;
+  --dy-surface:#111927;
+  --dy-surface-raised:#172334;
+  --dy-control:#182334;
+  --dy-text:#f1f5f9;
+  --dy-muted:#b8c2d1;
+  --dy-border:rgba(255,255,255,.14);
+  --dy-accent:#2563eb;
+  --dy-accent-contrast:#ffffff;
+  --dy-shadow:0 8px 25px rgba(0,0,0,.32);
+  --dy-focus:#8ebcff;
+}
+body.v6-dark{
+  background-color:var(--dy-bg)!important;
+  color:var(--dy-text);
+}
+/* Common semantic surfaces automatically follow the app theme. */
+body.v6-dark :where(
+  .card,.section-title,.v5-section-heading,.footer-panel,.install-prompt,
+  [class*="-card"],[class*="-panel"],[class*="-modal"],[class*="-popover"],
+  [class*="-dropdown"],[class*="-accordion"],[class*="-results"],
+  [class*="-result-list"],[class*="-body"],[class*="-sheet"]
+){
+  color:var(--dy-text);
+  border-color:var(--dy-border);
+}
+body.v6-dark :where(
+  .card,.section-title,.v5-section-heading,.footer-panel,.install-prompt,
+  [class*="-card"],[class*="-panel"],[class*="-modal"],[class*="-popover"],
+  [class*="-dropdown"],[class*="-accordion"],[class*="-results"],
+  [class*="-result-list"],[class*="-sheet"]
+){
+  background-color:var(--dy-surface)!important;
+  box-shadow:var(--dy-shadow);
+}
+body.v6-dark :where(h1,h2,h3,h4,h5,h6,p,label,legend,summary,li,dt,dd){
+  color:var(--dy-text);
+}
+body.v6-dark :where(small,.muted,.subtitle,.input-hint,.storage-note,.footer-copy,.footer-note){
+  color:var(--dy-muted);
+}
+body.v6-dark :where(input,select,textarea){
+  color:var(--dy-text)!important;
+  background-color:var(--dy-control)!important;
+  border-color:var(--dy-border)!important;
+  color-scheme:dark;
+}
+body.v6-dark :where(input,select,textarea)::placeholder{color:var(--dy-muted)!important;opacity:1}
+body.v6-dark :where(button,[role="button"],a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible){
+  outline-color:var(--dy-focus);
+}
+body.v6-dark :where(button,input[type="button"],input[type="submit"],select,textarea){
+  border-color:var(--dy-border);
+}
+/* The store-discovery card contains nested controls with their own legacy
+   !important declarations; normalize every nested layer centrally here. */
+body.v6-dark .popular-discovery{
+  --pd-bg:var(--dy-surface);
+  --pd-panel:var(--dy-surface-raised);
+  --pd-text:var(--dy-text);
+  --pd-muted:var(--dy-muted);
+  --pd-border:var(--dy-border);
+  background:var(--dy-surface)!important;
+  background-image:none!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+  box-shadow:var(--dy-shadow)!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-toggle,.popular-discovery-panel,.popular-discovery-bottom-toggle,.popular-discovery-intro,.popular-discovery-accordion,.popular-discovery-accordion-trigger,.popular-discovery-accordion-panel,.popular-discovery-empty){
+  background:var(--dy-surface-raised)!important;
+  background-image:none!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+  box-shadow:none!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-toggle h2,.popular-discovery-accordion-title-wrap strong,.popular-discovery-store-name,.popular-discovery-accordion-trigger span){
+  color:var(--dy-text)!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-accordion-title-wrap small,.popular-discovery-intro span,.popular-discovery-empty){
+  color:var(--dy-muted)!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-search,input,select,textarea){
+  background:var(--dy-control)!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-category,.popular-discovery-type-tabs button,.popular-discovery-store){
+  background:var(--dy-surface-raised)!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+  box-shadow:none!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-category[aria-pressed="true"]{
+  background:#38232b!important;color:#ffdce2!important;border-color:#87404d!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-store-logo{background:#fff!important}
+body.v6-dark .popular-discovery .popular-discovery-store-monogram{background:#202d40!important;color:var(--dy-text)!important;border-color:var(--dy-border)!important}
+/* Legacy theme selectors remain supported, but the built-in switch uses
+   body.v6-dark. Do not consult prefers-color-scheme: DigiYar owns the theme. */
