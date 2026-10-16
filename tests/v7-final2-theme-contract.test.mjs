@@ -22,9 +22,9 @@ assert.match(theme, /\[class\*="-modal"\]/, 'Future modal/window components must
 const cleanTheme = theme.replace(/\/\*[\s\S]*?\*\//g, '');
 const buttonRules = [...cleanTheme.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
   .filter(([, selector]) => /(?:^|[\s,(])button(?:[.#:[\s,)>]|$)/i.test(selector) && !/:not\(\s*button/i.test(selector));
-assert.ok(buttonRules.every(([, , declarations]) => !/(?:^|;)\s*background(?:-[\w-]+)?\s*:/i.test(declarations)),
-  'The central theme must not overwrite authored button backgrounds/colors.');
-assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.3/,
+assert.ok(buttonRules.every(([, , declarations]) => !/(?:^|;)\s*(?:background(?:-[\w-]+)?|color|border-color)\s*:/i.test(declarations)),
+  'The central theme must not overwrite authored button backgrounds, foregrounds, or borders.');
+assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.4/,
   'The app must load the current centralized theme stylesheet with a cache-busting version.');
 
 for (const path of legacyStyles) {
