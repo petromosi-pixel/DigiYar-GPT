@@ -80,7 +80,10 @@
     splash.classList.add('splash-hidden');
     splash.setAttribute('aria-hidden', 'true');
     window.setTimeout(function () {
-      if (splash && splash.parentNode) splash.style.display = 'none';
+      if (splash && splash.parentNode) {
+        splash.setAttribute('data-dismissed', 'true');
+        splash.style.display = 'none';
+      }
     }, 450);
   }
 
@@ -88,6 +91,7 @@
     var splash = document.getElementById('splashScreen');
     if (!splash) return;
     splash.setAttribute('aria-hidden', 'false');
+    splash.setAttribute('data-dismissed', 'false');
     // Splash theme is explicit: app dark hooks win; otherwise splash stays light.
     var darkTheme = document.documentElement.classList.contains('v6-dark') ||
       document.body.classList.contains('v6-dark') ||
