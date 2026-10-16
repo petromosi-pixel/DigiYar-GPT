@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.17';
+  const VERSION='7.0.0-hooshyar-local.21';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -46,6 +46,7 @@
         aliases:Array.isArray(item.aliases)?item.aliases.slice():[],
         querySignals:Array.isArray(item.querySignals)?item.querySignals.slice():[],
         exclusions:Array.isArray(item.exclude)?item.exclude.slice():[],
+        hooshyarExcludeConcepts:Array.isArray(item.hooshyarExcludeConcepts)?item.hooshyarExcludeConcepts.slice():[],
         matchPolicy:item.matchPolicy||null,semanticText:String(item.semanticText||'')
       };
     });
@@ -216,6 +217,16 @@
     const kb=window.DigiYarStoreBusinessDomains;
     const domainTitles=kb&&kb.domainTitles?kb.domainTitles:{};
     const directoryIntent=/(?:فروشگاه|فروشگاه‌ها|فروشگاهها|سایت|سایت‌ها|حوزه|دسته\\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|کجا\\s*بخرم|از\\s*کجا|حوزه\\s*فعالیت)/i.test(raw);
+    /* A product-aware query must not be misread as a merchant name merely
+       because it contains a short store label (e.g. «جانبی» inside «لوازم جانبی»).
+       Exact broad domain labels remain valid directory searches. */
+    const threeEngine=window.DigiYarHooshyarThreeEngine;
+    const parsedNeed=threeEngine&&typeof threeEngine.parseNeed==='function'?threeEngine.parseNeed(raw):null;
+    const exactBroadDomain=Object.keys(DIRECTORY_TERMS).some(domain=>{
+      const title=norm(domainTitles[domain]||'');
+      return (title&&raw===title)||(DIRECTORY_TERMS[domain]||[]).some(term=>raw===norm(term));
+    });
+    if(!directoryIntent&&!exactBroadDomain&&parsedNeed&&parsedNeed.concept)return null;
     const cleanQuery=raw.replace(/(?:فروشگاه(?:ها|‌ها)?|سایت(?:ها|‌ها)?|حوزه(?:\\s*فعالیت)?|دسته\\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|های|ها|مرتبط|مناسب|رو|را|در|از|برای|و)/g,' ').replace(/\\s+/g,' ').trim();
     const matchedStores=[];
     Object.keys(catalog||{}).forEach(id=>{
@@ -300,8 +311,13 @@
     const threeEngine=window.DigiYarHooshyarThreeEngine;
     const threeEngineResult=!directory&&threeEngine&&typeof threeEngine.resolve==='function'
       ?threeEngine.resolve(raw,catalog,ids,classified):null;
-    if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)&&threeEngineResult.eligibleStoreIds.length){
-      ids=threeEngineResult.eligibleStoreIds.filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+    if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)){
+      // The three-engine KB result is authoritative, including an empty set.
+      // Never revive broad legacy/category candidates when product evidence
+      // says that no merchant is relevant to this exact request.
+      ids=threeEngineResult.eligibleStoreIds
+        .map(id=>String(id&&id.id||id||'').toLowerCase())
+        .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
     if(directory){
@@ -379,7 +395,7 @@
     // plan is dispatched immediately; a configured free semantic model may
     // improve it in the background, but cannot block or erase the fallback.
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
-    if(!plan.ai.directorySearch&&window.DigiYarHooshyarSemanticApiEnabled!==false){
+    if(!plan.ai.directorySearch&&window.DigiYarHooshyarSemanticApiEnabled===true){
       requestSemanticPlan(raw,catalog,window.DigiYarHooshyarAIProvider||'deepseek').then(function(aiPlan){
         if(applySemanticPlan(plan,aiPlan,catalog))return;
         // A provider's own local fallback is deliberately ignored: our browser

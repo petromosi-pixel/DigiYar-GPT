@@ -1,0 +1,25 @@
+name: DigiYar V7 Final2 regression
+
+on:
+  push:
+    branches:
+      - DigiYar-V7-Final2
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  final2-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run Final2 regression suite
+        run: npm run test:v7:final2

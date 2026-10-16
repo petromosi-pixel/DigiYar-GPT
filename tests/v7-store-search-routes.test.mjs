@@ -74,7 +74,32 @@ for (const [phrase, expected, excluded] of [
   assert.ok(resolved.need.concept, `three-engine failed to parse concept for ${phrase}`);
 }
 assert.equal(threeEngine.parseNeed('کیف اداری تا ۳ میلیون تومان').maxBudgetToman, 3000000, 'Persian budget must be parsed into toman');
+
 const orchestrator = window.DigiYarShoppingOrchestrator;
+
+/* Final2 relevance guard: user context words and generated semanticText must not
+   count as product evidence; only explicit product inventory can qualify a store. */
+const strictAir = threeEngine.resolve('دنبال یک دستگاه تصفیه هوای مناسب اتاق خواب هستم', catalog, [], orchestrator.classifyLocalNeed('دنبال یک دستگاه تصفیه هوای مناسب اتاق خواب هستم'));
+['digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictAir.eligibleStoreIds.includes(id), `strict air-purifier search omitted ${id}`));
+['okala','pinket','janebi','divar','sheypoor','sakhtemoononline','kilid','ninimarket','homeplus','memarket'].forEach(id => assert.ok(!strictAir.eligibleStoreIds.includes(id), `context-only or unrelated merchant leaked into air-purifier results: ${id}`));
+const strictSofa = threeEngine.resolve('یه چیزی برای تمیز کردن مبل پارچه‌ای می‌خوام', catalog, [], orchestrator.classifyLocalNeed('یه چیزی برای تمیز کردن مبل پارچه‌ای می‌خوام'));
+['digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictSofa.eligibleStoreIds.includes(id), `strict sofa-cleaning search omitted ${id}`));
+['okala','pinket','khanoumi','shahrvand','hyperme'].forEach(id => assert.ok(!strictSofa.eligibleStoreIds.includes(id), `generic cleaning/home taxonomy leaked into sofa-cleaning results: ${id}`));
+const strictPhone = threeEngine.resolve('یه گوشی سامسونگ می‌خوام', catalog, [], orchestrator.classifyLocalNeed('یه گوشی سامسونگ می‌خوام'));
+['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'].forEach(id => assert.ok(strictPhone.eligibleStoreIds.includes(id), `strict phone search omitted ${id}`));
+['banimode','khanoumi','daroo-online','dayan','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictPhone.eligibleStoreIds.includes(id), `merchant exclusion text or unrelated taxonomy leaked into phone results: ${id}`));
+const strictAccessory = threeEngine.resolve('لوازم جانبی موبایل', catalog, [], orchestrator.classifyLocalNeed('لوازم جانبی موبایل'));
+['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictAccessory.eligibleStoreIds.includes(id), `strict accessory search omitted ${id}`));
+['digiland','meghdadit','takhfifan','esam','memarket','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictAccessory.eligibleStoreIds.includes(id), `non-approved accessory merchant leaked into results: ${id}`));
+assert.equal(orchestrator.resolveDirectorySearch('لوازم جانبی موبایل', catalog), null,
+  'A product query containing the store name «جانبی» must not be misclassified as a store-directory query.');
+const accessoryPlan = await orchestrator.run('لوازم جانبی موبایل');
+assert.equal(accessoryPlan.ai.directorySearch, undefined, 'Mobile accessories must use the product-search path.');
+assert.deepEqual(accessoryPlan.ai.eligibleStoreIds,
+  ['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'],
+  'The knowledge-base resolver must preserve the established mobile-accessory merchant set.');
+
+
 const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
 const expandedOffice = threeEngine.resolve('کیف اداری برای محل کارم', expandedCatalog, [], orchestrator.classifyLocalNeed('کیف اداری برای محل کارم'));
 assert.ok(expandedOffice.eligibleStoreIds.includes('testoffice'), 'a direct KB product match outside the curated list must not be filtered out');
@@ -121,7 +146,7 @@ const phone = eligibility.explain('تلفن همراه سامسونگ', []);
 
 const originalFetch = globalThis.fetch;
 let sentBody = null;
-window.DigiYarHooshyarSemanticApiEnabled = false;
+delete window.DigiYarHooshyarSemanticApiEnabled; // External semantic API is opt-in; local KB is the default.
 globalThis.fetch = async (url, options) => {
   assert.equal(url, 'https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping');
   sentBody = JSON.parse(options.body);
