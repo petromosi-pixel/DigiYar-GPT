@@ -44,7 +44,10 @@ body.v6-dark :where(
   [class*="-card"],[class*="-panel"],[class*="-modal"],[class*="-popover"],
   [class*="-dropdown"],[class*="-accordion"],[class*="-results"],
   [class*="-result-list"],[class*="-sheet"],[class*="-container"],
-  [class*="-wrapper"],[class*="-surface"],[class*="-host"]
+  [class*="-wrapper"],[class*="-surface"],[class*="-host"],[class*="-field"],
+  [class*="-composer"],[class*="-content"],[class*="-inner"],[class*="-body"],
+  [class*="-widget"],[class*="-item"],[class*="-box"],[class*="-list"],
+  [class*="-menu"],[class*="-nav"]
 ):not(button):not(a):not(input):not(select):not(textarea):not(button *){
   color:var(--dy-text);
   border-color:var(--dy-border);
@@ -64,7 +67,7 @@ body.v6-dark :where(html,body,.app-shell,#splashScreen,.splash-screen,.splash-co
 /* Text is themed centrally; descendants of buttons are excluded to retain
    the authored button foreground and contrast. */
 body.v6-dark :where(h1,h2,h3,h4,h5,h6,p,label,legend,summary,li,dt,dd,strong,em,span)
-:not(button *):not(a[class*="button"] *){
+:not(button *):not(a[class*="button"] *):not(a[class*="-link"] *){
   color:var(--dy-text);
 }
 body.v6-dark :where(small,.muted,.subtitle,.hint,.input-hint,.storage-note,
@@ -100,7 +103,7 @@ body.v6-dark .popular-discovery{
 body.v6-dark .popular-discovery :where(
   .popular-discovery-panel,.popular-discovery-intro,.popular-discovery-accordion,
   .popular-discovery-accordion-panel,.popular-discovery-empty,.popular-discovery-store
-):not(button):not(a){
+):not(button){
   color:var(--dy-text)!important;
   background:var(--dy-surface-raised)!important;
   background-image:none!important;
@@ -128,3 +131,5 @@ body.v6-dark .popular-discovery .popular-discovery-toggle,
 body.v6-dark .popular-discovery .popular-discovery-toggle :where(h2,p,span,svg){
   color:#fff!important;
 }
+
+body.v6-dark .v6-auto-frame{color-scheme:dark}
