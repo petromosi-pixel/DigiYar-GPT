@@ -117,3 +117,108 @@ body.v6-dark .popular-discovery .popular-discovery-store-logo{background:#fff!im
 body.v6-dark .popular-discovery .popular-discovery-store-monogram{background:#202d40!important;color:var(--dy-text)!important;border-color:var(--dy-border)!important}
 /* Legacy theme selectors remain supported, but the built-in switch uses
    body.v6-dark. Do not consult prefers-color-scheme: DigiYar owns the theme. */
+
+/* Global dark theme coverage. The theme toggle is the sole source of truth:
+   body.v6-dark + semantic tokens. Component-specific runtime overrides were
+   removed so late-loaded UI cannot paint over these rules. */
+body.v6-dark .main-header,
+body.v6-dark .main-footer,
+body.v6-dark .v6-footer-nav{
+  background:var(--dy-surface)!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .app-shell :where(.card,.v5-result-card,.v5-profile-card,.v5-profile-completion,.v5-smart-search-card,.v5-deals-card,.v5-popular-card,.footer-panel,.install-prompt,.v6-nav-sheet,.v6-account-card,.v6-sheet-action){
+  background-color:var(--dy-surface)!important;
+  color:var(--dy-text);
+  border-color:var(--dy-border)!important;
+  box-shadow:var(--dy-shadow);
+}
+body.v6-dark .app-shell :where(h1,h2,h3,h4,h5,h6,.section-title,.v5-card-subtitle,.header-brand strong,.footer-brand,.footer-panel strong){
+  color:var(--dy-text);
+}
+body.v6-dark .header-brand span,
+body.v6-dark .app-shell :where(p,small,.muted,.hint,.footer-copy,.footer-note,.input-hint,.storage-note){
+  color:var(--dy-muted);
+}
+body.v6-dark .app-shell :where(input,select,textarea){
+  background:var(--dy-control)!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .app-shell :where(input,textarea)::placeholder{color:var(--dy-muted)!important}
+body.v6-dark .popular-discovery{
+  background:var(--dy-surface)!important;
+  background-image:none!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .popular-discovery :where(
+  .popular-discovery-panel,.popular-discovery-intro,.popular-discovery-layout,
+  .popular-discovery-categories,.popular-discovery-results,.popular-discovery-domain-head,
+  .popular-discovery-subcats,.popular-discovery-store-grid,.popular-discovery-store,
+  .popular-discovery-store-top,.popular-discovery-empty,.popular-discovery-footnote
+){
+  background:var(--dy-surface)!important;
+  background-image:none!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+  box-shadow:none!important;
+}
+body.v6-dark .popular-discovery :where(
+  .popular-discovery-toggle,.popular-discovery-bottom-toggle,
+  .popular-discovery-accordion,.popular-discovery-accordion-trigger,
+  .popular-discovery-accordion-chevron,.popular-discovery-accordion-panel
+){
+  background:var(--dy-surface-raised)!important;
+  background-image:none!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+  box-shadow:none!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-toggle{
+  background:linear-gradient(115deg,#542033 0%,#7c263b 55%,#493047 100%)!important;
+  color:#fff!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-toggle :where(h2,p,span,svg){
+  color:#fff!important;
+}
+body.v6-dark .popular-discovery :where(
+  .popular-discovery-intro strong,.popular-discovery-intro span,
+  .popular-discovery-domain-head h3,.popular-discovery-domain-head p,
+  .popular-discovery-category,.popular-discovery-category-count,
+  .popular-discovery-store h4,.popular-discovery-store small,
+  .popular-discovery-store p,.popular-discovery-footnote
+){
+  color:var(--dy-text)!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-search,.popular-discovery-category,.popular-discovery-subcat,.popular-discovery-type-tabs button,.popular-discovery-store){
+  background:var(--dy-control)!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-category[aria-pressed="true"],
+body.v6-dark .popular-discovery .popular-discovery-type-tabs button[aria-pressed="true"]{
+  background:#38232b!important;
+  color:#ffe5ea!important;
+  border-color:#87404d!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-category-icon,
+body.v6-dark .popular-discovery .popular-discovery-store-monogram{
+  background:#202d40!important;
+  color:#f1f5f9!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-store-logo{background:#fff!important}
+body.v6-dark .popular-discovery .popular-discovery-store-link{
+  background:linear-gradient(110deg,#8f1734,#bd354a)!important;
+  color:#fff!important;
+}
+body.v6-dark .popular-discovery .popular-discovery-chevron{
+  color:#fff!important;
+  border-color:rgba(255,255,255,.38)!important;
+}
+body.v6-dark .popular-discovery :where(.popular-discovery-store-unavailable,.popular-discovery-empty){
+  color:var(--dy-muted)!important;
+  border-color:var(--dy-border)!important;
+}
