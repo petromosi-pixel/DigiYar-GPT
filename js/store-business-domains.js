@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.32';
+var VERSION='7.0.0-store-business-domains.33';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین عمومی']},
@@ -32,7 +32,7 @@ shavaz:{name:'شاواز',domains:['beauty','health'],products:['لوازم آر
 solokala:{name:'سولوکالا',domains:['beauty','health','accessories'],products:['لوازم آرایش','ضد آفتاب','کرم پوست','عطر','بهداشتی','اکسسوری'],aliases:['آرایشی بهداشتی','اکسسوری'],exclude:['موبایل','لپ تاپ']},
 'daroo-online':{name:'داروخانه آنلاین',domains:['medicine','health','beauty'],products:['دارو','قرص','کپسول','شربت','مکمل','ویتامین','فشارسنج','تجهیزات پزشکی','ضد آفتاب','بهداشتی','مراقبت پوست'],aliases:['داروخانه آنلاین','دارو'],exclude:['موبایل','لپ تاپ']},
 dayan:{name:'دایان شاپ',domains:['fashion','accessories'],products:['لباس مردانه','لباس زنانه','کیف اداری','کفش','کتانی','هودی','سوییشرت','کاپشن','شلوار','تیشرت','پیراهن','ساعت','عینک','کیف','زیورآلات'],aliases:['پوشاک','استایل','اکسسوری'],exclude:['موبایل']},
-memarket:{name:'می‌مارکت',hooshyarExcludeConcepts:["mobile_accessory"],domains:['digital','home','fashion','accessories','beauty'],products:['لپ تاپ','لوازم دیجیتال','تصفیه هوا','لوازم خانه','پوشاک','کفش','کیف','کیف اداری','آرایشی','ساعت','اکسسوری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین متنوع']},
+memarket:{name:'می‌مارکت',hooshyarExcludeConcepts:["mobile_accessory","air_purifier"],domains:['digital','home','fashion','accessories','beauty'],products:['لپ تاپ','لوازم دیجیتال','تصفیه هوا','لوازم خانه','پوشاک','کفش','کیف','کیف اداری','آرایشی','ساعت','اکسسوری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین متنوع']},
 jeanswest:{name:'جین وست',domains:['fashion'],products:['پوشاک زنانه','پوشاک مردانه','پوشاک کودک','تیشرت','شلوار','کاپشن','کفش','اکسسوری'],aliases:['پوشاک','استایل'],exclude:['موبایل','لپ تاپ']},
 sabzgostar:{name:'سبز گستر',domains:['affiliate_network'],products:['شبکه همکاری در فروش'],aliases:['افیلیت مارکتینگ','شبکه افیلیت','همکاری در فروش'],exclude:['محصول فیزیکی نامرتبط']},
 shab:{name:'شب',domains:['lodging','travel_ticket'],products:['ویلا','سوئیت','کلبه','اقامتگاه','بوم گردی','بلیط قطار','بلیط اتوبوس','سفر'],aliases:['رزرو ویلا','اقامت','رزرو سفر'],exclude:['کالای فیزیکی']},
