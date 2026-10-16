@@ -84,9 +84,6 @@ body.v6-dark :where(input,select,textarea){
 body.v6-dark :where(input,textarea)::placeholder{color:var(--dy-muted)!important;opacity:1}
 body.v6-dark :where(button,[role="button"],a:focus-visible,input:focus-visible,
   select:focus-visible,textarea:focus-visible){outline-color:var(--dy-focus)}
-body.v6-dark :where(button,input[type="button"],input[type="submit"],select,textarea){
-  border-color:var(--dy-border);
-}
 /* The discovery panel contains hand-authored gradients and brand buttons.
    Only its non-interactive surfaces are normalized here. */
 body.v6-dark .popular-discovery{
