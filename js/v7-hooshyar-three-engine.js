@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.12';
+var VERSION='7.0.0-hooshyar-three-engine.13';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -16,6 +16,19 @@ function norm(v){
   .replace(/\s+/g,' ').trim();
 }
 var CONCEPTS=[
+ {key:'laptop',label:'لپ تاپ',domain:'digital',terms:['لپ تاپ','لپتاپ','نوت بوک','کامپیوتر همراه'],patterns:/(?:لپ\s*تاپ|لپتاپ|نوت\s*بوک|کامپیوتر\s*همراه)/i},
+ {key:'tablet',label:'تبلت',domain:'digital',terms:['تبلت','tablet'],patterns:/(?:تبلت|tablet)/i},
+ {key:'headphone',label:'هدفون و هندزفری',domain:'digital',terms:['هدفون','هندزفری','هدست','ایرباد'],patterns:/(?:هدفون|هندزفری|هدست|ایرباد|ایرپاد)/i},
+ {key:'television',label:'تلویزیون',domain:'digital',terms:['تلویزیون','تلويزيون'],patterns:/(?:تلویزیون|تلويزيون|تلویزیون هوشمند)/i},
+ {key:'monitor',label:'مانیتور',domain:'digital',terms:['مانیتور','مانيتور','نمایشگر'],patterns:/(?:مانیتور|مانيتور|نمایشگر)/i},
+ {key:'camera',label:'دوربین',domain:'digital',terms:['دوربین','دوربین عکاسی','دوربین فیلمبرداری'],patterns:/(?:دوربین|camera)/i},
+ {key:'smartwatch',label:'ساعت هوشمند',domain:'digital',terms:['ساعت هوشمند','اسمارت واچ','smartwatch'],patterns:/(?:ساعت\s*هوشمند|اسمارت\s*واچ|smartwatch)/i},
+ {key:'printer',label:'پرینتر',domain:'digital',terms:['پرینتر','چاپگر'],patterns:/(?:پرینتر|چاپگر)/i},
+ {key:'refrigerator',label:'یخچال و فریزر',domain:'home',terms:['یخچال','فریزر','یخچال فریزر'],patterns:/(?:یخچال|فریزر)/i},
+ {key:'washing_machine',label:'ماشین لباسشویی',domain:'home',terms:['ماشین لباسشویی','لباسشویی'],patterns:/(?:ماشین\s*لباسشویی|لباسشویی)/i},
+ {key:'air_conditioner',label:'کولر گازی',domain:'home',terms:['کولر گازی','اسپلیت','تهویه مطبوع'],patterns:/(?:کولر\s*گازی|اسپلیت|تهویه\s*مطبوع)/i},
+ {key:'vacuum',label:'جاروبرقی',domain:'home',terms:['جاروبرقی','جارو برقی','جارو شارژی'],patterns:/(?:جارو\s*برقی|جاروبرقی|جارو\s*شارژی)/i},
+ {key:'kitchen_appliance',label:'لوازم آشپزخانه',domain:'home',terms:['مایکروویو','مایکروفر','اسپرسوساز','قهوه ساز','چای ساز','مخلوط کن','آبمیوه گیری','سرخ کن','پلوپز','توستر','ساندویچ ساز'],patterns:/(?:مایکروویو|مایکروفر|اسپرسوساز|قهوه\s*ساز|چای\s*ساز|مخلوط\s*کن|آبمیوه\s*گیری|سرخ\s*کن|پلوپز|توستر|ساندویچ\s*ساز)/i},
  {key:'train_ticket',label:'بلیط قطار',domain:'travel_ticket',terms:['بلیط قطار','بلیت قطار','قطار','سفر ریلی','رزرو قطار'],patterns:/(?:بلیط|بلیت|رزرو|سفر|برم|بروم).{0,30}(?:قطار|ریل)|(?:قطار|ریل).{0,30}(?:بلیط|بلیت|تهران|مشهد)|قطار/i},
  {key:'air_purifier',label:'دستگاه تصفیه هوا',domain:'home',terms:['تصفیه هوا','دستگاه تصفیه','پاکسازی هوا','هوای پاک','تصفیه کننده هوا'],patterns:/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|هوای\s*(?:اتاق|خانه).{0,20}(?:تمیز|پاک|آلوده))/i},
  {key:'sofa_cleaning',label:'محصول نظافت مبل پارچه‌ای',domain:'home',terms:['تمیزکننده مبل پارچه‌ای','شوینده مبل','بخارشوی مبل','نظافت مبل'],patterns:/(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی).{0,35}(?:مبل|مبلمان|پارچه)|(?:مبل|مبلمان).{0,35}(?:تمیز|شستن|شستشو|نظافت|پارچه)/i},
@@ -28,6 +41,19 @@ var CONCEPTS=[
 ];
 var GENERAL=new Set(['digikala','snappshop','torob','basalam','memarket','takhfifan','esam']);
 var CONCEPT_STORES={
+ laptop:['digikala','snappshop','torob','basalam','digiland','technolife','takhfifan','esam'],
+ tablet:['digikala','snappshop','torob','basalam','digiland','technolife','takhfifan','esam'],
+ headphone:['digikala','snappshop','torob','basalam','digido','janebi','gooshishop','technolife'],
+ television:['digikala','snappshop','torob','basalam','technolife'],
+ monitor:['digikala','snappshop','torob','basalam','technolife','meghdadit'],
+ camera:['digikala','snappshop','torob','basalam','technolife'],
+ smartwatch:['digikala','snappshop','torob','basalam','digido','gooshishop','technolife'],
+ printer:['digikala','snappshop','torob','basalam','technolife','meghdadit'],
+ refrigerator:['digikala','snappshop','torob','basalam'],
+ washing_machine:['digikala','snappshop','torob','basalam'],
+ air_conditioner:['digikala','snappshop','torob','basalam'],
+ vacuum:['digikala','snappshop','torob','basalam'],
+ kitchen_appliance:['digikala','snappshop','torob','basalam'],
  train_ticket:['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket','alibaba'],
  air_purifier:['digikala','snappshop','torob','basalam','memarket'],
  sofa_cleaning:['digikala','snappshop','torob','basalam','memarket'],
@@ -111,6 +137,25 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var domainWords=DOMAIN_SYNONYMS[need.domain]||[];
   if(domainWords.some(function(w){return need.normalized.indexOf(norm(w))>=0;})&&domainHit)score+=1;
   var isGeneral=GENERAL.has(sid);
+  /* General marketplaces may qualify from a parsed product concept plus an
+     explicit current category inventory in their KB. This is not a domain-only
+     fallback: the concept must be recognized, the store must declare products,
+     and cleaning/air-purifier safeguards below still apply. */
+  if(need.concept&&isGeneral&&domainHit&&!direct){
+   var declaredProducts=norm([].concat(s.products||[],s.aliases||[]).join(' '));
+   var categoryInventory={
+    digital:['دیجیتال','موبایل','گوشی','لپ تاپ','تبلت','کامپیوتر','لوازم جانبی'],
+    home:['لوازم خانگی','آشپزخانه','خانه','یخچال','جاروبرقی','تصفیه هوا'],
+    fashion:['پوشاک','لباس','کیف','کفش'],
+    beauty:['آرایشی','بهداشتی','مراقبت پوست','ضد آفتاب','کرم'],
+    health:['سلامت','بهداشتی','دارو','مکمل'],
+    furniture:['مبلمان','میز','صندلی','دکوراسیون'],
+    travel_ticket:['بلیط','سفر','قطار','هواپیما','اتوبوس']
+   }[need.domain]||[];
+   if(categoryInventory.some(function(term){return declaredProducts.indexOf(norm(term))>=0;})){
+    score+=4;direct=true;proof.push('declared-current-category-inventory');
+   }
+  }
   if(isGeneral&&domainHit&&direct)score+=1;
   if(need.concept==='sofa_cleaning'&&isGeneral&&domainHit)score+=3;
   var blockedConcepts=Array.isArray(s.hooshyarExcludeConcepts)?s.hooshyarExcludeConcepts:[];
@@ -124,14 +169,14 @@ function retrieveCandidates(need,catalog,eligibleIds){
   });
   if(need.concept==='mobile_phone'&&!isGeneral&&!hasMobilePhoneProduct&&(s.domains||[]).indexOf('furniture')>=0){score=-100;proof=[];}
   /* Furniture-domain overlap is never evidence for an air purifier. Allow an unusual cross-category merchant only when its KB explicitly lists air-purifier products. */
-  if(need.concept==='air_purifier'&&furnitureMerchant&&!hasAirPurifierProduct){score=-100;proof=[];}
+  if(need.concept==='air_purifier'&&!hasAirPurifierProduct){score=-100;proof=[];direct=false;}
   var hasCleaningProduct=[].concat(s.products||[]).some(function(v){
    /* Cleaning intent requires an actual cleaning appliance/product, not a generic
       home, beauty or supermarket taxonomy signal. */
    return /(?:تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شویی|دستگاه\s*مبل\s*شوی|بخارشوی|فرش\s*شوی(?:ی)?|جاروبرقی|جارو\s*شارژی)/i.test(norm(v));
   });
   if(need.concept==='sofa_cleaning'&&hasCleaningProduct&&!direct){score+=4;direct=true;proof.push('sofa-cleaning-appliance');}
-  if(need.concept==='sofa_cleaning'&&furnitureMerchant&&!hasCleaningProduct){score=-100;proof=[];}
+  if(need.concept==='sofa_cleaning'&&!hasCleaningProduct){score=-100;proof=[];direct=false;}
   var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized);
   var exclusions=Array.isArray(s.exclude||s.exclusions)?(s.exclude||s.exclusions).slice():[];
   if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
