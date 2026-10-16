@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.84';
+const VERSION='7.0.0-store-browser.85';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -67,7 +67,7 @@ function storeSearchUrl(id,q){
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
  if(key==='memarket')return genericMerchantSearchUrl(key,s);
  /* These entries only had guessed /search?q= adapters, not confirmed merchant routes. */
- if(['meghdadit','shavaz','jeanswest','sabzgostar'].indexOf(key)>=0)return '';
+ if(['shavaz','jeanswest','sabzgostar'].indexOf(key)>=0)return '';
  if(['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket','khaneyeiran','iransetkor'].indexOf(key)>=0)return genericMerchantSearchUrl(key,s);
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
