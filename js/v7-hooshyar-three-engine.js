@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.10';
+var VERSION='7.0.0-hooshyar-three-engine.11';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -64,8 +64,8 @@ function retrieveCandidates(need,catalog,eligibleIds){
  var broadTerms=['خانه','دیجیتال','کالا','محصول','فروشگاه','عمومی','لوازم','پوشاک','سلامت','بهداشت','اکسسوری','مد','ورزش','سفر','خرید','فروش'];
  function evidenceTerms(query,item){
   var q=norm(query),out=[];
-  var genericProductWords=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد'];
-  var terms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[],item.querySignals||[]).reduce(function(all,value){
+  var genericProductWords=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد','خواب','اتاق','مناسب','محل','کار','دنبال','هستم','چیزی','میخواهم','میخوام','روزمره'];
+  var terms=[].concat(item.products||[]).reduce(function(all,value){
    String(value==null?'':value).split(/[,،;؛\n]+/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){all.push(x);});
    return all;
   },[]);
@@ -85,7 +85,9 @@ function retrieveCandidates(need,catalog,eligibleIds){
  }
  Object.keys(catalog||{}).forEach(function(id){
   var s=catalog[id]||{},sid=String(id).toLowerCase();
-  var fields=[s.name].concat(s.domains||[],s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[],s.semanticText||[]);
+  /* Only explicit current product inventory is direct evidence. Domains, querySignals,
+     generated semanticText and exclusions must never make a merchant eligible. */
+  var fields=[].concat(s.products||[]);
   var text=norm(fields.join(' ')),score=base.indexOf(sid)>=0?3:0,proof=[];
   var concept=CONCEPTS.find(function(c){return c.key===need.concept;});
   var productTerms=concept?concept.terms:[need.requestedProduct];
@@ -113,17 +115,19 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='sofa_cleaning'&&isGeneral&&domainHit)score+=3;
   if(need.concept==='mobile_accessory'&&['meghdadit','takhfifan','esam'].indexOf(sid)>=0)score=-100;
   var furnitureMerchant=!isGeneral&&((s.domains||[]).indexOf('furniture')>=0||(s.intents||[]).indexOf('furniture')>=0);
-  var hasAirPurifierProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
+  var hasAirPurifierProduct=[].concat(s.products||[]).some(function(v){
    return /(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|تصفیه\s*کننده\s*هوا|air\s*purifier)/i.test(norm(v));
   });
-  var hasMobilePhoneProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
+  var hasMobilePhoneProduct=[].concat(s.products||[]).some(function(v){
    return /(?:موبایل|گوشی|تلفن\s*همراه|تبلت|کالای\s*دیجیتال|smartphone|mobile\s*phone)/i.test(norm(v));
   });
   if(need.concept==='mobile_phone'&&!isGeneral&&!hasMobilePhoneProduct&&(s.domains||[]).indexOf('furniture')>=0){score=-100;proof=[];}
   /* Furniture-domain overlap is never evidence for an air purifier. Allow an unusual cross-category merchant only when its KB explicitly lists air-purifier products. */
   if(need.concept==='air_purifier'&&furnitureMerchant&&!hasAirPurifierProduct){score=-100;proof=[];}
-  var hasCleaningProduct=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[]).some(function(v){
-   return /(?:شوینده|تمیزکننده|نظافت|مبل\s*شویی|دستگاه\s*مبل\s*شوی|بخارشوی|فرش\s*شوی(?:ی)?|جاروبرقی)/i.test(norm(v));
+  var hasCleaningProduct=[].concat(s.products||[]).some(function(v){
+   /* Cleaning intent requires an actual cleaning appliance/product, not a generic
+      home, beauty or supermarket taxonomy signal. */
+   return /(?:تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شویی|دستگاه\s*مبل\s*شوی|بخارشوی|فرش\s*شوی(?:ی)?|جاروبرقی|جارو\s*شارژی)/i.test(norm(v));
   });
   if(need.concept==='sofa_cleaning'&&hasCleaningProduct&&!direct){score+=4;direct=true;proof.push('sofa-cleaning-appliance');}
   if(need.concept==='sofa_cleaning'&&furnitureMerchant&&!hasCleaningProduct){score=-100;proof=[];}
