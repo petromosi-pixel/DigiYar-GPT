@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.82';
+const VERSION='7.0.0-store-browser.83';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -396,7 +396,7 @@ function openBrowser(query,list){
          return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
        });
      box.style.display='block';
-     tabsAndResults(usable);
+     tabsAndResults(usable,semanticPlan.directorySearch===true);
    }catch(error){
      console.error('DigiYar Store Browser render:',error);
      box.style.display='block';
@@ -426,7 +426,7 @@ function openBrowser(query,list){
  };
  window.addEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
 
- function tabsAndResults(usable){
+ function tabsAndResults(usable,directoryMode){
    if(!Array.isArray(usable)||!usable.length){
      box.innerHTML='<div class="v6-auto-head">برای این درخواست، فروشگاهی با مسیر جست‌وجوی مستقیمِ تأییدشده پیدا نشد؛ لینک صفحهٔ اصلی یا جست‌وجوی حدسی نمایش داده نمی‌شود.</div>';
      return;
@@ -445,6 +445,21 @@ function openBrowser(query,list){
         resolver. Subcategory selection may inform the query, but it cannot
         promote a homepage/category URL into a confirmed search result. */
      const u=storeSearchUrl(active.id,searchQuery);
+     const merchantCatalog=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};
+     const merchant=merchantCatalog[active.id]||{};
+     const homepage=HOME[active.id]||merchant.homepage||'';
+     /* Directory lookups are about finding a merchant, not searching its catalog.
+        Use a known official homepage for those queries; never label it as product results. */
+     if(directoryMode){
+       const directoryUrl=homepage||u;
+       if(!directoryUrl){
+         resultBody.innerHTML='<div class="v6-auto-status">نشانی معتبر این فروشگاه هنوز در پایگاه دانش ثبت نشده است.</div><div class="v6-auto-actions"><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
+         return;
+       }
+       const directoryLabel=homepage?'ورود به فروشگاه '+active.name:'مشاهده نتایج در '+active.name;
+       resultBody.innerHTML='<div class="v6-auto-status">'+(homepage?'این پیوند صفحهٔ رسمی فروشگاه را باز می‌کند.':'این پیوند به مسیر جست‌وجوی ثبت‌شدهٔ فروشگاه می‌رود.')+'</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,directoryUrl))+'">'+esc(directoryLabel)+'</a><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
+       return;
+     }
      if(!u){resultBody.innerHTML='<div class="v6-auto-status">مسیر جست‌وجوی مستقیم این فروشگاه هنوز تأیید نشده؛ برای جلوگیری از نمایش صفحهٔ اصلی یا لینک نامرتبط، نتیجهٔ مستقیم ارائه نمی‌شود.</div><div class="v6-auto-actions"><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';return;}
      resultBody.innerHTML='<div class="v6-auto-status">این لینک مستقیماً جست‌وجوی محصول در فروشگاه را باز می‌کند.</div><div class="v6-auto-actions"><a class="v6-auto-link" target="_blank" rel="noopener noreferrer" href="'+esc(affiliateUrl(active.id,u))+'">مشاهده نتایج در '+esc(active.name)+'</a><button type="button" class="v6-auto-compare-btn" data-v7-open-comparison="1">مقایسه محصولات</button></div>';
    }
