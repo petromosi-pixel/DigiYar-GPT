@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.31';
+var VERSION='7.0.0-store-business-domains.32';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین عمومی']},
@@ -42,7 +42,7 @@ maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دو�
 karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']},
 iransetkor:{name:'ایران ستکور',homepage:'https://iransetkor.com/',domains:["furniture","home"],products:["میز و صندلی","تخت خواب","مبل تخت خواب شو","کمد","تشک","میز تحریر"],aliases:["مبلمان و دکوراسیون","خانه"]},
 '19kala':{name:'۱۹کالا',hooshyarExcludeConcepts:["mobile_phone","mobile_accessory"],homepage:'https://www.19kala.com/',domains:["digital"],products:["موبایل","تبلت","ساعت هوشمند","لوازم جانبی موبایل","لوازم خانگی","کالای دیجیتال"],aliases:["کالای دیجیتال"]},
-banistyle:{name:'بانی استایل',homepage:'https://banistyle.com/',domains:["fashion"],products:["لباس زنانه","لباس مردانه","کفش","پوشاک","اکسسوری"],aliases:["پوشاک"]},
+banistyle:{name:'بانی استایل',hooshyarExcludeConcepts:["mobile_accessory"],homepage:'https://banistyle.com/',domains:["fashion"],products:["لباس زنانه","لباس مردانه","کفش","پوشاک","اکسسوری"],aliases:["پوشاک"]},
 aysoocollection:{name:'آیسو کالکشن',homepage:'https://aysoocollection.com/',domains:["fashion"],products:["پوشاک زنانه","پوشاک مردانه","لباس","پوشاک"],aliases:["پوشاک"]},
 daru24:{name:'دارو۲۴',homepage:'https://daru24.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
 betadent:{name:'بتادنت',homepage:'https://betadent.com/',domains:["health","medicine"],products:["دندانپزشکی","تجهیزات دندانپزشکی","محصولات سلامت دهان"],aliases:["سلامت","داروخانه"]},
@@ -79,7 +79,7 @@ kala360:{name:'کالا۳۶۰',hooshyarExcludeConcepts:["mobile_phone","mobile_a
 mobliran:{name:'مبل ایران',homepage:'https://mobliran.com/',domains:["furniture","home"],products:["مبل،مبلمان،سرویس خواب،میز ناهارخوری"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
 choobineh:{name:'چوبینه',homepage:'https://choobineh.com/',domains:["furniture","home"],products:["مبلمان،محصولات چوبی،میز،صندلی"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
 moblmarket:{name:'مبل مارکت',homepage:'https://moblmarket.com/',domains:["furniture","home"],products:["مبل،مبلمان،میز،سرویس خواب"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
-digistyle:{name:'دیجی‌استایل',homepage:'https://www.digistyle.com/',domains:["fashion","beauty"],products:["پوشاک،کفش،کیف،اکسسوری"],aliases:["پوشاک و مد","آرایشی و بهداشتی"]},
+digistyle:{name:'دیجی‌استایل',hooshyarExcludeConcepts:["mobile_accessory"],homepage:'https://www.digistyle.com/',domains:["fashion","beauty"],products:["پوشاک،کفش،کیف،اکسسوری"],aliases:["پوشاک و مد","آرایشی و بهداشتی"]},
 shixon:{name:'شیکسون',homepage:'https://shixon.com/',domains:["fashion"],products:["پوشاک،لباس،کفش،کیف"],aliases:["پوشاک و مد"]},
 limoo:{name:'لیمو',homepage:'https://limoo.com/',domains:["fashion"],products:["پوشاک،لباس،کیف،کفش"],aliases:["پوشاک و مد"]},
 mootanroo:{name:'مو تن رو',homepage:'https://mootanroo.com/',domains:["beauty","health"],products:["لوازم آرایش،کرم،ضد آفتاب،مراقبت پوست"],aliases:["آرایشی و بهداشتی","سلامت"]},
