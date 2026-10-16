@@ -1,18 +1,19 @@
-/* DigiYar global theme contract.
-   The app theme switch writes body.v6-dark; this file makes that single state
-   authoritative for existing and future UI components. New components should
-   consume --dy-* tokens instead of hard-coded light colors. */
+/* DigiYar Final2 — single global theme contract.
+   The theme controller owns only body.v6-dark. All components consume --dy-*.
+   Do not add component-specific dark-mode rules to other files.
+   Buttons are intentionally excluded from color/background overrides so their
+   existing brand colors remain unchanged in both themes. */
 :root{
   color-scheme:light;
   --dy-bg:#f3f6fb;
-  --dy-surface:#ffffff;
-  --dy-surface-raised:#ffffff;
-  --dy-control:#ffffff;
+  --dy-surface:#fff;
+  --dy-surface-raised:#fff;
+  --dy-control:#fff;
   --dy-text:#1d2b49;
   --dy-muted:#718096;
   --dy-border:#dfe6ef;
   --dy-accent:#2a5db0;
-  --dy-accent-contrast:#ffffff;
+  --dy-accent-contrast:#fff;
   --dy-shadow:0 8px 25px rgba(15,29,53,.08);
   --dy-focus:#6aa7ff;
 }
@@ -26,199 +27,104 @@ body.v6-dark{
   --dy-muted:#b8c2d1;
   --dy-border:rgba(255,255,255,.14);
   --dy-accent:#2563eb;
-  --dy-accent-contrast:#ffffff;
+  --dy-accent-contrast:#fff;
   --dy-shadow:0 8px 25px rgba(0,0,0,.32);
   --dy-focus:#8ebcff;
 }
+html:has(body.v6-dark){color-scheme:dark;background:var(--dy-bg)!important}
 body.v6-dark{
-  background-color:var(--dy-bg)!important;
-  color:var(--dy-text);
+  background:var(--dy-bg)!important;
+  background-image:none!important;
+  color:var(--dy-text)!important;
 }
-/* Common semantic surfaces automatically follow the app theme. */
+/* Semantic surface contract: legacy and newly added layout surfaces. */
 body.v6-dark :where(
-  .card,.section-title,.v5-section-heading,.footer-panel,.install-prompt,
+  main,section,article,aside,footer,form,dialog,[role="dialog"],
+  .card,.main-header,.main-footer,.footer-panel,.install-prompt,
   [class*="-card"],[class*="-panel"],[class*="-modal"],[class*="-popover"],
   [class*="-dropdown"],[class*="-accordion"],[class*="-results"],
-  [class*="-result-list"],[class*="-body"],[class*="-sheet"]
-){
+  [class*="-result-list"],[class*="-sheet"],[class*="-container"],
+  [class*="-wrapper"],[class*="-surface"],[class*="-host"]
+):not(button):not(a):not(input):not(select):not(textarea):not(button *){
   color:var(--dy-text);
   border-color:var(--dy-border);
-}
-body.v6-dark :where(
-  .card,.section-title,.v5-section-heading,.footer-panel,.install-prompt,
-  [class*="-card"],[class*="-panel"],[class*="-modal"],[class*="-popover"],
-  [class*="-dropdown"],[class*="-accordion"],[class*="-results"],
-  [class*="-result-list"],[class*="-sheet"]
-){
   background-color:var(--dy-surface)!important;
-  box-shadow:var(--dy-shadow);
+  background-image:none;
 }
-body.v6-dark :where(h1,h2,h3,h4,h5,h6,p,label,legend,summary,li,dt,dd){
+body.v6-dark :where(html,body,.app-shell,#splashScreen,.splash-screen,.splash-content,
+  .footer-panels,.v5-smart-search-bar,.digiyar-chat-messages,.v5-inline-results,
+  .recommendations,.digiyar-products,.popular-discovery-panel,.popular-discovery-layout,
+  .popular-discovery-categories,.popular-discovery-results,.popular-discovery-domain-head,
+  .popular-discovery-subcats,.popular-discovery-store-grid,.popular-discovery-store-top
+):not(button):not(a):not(button *){
+  background-color:transparent!important;
+  background-image:none!important;
   color:var(--dy-text);
 }
-body.v6-dark :where(small,.muted,.subtitle,.input-hint,.storage-note,.footer-copy,.footer-note){
-  color:var(--dy-muted);
+/* Text is themed centrally; descendants of buttons are excluded to retain
+   the authored button foreground and contrast. */
+body.v6-dark :where(h1,h2,h3,h4,h5,h6,p,label,legend,summary,li,dt,dd,strong,em,span)
+:not(button *):not(a[class*="button"] *){
+  color:var(--dy-text);
+}
+body.v6-dark :where(small,.muted,.subtitle,.hint,.input-hint,.storage-note,
+  .footer-copy,.footer-note,.popular-discovery-empty):not(button *){
+  color:var(--dy-muted)!important;
 }
 body.v6-dark :where(input,select,textarea){
   color:var(--dy-text)!important;
-  background-color:var(--dy-control)!important;
+  background:var(--dy-control)!important;
   border-color:var(--dy-border)!important;
   color-scheme:dark;
 }
-body.v6-dark :where(input,select,textarea)::placeholder{color:var(--dy-muted)!important;opacity:1}
-body.v6-dark :where(button,[role="button"],a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible){
-  outline-color:var(--dy-focus);
-}
+body.v6-dark :where(input,textarea)::placeholder{color:var(--dy-muted)!important;opacity:1}
+body.v6-dark :where(button,[role="button"],a:focus-visible,input:focus-visible,
+  select:focus-visible,textarea:focus-visible){outline-color:var(--dy-focus)}
 body.v6-dark :where(button,input[type="button"],input[type="submit"],select,textarea){
   border-color:var(--dy-border);
 }
-/* The store-discovery card contains nested controls with their own legacy
-   !important declarations; normalize every nested layer centrally here. */
+/* The discovery panel contains hand-authored gradients and brand buttons.
+   Only its non-interactive surfaces are normalized here. */
 body.v6-dark .popular-discovery{
   --pd-bg:var(--dy-surface);
   --pd-panel:var(--dy-surface-raised);
   --pd-text:var(--dy-text);
   --pd-muted:var(--dy-muted);
   --pd-border:var(--dy-border);
+  color:var(--dy-text)!important;
   background:var(--dy-surface)!important;
   background-image:none!important;
-  color:var(--dy-text)!important;
   border-color:var(--dy-border)!important;
   box-shadow:var(--dy-shadow)!important;
 }
-body.v6-dark .popular-discovery :where(.popular-discovery-toggle,.popular-discovery-panel,.popular-discovery-bottom-toggle,.popular-discovery-intro,.popular-discovery-accordion,.popular-discovery-accordion-trigger,.popular-discovery-accordion-panel,.popular-discovery-empty){
+body.v6-dark .popular-discovery :where(
+  .popular-discovery-panel,.popular-discovery-intro,.popular-discovery-accordion,
+  .popular-discovery-accordion-panel,.popular-discovery-empty,.popular-discovery-store
+):not(button):not(a){
+  color:var(--dy-text)!important;
   background:var(--dy-surface-raised)!important;
   background-image:none!important;
-  color:var(--dy-text)!important;
   border-color:var(--dy-border)!important;
   box-shadow:none!important;
 }
-body.v6-dark .popular-discovery :where(.popular-discovery-toggle h2,.popular-discovery-accordion-title-wrap strong,.popular-discovery-store-name,.popular-discovery-accordion-trigger span){
-  color:var(--dy-text)!important;
-}
-body.v6-dark .popular-discovery :where(.popular-discovery-accordion-title-wrap small,.popular-discovery-intro span,.popular-discovery-empty){
-  color:var(--dy-muted)!important;
-}
+body.v6-dark .popular-discovery :where(
+  .popular-discovery-accordion-title-wrap strong,.popular-discovery-store-name
+){color:var(--dy-text)!important}
+body.v6-dark .popular-discovery :where(
+  .popular-discovery-accordion-title-wrap small,.popular-discovery-intro span,
+  .popular-discovery-empty
+){color:var(--dy-muted)!important}
 body.v6-dark .popular-discovery :where(.popular-discovery-search,input,select,textarea){
   background:var(--dy-control)!important;
   color:var(--dy-text)!important;
   border-color:var(--dy-border)!important;
 }
-body.v6-dark .popular-discovery :where(.popular-discovery-category,.popular-discovery-type-tabs button,.popular-discovery-store){
-  background:var(--dy-surface-raised)!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
-  box-shadow:none!important;
-}
-body.v6-dark .popular-discovery .popular-discovery-category[aria-pressed="true"]{
-  background:#38232b!important;color:#ffdce2!important;border-color:#87404d!important;
-}
 body.v6-dark .popular-discovery .popular-discovery-store-logo{background:#fff!important}
-body.v6-dark .popular-discovery .popular-discovery-store-monogram{background:#202d40!important;color:var(--dy-text)!important;border-color:var(--dy-border)!important}
-/* Legacy theme selectors remain supported, but the built-in switch uses
-   body.v6-dark. Do not consult prefers-color-scheme: DigiYar owns the theme. */
-
-/* Global dark theme coverage. The theme toggle is the sole source of truth:
-   body.v6-dark + semantic tokens. Component-specific runtime overrides were
-   removed so late-loaded UI cannot paint over these rules. */
-body.v6-dark .main-header,
-body.v6-dark .main-footer,
-body.v6-dark .v6-footer-nav{
-  background:var(--dy-surface)!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
+body.v6-dark .popular-discovery .popular-discovery-store-monogram{
+  background:#202d40!important;color:var(--dy-text)!important;border-color:var(--dy-border)!important
 }
-body.v6-dark .app-shell :where(.card,.v5-result-card,.v5-profile-card,.v5-profile-completion,.v5-smart-search-card,.v5-deals-card,.v5-popular-card,.footer-panel,.install-prompt,.v6-nav-sheet,.v6-account-card,.v6-sheet-action){
-  background-color:var(--dy-surface)!important;
-  color:var(--dy-text);
-  border-color:var(--dy-border)!important;
-  box-shadow:var(--dy-shadow);
-}
-body.v6-dark .app-shell :where(h1,h2,h3,h4,h5,h6,.section-title,.v5-card-subtitle,.header-brand strong,.footer-brand,.footer-panel strong){
-  color:var(--dy-text);
-}
-body.v6-dark .header-brand span,
-body.v6-dark .app-shell :where(p,small,.muted,.hint,.footer-copy,.footer-note,.input-hint,.storage-note){
-  color:var(--dy-muted);
-}
-body.v6-dark .app-shell :where(input,select,textarea){
-  background:var(--dy-control)!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
-}
-body.v6-dark .app-shell :where(input,textarea)::placeholder{color:var(--dy-muted)!important}
-body.v6-dark .popular-discovery{
-  background:var(--dy-surface)!important;
-  background-image:none!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
-}
-body.v6-dark .popular-discovery :where(
-  .popular-discovery-panel,.popular-discovery-intro,.popular-discovery-layout,
-  .popular-discovery-categories,.popular-discovery-results,.popular-discovery-domain-head,
-  .popular-discovery-subcats,.popular-discovery-store-grid,.popular-discovery-store,
-  .popular-discovery-store-top,.popular-discovery-empty,.popular-discovery-footnote
-){
-  background:var(--dy-surface)!important;
-  background-image:none!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
-  box-shadow:none!important;
-}
-body.v6-dark .popular-discovery :where(
-  .popular-discovery-toggle,.popular-discovery-bottom-toggle,
-  .popular-discovery-accordion,.popular-discovery-accordion-trigger,
-  .popular-discovery-accordion-chevron,.popular-discovery-accordion-panel
-){
-  background:var(--dy-surface-raised)!important;
-  background-image:none!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
-  box-shadow:none!important;
-}
-body.v6-dark .popular-discovery .popular-discovery-toggle{
-  background:linear-gradient(115deg,#542033 0%,#7c263b 55%,#493047 100%)!important;
-  color:#fff!important;
-}
+/* Preserve the existing pink discovery header/button and all other button colors. */
+body.v6-dark .popular-discovery .popular-discovery-toggle,
 body.v6-dark .popular-discovery .popular-discovery-toggle :where(h2,p,span,svg){
   color:#fff!important;
-}
-body.v6-dark .popular-discovery :where(
-  .popular-discovery-intro strong,.popular-discovery-intro span,
-  .popular-discovery-domain-head h3,.popular-discovery-domain-head p,
-  .popular-discovery-category,.popular-discovery-category-count,
-  .popular-discovery-store h4,.popular-discovery-store small,
-  .popular-discovery-store p,.popular-discovery-footnote
-){
-  color:var(--dy-text)!important;
-}
-body.v6-dark .popular-discovery :where(.popular-discovery-search,.popular-discovery-category,.popular-discovery-subcat,.popular-discovery-type-tabs button,.popular-discovery-store){
-  background:var(--dy-control)!important;
-  color:var(--dy-text)!important;
-  border-color:var(--dy-border)!important;
-}
-body.v6-dark .popular-discovery .popular-discovery-category[aria-pressed="true"],
-body.v6-dark .popular-discovery .popular-discovery-type-tabs button[aria-pressed="true"]{
-  background:#38232b!important;
-  color:#ffe5ea!important;
-  border-color:#87404d!important;
-}
-body.v6-dark .popular-discovery .popular-discovery-category-icon,
-body.v6-dark .popular-discovery .popular-discovery-store-monogram{
-  background:#202d40!important;
-  color:#f1f5f9!important;
-  border-color:var(--dy-border)!important;
-}
-body.v6-dark .popular-discovery .popular-discovery-store-logo{background:#fff!important}
-body.v6-dark .popular-discovery .popular-discovery-store-link{
-  background:linear-gradient(110deg,#8f1734,#bd354a)!important;
-  color:#fff!important;
-}
-body.v6-dark .popular-discovery .popular-discovery-chevron{
-  color:#fff!important;
-  border-color:rgba(255,255,255,.38)!important;
-}
-body.v6-dark .popular-discovery :where(.popular-discovery-store-unavailable,.popular-discovery-empty){
-  color:var(--dy-muted)!important;
-  border-color:var(--dy-border)!important;
 }
