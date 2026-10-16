@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.8';
+var VERSION='7.0.0-popular-store-discovery.9';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -43,7 +43,7 @@ var FEATURED={
  education:[['faradars','برای یادگیری مهارت‌های تخصصی'],['maktabkhooneh','برای دوره‌های آموزشی آنلاین'],['quera','برای یادگیری و تمرین برنامه‌نویسی'],['sabzlearn','برای آموزش مهارت‌های دیجیتال']],
  affiliate_network:[]
 };
-var state={type:'general',domain:'digital',query:'',openCategories:{general:true}};
+var state={type:'general',domain:'digital',query:'',openCategories:{}};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function normalize(s){return String(s||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.catalog?kb.catalog:{};}
@@ -74,7 +74,7 @@ function render(){
  var STORE_LOGOS={
  'اسنپ شاپ':'اسنپ شاپ.webp','اسنپ‌شاپ':'اسنپ شاپ.webp','ایسام':'ایسام.webp','ایسمینار':'ایسمینار.webp','باسلام':'باسلام.webp','بانی مد':'بانی مد.webp','به روز کالا':'به روز کالا.webp','به‌روزکالا':'به روز کالا.webp','تخفیفان':'تخفیفان.webp','ترب':'ترب.webp','تکنولایف':'تکنولایف.webp','جانبی':'جانبی.webp','جین وست':'جین وست.webp','خانومی':'خانومی.webp','داروخانه آنلاین':'داروخانه آنلاین.webp','داروکده':'داروکده.webp','دایان شاپ':'دایان شاپ.webp','درمان کالا':'درمان کالا.webp','دیجی دو':'دیجی دو.png','دیجی‌دو':'دیجی دو.png','دیجی لند':'دیجی لند.webp','دیجی‌لند':'دیجی لند.webp','دیجی کالا':'دیجی کالا.webp','دیجی‌کالا':'دیجی کالا.webp','سفر می':'سفر می.webp','سفری می':'سفر می.webp','سولو کالا':'سولو کالا.webp','شاواز':'شاواز.webp','شب':'شب.webp','مثبت سبز':'مثبت سبز.webp','مدیسه':'مدیسه.webp','مقداد آی تی':'مقداد آی تی.webp','مقداد آی‌تی':'مقداد آی تی.webp','مکتب خونه':'مکتب خونه.webp','مکتب‌خونه':'مکتب خونه.webp','می مارکت':'می مارکت.webp','می‌مارکت':'می مارکت.webp','نشاط رخ':'نشاط رخ.webp','پینکت':'پینکت.webp','کارنامه':'کارنامه.webp','گوشی شاپ':'گوشی شاپ.webp','گوشی‌شاپ':'گوشی شاپ.webp'
 };
-function card(s,domainTitle){var c=catalog[s.id]||{},url=s.homepage||c.homepage||'',logo=STORE_LOGOS[String(s.name||'').trim()],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>';return '<article class="popular-discovery-store">'+brand+'<div class="popular-discovery-store-info"><h4>'+esc(s.name)+'</h4><p>'+esc(s.tagline)+'</p></div>'+(url?'<a class="popular-discovery-store-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">ورود <span aria-hidden="true">↗</span></a>':'<span class="popular-discovery-store-link">نشانی در حال تکمیل</span>')+'</article>';}
+function card(s,domainTitle){var c=catalog[s.id]||{},url=s.homepage||c.homepage||'',logo=STORE_LOGOS[String(s.name||'').trim()],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
  function accordion(key,title,icon,description,items){
   var open=!!state.openCategories[key],cards=items.map(function(s){return card(s,title);}).join('');
   if(q&&!items.length)return '';
@@ -94,7 +94,7 @@ function card(s,domainTitle){var c=catalog[s.id]||{},url=s.homepage||c.homepage|
  var typeTabs='<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
  root.innerHTML=typeTabs+'<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
- root.querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type'),same=state.type===next;if(same){if(next==='general'){state.openCategories.general=!state.openCategories.general;}else{var anyOpen=domains.some(function(d){return !!state.openCategories[d];});domains.forEach(function(d){state.openCategories[d]=!anyOpen;});}}else{state.type=next;if(next==='general'){state.openCategories.general=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}}render();});});
+ root.querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type'),same=state.type===next;if(same){if(next==='general'){state.openCategories.general=!state.openCategories.general;}else{var anyOpen=domains.some(function(d){return !!state.openCategories[d];});domains.forEach(function(d){state.openCategories[d]=!anyOpen;});}}else{state.type=next;state.openCategories.general=false;domains.forEach(function(d){state.openCategories[d]=false;});}render();});});
 
 }
 function init(){
