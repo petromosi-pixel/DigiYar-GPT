@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.17';
+  const VERSION='7.0.0-hooshyar-local.18';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -300,8 +300,13 @@
     const threeEngine=window.DigiYarHooshyarThreeEngine;
     const threeEngineResult=!directory&&threeEngine&&typeof threeEngine.resolve==='function'
       ?threeEngine.resolve(raw,catalog,ids,classified):null;
-    if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)&&threeEngineResult.eligibleStoreIds.length){
-      ids=threeEngineResult.eligibleStoreIds.filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+    if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)){
+      // The three-engine KB result is authoritative, including an empty set.
+      // Never revive broad legacy/category candidates when product evidence
+      // says that no merchant is relevant to this exact request.
+      ids=threeEngineResult.eligibleStoreIds
+        .map(id=>String(id&&id.id||id||'').toLowerCase())
+        .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
     if(directory){
