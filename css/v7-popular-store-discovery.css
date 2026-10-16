@@ -200,3 +200,47 @@ html.dark .popular-discovery .popular-discovery-store-link,body.dark .popular-di
 
 /* Respect native hidden state for failed-logo fallbacks. */
 .popular-discovery-store-monogram[hidden],.popular-discovery-store-logo[hidden]{display:none!important}
+
+
+/* V7.9: 4-column logo/name tiles, 3mm spacing, fully themed internal dark mode. */
+.popular-discovery{margin-top:11px!important;--pd-bg:var(--surface,#fff);--pd-panel:var(--surface,#fff);--pd-text:var(--text,#1d2b49);--pd-muted:var(--soft,#77839a);--pd-border:var(--border,#e0e7f0);background:var(--pd-bg)!important;color:var(--pd-text)!important}
+.popular-discovery-panel{color:var(--pd-text)!important}
+.popular-discovery-type-tabs button{color:#242016!important}
+.popular-discovery-type-tabs button[data-store-type="general"]{background:#e0b735!important;border-color:#cda522!important;color:#322805!important}
+.popular-discovery-type-tabs button[data-store-type="specialist"]{background:#2b8c82!important;border-color:#23766f!important;color:#fff!important}
+.popular-discovery-accordion{background:var(--pd-panel)!important;border-color:var(--pd-border)!important;color:var(--pd-text)!important}
+.popular-discovery-accordion-trigger{color:var(--pd-text)!important;background:transparent!important}
+.popular-discovery-accordion-icon{background:transparent!important;color:var(--pd-text)!important}
+.popular-discovery-accordion-title-wrap strong{color:var(--pd-text)!important}
+.popular-discovery-accordion-title-wrap small{color:var(--pd-muted)!important}
+.popular-discovery-accordion-chevron{color:var(--pd-muted)!important}
+.popular-discovery-accordion-panel{background:transparent!important;border-color:var(--pd-border)!important}
+.popular-discovery-accordion-panel .popular-discovery-store-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+.popular-discovery-store{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:center!important;gap:5px!important;min-width:0!important;min-height:0!important;padding:4px 2px!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-align:center!important;text-decoration:none!important;color:var(--pd-text)!important;cursor:pointer!important}
+.popular-discovery-store:hover,.popular-discovery-store:focus-visible{transform:none!important;border:0!important;background:transparent!important;box-shadow:none!important;outline:2px solid var(--pd-border)!important;outline-offset:2px!important}
+.popular-discovery-store-logo,.popular-discovery-store-monogram{display:grid!important;place-items:center!important;object-fit:contain!important;flex:0 0 38px!important;width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;margin:0 auto!important;border:0!important;border-radius:9px!important;background:#fff!important;color:#304866!important;font-size:.72rem!important;font-weight:900!important;line-height:1!important}
+.popular-discovery-store-name{display:block!important;width:100%!important;max-width:100%!important;overflow:hidden!important;color:var(--pd-text)!important;font-size:.7rem!important;font-weight:750!important;line-height:1.45!important;text-align:center!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.popular-discovery-store-info,.popular-discovery-store p,.popular-discovery-store-link{display:none!important}
+.popular-discovery-store-unavailable{cursor:default!important;opacity:.72!important}
+.popular-discovery-empty{color:var(--pd-muted)!important;background:transparent!important;border-color:var(--pd-border)!important}
+html.dark .popular-discovery,body.dark .popular-discovery,[data-theme="dark"] .popular-discovery{--pd-bg:#111927;--pd-panel:#172131;--pd-text:#f1f5f9;--pd-muted:#b8c2d1;--pd-border:rgba(255,255,255,.14);background:var(--pd-bg)!important;color:var(--pd-text)!important;border-color:var(--pd-border)!important;box-shadow:0 8px 25px rgba(0,0,0,.32)!important}
+html.dark .popular-discovery .popular-discovery-panel,body.dark .popular-discovery .popular-discovery-panel,[data-theme="dark"] .popular-discovery .popular-discovery-panel{background:transparent!important;color:#f1f5f9!important}
+html.dark .popular-discovery .popular-discovery-accordion,body.dark .popular-discovery .popular-discovery-accordion,[data-theme="dark"] .popular-discovery .popular-discovery-accordion{background:#172131!important;border-color:rgba(255,255,255,.14)!important}
+html.dark .popular-discovery .popular-discovery-accordion-trigger,body.dark .popular-discovery .popular-discovery-accordion-trigger,[data-theme="dark"] .popular-discovery .popular-discovery-accordion-trigger,html.dark .popular-discovery .popular-discovery-accordion-title-wrap strong,body.dark .popular-discovery .popular-discovery-accordion-title-wrap strong,[data-theme="dark"] .popular-discovery .popular-discovery-accordion-title-wrap strong,html.dark .popular-discovery .popular-discovery-store-name,body.dark .popular-discovery .popular-discovery-store-name,[data-theme="dark"] .popular-discovery .popular-discovery-store-name{color:#f1f5f9!important}
+html.dark .popular-discovery .popular-discovery-accordion-title-wrap small,body.dark .popular-discovery .popular-discovery-accordion-title-wrap small,[data-theme="dark"] .popular-discovery .popular-discovery-accordion-title-wrap small,html.dark .popular-discovery .popular-discovery-empty,body.dark .popular-discovery .popular-discovery-empty,[data-theme="dark"] .popular-discovery .popular-discovery-empty{color:#b8c2d1!important}
+html.dark .popular-discovery .popular-discovery-accordion-panel,body.dark .popular-discovery .popular-discovery-accordion-panel,[data-theme="dark"] .popular-discovery .popular-discovery-accordion-panel{border-color:rgba(255,255,255,.14)!important}
+html.dark .popular-discovery .popular-discovery-store-logo,body.dark .popular-discovery .popular-discovery-store-logo,[data-theme="dark"] .popular-discovery .popular-discovery-store-logo{background:#fff!important}
+html.dark .popular-discovery .popular-discovery-store-monogram,body.dark .popular-discovery .popular-discovery-store-monogram,[data-theme="dark"] .popular-discovery .popular-discovery-store-monogram{background:#202d40!important;color:#f1f5f9!important;border:1px solid rgba(255,255,255,.16)!important}
+html.dark .popular-discovery .popular-discovery-type-tabs button[data-store-type="general"],body.dark .popular-discovery .popular-discovery-type-tabs button[data-store-type="general"],[data-theme="dark"] .popular-discovery .popular-discovery-type-tabs button[data-store-type="general"]{background:#d5ad2d!important;color:#211b08!important;border-color:#b99520!important}
+html.dark .popular-discovery .popular-discovery-type-tabs button[data-store-type="specialist"],body.dark .popular-discovery .popular-discovery-type-tabs button[data-store-type="specialist"],[data-theme="dark"] .popular-discovery .popular-discovery-type-tabs button[data-store-type="specialist"]{background:#267b74!important;color:#fff!important;border-color:#3a9c93!important}
+@media(max-width:420px){
+ .popular-discovery-accordion-panel .popular-discovery-store-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+ .popular-discovery-store{padding:4px 1px!important}
+ .popular-discovery-store-logo,.popular-discovery-store-monogram{flex-basis:32px!important;width:32px!important;height:32px!important;max-width:32px!important;max-height:32px!important}
+ .popular-discovery-store-name{font-size:.62rem!important;letter-spacing:-.1px!important}
+}
+@media(max-width:350px){
+ .popular-discovery-accordion-panel .popular-discovery-store-grid{gap:3px!important}
+ .popular-discovery-store-logo,.popular-discovery-store-monogram{flex-basis:28px!important;width:28px!important;height:28px!important;max-width:28px!important;max-height:28px!important}
+ .popular-discovery-store-name{font-size:.57rem!important}
+}
