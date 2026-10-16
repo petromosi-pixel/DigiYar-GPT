@@ -24,7 +24,7 @@ const buttonRules = [...cleanTheme.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
   .filter(([, selector]) => /(?:^|[\s,(])button(?:[.#:[\s,)>]|$)/i.test(selector) && !/:not\(\s*button/i.test(selector));
 assert.ok(buttonRules.every(([, , declarations]) => !/(?:^|;)\s*background(?:-[\w-]+)?\s*:/i.test(declarations)),
   'The central theme must not overwrite authored button backgrounds/colors.');
-assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.1/,
+assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.2/,
   'The app must load the current centralized theme stylesheet with a cache-busting version.');
 
 for (const path of legacyStyles) {
@@ -36,5 +36,8 @@ for (const path of legacyStyles) {
 const browser = fs.readFileSync('js/v6-store-browser.js', 'utf8');
 assert.doesNotMatch(browser, /html\.dark|body\.dark|\[data-theme=["']dark|body\.v6-dark\s+\.v6-auto/,
   'Store Browser must use central --dy-* tokens, not its own dark-mode rules.');
+const comparison = fs.readFileSync('js/v7-comparison-ui.js', 'utf8');
+assert.doesNotMatch(comparison, oldThemePattern,
+  'Comparison UI must use the central theme contract rather than embedded dark-mode rules.');
 
 console.log('V7 Final2 global theme contract: PASS — page root, shared tokens, future components, button-color preservation, and legacy selector removal.');
