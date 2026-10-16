@@ -85,7 +85,10 @@ const strictSofa = threeEngine.resolve('یه چیزی برای تمیز کردن
 ['okala','pinket','khanoumi','shahrvand','hyperme'].forEach(id => assert.ok(!strictSofa.eligibleStoreIds.includes(id), `generic cleaning/home taxonomy leaked into sofa-cleaning results: ${id}`));
 const strictPhone = threeEngine.resolve('یه گوشی سامسونگ می‌خوام', catalog, [], orchestrator.classifyLocalNeed('یه گوشی سامسونگ می‌خوام'));
 ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'].forEach(id => assert.ok(strictPhone.eligibleStoreIds.includes(id), `strict phone search omitted ${id}`));
-['banimode','khanoumi','daroo-online','dayan'].forEach(id => assert.ok(!strictPhone.eligibleStoreIds.includes(id), `merchant exclusion text or unrelated taxonomy leaked into phone results: ${id}`));
+['banimode','khanoumi','daroo-online','dayan','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictPhone.eligibleStoreIds.includes(id), `merchant exclusion text or unrelated taxonomy leaked into phone results: ${id}`));
+const strictAccessory = threeEngine.resolve('لوازم جانبی موبایل', catalog, [], orchestrator.classifyLocalNeed('لوازم جانبی موبایل'));
+['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictAccessory.eligibleStoreIds.includes(id), `strict accessory search omitted ${id}`));
+['digiland','meghdadit','takhfifan','esam','memarket','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictAccessory.eligibleStoreIds.includes(id), `non-approved accessory merchant leaked into results: ${id}`));
 
 const orchestrator = window.DigiYarShoppingOrchestrator;
 const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
