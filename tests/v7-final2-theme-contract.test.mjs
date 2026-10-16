@@ -19,8 +19,9 @@ assert.match(theme, /body\.v6-dark\s*\{[^}]*background:var\(--dy-bg\)!important/
 assert.match(theme, /--dy-surface-raised:/, 'The shared surface tokens must exist.');
 assert.match(theme, /\[class\*="-field"\]/, 'Future field components must inherit central dark-mode surface styling.');
 assert.match(theme, /\[class\*="-modal"\]/, 'Future modal/window components must inherit central dark-mode surface styling.');
-const buttonRules = [...theme.matchAll(/([^{}]+)\\{([^{}]*)\\}/g)]
-  .filter(([, selector]) => /(?:^|[,:>\\s])button(?:[.#:[\\s,>]|$)/i.test(selector) && !/:not\\(button/i.test(selector));
+const cleanTheme = theme.replace(/\\/\\*[\\s\\S]*?\\*\\//g, '');
+const buttonRules = [...cleanTheme.matchAll(/([^{}]+)\\{([^{}]*)\\}/g)]
+  .filter(([, selector]) => /(?:^|[\\s,(])button(?:[.#:[\\s,)>]|$)/i.test(selector) && !/:not\\(\\s*button/i.test(selector));
 assert.ok(buttonRules.every(([, , declarations]) => !/(?:^|;)\\s*background(?:-[\\w-]+)?\\s*:/i.test(declarations)),
   'The central theme must not overwrite authored button backgrounds/colors.');
 assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.1/,
