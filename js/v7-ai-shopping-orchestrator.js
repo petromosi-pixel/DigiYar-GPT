@@ -348,7 +348,7 @@
     // plan is dispatched immediately; a configured free semantic model may
     // improve it in the background, but cannot block or erase the fallback.
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
-    if(window.DigiYarHooshyarSemanticApiEnabled!==false){
+    if(!plan.ai.directorySearch&&window.DigiYarHooshyarSemanticApiEnabled!==false){
       requestSemanticPlan(raw,catalog,window.DigiYarHooshyarAIProvider||'deepseek').then(function(aiPlan){
         if(applySemanticPlan(plan,aiPlan,catalog))return;
         // A provider's own local fallback is deliberately ignored: our browser
