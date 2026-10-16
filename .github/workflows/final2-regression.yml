@@ -3,6 +3,7 @@ name: DigiYar V7 Final2 regression
 on:
   push:
     branches:
+      - main
       - DigiYar-V7-Final2
   pull_request:
     branches:
