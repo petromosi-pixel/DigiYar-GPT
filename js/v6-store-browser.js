@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.81';
+const VERSION='7.0.0-store-browser.82';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -380,7 +380,7 @@ function openBrowser(query,list){
        ? semanticPlan.eligibleStoreIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean)
        : [];
      const plannedList=Array.isArray(semanticPlan.eligibleStoreIds)
-       ? plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||id};})
+       ? plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||((window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id]&&window.DigiYarStoreBusinessDomains.catalog[id].name)||id)};})
        : [];
      /* Keep the query-driven KB eligibility hook active for compatibility,
         but let the local plan's store IDs survive a legacy filtering mismatch. */
