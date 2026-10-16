@@ -22,8 +22,10 @@ assert.match(theme, /\[class\*="-modal"\]/, 'Future modal/window components must
 const cleanTheme = theme.replace(/\/\*[\s\S]*?\*\//g, '');
 const buttonRules = [...cleanTheme.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
   .filter(([, selector]) => /(?:^|[\s,(])button(?:[.#:[\s,)>]|$)/i.test(selector) && !/:not\(\s*button/i.test(selector));
-assert.ok(buttonRules.every(([, , declarations]) => !/(?:^|;)\s*(?:background(?:-[\w-]+)?|color|border-color)\s*:/i.test(declarations)),
-  'The central theme must not overwrite authored button backgrounds, foregrounds, or borders.');
+assert.ok(buttonRules.every(([, selector, declarations]) => {
+  const authoredActionButton = /(?:\\.primary|\\.v5-primary|\\.danger|\\.v5-danger|\\.popular-discovery-store-link|\\.v6-auto-link|\\.v5-smart-search-submit|\\.v5-smart-search-clear|#installBtn|#v6ThemeToggle)/i.test(selector);
+  return !authoredActionButton || !/(?:^|;)\\s*(?:background(?:-[\\w-]+)?|color|border-color)\\s*:/i.test(declarations);
+}), 'The central theme must preserve authored brand/action button colors while allowing neutral disclosure controls to follow the theme.');
 assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.4/,
   'The app must load the current centralized theme stylesheet with a cache-busting version.');
 
