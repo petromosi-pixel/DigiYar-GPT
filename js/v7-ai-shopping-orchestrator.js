@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.16';
+  const VERSION='7.0.0-hooshyar-local.17';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -215,8 +215,8 @@
     if(!raw)return null;
     const kb=window.DigiYarStoreBusinessDomains;
     const domainTitles=kb&&kb.domainTitles?kb.domainTitles:{};
-    const directoryIntent=/(?:فروشگاه|فروشگاه‌ها|فروشگاهها|سایت|سایت‌ها|حوزه|دسته\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|کجا\s*بخرم|از\s*کجا)/i.test(raw);
-    const cleanQuery=raw.replace(/(?:فروشگاه(?:ها|‌ها)?|سایت(?:ها|‌ها)?|حوزه|دسته\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|های|ها|مرتبط|مناسب|رو|را|در|از|برای|و)/g,' ').replace(/\s+/g,' ').trim();
+    const directoryIntent=/(?:فروشگاه|فروشگاه‌ها|فروشگاهها|سایت|سایت‌ها|حوزه|دسته\\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|کجا\\s*بخرم|از\\s*کجا|حوزه\\s*فعالیت)/i.test(raw);
+    const cleanQuery=raw.replace(/(?:فروشگاه(?:ها|‌ها)?|سایت(?:ها|‌ها)?|حوزه(?:\\s*فعالیت)?|دسته\\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|های|ها|مرتبط|مناسب|رو|را|در|از|برای|و)/g,' ').replace(/\\s+/g,' ').trim();
     const matchedStores=[];
     Object.keys(catalog||{}).forEach(id=>{
       const item=catalog[id]||{};
@@ -228,22 +228,53 @@
     Object.keys(DIRECTORY_TERMS).forEach(domain=>{
       const title=norm(domainTitles[domain]||'');
       const terms=(DIRECTORY_TERMS[domain]||[]).map(norm);
-      if((title&&raw.includes(title))||terms.some(term=>term.length>=3&&raw.includes(term)))domainMatches.push(domain);
+      if((title&&(raw===title||raw.includes(title)||cleanQuery===title))||
+         terms.some(term=>term.length>=3&&(raw===term||cleanQuery===term||((directoryIntent)&&raw.includes(term)))))
+        domainMatches.push(domain);
     });
-    /* An exact merchant name is a valid lookup on its own. Domain-wide lists
-       require directory intent so ordinary product requests remain shopping searches. */
+    /* Prefer an explicitly named merchant, but do not mistake a generic
+       category alias (e.g. «پوشاک» on BaniMode) for a named-store request. */
+    const domainTerms=new Set(Object.keys(DIRECTORY_TERMS).reduce((all,domain)=>all.concat((DIRECTORY_TERMS[domain]||[]).map(norm),[norm(domainTitles[domain]||'')]),[]).filter(Boolean));
+    const explicitNamedStores=matchedStores.filter(id=>{
+      const item=catalog[id]||{};
+      const canonical=norm(item.name||id);
+      return canonical.length>=3&&raw.includes(canonical)&&!domainTerms.has(canonical);
+    });
+    if(explicitNamedStores.length){
+      const selected=Array.from(new Set(explicitNamedStores));
+      const selectedDomains=domainMatches.length?domainMatches:Array.from(new Set(selected.reduce((all,id)=>all.concat((catalog[id]&&catalog[id].domains)||[]),[])));
+      return {kind:'store_directory',stores:selected,domains:selectedDomains,searchTerm:(selectedDomains[0]&&domainTitles[selectedDomains[0]])||((catalog[selected[0]]||{}).name)||raw};
+    }
+    /* A domain query must mirror the specialist category in the homepage
+       discovery card, not stop at the first store whose alias matches it. */
+    if(directoryIntent&&domainMatches.length){
+      const generalIds=new Set((kb&&Array.isArray(kb.generalStoreIds)?kb.generalStoreIds:[]).map(id=>String(id).toLowerCase()));
+      const selected=Object.keys(catalog||{}).filter(id=>{
+        const item=catalog[id]||{};
+        return !generalIds.has(String(id).toLowerCase())&&(item.storeType!=='general')&&
+          (item.domains||[]).some(domain=>domainMatches.includes(domain));
+      });
+      if(selected.length)return {kind:'store_directory',stores:selected,domains:domainMatches,searchTerm:domainTitles[domainMatches[0]]||raw};
+    }
+    /* Exact category labels can be searched without adding «فروشگاه» or «حوزه». */
+    const exactDomainQuery=domainMatches.length&&Object.keys(DIRECTORY_TERMS).some(domain=>{
+      const title=norm(domainTitles[domain]||'');
+      return raw===title||(DIRECTORY_TERMS[domain]||[]).some(term=>raw===norm(term));
+    });
+    if(exactDomainQuery){
+      const generalIds=new Set((kb&&Array.isArray(kb.generalStoreIds)?kb.generalStoreIds:[]).map(id=>String(id).toLowerCase()));
+      const selected=Object.keys(catalog||{}).filter(id=>{
+        const item=catalog[id]||{};
+        return !generalIds.has(String(id).toLowerCase())&&item.storeType!=='general'&&(item.domains||[]).some(domain=>domainMatches.includes(domain));
+      });
+      if(selected.length)return {kind:'store_directory',stores:selected,domains:domainMatches,searchTerm:domainTitles[domainMatches[0]]||raw};
+    }
     if(matchedStores.length){
       const selected=Array.from(new Set(matchedStores));
       const selectedDomains=domainMatches.length?domainMatches:Array.from(new Set(selected.reduce((all,id)=>all.concat((catalog[id]&&catalog[id].domains)||[]),[])));
       return {kind:'store_directory',stores:selected,domains:selectedDomains,searchTerm:(selectedDomains[0]&&domainTitles[selectedDomains[0]])||((catalog[selected[0]]||{}).name)||raw};
     }
-    if(!directoryIntent||!domainMatches.length)return null;
-    const selected=Object.keys(catalog||{}).filter(id=>{
-      const item=catalog[id]||{};
-      return (item.domains||[]).some(domain=>domainMatches.includes(domain));
-    });
-    if(!selected.length)return null;
-    return {kind:'store_directory',stores:selected,domains:domainMatches,searchTerm:domainTitles[domainMatches[0]]||raw};
+    return null;
   }
 
   function localPlanFor(query,context){
