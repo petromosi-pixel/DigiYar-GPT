@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.20';
+  const VERSION='7.0.0-hooshyar-local.21';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -46,6 +46,7 @@
         aliases:Array.isArray(item.aliases)?item.aliases.slice():[],
         querySignals:Array.isArray(item.querySignals)?item.querySignals.slice():[],
         exclusions:Array.isArray(item.exclude)?item.exclude.slice():[],
+        hooshyarExcludeConcepts:Array.isArray(item.hooshyarExcludeConcepts)?item.hooshyarExcludeConcepts.slice():[],
         matchPolicy:item.matchPolicy||null,semanticText:String(item.semanticText||'')
       };
     });
