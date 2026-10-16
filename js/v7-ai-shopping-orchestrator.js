@@ -190,6 +190,62 @@
     };
   }
 
+  const DIRECTORY_TERMS={
+    digital:['دیجیتال','موبایل','گوشی','تلفن همراه','کالای دیجیتال'],
+    accessories:['لوازم جانبی دیجیتال','لوازم جانبی','اکسسوری دیجیتال'],
+    furniture:['مبلمان','دکوراسیون','مبل'],
+    fashion:['پوشاک','کیف و کفش','کیف','کفش','لباس','مد'],
+    beauty:['زیبایی','آرایشی','آرایش','مراقبت پوست'],
+    health:['سلامت','بهداشتی','محصولات بهداشتی'],
+    medicine:['دارو','داروخانه','تجهیزات سلامت','تجهیزات پزشکی'],
+    supermarket:['سوپرمارکت','مواد غذایی','خواربار'],
+    home:['خانه','آشپزخانه','ساختمان','لوازم خانگی'],
+    sports:['ورزش','تجهیزات ورزشی'],
+    kids:['کودک','نوزاد','سیسمونی'],
+    books:['کتاب','محصولات فرهنگی'],
+    auto:['خودرو','قطعات یدکی','لوازم یدکی'],
+    auto_service:['خدمات خودرو','سرویس خودرو'],
+    travel_ticket:['بلیط','بلیت','حمل و نقل','حمل‌ونقل','سفر','قطار','هواپیما','اتوبوس'],
+    lodging:['اقامت','هتل','اقامتگاه'],
+    education:['آموزش','یادگیری','دوره آموزشی'],
+    affiliate_network:['شبکه همکاری در فروش','افیلیت','همکاری در فروش']
+  };
+  function resolveDirectorySearch(query,catalog){
+    const raw=norm(query);
+    if(!raw)return null;
+    const kb=window.DigiYarStoreBusinessDomains;
+    const domainTitles=kb&&kb.domainTitles?kb.domainTitles:{};
+    const directoryIntent=/(?:فروشگاه|فروشگاه‌ها|فروشگاهها|سایت|سایت‌ها|حوزه|دسته\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|کجا\s*بخرم|از\s*کجا)/i.test(raw);
+    const cleanQuery=raw.replace(/(?:فروشگاه(?:ها|‌ها)?|سایت(?:ها|‌ها)?|حوزه|دسته\s*بندی|دسته‌بندی|لیست|معرفی|نمایش|های|ها|مرتبط|مناسب|رو|را|در|از|برای|و)/g,' ').replace(/\s+/g,' ').trim();
+    const matchedStores=[];
+    Object.keys(catalog||{}).forEach(id=>{
+      const item=catalog[id]||{};
+      const names=[item.name,id].concat(item.aliases||[]).map(norm).filter(x=>x.length>=3);
+      const match=names.some(name=>raw===name||cleanQuery===name||(name.length>=4&&raw.includes(name)&&(directoryIntent||cleanQuery.includes(name))));
+      if(match)matchedStores.push(String(id).toLowerCase());
+    });
+    const domainMatches=[];
+    Object.keys(DIRECTORY_TERMS).forEach(domain=>{
+      const title=norm(domainTitles[domain]||'');
+      const terms=(DIRECTORY_TERMS[domain]||[]).map(norm);
+      if((title&&raw.includes(title))||terms.some(term=>term.length>=3&&raw.includes(term)))domainMatches.push(domain);
+    });
+    /* An exact merchant name is a valid lookup on its own. Domain-wide lists
+       require directory intent so ordinary product requests remain shopping searches. */
+    if(matchedStores.length){
+      const selected=Array.from(new Set(matchedStores));
+      const selectedDomains=domainMatches.length?domainMatches:Array.from(new Set(selected.reduce((all,id)=>all.concat((catalog[id]&&catalog[id].domains)||[]),[])));
+      return {kind:'store_directory',stores:selected,domains:selectedDomains,searchTerm:(selectedDomains[0]&&domainTitles[selectedDomains[0]])||((catalog[selected[0]]||{}).name)||raw};
+    }
+    if(!directoryIntent||!domainMatches.length)return null;
+    const selected=Object.keys(catalog||{}).filter(id=>{
+      const item=catalog[id]||{};
+      return (item.domains||[]).some(domain=>domainMatches.includes(domain));
+    });
+    if(!selected.length)return null;
+    return {kind:'store_directory',stores:selected,domains:domainMatches,searchTerm:domainTitles[domainMatches[0]]||raw};
+  }
+
   function localPlanFor(query,context){
     const raw=clean(query);
     const plan=buildPlan(raw,context);
@@ -198,8 +254,11 @@
     let stores=[];
     const eligibility=window.DigiYarStoreEligibility;
     const popular=Array.isArray(window.DigiYarPopularAffiliateStores)?window.DigiYarPopularAffiliateStores:[];
-    const classified=classifyLocalNeed(raw);
-    if(classified){
+    const directory=resolveDirectorySearch(raw,catalog);
+    const classified=directory?null:classifyLocalNeed(raw);
+    if(directory){
+      stores=directory.stores.map(id=>({id,name:(catalog[id]&&catalog[id].name)||id}));
+    }else if(classified){
       stores=classified.stores.map(id=>({id,name:(catalog[id]&&catalog[id].name)||id}));
     }else if(eligibility&&typeof eligibility.storesForQuery==='function'){
       stores=eligibility.storesForQuery(raw,popular);
@@ -208,12 +267,23 @@
       .map(x=>String(x&&x.id||'').toLowerCase())
       .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
     const threeEngine=window.DigiYarHooshyarThreeEngine;
-    const threeEngineResult=threeEngine&&typeof threeEngine.resolve==='function'
+    const threeEngineResult=!directory&&threeEngine&&typeof threeEngine.resolve==='function'
       ?threeEngine.resolve(raw,catalog,ids,classified):null;
     if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)&&threeEngineResult.eligibleStoreIds.length){
       ids=threeEngineResult.eligibleStoreIds.filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
+    if(directory){
+      plan.ai.directorySearch=true;
+      plan.ai.directoryDomains=directory.domains.slice();
+      plan.ai.directoryStoreIds=ids.slice();
+      plan.ai.requestedProduct=directory.searchTerm;
+      plan.ai.semanticNeed=raw;
+      plan.ai.taskType='store_directory';
+      plan.ai.confidence=ids.length?0.95:0.1;
+      plan.ai.searchQueries={};
+      ids.forEach(id=>{plan.ai.searchQueries[id]=directory.searchTerm;});
+    }
     if(threeEngineResult){
       plan.ai.engine='three-engine-local';
       plan.ai.semanticNeed=threeEngineResult.need.requestedProduct||plan.ai.semanticNeed;
@@ -289,6 +359,6 @@
   }
 
   window.DigiYarShoppingOrchestrator={
-    version:VERSION,buildStoreCatalog:buildStoreCatalog,classifyLocalNeed:classifyLocalNeed,buildPlan:buildPlan,requestSemanticPlan:requestSemanticPlan,compareEngines:compareEngines,run:run
+    version:VERSION,buildStoreCatalog:buildStoreCatalog,classifyLocalNeed:classifyLocalNeed,resolveDirectorySearch:resolveDirectorySearch,buildPlan:buildPlan,requestSemanticPlan:requestSemanticPlan,compareEngines:compareEngines,run:run
   };
 })(window);
