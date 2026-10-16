@@ -134,7 +134,7 @@ const phone = eligibility.explain('تلفن همراه سامسونگ', []);
 
 const originalFetch = globalThis.fetch;
 let sentBody = null;
-window.DigiYarHooshyarSemanticApiEnabled = false;
+delete window.DigiYarHooshyarSemanticApiEnabled; // External semantic API is opt-in; local KB is the default.
 globalThis.fetch = async (url, options) => {
   assert.equal(url, 'https://digi-yar-core-git-main-digi-yar.vercel.app/api/ai-shopping');
   sentBody = JSON.parse(options.body);
