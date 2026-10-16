@@ -81,7 +81,7 @@ const orchestrator = window.DigiYarShoppingOrchestrator;
    count as product evidence; only explicit product inventory can qualify a store. */
 const strictAir = threeEngine.resolve('دنبال یک دستگاه تصفیه هوای مناسب اتاق خواب هستم', catalog, [], orchestrator.classifyLocalNeed('دنبال یک دستگاه تصفیه هوای مناسب اتاق خواب هستم'));
 ['digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictAir.eligibleStoreIds.includes(id), `strict air-purifier search omitted ${id}`));
-['okala','pinket','janebi','divar','sheypoor','sakhtemoononline','kilid','ninimarket','homeplus'].forEach(id => assert.ok(!strictAir.eligibleStoreIds.includes(id), `context-only or unrelated merchant leaked into air-purifier results: ${id}`));
+['okala','pinket','janebi','divar','sheypoor','sakhtemoononline','kilid','ninimarket','homeplus','memarket'].forEach(id => assert.ok(!strictAir.eligibleStoreIds.includes(id), `context-only or unrelated merchant leaked into air-purifier results: ${id}`));
 const strictSofa = threeEngine.resolve('یه چیزی برای تمیز کردن مبل پارچه‌ای می‌خوام', catalog, [], orchestrator.classifyLocalNeed('یه چیزی برای تمیز کردن مبل پارچه‌ای می‌خوام'));
 ['digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictSofa.eligibleStoreIds.includes(id), `strict sofa-cleaning search omitted ${id}`));
 ['okala','pinket','khanoumi','shahrvand','hyperme'].forEach(id => assert.ok(!strictSofa.eligibleStoreIds.includes(id), `generic cleaning/home taxonomy leaked into sofa-cleaning results: ${id}`));
