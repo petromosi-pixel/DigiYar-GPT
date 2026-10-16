@@ -220,7 +220,7 @@
     const matchedStores=[];
     Object.keys(catalog||{}).forEach(id=>{
       const item=catalog[id]||{};
-      const names=[item.name,id].concat(item.aliases||[]).map(norm).filter(x=>x.length>=3);
+      const names=[item.name,id].concat(item.aliases||[]).map(norm).filter(Boolean);
       const match=names.some(name=>raw===name||cleanQuery===name||(name.length>=4&&raw.includes(name)&&(directoryIntent||cleanQuery.includes(name))));
       if(match)matchedStores.push(String(id).toLowerCase());
     });
