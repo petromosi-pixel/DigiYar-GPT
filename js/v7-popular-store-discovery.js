@@ -71,10 +71,30 @@ function render(){
  var q=normalize(state.query),generalIds=Object.keys(catalog).filter(function(id){return isGeneral(id,catalog[id]);});
  function makeStore(id,domain){var c=catalog[id]||{};return {id:id,name:c.name||id,homepage:c.homepage||'',tagline:((c.specialties||[]).slice(0,2).join('، '))||((c.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain||((c.domains||[])[0]||'')};}
  function matches(s){var c=catalog[s.id]||{};return !q||normalize([s.name,s.tagline,(c.products||[]).join(' '),(c.aliases||[]).join(' '),(c.specialties||[]).join(' '),(c.productFamilies||[]).join(' '),(c.querySignals||[]).join(' ')].join(' ')).indexOf(q)>=0;}
- var STORE_LOGOS={
- 'اسنپ شاپ':'اسنپ شاپ.webp','اسنپ‌شاپ':'اسنپ شاپ.webp','ایسام':'ایسام.webp','ایسمینار':'ایسمینار.webp','باسلام':'باسلام.webp','بانی مد':'بانی مد.webp','به روز کالا':'به روز کالا.webp','به‌روزکالا':'به روز کالا.webp','تخفیفان':'تخفیفان.webp','ترب':'ترب.webp','تکنولایف':'تکنولایف.webp','جانبی':'جانبی.webp','جین وست':'جین وست.webp','خانومی':'خانومی.webp','داروخانه آنلاین':'داروخانه آنلاین.webp','داروکده':'داروکده.webp','دایان شاپ':'دایان شاپ.webp','درمان کالا':'درمان کالا.webp','دیجی دو':'دیجی دو.png','دیجی‌دو':'دیجی دو.png','دیجی لند':'دیجی لند.webp','دیجی‌لند':'دیجی لند.webp','دیجی کالا':'دیجی کالا.webp','دیجی‌کالا':'دیجی کالا.webp','سفر می':'سفر می.webp','سفری می':'سفر می.webp','سولو کالا':'سولو کالا.webp','شاواز':'شاواز.webp','شب':'شب.webp','مثبت سبز':'مثبت سبز.webp','مدیسه':'مدیسه.webp','مقداد آی تی':'مقداد آی تی.webp','مقداد آی‌تی':'مقداد آی تی.webp','مکتب خونه':'مکتب خونه.webp','مکتب‌خونه':'مکتب خونه.webp','می مارکت':'می مارکت.webp','می‌مارکت':'می مارکت.webp','نشاط رخ':'نشاط رخ.webp','پینکت':'پینکت.webp','کارنامه':'کارنامه.webp','گوشی شاپ':'گوشی شاپ.webp','گوشی‌شاپ':'گوشی شاپ.webp'
-};
-function card(s,domainTitle){var c=catalog[s.id]||{},url=s.homepage||c.homepage||'',logo=STORE_LOGOS[String(s.name||'').trim()],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
+ var STORE_LOGOS_RAW={
+ 'اسنپ شاپ':'اسنپ شاپ.webp','ایسام':'ایسام.webp','ایسمینار':'ایسمینار.webp','ایمالز':'ایمالز.webp',
+ 'باسلام':'باسلام.webp','بانی مد':'بانی مد.webp','بروز کالا':'بروز کالا.webp','به روز کالا':'به روز کالا.webp',
+ 'تخفیفان':'تخفیفان.webp','ترب':'ترب.webp','تکنولایف':'تکنولایف.webp','جانبی':'جانبی.webp','جین وست':'جین وست.webp',
+ 'خانومی':'خانومی.webp','داروخانه آنلاین':'داروخانه آنلاین.webp','داروکده':'داروکده.webp','دایان شاپ':'دایان شاپ.webp',
+ 'درمان کالا':'درمان کالا.webp','دیجی دو':'دیجی دو.png','دیجی لند':'دیجی لند.webp','دیجی کالا':'دیجی کالا.webp',
+ 'دیوار':'دیوار.webp','سفر می':'سفر می.webp','سفری می':'سفر می.webp','سولو کالا':'سولو کالا.webp',
+ 'شاواز':'شاواز.webp','شب':'شب.webp','شیپور':'شیپور.webp','مثبت سبز':'مثبت سبز.webp','مدیسه':'مدیسه.webp',
+ 'مقداد آی تی':'مقداد آی تی.webp','موبایل آی آر':'موبایل آی آر.webp','موبایل‌آی‌آر':'موبایل آی آر.webp',
+ 'موبایل ۱۴۰':'موبایل ۱۴۰.webp','مکتب خونه':'مکتب خونه.webp','می مارکت':'می مارکت.webp',
+ 'نشاط رخ':'نشاط رخ.webp','پینکت':'پینکت.webp','کارنامه':'کارنامه.webp','کالا ۳۶۰':'کالا ۳۶۰.webp',
+ 'کالا۳۶۰':'کالا ۳۶۰.webp','کالاتیک':'کالاتیک.webp','گوشی شاپ':'گوشی شاپ.webp',
+ '۱۹ کالا':'۱۹ کالا.webp','۱۹کالا':'۱۹ کالا.webp',
+ 'اسنپ‌شاپ':'اسنپ شاپ.webp','به‌روزکالا':'به روز کالا.webp','دیجی‌دو':'دیجی دو.png',
+ 'دیجی‌لند':'دیجی لند.webp','دیجی‌کالا':'دیجی کالا.webp','مقداد آی‌تی':'مقداد آی تی.webp',
+ 'مکتب‌خونه':'مکتب خونه.webp','می‌مارکت':'می مارکت.webp','گوشی‌شاپ':'گوشی شاپ.webp'
+ };
+ var STORE_LOGOS={};
+ Object.keys(STORE_LOGOS_RAW).forEach(function(name){STORE_LOGOS[normalize(name)]=STORE_LOGOS_RAW[name];});
+ var STORE_LOGOS_BY_ID={
+  divar:'دیوار.webp',sheypoor:'شیپور.webp',mobileir:'موبایل آی آر.webp',mobile140:'موبایل ۱۴۰.webp',
+  kala360:'کالا ۳۶۰.webp','19kala':'۱۹ کالا.webp',emalls:'ایمالز.webp',berozkala:'بروز کالا.webp',kalatik:'کالاتیک.webp'
+ };
+ function card(s,domainTitle){var c=catalog[s.id]||{},url=s.homepage||c.homepage||'',logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
  function accordion(key,title,icon,description,items){
   var open=!!state.openCategories[key],cards=items.map(function(s){return card(s,title);}).join('');
   if(q&&!items.length)return '';
