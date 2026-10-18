@@ -492,3 +492,29 @@ body.v6-dark #digiyar-chat-input::placeholder{
   -webkit-text-fill-color:#b8c2d1!important;
   opacity:1!important;
 }
+
+/* Keep the two store-type tabs' original brand colors in dark mode. */
+body.v6-dark .popular-discovery-type-tabs button[data-store-type="general"],
+body.v6-dark .popular-discovery-type-tabs button[data-store-type="general"][aria-pressed="true"]{
+  background:#e8bd45!important;
+  background-color:#e8bd45!important;
+  background-image:none!important;
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+  border:1px solid #d8aa2b!important;
+  box-shadow:none!important;
+}
+body.v6-dark .popular-discovery-type-tabs button[data-store-type="specialist"],
+body.v6-dark .popular-discovery-type-tabs button[data-store-type="specialist"][aria-pressed="true"]{
+  background:#168f89!important;
+  background-color:#168f89!important;
+  background-image:none!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  border:1px solid #168f89!important;
+  box-shadow:none!important;
+}
+body.v6-dark .popular-discovery-type-tabs button:focus-visible{
+  outline:2px solid var(--dy-focus)!important;
+  outline-offset:2px!important;
+}
