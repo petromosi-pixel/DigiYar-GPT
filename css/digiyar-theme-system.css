@@ -289,3 +289,106 @@ body.v6-dark #splashScreen {
   color:#f1f5f9!important;
 }
 body.v6-dark #splashScreen .v5-splash-brand p {color:#b8c2d1!important}
+
+
+/* Visual polish and navigation overlay correction (main-only follow-up). */
+/* Keep the hamburger backdrop translucent: the broad legacy surface selector
+   also matched the "-nav-" class name and accidentally made it opaque. */
+body.v6-dark .v6-nav-backdrop {
+  display:none;
+  background:rgba(3,8,18,.52)!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.v6-dark .v6-nav-backdrop.is-open {display:block!important}
+body.v6-dark .v6-nav-sheet {
+  background:var(--dy-surface)!important;
+  color:var(--dy-text)!important;
+  border:1px solid var(--dy-border)!important;
+  box-shadow:0 16px 42px rgba(0,0,0,.4)!important;
+}
+body.v6-dark .v6-nav-sheet .section-title,
+body.v6-dark .v6-nav-sheet .v5-section-heading {
+  background:var(--dy-surface)!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .v6-sheet-action {
+  background:var(--dy-control)!important;
+  color:var(--dy-text)!important;
+  border:1px solid var(--dy-border)!important;
+}
+/* Restore a clear contrast hierarchy for the fixed header and page footer. */
+body.v6-dark .main-header {
+  background:linear-gradient(135deg,#111b2d,#1b2a41)!important;
+  background-image:linear-gradient(135deg,#111b2d,#1b2a41)!important;
+  border-bottom-color:#e34b57!important;
+  box-shadow:0 5px 20px rgba(0,0,0,.3)!important;
+}
+body.v6-dark .main-header .header-brand strong,
+body.v6-dark #v5HeaderBrand {color:#fff!important}
+body.v6-dark .main-header .header-brand span,
+body.v6-dark #v5HeaderTagline {color:#d7e1f0!important}
+body.v6-dark .main-footer {
+  background:transparent!important;
+  color:var(--dy-text)!important;
+  border-color:var(--dy-border)!important;
+}
+body.v6-dark .main-footer .footer-links .footer-link {
+  color:#e8eef8!important;
+  -webkit-text-fill-color:#e8eef8!important;
+}
+body.v6-dark .main-footer .footer-brand strong {color:#f8fafc!important}
+body.v6-dark .main-footer .footer-brand span,
+body.v6-dark .main-footer .footer-copy {color:#b8c2d1!important}
+body.v6-dark .main-footer .footer-panel {
+  background:var(--dy-surface)!important;
+  color:var(--dy-text)!important;
+  border:1px solid var(--dy-border)!important;
+}
+body.v6-dark .main-footer .footer-panel h3,
+body.v6-dark .main-footer .footer-panel strong {color:#f1f5f9!important}
+body.v6-dark .main-footer .footer-panel p,
+body.v6-dark .main-footer .footer-note {color:#c5cfdd!important}
+/* Preserve natural logo artwork and prevent generic card rules from creating
+   a halo or filter around image assets. */
+body.v6-dark img,
+body.v6-dark svg {filter:none!important}
+body.v6-dark .v5-splash-logo-wrap,
+body.v6-dark .v5-splash-logo,
+body.v6-dark .splash-content,
+body.v6-dark .splash-screen {
+  box-shadow:none!important;
+  border-color:transparent!important;
+  background-image:none!important;
+}
+body.v6-dark .v5-splash-logo-wrap {background:transparent!important}
+body.v6-dark .v5-splash-logo {background:transparent!important;object-fit:contain!important}
+body.v6-dark .platform-logo,
+body.v6-dark .popular-discovery-store-logo {
+  background:#fff!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:none!important;
+}
+body.v6-dark .v5-chat-card,
+body.v6-dark .v5-result-card,
+body.v6-dark .v5-profile-card,
+body.v6-dark .v5-popular-card,
+body.v6-dark .popular-discovery,
+body.v6-dark #v7ComparisonCard {
+  background:var(--dy-surface)!important;
+  background-image:none!important;
+  border:1px solid var(--dy-border)!important;
+  box-shadow:var(--dy-shadow)!important;
+}
+body.v6-dark .v5-chat-head,
+body.v6-dark .section-title,
+body.v6-dark .v5-section-heading {
+  color:var(--dy-text)!important;
+  background:transparent!important;
+}
+body.v6-dark .section-title h2,
+body.v6-dark .v5-section-heading h2 {color:#f1f5f9!important}
+body.v6-dark .section-title p,
+body.v6-dark .v5-section-heading p {color:#b8c2d1!important}
