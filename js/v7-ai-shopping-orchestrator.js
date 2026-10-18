@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.21';
+  const VERSION='7.0.0-hooshyar-local.22';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -311,13 +311,21 @@
     const threeEngine=window.DigiYarHooshyarThreeEngine;
     const threeEngineResult=!directory&&threeEngine&&typeof threeEngine.resolve==='function'
       ?threeEngine.resolve(raw,catalog,ids,classified):null;
+    let useThreeEngineCandidates=false;
     if(threeEngineResult&&Array.isArray(threeEngineResult.eligibleStoreIds)){
-      // The three-engine KB result is authoritative, including an empty set.
-      // Never revive broad legacy/category candidates when product evidence
-      // says that no merchant is relevant to this exact request.
-      ids=threeEngineResult.eligibleStoreIds
+      const engineIds=threeEngineResult.eligibleStoreIds
         .map(id=>String(id&&id.id||id||'').toLowerCase())
         .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+      /*
+       * A zero-result parse must not erase stores already validated by the
+       * KB eligibility resolver or an explicit local intent classifier.
+       * The three-engine ranking is used when it found evidence; otherwise
+       * keep the grounded seed list instead of blanking the whole simulator.
+       */
+      if(engineIds.length){
+        ids=engineIds;
+        useThreeEngineCandidates=true;
+      }
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
     if(directory){
@@ -333,16 +341,20 @@
     }
     if(threeEngineResult){
       plan.ai.engine='three-engine-local';
-      plan.ai.semanticNeed=threeEngineResult.need.requestedProduct||plan.ai.semanticNeed;
-      plan.ai.requestedProduct=threeEngineResult.need.requestedProduct||plan.ai.requestedProduct;
-      plan.ai.brand=threeEngineResult.need.brand||null;
-      plan.ai.maxBudgetToman=threeEngineResult.need.maxBudgetToman||null;
-      plan.ai.attributes=threeEngineResult.need.attributes||[];
-      plan.ai.targetObject=threeEngineResult.need.targetObject||plan.ai.targetObject;
-      plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
-      plan.ai.searchQueries=threeEngineResult.searchQueries;
-      plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
       plan.ai.engineTrace=threeEngineResult.trace;
+      if(useThreeEngineCandidates){
+        plan.ai.semanticNeed=threeEngineResult.need.requestedProduct||plan.ai.semanticNeed;
+        plan.ai.requestedProduct=threeEngineResult.need.requestedProduct||plan.ai.requestedProduct;
+        plan.ai.brand=threeEngineResult.need.brand||null;
+        plan.ai.maxBudgetToman=threeEngineResult.need.maxBudgetToman||null;
+        plan.ai.attributes=threeEngineResult.need.attributes||[];
+        plan.ai.targetObject=threeEngineResult.need.targetObject||plan.ai.targetObject;
+        plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
+        plan.ai.searchQueries=threeEngineResult.searchQueries;
+        plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
+      }else{
+        plan.ai.fallbackReason='three-engine-empty-preserved-kb-eligibility';
+      }
     }
     plan.candidateStores=ids.slice();
     plan.provider='local-knowledge-base';
