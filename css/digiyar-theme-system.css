@@ -395,24 +395,25 @@ body.v6-dark .v5-section-heading p {color:#b8c2d1!important}
 
 
 
-/* Restore the light-theme hierarchy in dark mode: page, cards, nested panels,
-   controls and navigation remain distinct instead of collapsing into one color. */
+/* Dark-mode correction: preserve one shared surface color and use borders
+   only to define component boundaries. Do not alter Hooshyar input visibility. */
 body.v6-dark{
-  --dy-surface:#111927;
-  --dy-surface-raised:#172334;
-  --dy-control:#182334;
-  --dy-border:rgba(255,255,255,.16);
-  --dy-shadow:0 8px 25px rgba(0,0,0,.24);
+  --dy-surface:var(--dy-bg);
+  --dy-surface-raised:var(--dy-bg);
+  --dy-control:var(--dy-bg);
+  --dy-border:rgba(255,255,255,.18);
+  --dy-shadow:none;
 }
 body.v6-dark :where(
   .card,.v5-chat-card,.v5-result-card,.v5-profile-card,.v5-popular-card,
   .popular-discovery,#v7ComparisonCard,.footer-panel,.v6-nav-sheet,
   [class*="-card"],[class*="-panel"],[class*="-sheet"]
 ):not(button):not(a):not(input):not(select):not(textarea){
-  background-color:var(--dy-surface)!important;
-  background-image:none;
+  background:var(--dy-bg)!important;
+  background-color:var(--dy-bg)!important;
+  background-image:none!important;
   border:1px solid var(--dy-border)!important;
-  box-shadow:var(--dy-shadow)!important;
+  box-shadow:none!important;
 }
 body.v6-dark :where(
   .popular-discovery-panel,.popular-discovery-accordion,
@@ -422,7 +423,9 @@ body.v6-dark :where(
   .v6-auto-store,.v6-auto-body,.v6-auto-tabs,.v6-auto-head,
   .v6-sheet-action
 ):not(button){
-  background-color:var(--dy-surface-raised)!important;
+  background:var(--dy-bg)!important;
+  background-color:var(--dy-bg)!important;
+  background-image:none!important;
   border-color:var(--dy-border)!important;
   box-shadow:none!important;
 }
@@ -431,18 +434,35 @@ body.v6-dark .v5-smart-search-field{
   border:1px solid var(--dy-border)!important;
   border-radius:16px!important;
 }
-body.v6-dark .v6-nav-sheet{
-  background:var(--dy-surface-raised)!important;
-  border:1px solid var(--dy-border)!important;
-  box-shadow:0 16px 42px rgba(0,0,0,.4)!important;
-}
-body.v6-dark .v6-nav-backdrop{
-  background:rgba(3,8,18,.52)!important;
+/* Splash stays visually merged with the page: no logo frame, panel, border,
+   shadow or separate backdrop. */
+body.v6-dark #splashScreen{
+  background:var(--dy-bg)!important;
+  background-image:none!important;
   border:0!important;
   box-shadow:none!important;
 }
-/* The animated Hooshyar hint was layered above the input and could cover the
-   characters being typed. Keep it behind the actual text input. */
+body.v6-dark #splashScreen .v5-splash-logo-wrap,
+body.v6-dark #splashScreen .v5-splash-logo,
+body.v6-dark #splashScreen .splash-content,
+body.v6-dark #splashScreen .splash-screen,
+body.v6-dark .v5-splash-logo-wrap,
+body.v6-dark .v5-splash-logo,
+body.v6-dark .splash-content,
+body.v6-dark .splash-screen{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+body.v6-dark .v5-splash-logo{
+  mix-blend-mode:normal!important;
+  object-fit:contain!important;
+}
+/* The animated Hooshyar hint must stay behind typed characters. */
 body.v6-dark .v5-smart-search-field #v5SmartSearchInput{
   position:relative!important;
   z-index:3!important;
@@ -454,13 +474,9 @@ body.v6-dark .v5-smart-search-field #v5SmartSearchInput{
   background:transparent!important;
   text-shadow:none!important;
 }
-body.v6-dark .v5-smart-search-field #v5SmartSearchHint{
-  z-index:1!important;
-}
+body.v6-dark .v5-smart-search-field #v5SmartSearchHint{z-index:1!important}
 body.v6-dark .v5-smart-search-field .v7-hooshyar-robot-zone,
-body.v6-dark .v5-smart-search-field .v7-hooshyar-action-zone{
-  z-index:5!important;
-}
+body.v6-dark .v5-smart-search-field .v7-hooshyar-action-zone{z-index:5!important}
 body.v6-dark #digiyar-chat-input,
 body.v6-dark .digiyar-chat-form input,
 body.v6-dark .v5-chat-composer input{
