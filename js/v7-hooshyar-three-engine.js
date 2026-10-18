@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.13';
+var VERSION='7.0.0-hooshyar-three-engine.14';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -169,14 +169,14 @@ function retrieveCandidates(need,catalog,eligibleIds){
   });
   if(need.concept==='mobile_phone'&&!isGeneral&&!hasMobilePhoneProduct&&(s.domains||[]).indexOf('furniture')>=0){score=-100;proof=[];}
   /* Furniture-domain overlap is never evidence for an air purifier. Allow an unusual cross-category merchant only when its KB explicitly lists air-purifier products. */
-  if(need.concept==='air_purifier'&&!hasAirPurifierProduct){score=-100;proof=[];direct=false;}
+  if(need.concept==='air_purifier'&&!isGeneral&&!hasAirPurifierProduct){score=-100;proof=[];direct=false;}
   var hasCleaningProduct=[].concat(s.products||[]).some(function(v){
    /* Cleaning intent requires an actual cleaning appliance/product, not a generic
       home, beauty or supermarket taxonomy signal. */
    return /(?:تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شویی|دستگاه\s*مبل\s*شوی|بخارشوی|فرش\s*شوی(?:ی)?|جاروبرقی|جارو\s*شارژی)/i.test(norm(v));
   });
   if(need.concept==='sofa_cleaning'&&hasCleaningProduct&&!direct){score+=4;direct=true;proof.push('sofa-cleaning-appliance');}
-  if(need.concept==='sofa_cleaning'&&!hasCleaningProduct){score=-100;proof=[];direct=false;}
+  if(need.concept==='sofa_cleaning'&&!isGeneral&&!hasCleaningProduct){score=-100;proof=[];direct=false;}
   var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized);
   var exclusions=Array.isArray(s.exclude||s.exclusions)?(s.exclude||s.exclusions).slice():[];
   if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
