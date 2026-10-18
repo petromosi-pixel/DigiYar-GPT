@@ -26,7 +26,7 @@ assert.ok(buttonRules.every(([, selector, declarations]) => {
   const authoredActionButton = /(?:\.primary|\.v5-primary|\.danger|\.v5-danger|\.popular-discovery-store-link|\.v6-auto-link|\.v5-smart-search-submit|\.v5-smart-search-clear|#installBtn|#v6ThemeToggle)/i.test(selector);
   return !authoredActionButton || !/(?:^|;)\s*(?:background(?:-[\w-]+)?|color|border-color)\s*:/i.test(declarations);
 }), 'The central theme must preserve authored brand/action button colors while allowing neutral disclosure controls to follow the theme.');
-assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.2\.5/,
+assert.match(index, /css\/digiyar-theme-system\.css\?v=1\.3\.0/,
   'The app must load the current centralized theme stylesheet with a cache-busting version.');
 
 for (const path of legacyStyles) {
