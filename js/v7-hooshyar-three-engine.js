@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.18';
+var VERSION='7.0.0-hooshyar-three-engine.19';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -106,12 +106,12 @@ function retrieveCandidates(need,catalog,eligibleIds){
       fashion needs, without promoting generic labels for specialized products. */
    if(words.length===1&&genericProductWords.indexOf(words[0])>=0&&q!==term){
     var word=words[0];
-    var broadFurnitureMatch=domains.indexOf('furniture')!==-1&&['مبل','مبلمان'].indexOf(word)!==-1&&!cleaningIntent;
+    var broadFurnitureMatch=domains.indexOf('furniture')!==-1&&['مبل','مبلمان'].indexOf(word)!==-1&&!cleaningIntent&&(!/اداری/i.test(q)||/اداری/i.test(term));
     var broadFashionMatch=domains.indexOf('fashion')!==-1&&['لباس','پوشاک','کفش'].indexOf(word)!==-1&&q.indexOf('کیف اداری')===-1&&q.indexOf('اداری کیف')===-1;
-    var broadTableMatch=domains.indexOf('furniture')!==-1&&word==='میز'&&q.indexOf('تنظیم ارتفاع')===-1&&q.indexOf('ارتفاع تنظیم')===-1&&q.indexOf('ارگونومیک')===-1&&q.indexOf('برقی')===-1;
+    var broadTableMatch=domains.indexOf('furniture')!==-1&&word==='میز'&&(!/اداری/i.test(q)||/اداری/i.test(term))&&q.indexOf('تنظیم ارتفاع')===-1&&q.indexOf('ارتفاع تنظیم')===-1&&q.indexOf('ارگونومیک')===-1&&q.indexOf('برقی')===-1;
     if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return;
    }
-   if(!cleaningIntent&&domains.indexOf('furniture')!==-1&&/(?:مبل|مبلمان)/i.test(q)&&/(?:مبل|مبلمان)/i.test(term)){out.push(raw);return;}
+   if(!cleaningIntent&&domains.indexOf('furniture')!==-1&&(!/اداری/i.test(q)||/اداری/i.test(term))&&/(?:مبل|مبلمان)/i.test(q)&&/(?:مبل|مبلمان)/i.test(term)){out.push(raw);return;}
    if(q.indexOf(term)>=0){out.push(raw);return;}
    if(words.length>=2&&words.every(function(w){return q.indexOf(w)>=0;})){out.push(raw);return;}
    if(words.length===1&&words[0].length>=4&&broadTerms.indexOf(words[0])<0&&
