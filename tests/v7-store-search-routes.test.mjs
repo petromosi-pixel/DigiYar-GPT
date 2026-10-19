@@ -124,7 +124,7 @@ function eligibilityExplainSafe(query){return window.DigiYarStoreEligibility.exp
 );
 const fashionPhrase='یه لباس اسپرت می‌خوام';
 const fashionResolved=threeEngine.resolve(fashionPhrase,catalog,[],orchestrator.classifyLocalNeed(fashionPhrase));
-['banimode','banistyle','aysoocollection'].forEach(id =>
+['banimode','banistyle','aysoocollection','digistyle','shixon','sportland'].forEach(id =>
   assert.ok(fashionResolved.eligibleStoreIds.includes(id), `fashion phrase omitted specialist ${id}`)
 );
 
