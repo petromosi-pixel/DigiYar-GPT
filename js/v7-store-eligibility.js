@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.61';
+var VERSION='7.0.0-store-eligibility.62';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -62,12 +62,12 @@ function kbMatchedStoreIds(query){
       /* Generic KB labels can support broad, matching category requests,
          but must not erase a meaningful product qualifier. */
       if(genericProductTerms.indexOf(t)>=0&&s!==t){
-        var broadFurnitureMatch=furnitureDomains&&['مبل','مبلمان'].indexOf(t)!==-1&&!cleaningIntent;
+        var broadFurnitureMatch=furnitureDomains&&['مبل','مبلمان'].indexOf(t)!==-1&&!cleaningIntent&&(!/اداری/i.test(s)||/اداری/i.test(t));
         var broadFashionMatch=fashionDomains&&['لباس','پوشاک','کفش'].indexOf(t)!==-1&&!/کیف\s*اداری|اداری.{0,12}کیف/i.test(s);
-        var broadTableMatch=furnitureDomains&&t==='میز'&&!/(?:تنظیم\s*ارتفاع|ارتفاع\s*تنظیم|برقی|ارگونومیک)/i.test(s);
+        var broadTableMatch=furnitureDomains&&t==='میز'&&(!/اداری/i.test(s)||/اداری/i.test(t))&&!/(?:تنظیم\s*ارتفاع|ارتفاع\s*تنظیم|برقی|ارگونومیک)/i.test(s);
         if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return false;
       }
-      if(furnitureDomains&&!cleaningIntent&&/(?:مبل|مبلمان)/i.test(s)&&/(?:مبل|مبلمان)/i.test(t))return true;
+      if(furnitureDomains&&!cleaningIntent&&(!/اداری/i.test(s)||/اداری/i.test(t))&&/(?:مبل|مبلمان)/i.test(s)&&/(?:مبل|مبلمان)/i.test(t))return true;
       return s.indexOf(t)!==-1;
     });
     /*
