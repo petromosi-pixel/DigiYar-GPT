@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.23';
+  const VERSION='7.0.0-hooshyar-local.24';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -325,8 +325,15 @@
       if(engineIds.length){
         /* Three-engine ranks the result set; it must not erase merchants
            already admitted by the canonical KB eligibility resolver. */
-        const previousIds=ids.slice();
-        ids=engineIds.concat(previousIds.filter(id=>!engineIds.includes(id)));
+        const parsedConcept=threeEngineResult.need&&threeEngineResult.need.concept;
+        const generalIds=new Set(['digikala','snappshop','torob','basalam','esam','memarket','divar','sheypoor']);
+        const previousSpecialists=ids.filter(id=>{
+          if(generalIds.has(id))return false;
+          const item=catalog[id]||{};
+          const blocked=Array.isArray(item.hooshyarExcludeConcepts)?item.hooshyarExcludeConcepts:[];
+          return !parsedConcept||!blocked.includes(parsedConcept);
+        });
+        ids=engineIds.concat(previousSpecialists.filter(id=>!engineIds.includes(id)));
         useThreeEngineCandidates=true;
       }
     }
