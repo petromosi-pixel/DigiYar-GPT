@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.59';
+var VERSION='7.0.0-store-eligibility.60';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -63,8 +63,8 @@ function kbMatchedStoreIds(query){
          but must not erase a meaningful product qualifier. */
       if(genericProductTerms.indexOf(t)>=0&&s!==t){
         var broadFurnitureMatch=furnitureDomains&&['مبل','مبلمان'].indexOf(t)!==-1&&!cleaningIntent;
-        var broadFashionMatch=fashionDomains&&['لباس','پوشاک','کفش'].indexOf(t)!==-1&&!/کیف\\s*اداری|اداری.{0,12}کیف/i.test(s);
-        var broadTableMatch=furnitureDomains&&t==='میز'&&!/(?:تنظیم\\s*ارتفاع|ارتفاع\\s*تنظیم|برقی|ارگونومیک)/i.test(s);
+        var broadFashionMatch=fashionDomains&&['لباس','پوشاک','کفش'].indexOf(t)!==-1&&!/کیف\s*اداری|اداری.{0,12}کیف/i.test(s);
+        var broadTableMatch=furnitureDomains&&t==='میز'&&!/(?:تنظیم\s*ارتفاع|ارتفاع\s*تنظیم|برقی|ارگونومیک)/i.test(s);
         if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return false;
       }
       return s.indexOf(t)!==-1;
@@ -415,11 +415,11 @@ function aiSelectionIsAllowed(query,id){
   /* Hard relevance gate: an AI-selected merchant must have product-level
      evidence in the canonical KB. A shared domain or a generic word such as
      «کیف» is not enough to qualify for «کیف اداری». */
-  var accessoryRequest=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(semanticText);
+  var accessoryRequest=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(semanticText);
   var mobileDeviceRequest=/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi|تبلت)/i.test(semanticText)&&!accessoryRequest;
   var mobileMerchantEvidence=(item.intents||[]).indexOf('mobile')!==-1 ||
     (item.domains||[]).indexOf('digital')!==-1 &&
-    expandTerms([].concat(item.products||[],item.aliases||[])).some(function(term){return /(?:موبایل|گوشی|تبلت|کالای\\s*دیجیتال)/i.test(norm(term));});
+    expandTerms([].concat(item.products||[],item.aliases||[])).some(function(term){return /(?:موبایل|گوشی|تبلت|کالای\s*دیجیتال)/i.test(norm(term));});
   if(!semanticStoreEvidence(item,ai) && !(mobileDeviceRequest&&mobileMerchantEvidence))return false;
 
   /* Commercial-policy guards that are unambiguous and merchant-specific. */
