@@ -130,13 +130,13 @@ const fashionResolved=threeEngine.resolve(fashionPhrase,catalog,[],orchestrator.
 
 /* Even if the ranking engine returns a partial list, preserve specialist
    candidates already validated by the canonical KB resolver. */
-const originalThreeEngineResolve=threeEngine.resolve;
+const originalThreeEngineResolveForMerge=threeEngine.resolve;
 threeEngine.resolve=function(query,source,seed,classified){
-  const result=originalThreeEngineResolve(query,source,seed,classified);
+  const result=originalThreeEngineResolveForMerge(query,source,seed,classified);
   return Object.assign({},result,{eligibleStoreIds:['digikala'],searchQueries:{digikala:'مبل راحتی'}});
 };
 const mergedFurniturePlan=await orchestrator.run(furniturePhrase);
-threeEngine.resolve=originalThreeEngineResolve;
+threeEngine.resolve=originalThreeEngineResolveForMerge;
 ['iranmiz','partochoob','mobliran','choobineh'].forEach(id =>
   assert.ok(mergedFurniturePlan.ai.eligibleStoreIds.includes(id), `orchestrator lost KB specialist ${id} when engine returned a partial list`)
 );
@@ -193,14 +193,14 @@ globalThis.CustomEvent = class { constructor(type, init) { this.type = type; thi
 const localOnly = await orchestrator.run('کیف اداری');
 assert.equal(localOnly.provider, 'local-knowledge-base', 'local results must work without an AI provider');
 assert.equal(localOnly.semantic, false);
-const originalThreeEngineResolve = window.DigiYarHooshyarThreeEngine.resolve;
+const originalThreeEngineResolveForMerge = window.DigiYarHooshyarThreeEngine.resolve;
 window.DigiYarHooshyarThreeEngine.resolve = () => ({
   eligibleStoreIds: [], searchQueries: {},
   need: {requestedProduct:'', brand:null, maxBudgetToman:null, attributes:[], targetObject:null, taskType:'shopping_search', concept:null},
   trace: {candidateCount:0, top:[]}
 });
 const preservedKbPlan = await orchestrator.run('کیف اداری');
-window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolve;
+window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolveForMerge;
 assert.ok(['modiseh','janebi','dayan'].every(id => preservedKbPlan.ai.eligibleStoreIds.includes(id)),
   'an empty three-engine parse must preserve the existing KB-validated office-bag matches');
 assert.equal(preservedKbPlan.ai.fallbackReason, 'three-engine-empty-preserved-kb-eligibility');
