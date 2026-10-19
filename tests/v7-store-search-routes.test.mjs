@@ -109,6 +109,38 @@ assert.ok(expandedDesk.eligibleStoreIds.includes('testdesk'), 'shared retrieval 
 ['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket'].forEach(id =>
   assert.ok(!expandedDesk.eligibleStoreIds.includes(id), `generic furniture merchant ${id} must not match a specific height-adjustable desk query`)
 );
+
+/* Broad category phrases must restore the specialist-first behavior that
+   existed before the three-engine filter was introduced. */
+const furniturePhrase='یه مبل راحتی برای پذیرایی می‌خوام';
+const furnitureResolved=threeEngine.resolve(furniturePhrase,catalog,[],orchestrator.classifyLocalNeed(furniturePhrase));
+['iranmiz','iransetkor','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket'].forEach(id =>
+  assert.ok(furnitureResolved.eligibleStoreIds.includes(id), `furniture phrase omitted specialist ${id}: ${furnitureResolved.eligibleStoreIds.join(',')}`)
+);
+const furnitureEligibility=eligibilityExplainSafe('مبل راحتی');
+function eligibilityExplainSafe(query){return window.DigiYarStoreEligibility.explain(query,[]);}
+['iranmiz','iransetkor','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket'].forEach(id =>
+  assert.ok(furnitureEligibility.eligibleIds.includes(id), `KB eligibility omitted furniture specialist ${id}`)
+);
+const fashionPhrase='یه لباس اسپرت می‌خوام';
+const fashionResolved=threeEngine.resolve(fashionPhrase,catalog,[],orchestrator.classifyLocalNeed(fashionPhrase));
+['banimode','banistyle','aysoocollection'].forEach(id =>
+  assert.ok(fashionResolved.eligibleStoreIds.includes(id), `fashion phrase omitted specialist ${id}`)
+);
+
+/* Even if the ranking engine returns a partial list, preserve specialist
+   candidates already validated by the canonical KB resolver. */
+const originalThreeEngineResolve=threeEngine.resolve;
+threeEngine.resolve=function(query,source,seed,classified){
+  const result=originalThreeEngineResolve(query,source,seed,classified);
+  return Object.assign({},result,{eligibleStoreIds:['digikala'],searchQueries:{digikala:'مبل راحتی'}});
+};
+const mergedFurniturePlan=await orchestrator.run(furniturePhrase);
+threeEngine.resolve=originalThreeEngineResolve;
+['iranmiz','partochoob','mobliran','choobineh'].forEach(id =>
+  assert.ok(mergedFurniturePlan.ai.eligibleStoreIds.includes(id), `orchestrator lost KB specialist ${id} when engine returned a partial list`)
+);
+
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
   assert.equal(intent && intent.kind, 'travel_ticket', `train intent not recognized: ${phrase}`);
