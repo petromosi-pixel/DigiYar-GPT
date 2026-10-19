@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.16';
+var VERSION='7.0.0-hooshyar-three-engine.17';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -111,6 +111,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
     var broadTableMatch=domains.indexOf('furniture')!==-1&&word==='میز'&&q.indexOf('تنظیم ارتفاع')===-1&&q.indexOf('ارتفاع تنظیم')===-1&&q.indexOf('ارگونومیک')===-1&&q.indexOf('برقی')===-1;
     if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return;
    }
+   if(!cleaningIntent&&domains.indexOf('furniture')!==-1&&/(?:مبل|مبلمان)/i.test(q)&&/(?:مبل|مبلمان)/i.test(term)){out.push(raw);return;}
    if(q.indexOf(term)>=0){out.push(raw);return;}
    if(words.length>=2&&words.every(function(w){return q.indexOf(w)>=0;})){out.push(raw);return;}
    if(words.length===1&&words[0].length>=4&&broadTerms.indexOf(words[0])<0&&
@@ -135,6 +136,11 @@ function retrieveCandidates(need,catalog,eligibleIds){
      complete match of a multi-word product's meaningful tokens, can admit
      new merchants without adding a per-query allowlist. */
   var evidence=evidenceTerms(need.normalized,s);
+  /* Apparel words are a semantic family: a request for «لباس اسپرت» should
+     find merchants whose declared inventory lists shirts, trousers or sportswear. */
+  if(need.concept==='clothing'&&(s.domains||[]).indexOf('fashion')!==-1&&/(?:تیشرت|تی\\s*شرت|پیراهن|شلوار|مانتو|کاپشن|هودی|لباس|پوشاک|دامن|پالتو|لباس\\s*ورزشی)/i.test(norm([].concat(s.products||[]).join(' ')))){
+   evidence.push('declared-fashion-apparel-inventory');
+  }
   /* The query can say «گوشی» while the merchant KB declares «موبایل». A declared mobile-accessories specialty is valid evidence only when the parsed need is explicitly an accessory request. */
   if(/(?:قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized)&&(s.intents||[]).indexOf('mobile_accessories')!==-1){evidence.push('mobile-accessories-specialty');}
   evidence.forEach(function(term){
