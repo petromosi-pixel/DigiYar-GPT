@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.14';
+var VERSION='7.0.0-hooshyar-three-engine.15';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -91,6 +91,8 @@ function retrieveCandidates(need,catalog,eligibleIds){
  function evidenceTerms(query,item){
   var q=norm(query),out=[];
   var genericProductWords=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد','خواب','اتاق','مناسب','محل','کار','دنبال','هستم','چیزی','میخواهم','میخوام','روزمره'];
+  var domains=Array.isArray(item.domains)?item.domains:[];
+  var cleaningIntent=/(?:تمیز\\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\\s*کردن|پاکسازی|مبل\\s*شویی|شستشوی\\s*مبل)/i.test(q);
   var terms=[].concat(item.products||[]).reduce(function(all,value){
    String(value==null?'':value).split(/[,،;؛\n]+/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){all.push(x);});
    return all;
@@ -100,8 +102,15 @@ function retrieveCandidates(need,catalog,eligibleIds){
    if(!term||term.length<3)return;
    var words=term.split(/[^\u0600-\u06FFa-z0-9]+/i).filter(Boolean)
     .filter(function(w){return w.length>=3&&broadTerms.indexOf(w)<0;});
-   /* Generic category words are not proof of a specific product match. */
-   if(words.length===1&&genericProductWords.indexOf(words[0])>=0&&q!==term)return;
+   /* Preserve the former category-aware retrieval for broad furniture and
+      fashion needs, without promoting generic labels for specialized products. */
+   if(words.length===1&&genericProductWords.indexOf(words[0])>=0&&q!==term){
+    var word=words[0];
+    var broadFurnitureMatch=domains.indexOf('furniture')!==-1&&['مبل','مبلمان'].indexOf(word)!==-1&&!cleaningIntent;
+    var broadFashionMatch=domains.indexOf('fashion')!==-1&&['لباس','پوشاک','کفش'].indexOf(word)!==-1&&q.indexOf('کیف اداری')===-1&&q.indexOf('اداری کیف')===-1;
+    var broadTableMatch=domains.indexOf('furniture')!==-1&&word==='میز'&&q.indexOf('تنظیم ارتفاع')===-1&&q.indexOf('ارتفاع تنظیم')===-1&&q.indexOf('ارگونومیک')===-1&&q.indexOf('برقی')===-1;
+    if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return;
+   }
    if(q.indexOf(term)>=0){out.push(raw);return;}
    if(words.length>=2&&words.every(function(w){return q.indexOf(w)>=0;})){out.push(raw);return;}
    if(words.length===1&&words[0].length>=4&&broadTerms.indexOf(words[0])<0&&
