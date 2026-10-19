@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.58';
+var VERSION='7.0.0-store-eligibility.59';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -53,14 +53,20 @@ function kbMatchedStoreIds(query){
      */
     var terms=expandTerms([].concat(item.products||[],item.aliases||[]));
     var genericProductTerms=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد'];
+    var furnitureDomains=(item.domains||[]).indexOf('furniture')!==-1;
+    var fashionDomains=(item.domains||[]).indexOf('fashion')!==-1;
+    var cleaningIntent=isCleaningTaskQuery(s);
     var directMatch=terms.some(function(term){
       var t=norm(term);
       if(!t)return false;
-      /* A broad one-word category is not enough evidence for a specific
-         product request. E.g. "کیف" must not qualify every fashion store
-         for "کیف اداری", and "میز" must not qualify every furniture store
-         for "میز تنظیم ارتفاع". */
-      if(genericProductTerms.indexOf(t)>=0&&s!==t)return false;
+      /* Generic KB labels can support broad, matching category requests,
+         but must not erase a meaningful product qualifier. */
+      if(genericProductTerms.indexOf(t)>=0&&s!==t){
+        var broadFurnitureMatch=furnitureDomains&&['مبل','مبلمان'].indexOf(t)!==-1&&!cleaningIntent;
+        var broadFashionMatch=fashionDomains&&['لباس','پوشاک','کفش'].indexOf(t)!==-1&&!/کیف\\s*اداری|اداری.{0,12}کیف/i.test(s);
+        var broadTableMatch=furnitureDomains&&t==='میز'&&!/(?:تنظیم\\s*ارتفاع|ارتفاع\\s*تنظیم|برقی|ارگونومیک)/i.test(s);
+        if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return false;
+      }
       return s.indexOf(t)!==-1;
     });
     /*
