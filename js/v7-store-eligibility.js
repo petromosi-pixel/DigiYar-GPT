@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.60';
+var VERSION='7.0.0-store-eligibility.61';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -67,6 +67,7 @@ function kbMatchedStoreIds(query){
         var broadTableMatch=furnitureDomains&&t==='میز'&&!/(?:تنظیم\s*ارتفاع|ارتفاع\s*تنظیم|برقی|ارگونومیک)/i.test(s);
         if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return false;
       }
+      if(furnitureDomains&&!cleaningIntent&&/(?:مبل|مبلمان)/i.test(s)&&/(?:مبل|مبلمان)/i.test(t))return true;
       return s.indexOf(t)!==-1;
     });
     /*
