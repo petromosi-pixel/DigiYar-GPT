@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.22';
+  const VERSION='7.0.0-hooshyar-local.23';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -323,7 +323,10 @@
        * keep the grounded seed list instead of blanking the whole simulator.
        */
       if(engineIds.length){
-        ids=engineIds;
+        /* Three-engine ranks the result set; it must not erase merchants
+           already admitted by the canonical KB eligibility resolver. */
+        const previousIds=ids.slice();
+        ids=engineIds.concat(previousIds.filter(id=>!engineIds.includes(id)));
         useThreeEngineCandidates=true;
       }
     }
@@ -350,7 +353,7 @@
         plan.ai.attributes=threeEngineResult.need.attributes||[];
         plan.ai.targetObject=threeEngineResult.need.targetObject||plan.ai.targetObject;
         plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
-        plan.ai.searchQueries=threeEngineResult.searchQueries;
+        plan.ai.searchQueries=Object.assign({},plan.ai.searchQueries||{},threeEngineResult.searchQueries||{});
         plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
       }else{
         plan.ai.fallbackReason='three-engine-empty-preserved-kb-eligibility';
