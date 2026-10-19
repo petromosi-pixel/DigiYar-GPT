@@ -193,14 +193,14 @@ globalThis.CustomEvent = class { constructor(type, init) { this.type = type; thi
 const localOnly = await orchestrator.run('کیف اداری');
 assert.equal(localOnly.provider, 'local-knowledge-base', 'local results must work without an AI provider');
 assert.equal(localOnly.semantic, false);
-const originalThreeEngineResolveForMerge = window.DigiYarHooshyarThreeEngine.resolve;
+const originalThreeEngineResolveForEmptyTest = window.DigiYarHooshyarThreeEngine.resolve;
 window.DigiYarHooshyarThreeEngine.resolve = () => ({
   eligibleStoreIds: [], searchQueries: {},
   need: {requestedProduct:'', brand:null, maxBudgetToman:null, attributes:[], targetObject:null, taskType:'shopping_search', concept:null},
   trace: {candidateCount:0, top:[]}
 });
 const preservedKbPlan = await orchestrator.run('کیف اداری');
-window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolveForMerge;
+window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolveForEmptyTest;
 assert.ok(['modiseh','janebi','dayan'].every(id => preservedKbPlan.ai.eligibleStoreIds.includes(id)),
   'an empty three-engine parse must preserve the existing KB-validated office-bag matches');
 assert.equal(preservedKbPlan.ai.fallbackReason, 'three-engine-empty-preserved-kb-eligibility');
