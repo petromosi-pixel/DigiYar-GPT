@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.64';
+var VERSION='7.0.0-store-eligibility.65';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -557,6 +557,12 @@ function storesForQuery(query, stores){
   var phoneText=norm(query);
   var accessoryIntent=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(phoneText);
   var phoneIntent=/(?:موبایل|گوشی|سامسونگ|آیفون|iphone|samsung|شیائومی|xiaomi)/i.test(phoneText);
+  if(accessoryIntent){
+    var accessoryStoreIds=['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'];
+    return orderStoresSpecialistFirst(list.filter(function(store){
+      return accessoryStoreIds.indexOf(String(store&&store.id||'').toLowerCase())!==-1;
+    }));
+  }
   if(phoneIntent&&!accessoryIntent){
     var phoneStoreIds=['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
     return orderStoresSpecialistFirst(list.filter(function(store){return phoneStoreIds.indexOf(String(store&&store.id||'').toLowerCase())!==-1;}));
