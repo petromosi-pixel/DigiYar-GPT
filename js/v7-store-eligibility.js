@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.66';
+var VERSION='7.0.0-store-eligibility.67';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -394,6 +394,32 @@ function semanticPlanForQuery(query){
   }catch(_){return null;}
 }
 
+/* The local three-engine resolver also produces a KB-validated merchant set.
+   It is authoritative for the ordinary offline-first search path, even though
+   it deliberately does not claim to be an external semantic-AI response. */
+function localPlanStoresForQuery(query,list){
+  try{
+    var p=root.DigiYarShoppingPlan;
+    if(!p||p.semantic===true||p.provider!=='local-knowledge-base'||
+       norm(p.query)!==norm(query)||!p.ai||
+       p.ai.engine!=='three-engine-local'||
+       !Array.isArray(p.ai.eligibleStoreIds))return null;
+    var byId={};
+    (Array.isArray(list)?list:[]).forEach(function(store){
+      if(store&&store.id)byId[String(store.id).toLowerCase()]=store;
+    });
+    var seen={};
+    var selected=[];
+    p.ai.eligibleStoreIds.forEach(function(rawId){
+      var id=String(rawId||'').toLowerCase();
+      if(!id||seen[id]||!byId[id]||!kbItem(id))return;
+      seen[id]=true;
+      selected.push(byId[id]);
+    });
+    return orderStoresSpecialistFirst(selected);
+  }catch(_){return null;}
+}
+
 function semanticPlanText(ai){
   if(!ai)return '';
   return norm([ai.semanticNeed,ai.requestedProduct,ai.action,ai.taskType,ai.category,ai.useCase]
@@ -551,6 +577,8 @@ function storesForQuery(query, stores){
    * resolver".
    */
   var semanticPlan=semanticPlanForQuery(query);
+  var localSelected=localPlanStoresForQuery(query,list);
+  if(localSelected!==null)return localSelected;
   var aiSelected=aiSelectedStores(query,list);
   /*
    * Once semantic AI has answered, its merchant set is authoritative.
