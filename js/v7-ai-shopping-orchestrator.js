@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.25';
+  const VERSION='7.0.0-hooshyar-local.26';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -220,7 +220,7 @@
     /* A product-aware query must not be misread as a merchant name merely
        because it contains a short store label (e.g. «جانبی» inside «لوازم جانبی»).
        Exact broad domain labels remain valid directory searches. */
-    const threeEngine=options&&options.disableThreeEngine?null:window.DigiYarHooshyarThreeEngine;
+    const threeEngine=window.DigiYarHooshyarThreeEngine;
     const parsedNeed=threeEngine&&typeof threeEngine.parseNeed==='function'?threeEngine.parseNeed(raw):null;
     const exactBroadDomain=Object.keys(DIRECTORY_TERMS).some(domain=>{
       const title=norm(domainTitles[domain]||'');
@@ -308,7 +308,7 @@
     let ids=(Array.isArray(stores)?stores:[])
       .map(x=>String(x&&x.id||'').toLowerCase())
       .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
-    const threeEngine=window.DigiYarHooshyarThreeEngine;
+    const threeEngine=options&&options.disableThreeEngine?null:window.DigiYarHooshyarThreeEngine;
     const threeEngineResult=!directory&&threeEngine&&typeof threeEngine.resolve==='function'
       ?threeEngine.resolve(raw,catalog,ids,classified):null;
     let useThreeEngineCandidates=false;
