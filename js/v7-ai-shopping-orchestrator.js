@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.26';
+  const VERSION='7.0.0-hooshyar-local.27';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -417,13 +417,8 @@
     // plan is dispatched immediately; a configured free semantic model may
     // improve it in the background, but cannot block or erase the fallback.
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
-    if(!plan.ai.directorySearch&&window.DigiYarHooshyarSemanticApiEnabled===true){
-      requestSemanticPlan(raw,catalog,window.DigiYarHooshyarAIProvider||'deepseek').then(function(aiPlan){
-        if(applySemanticPlan(plan,aiPlan,catalog))return;
-        // A provider's own local fallback is deliberately ignored: our browser
-        // resolver has the full current KB and remains the source of truth.
-      }).catch(function(){});
-    }
+    // Normal Hooshyar searches remain local-only. External providers are used
+    // only by the explicit engine-comparison action, never to replace live results.
     return plan;
   }
 
