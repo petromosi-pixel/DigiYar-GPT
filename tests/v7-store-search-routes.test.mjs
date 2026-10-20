@@ -52,6 +52,9 @@ for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]
 }
 const furnitureQuery = 'یه مبل راحتی برای پذیرایی می خوام';
 const furniturePlan = await window.DigiYarShoppingOrchestrator.run(furnitureQuery);
+const simulatorFurnitureIds = window.DigiYarStoreEligibility.storesForQuery(furnitureQuery, []).map(x => x.id);
+assert.deepEqual([...simulatorFurnitureIds].sort(), [...furniturePlan.ai.eligibleStoreIds].sort(),
+  'the simulator must display the exact locally resolved KB merchant set, not fall back to the older keyword resolver');
 for (const id of ['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','iransetkor']) {
   assert.ok(furniturePlan.ai.eligibleStoreIds.includes(id), `local furniture matching omitted specialist ${id}`);
   const url = new URL(browser.resolveSearchUrl(id, furnitureQuery));
