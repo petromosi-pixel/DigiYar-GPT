@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.29';
+  const VERSION='7.0.0-hooshyar-local.30';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -167,8 +167,11 @@
     }else if(combinedSkincare){
       storeProductQuery='کرم مرطوب کننده ضد آفتاب';
     }else{
-      const specificProduct=unique.find(term=>term&&term.length>=3);
-      storeProductQuery=specificProduct||clean(query);
+      /* Keep the full descriptive need for merchants whose search can process
+         natural language; dropping context such as «برای پذیرایی» or «برای
+         محل کارم» can change the intended product. Narrowing belongs only in
+         the explicit adapters above or in a merchant-specific route. */
+      storeProductQuery=clean(query);
     }
     /* Preserve an explicit brand/model if the KB product phrase omitted it. */
     const explicitBrand=(q.match(/سامسونگ|شیائومی|آیفون|اپل|هواوی|نوکیا|samsung|xiaomi|iphone|apple|huawei|nokia/i)||[])[0];
