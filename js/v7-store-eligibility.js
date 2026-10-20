@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.62';
+var VERSION='7.0.0-store-eligibility.63';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -96,6 +96,22 @@ function kbMatchedStoreIds(query){
     if(item.rankAfterGeneral && /(?:قاب|کاور|گلس|محافظ|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|مبدل|لوازم\s*جانبی|اکسسوری)/i.test(s)){
       directMatch=false;
     }
+    /* Semantic product-family retrieval: colloquial requests often contain
+       a use case (e.g. «برای پذیرایی») rather than the merchant's exact catalog
+       label. Match the requested product family against declared merchant
+       domains/products, while keeping cleaning tasks and unrelated domains out. */
+    var familyTerms=[].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[]);
+    var furnitureQuery=/(?:مبل|مبلمان|کاناپه|ناهارخور|میز\s*(?:اداری|تحریر|تلویزیون|ناهارخوری)|صندلی\s*اداری|تخت\s*خواب|کمد|دکوراسیون)/i.test(s);
+    var fashionQuery=/(?:لباس|پوشاک|استایل|مانتو|شلوار|پیراهن|کاپشن|هودی|لباس\s*اسپرت|کفش\s*(?:ورزشی|اسپرت))/i.test(s);
+    var sportsQuery=/(?:اسپرت|ورزشی|ورزش|باشگاه|تمرین)/i.test(s);
+    var merchantDomains=item.domains||[];
+    var familyEvidence=familyTerms.some(function(term){
+      return /(?:مبل|مبلمان|کاناپه|ناهارخور|میز|صندلی|تخت|کمد|دکوراسیون|لباس|پوشاک|کفش|استایل|ورزشی|ورزش)/i.test(norm(term));
+    });
+    var semanticFamilyMatch=
+      (!isCleaningTaskQuery(s)&&furnitureQuery&&merchantDomains.indexOf('furniture')!==-1&&familyEvidence) ||
+      (fashionQuery&&merchantDomains.indexOf('fashion')!==-1&&familyEvidence) ||
+      (sportsQuery&&merchantDomains.indexOf('sports')!==-1&&familyEvidence);
     var intentMatch=(item.intents||[]).some(function(intent){
       var key=norm(intent);
       if(key==='mobile'){
@@ -110,7 +126,7 @@ function kbMatchedStoreIds(query){
       }
       return false;
     });
-    if(directMatch||intentMatch)out.push(id);
+    if(directMatch||intentMatch||semanticFamilyMatch)out.push(id);
   });
   return out;
 }
