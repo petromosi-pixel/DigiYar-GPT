@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.86';
+const VERSION='7.0.0-store-browser.87';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -156,6 +156,7 @@ choobineh:q=>HOME['choobineh'],
 moblmarket:q=>HOME['moblmarket'],
 digistyle:q=>HOME['digistyle'],
 shixon:q=>'https://shixon.com/?s='+encodeURIComponent(q),
+sportland:q=>'https://sportland.ir/?s='+encodeURIComponent(q),
 limoo:q=>HOME['limoo'],
 mootanroo:q=>HOME['mootanroo'],
 zibamoon:q=>HOME['zibamoon'],
