@@ -65,10 +65,16 @@ const simulatorFurnitureIds = window.DigiYarStoreEligibility.storesForQuery(furn
 assert.deepEqual([...simulatorFurnitureIds].sort(), [...furniturePlan.ai.eligibleStoreIds].sort(),
   'the simulator must display the exact locally resolved KB merchant set, not fall back to the older keyword resolver');
 for (const id of ['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','iransetkor']) {
-  assert.ok(furniturePlan.ai.eligibleStoreIds.includes(id), `local furniture matching omitted specialist ${id}`);
+  assert.ok(furniturePlan.ai.eligibleStoreIds.includes(id), `local furniture matching omitted specialist ${id} from the KB plan`);
+}
+for (const id of ['partochoob','iransetkor']) {
   const url = new URL(browser.resolveSearchUrl(id, furnitureQuery));
   assert.ok(url.searchParams.get('s') === furnitureQuery && url.searchParams.get('post_type') === 'product',
     `${id} must search the full furniture request rather than open a fixed category/homepage`);
+}
+for (const id of ['iranmiz','chidahome','tidawood','mobliran','choobineh']) {
+  assert.equal(browser.resolveSearchUrl(id, furnitureQuery), '',
+    `${id} must be withheld until its actual query results are verified; a homepage/redirect is not a search result`);
 }
 for (const id of ['shixon','banistyle','aysoocollection','sportland']) {
   const url = new URL(browser.resolveSearchUrl(id, 'یه لباس اسپرت می‌خوام'));
