@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.89';
+const VERSION='7.0.0-store-browser.90';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -33,7 +33,10 @@ function genericMerchantSearchUrl(id,q){
     category/homepage routes discarded the user's query. These sites expose
     WordPress/WooCommerce-style product search parameters. Keep the complete
     normalized user phrase instead of replacing it with a generic category. */
- if(['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket','khaneyeiran','iransetkor'].indexOf(key)>=0){
+ /* Live route checks on 2026-10-20 found that several old WordPress-style
+    guesses either ignored the query or redirected to an unrelated product.
+    Keep only endpoints whose query results were confirmed; others fail closed. */
+ if(['partochoob','iransetkor'].indexOf(key)>=0){
    return home.replace(/\/+$/,'')+'/?s='+encodeURIComponent(term)+'&post_type=product';
  }
  if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
