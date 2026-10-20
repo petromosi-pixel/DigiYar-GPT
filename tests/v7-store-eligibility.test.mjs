@@ -28,9 +28,20 @@ assert.ok(!office.eligibleIds.includes('meghdadit'));
 assert.ok(!office.eligibleIds.includes('technolife'));
 assert.ok(!office.eligibleIds.includes('khanoumi'));
 assert.ok(office.eligibleIds.includes('iranmiz'), 'Iranmiz declares office furniture in its KB');
-assert.ok(!office.eligibleIds.includes('partochoob'), 'Partochoob must not qualify for office furniture without explicit product evidence');
-assert.ok(!office.eligibleIds.includes('chidahome'), 'Chida Home must not qualify for office furniture without explicit product evidence');
-assert.ok(!office.eligibleIds.includes('tidawood'), 'Tida Wood must not qualify for office furniture without explicit product evidence');
+assert.ok(office.eligibleIds.includes('partochoob'), 'furniture specialists must qualify for office-furniture requests by declared product family');
+assert.ok(office.eligibleIds.includes('chidahome'), 'Chida Home must qualify for furniture-family requests');
+assert.ok(office.eligibleIds.includes('tidawood'), 'Tida Wood must qualify for furniture-family requests');
+
+
+const sofa = eligibility.explain('یه مبل راحتی برای پذیرایی می خوام', stores);
+assert.equal(sofa.domain, 'furniture');
+['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','iransetkor'].forEach(id =>
+  assert.ok(sofa.eligibleIds.includes(id), `semantic sofa query omitted specialist ${id}`));
+
+const sportswear = eligibility.explain('یه لباس اسپرت می‌خوام', stores);
+assert.equal(sportswear.domain, 'fashion');
+['banistyle','aysoocollection','digistyle','shixon','sportland'].forEach(id =>
+  assert.ok(sportswear.eligibleIds.includes(id), `semantic sportswear query omitted specialist ${id}`));
 
 const dining = eligibility.explain('میز ناهارخوری چوبی ۶ نفره', stores);
 assert.equal(dining.domain, 'furniture');
