@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.24';
+var VERSION='7.0.0-hooshyar-three-engine.25';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -14,6 +14,26 @@ function norm(v){
   .replace(/می\s*خوام|می\s*خواهم|دنبال\s*یه|دنبال\s*یک|یه\s*چیزی|یک\s*چیزی/g,' ')
   .replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب')
   .replace(/\s+/g,' ').trim();
+}
+function tokenStem(value){
+ var w=norm(value).replace(/[^\u0600-\u06FFa-z0-9]+/gi,'').trim();
+ if(w.length>5&&/(?:های|هایی)$/.test(w))w=w.replace(/(?:های|هایی)$/,'');
+ else if(w.length>4&&/ها$/.test(w))w=w.slice(0,-2);
+ if(w.length>4&&/ی$/.test(w))w=w.slice(0,-1);
+ return w;
+}
+function meaningfulTokens(value){
+ return norm(value).split(/[^\u0600-\u06FFa-z0-9]+/i).filter(Boolean)
+  .filter(function(w){return !['برای','از','به','با','در','و','یا','یه','یک','میخوام','میخواهم','دنبال','مناسب','هستم','است','رو','را','تا','حدود','لطفا','لطفاً'].includes(w);})
+  .map(tokenStem).filter(Boolean);
+}
+function termMatchesQuery(rawTerm,query){
+ var term=norm(rawTerm),q=norm(query);
+ if(!term||!q)return false;
+ if(q.indexOf(term)>=0)return true;
+ var termTokens=meaningfulTokens(term),queryTokens=meaningfulTokens(q);
+ if(!termTokens.length)return false;
+ return termTokens.every(function(t){return queryTokens.indexOf(t)>=0;});
 }
 var CONCEPTS=[
  {key:'laptop',label:'لپ تاپ',domain:'digital',terms:['لپ تاپ','لپتاپ','نوت بوک','کامپیوتر همراه'],patterns:/(?:لپ\s*تاپ|لپتاپ|نوت\s*بوک|کامپیوتر\s*همراه)/i},
@@ -126,10 +146,10 @@ function retrieveCandidates(need,catalog,eligibleIds){
     if(!broadFurnitureMatch&&!broadFashionMatch&&!broadTableMatch)return;
    }
    if(!cleaningIntent&&domains.indexOf('furniture')!==-1&&(!/اداری/i.test(q)||/اداری/i.test(term))&&/(?:مبل|مبلمان)/i.test(q)&&/(?:مبل|مبلمان)/i.test(term)){out.push(raw);return;}
-   if(q.indexOf(term)>=0){out.push(raw);return;}
-   if(words.length>=2&&words.every(function(w){return q.indexOf(w)>=0;})){out.push(raw);return;}
+   if(termMatchesQuery(term,q)){out.push(raw);return;}
+   if(words.length>=2&&words.every(function(w){return meaningfulTokens(q).indexOf(tokenStem(w))>=0;})){out.push(raw);return;}
    if(words.length===1&&words[0].length>=4&&broadTerms.indexOf(words[0])<0&&
-      new RegExp('(?:^|[^\u0600-\u06FFa-z0-9])'+words[0]+'(?:$|[^\u0600-\u06FFa-z0-9])','i').test(q)){out.push(raw);}
+      meaningfulTokens(q).indexOf(tokenStem(words[0]))>=0){out.push(raw);}
   });
   return Array.from(new Set(out));
  }
