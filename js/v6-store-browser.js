@@ -34,7 +34,7 @@ function genericMerchantSearchUrl(id,q){
     WordPress/WooCommerce-style product search parameters. Keep the complete
     normalized user phrase instead of replacing it with a generic category. */
  if(['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket','khaneyeiran','iransetkor'].indexOf(key)>=0){
-   return home.replace(/\\/$/,'')+'/?s='+encodeURIComponent(term)+'&post_type=product';
+   return home.replace(/\/+$/,'')+'/?s='+encodeURIComponent(term)+'&post_type=product';
  }
  if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(term);
