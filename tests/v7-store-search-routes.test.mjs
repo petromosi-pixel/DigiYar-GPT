@@ -29,11 +29,11 @@ const kbEvidenceFixture = {
   kb_alias_only: {name:'Alias-only specialist',domains:['home'],products:[],aliases:['ترازوی هوشمند آشپزخانه'],querySignals:[],specialties:[],productFamilies:[]},
   kb_signal_only: {name:'Signal-only specialist',domains:['home'],products:[],aliases:[],querySignals:['ترازوی هوشمند آشپزخانه'],specialties:[],productFamilies:[]},
   kb_family_only: {name:'Family-only specialist',domains:['home'],products:[],aliases:[],querySignals:[],specialties:[],productFamilies:['ترازوی هوشمند آشپزخانه']},
-  kb_general: {name:'General store',domains:['home'],products:['ترازوی هوشمند آشپزخانه'],aliases:[],querySignals:[],specialties:[],productFamilies:[]},
+  digikala: {name:'General store',domains:['home'],products:['ترازوی هوشمند آشپزخانه'],aliases:[],querySignals:[],specialties:[],productFamilies:[]},
   kb_unrelated: {name:'Unrelated furniture',domains:['furniture'],products:['میز ناهارخوری'],aliases:[],querySignals:[],specialties:[],productFamilies:[]}
 };
 const kbEvidenceResult = engine.resolve('ترازوی هوشمند آشپزخانه', kbEvidenceFixture, [], null);
-for (const id of ['kb_alias_only','kb_signal_only','kb_family_only','kb_general']) {
+for (const id of ['kb_alias_only','kb_signal_only','kb_family_only','digikala']) {
   assert.ok(kbEvidenceResult.eligibleStoreIds.includes(id), `KB evidence field failed to retrieve ${id}`);
 }
 assert.ok(!kbEvidenceResult.eligibleStoreIds.includes('kb_unrelated'),
