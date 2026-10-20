@@ -34,7 +34,9 @@ for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]
     `${id} search URL must preserve the requested product phrase`);
 }
 const furnitureQuery = 'یه مبل راحتی برای پذیرایی می خوام';
+const furniturePlan = await window.DigiYarShoppingOrchestrator.run(furnitureQuery);
 for (const id of ['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','iransetkor']) {
+  assert.ok(furniturePlan.ai.eligibleStoreIds.includes(id), `local furniture matching omitted specialist ${id}`);
   const url = new URL(browser.resolveSearchUrl(id, furnitureQuery));
   assert.ok(url.searchParams.get('s') === furnitureQuery && url.searchParams.get('post_type') === 'product',
     `${id} must search the full furniture request rather than open a fixed category/homepage`);
@@ -43,6 +45,11 @@ for (const id of ['shixon','banistyle','aysoocollection','sportland']) {
   const url = new URL(browser.resolveSearchUrl(id, 'یه لباس اسپرت می‌خوام'));
   assert.ok((url.searchParams.get('s') || url.searchParams.get('q') || '').includes('لباس'),
     `${id} must preserve the user's fashion query`);
+}
+
+const clothingPlan = await window.DigiYarShoppingOrchestrator.run('یه لباس ورزشی می‌خوام');
+for (const id of ['sportland','banistyle','aysoocollection','digistyle']) {
+  assert.ok(clothingPlan.ai.eligibleStoreIds.includes(id), `local fashion matching omitted specialist ${id}`);
 }
 
 const ids = Object.keys(catalog);
