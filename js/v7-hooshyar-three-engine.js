@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.23';
+var VERSION='7.0.0-hooshyar-three-engine.24';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -181,7 +181,11 @@ function retrieveCandidates(need,catalog,eligibleIds){
     furniture:['مبلمان','میز','صندلی','دکوراسیون'],
     travel_ticket:['بلیط','سفر','قطار','هواپیما','اتوبوس']
    }[need.domain]||[];
-   if(categoryInventory.some(function(term){return declaredProducts.indexOf(norm(term))>=0;})){
+   var declaredMobileInventory=[].concat(s.products||[]).some(function(v){
+    return /(?:موبایل|گوشی|تلفن\s*همراه|تبلت|smartphone|mobile\s*phone)/i.test(norm(v));
+   });
+   if(categoryInventory.some(function(term){return declaredProducts.indexOf(norm(term))>=0;})&&
+      (need.concept!=='mobile_phone'||declaredMobileInventory)){
     score+=4;direct=true;proof.push('declared-current-category-inventory');
    }
   }
