@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.87';
+const VERSION='7.0.0-store-browser.88';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -171,7 +171,7 @@ ofood:q=>HOME['ofood'],
 homeplus:q=>HOME['homeplus'],
 sakhtemoononline:q=>HOME['sakhtemoononline'],
 khaneyeiran:q=>HOME['khaneyeiran'],
-sportland:q=>HOME['sportland'],
+sportland:q=>'https://sportland.ir/?s='+encodeURIComponent(q),
 iransport:q=>HOME['iransport'],
 sporttime:q=>HOME['sporttime'],
 ninimarket:q=>HOME['ninimarket'],
