@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.65';
+var VERSION='7.0.0-store-eligibility.66';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -349,6 +349,15 @@ function specialtyStoresForQuery(query,stores){
 
 function domainForQuery(query){
   var s=norm(query),best=null;
+  /* Resolve high-confidence product families before scanning overlapping KB
+     vocabulary. Generic marketplace terms used to make «مبل» look like a
+     digital query because several broad stores sell both product families. */
+  if(/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(s))
+    return {domain:'accessories',term:'لوازم جانبی'};
+  if(/(?:مبل|مبلمان|کاناپه|ناهارخور|میز\s*(?:اداری|تحریر|تلویزیون|ناهارخوری)|صندلی\s*اداری|تخت\s*خواب|کمد|دکوراسیون)/i.test(s))
+    return {domain:'furniture',term:(s.match(/مبلمان|مبل|کاناپه|ناهارخور|میز\s*(?:اداری|تحریر|تلویزیون|ناهارخوری)|صندلی\s*اداری|تخت\s*خواب|کمد|دکوراسیون/i)||['مبلمان'])[0]};
+  if(/(?:لباس|پوشاک|استایل|مانتو|شلوار|پیراهن|کاپشن|هودی|لباس\s*اسپرت|کفش\s*(?:ورزشی|اسپرت))/i.test(s))
+    return {domain:'fashion',term:(s.match(/لباس|پوشاک|استایل|مانتو|شلوار|پیراهن|کاپشن|هودی|کفش\s*(?:ورزشی|اسپرت)/i)||['پوشاک'])[0]};
   Object.keys(DOMAINS).forEach(function(domain){DOMAINS[domain].forEach(function(term){var t=norm(term);if(t&&s.indexOf(t)!==-1&&(!best||t.length>best.term.length))best={domain:domain,term:t};});});
   return best;
 }
