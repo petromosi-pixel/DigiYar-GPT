@@ -33,6 +33,18 @@ for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]
   assert.ok((url.searchParams.get('q') || url.searchParams.get('query') || '').includes(query),
     `${id} search URL must preserve the requested product phrase`);
 }
+const furnitureQuery = 'یه مبل راحتی برای پذیرایی می خوام';
+for (const id of ['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','iransetkor']) {
+  const url = new URL(browser.resolveSearchUrl(id, furnitureQuery));
+  assert.ok(url.searchParams.get('s') === furnitureQuery && url.searchParams.get('post_type') === 'product',
+    `${id} must search the full furniture request rather than open a fixed category/homepage`);
+}
+for (const id of ['shixon','banistyle','aysoocollection']) {
+  const url = new URL(browser.resolveSearchUrl(id, 'یه لباس اسپرت می‌خوام'));
+  assert.ok((url.searchParams.get('s') || url.searchParams.get('q') || '').includes('لباس'),
+    `${id} must preserve the user's fashion query`);
+}
+
 const ids = Object.keys(catalog);
 assert.equal(ids.length, 120, `all 120 stores must be present in the canonical KB, got ${ids.length}`);
 assert.ok(catalog['19kala'], '19kala must be represented in the canonical KB');
@@ -203,7 +215,7 @@ const preservedKbPlan = await orchestrator.run('کیف اداری');
 window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolveForEmptyTest;
 assert.ok(['modiseh','janebi','dayan'].every(id => preservedKbPlan.ai.eligibleStoreIds.includes(id)),
   'an empty three-engine parse must preserve the existing KB-validated office-bag matches');
-assert.equal(preservedKbPlan.ai.fallbackReason, 'three-engine-empty-preserved-kb-eligibility');
+assert.equal(preservedKbPlan.ai.fallbackReason, undefined, 'normal searches must use the deterministic KB path without invoking the three-engine resolver');
 const localPhone = await orchestrator.run('یه گوشی سامسونگ می‌خوام');
 const expectedPhoneIds = ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
 expectedPhoneIds.forEach(id => assert.ok(localPhone.ai.eligibleStoreIds.includes(id), `local phone plan omitted expected merchant ${id}`));
