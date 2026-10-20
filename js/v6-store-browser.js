@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.85';
+const VERSION='7.0.0-store-browser.86';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -29,6 +29,13 @@ function genericMerchantSearchUrl(id,q){
  var host='';
  try{if(home)host=new URL(home).hostname.replace(/^www[.]/i,'');}catch(e){}
  var term=String(q||'').trim();
+ /* Product-search adapters for the specialist merchants whose previous
+    category/homepage routes discarded the user's query. These sites expose
+    WordPress/WooCommerce-style product search parameters. Keep the complete
+    normalized user phrase instead of replacing it with a generic category. */
+ if(['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket','khaneyeiran','iransetkor'].indexOf(key)>=0){
+   return home.replace(/\\/$/,'')+'/?s='+encodeURIComponent(term)+'&post_type=product';
+ }
  if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(term);
  if(key==='digikala')return 'https://www.digikala.com/search/?q='+encodeURIComponent(term);
@@ -110,8 +117,8 @@ const SEARCH={iranmiz:q=>'https://www.iranmiz.com/category/%D9%85%DB%8C%D8%B2-%D
  torob:q=>'https://torob.com/search/?query='+encodeURIComponent(q),basalam:q=>'https://basalam.com/search?q='+encodeURIComponent(q),esam:q=>'https://esam.ir/search/?kw='+encodeURIComponent(q), digikala:q=>'https://www.digikala.com/search/?q='+encodeURIComponent(q),snappshop:q=>'https://snappshop.ir/search?query='+encodeURIComponent(q),technolife:q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(q),digiland:q=>'https://dgland.com/search?q='+encodeURIComponent(q),takhfifan:q=>'https://takhfifan.com/search?q='+encodeURIComponent(q),meghdadit:q=>'https://meghdadit.com/',digido:q=>'https://www.digido.ir/search?s='+encodeURIComponent(q),gooshishop:q=>'https://gooshishop.com/search?q='+encodeURIComponent(q),berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(q),janebi:q=>'https://janebi.com/search?q='+encodeURIComponent(q),khanoumi:q=>khanoumiSearchUrl(q),banimode:q=>'https://www.banimode.com/search?q='+encodeURIComponent(q),modiseh:q=>'https://www.modiseh.com/search?q='+encodeURIComponent(q),pinket:q=>'https://pinket.com/search?q='+encodeURIComponent(q),solokala:q=>'https://solokala.com/search?q='+encodeURIComponent(q),neshatrokh:q=>'https://www.neshatrokh.com/',dayan:q=>'https://dayanshop.com/search?q='+encodeURIComponent(q),memarket:q=>'https://memarket24.ir/search/'+encodeURIComponent(q.replace(/\s+/g,'-')),darukade:q=>'https://www.darukade.com/search?search='+encodeURIComponent(q),darmankala:q=>'https://darmankala.com/?s='+encodeURIComponent(q),mosbatesabz:q=>'https://mosbatesabz.com/?s='+encodeURIComponent(q),'daroo-online':q=>'https://DarookhaneOnline.com/',shavaz:q=>siteSearchUrl('shavaz.ir',q),jeanswest:q=>siteSearchUrl('jeanswest.ir',q),sabzgostar:q=>siteSearchUrl('sabzgostar.info',q),shab:q=>'https://www.shab.ir/',safarme:q=>'https://www.safarme.ir/',eseminar:q=>'https://eseminar.tv/',maktabkhooneh:q=>'https://maktabkhooneh.org/',karnameh:q=>'https://karnameh.com/',
 iransetkor:q=>HOME["iransetkor"],
 '19kala':q=>HOME["19kala"],
-banistyle:q=>HOME["banistyle"],
-aysoocollection:q=>HOME["aysoocollection"],
+banistyle:q=>'https://banistyle.com/?s='+encodeURIComponent(q),
+aysoocollection:q=>'https://aysoocollection.com/?s='+encodeURIComponent(q),
 daru24:q=>HOME["daru24"],
 betadent:q=>HOME["betadent"],
 darupedia:q=>HOME["darupedia"],
@@ -148,7 +155,7 @@ mobliran:q=>HOME['mobliran'],
 choobineh:q=>HOME['choobineh'],
 moblmarket:q=>HOME['moblmarket'],
 digistyle:q=>HOME['digistyle'],
-shixon:q=>HOME['shixon'],
+shixon:q=>'https://shixon.com/?s='+encodeURIComponent(q),
 limoo:q=>HOME['limoo'],
 mootanroo:q=>HOME['mootanroo'],
 zibamoon:q=>HOME['zibamoon'],
