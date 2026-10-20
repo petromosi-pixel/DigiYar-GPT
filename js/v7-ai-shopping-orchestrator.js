@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.28';
+  const VERSION='7.0.0-hooshyar-local.29';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
