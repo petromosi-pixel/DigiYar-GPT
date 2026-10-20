@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.27';
+  const VERSION='7.0.0-hooshyar-local.28';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -151,11 +151,30 @@
     }
     const ids=Array.isArray(eligibleIds)?eligibleIds.slice():[];
     const queries={};
-    const storeProductQuery=classified&&classified.product
-      ?(classified.taskType==='ticket_search'?clean(query):clean(classified.product))
-      :((cleaning&&/(مبل|مبلمان|پارچه)/i.test(q))?'تمیزکننده مبل پارچه‌ای'
-        :( /(?:قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(q)&&/(?:موبایل|گوشی|سامسونگ|آیفون|samsung|iphone)/i.test(q)
-          ?'لوازم جانبی موبایل':clean(query)));
+    /*
+     * Descriptive-search adapter (Digikala-style): keep the conversational
+     * sentence for intent analysis, but send each merchant a concise product
+     * phrase. Prefer an explicit local intent, then a combined skincare need,
+     * then the longest product/alias hit from the canonical store KB.
+     */
+    let storeProductQuery;
+    if(classified&&classified.product){
+      storeProductQuery=classified.taskType==='ticket_search'?clean(query):clean(classified.product);
+    }else if(cleaning&&/(مبل|مبلمان|پارچه)/i.test(q)){
+      storeProductQuery='تمیزکننده مبل پارچه‌ای';
+    }else if(/(?:قاب|کاور|گلس|محافظ\s*صفحه|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(q)&&/(?:موبایل|گوشی|سامسونگ|آیفون|samsung|iphone)/i.test(q)){
+      storeProductQuery='لوازم جانبی موبایل';
+    }else if(combinedSkincare){
+      storeProductQuery='کرم مرطوب کننده ضد آفتاب';
+    }else{
+      const specificProduct=unique.find(term=>term&&term.length>=3);
+      storeProductQuery=specificProduct||clean(query);
+    }
+    /* Preserve an explicit brand/model if the KB product phrase omitted it. */
+    const explicitBrand=(q.match(/سامسونگ|شیائومی|آیفون|اپل|هواوی|نوکیا|samsung|xiaomi|iphone|apple|huawei|nokia/i)||[])[0];
+    if(explicitBrand&&storeProductQuery&&!norm(storeProductQuery).includes(norm(explicitBrand))){
+      storeProductQuery=clean(storeProductQuery+' '+explicitBrand);
+    }
     ids.forEach(id=>{queries[id]=storeProductQuery;});
     const domains=classified?classified.domains.slice():[];
     if(!classified){
@@ -408,17 +427,12 @@
   }
 
   async function run(query,context){
-    const built=localPlanFor(query,context,{disableThreeEngine:true});
+    /* Run the local three-engine parser in production. It is deterministic and
+       provider-independent; disabling it here previously left conversational
+       searches on the shallow KB fallback and hid relevant specialist stores. */
+    const built=localPlanFor(query,context);
     const plan=built.plan;
-    const catalog=built.catalog;
-    const raw=built.raw;
-
-    // Never make shopping depend on an AI vendor. The local knowledge-base
-    // plan is dispatched immediately; a configured free semantic model may
-    // improve it in the background, but cannot block or erase the fallback.
     window.dispatchEvent(new CustomEvent('digiyar:shopping-plan-ready',{detail:plan}));
-    // Normal Hooshyar searches remain local-only. External providers are used
-    // only by the explicit engine-comparison action, never to replace live results.
     return plan;
   }
 
