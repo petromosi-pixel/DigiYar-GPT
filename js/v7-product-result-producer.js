@@ -4,7 +4,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-product-result-producer.14';
+var VERSION='7.0.0-product-result-producer.15';
 var INDEXES=[
  {path:'js/digital-product-index-v5.1.js',exportName:'DIGITAL_PRODUCTS'},
  {path:'js/mobile-product-index-v5.1.js',exportName:'MOBILE_PRODUCTS'},
@@ -208,7 +208,7 @@ function relevance(p,tokens,intent){
    if(!t||t===brandToken)return;
    if(f.name.indexOf(t)>=0)score+=100;
    else if(f.model.indexOf(t)>=0)score+=35;
-   else if(f.subcategory.indexOf(t)>=0)score+=8;
+   else if(f.subcategory.indexOf(t)>=0)score+=10;
    else if(f.category.indexOf(t)>=0)score+=3;
  });
  return score;
