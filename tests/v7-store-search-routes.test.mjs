@@ -212,6 +212,8 @@ globalThis.CustomEvent = class { constructor(type, init) { this.type = type; thi
 const localOnly = await orchestrator.run('کیف اداری');
 assert.equal(localOnly.provider, 'local-knowledge-base', 'local results must work without an AI provider');
 assert.equal(localOnly.semantic, false);
+assert.ok(['modiseh','janebi','dayan'].every(id => localOnly.ai.eligibleStoreIds.includes(id)), 'descriptive office-bag search must retain specialist merchants');
+assert.ok(['modiseh','janebi','dayan'].every(id => localOnly.ai.searchQueries[id] === 'کیف اداری'), 'merchant search routes must receive the concise product query rather than conversational filler');
 const originalThreeEngineResolveForEmptyTest = window.DigiYarHooshyarThreeEngine.resolve;
 window.DigiYarHooshyarThreeEngine.resolve = () => ({
   eligibleStoreIds: [], searchQueries: {},
@@ -222,7 +224,7 @@ const preservedKbPlan = await orchestrator.run('کیف اداری');
 window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolveForEmptyTest;
 assert.ok(['modiseh','janebi','dayan'].every(id => preservedKbPlan.ai.eligibleStoreIds.includes(id)),
   'an empty three-engine parse must preserve the existing KB-validated office-bag matches');
-assert.equal(preservedKbPlan.ai.fallbackReason, undefined, 'normal searches must use the deterministic KB path without invoking the three-engine resolver');
+assert.equal(preservedKbPlan.ai.fallbackReason, 'three-engine-empty-preserved-kb-eligibility', 'an empty descriptive parse must preserve KB-validated merchants and record the fallback');
 const localPhone = await orchestrator.run('یه گوشی سامسونگ می‌خوام');
 const expectedPhoneIds = ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
 expectedPhoneIds.forEach(id => assert.ok(localPhone.ai.eligibleStoreIds.includes(id), `local phone plan omitted expected merchant ${id}`));
