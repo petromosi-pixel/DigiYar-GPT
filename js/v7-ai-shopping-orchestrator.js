@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.24';
+  const VERSION='7.0.0-hooshyar-local.25';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -220,7 +220,7 @@
     /* A product-aware query must not be misread as a merchant name merely
        because it contains a short store label (e.g. «جانبی» inside «لوازم جانبی»).
        Exact broad domain labels remain valid directory searches. */
-    const threeEngine=window.DigiYarHooshyarThreeEngine;
+    const threeEngine=options&&options.disableThreeEngine?null:window.DigiYarHooshyarThreeEngine;
     const parsedNeed=threeEngine&&typeof threeEngine.parseNeed==='function'?threeEngine.parseNeed(raw):null;
     const exactBroadDomain=Object.keys(DIRECTORY_TERMS).some(domain=>{
       const title=norm(domainTitles[domain]||'');
@@ -288,7 +288,7 @@
     return null;
   }
 
-  function localPlanFor(query,context){
+  function localPlanFor(query,context,options){
     const raw=clean(query);
     const plan=buildPlan(raw,context);
     const catalog=buildStoreCatalog();
@@ -408,7 +408,7 @@
   }
 
   async function run(query,context){
-    const built=localPlanFor(query,context);
+    const built=localPlanFor(query,context,{disableThreeEngine:true});
     const plan=built.plan;
     const catalog=built.catalog;
     const raw=built.raw;
