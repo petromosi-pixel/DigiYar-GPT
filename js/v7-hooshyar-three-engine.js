@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.21';
+var VERSION='7.0.0-hooshyar-three-engine.22';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -101,7 +101,12 @@ function retrieveCandidates(need,catalog,eligibleIds){
    * querySignals, specialties, or productFamilies. Match across every declared
    * inventory/evidence field so new KB entries work without adding query rules.
    */
-  var terms=[].concat(item.products||[],item.aliases||[],item.querySignals||[],
+  /* Query signals are useful for uncatalogued phrasing, but can be broader
+     than inventory (e.g. generic digital merchants inherit accessory signals).
+     For explicit accessory requests, require product/alias/specialty/family
+     evidence and do not promote a store on querySignals alone. */
+  var querySignals=need.concept==='mobile_accessory'?[]:(item.querySignals||[]);
+  var terms=[].concat(item.products||[],item.aliases||[],querySignals,
     item.specialties||[],item.productFamilies||[]).reduce(function(all,value){
    String(value==null?'':value).split(/[,،;؛\n]+/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){all.push(x);});
    return all;
