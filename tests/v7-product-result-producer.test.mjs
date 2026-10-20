@@ -27,6 +27,7 @@ const context = {
     text: async () => `const ${indexNames[0]} = ${JSON.stringify(fixture)};`
   }),
   URL,
+  document: { baseURI: 'https://digiyar.test/' },
   CustomEvent,
   setTimeout,
   clearTimeout
