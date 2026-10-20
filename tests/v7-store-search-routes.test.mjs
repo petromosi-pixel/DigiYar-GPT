@@ -33,16 +33,20 @@ const kbEvidenceFixture = {
   kb_unrelated: {name:'Unrelated furniture',domains:['furniture'],products:['میز ناهارخوری'],aliases:[],querySignals:[],specialties:[],productFamilies:[]}
 };
 const kbEvidenceResult = engine.resolve('ترازوی هوشمند آشپزخانه', kbEvidenceFixture, [], null);
-for (const id of ['kb_alias_only','kb_signal_only','kb_family_only','digikala']) {
-  assert.ok(kbEvidenceResult.eligibleStoreIds.includes(id), `KB evidence field failed to retrieve ${id}`);
+for (const id of ['kb_alias_only','kb_family_only','digikala']) {
+  assert.ok(kbEvidenceResult.eligibleStoreIds.includes(id), `KB inventory evidence failed to retrieve ${id}`);
 }
+assert.ok(!kbEvidenceResult.eligibleStoreIds.includes('kb_signal_only'),
+  'querySignals alone must never qualify a merchant without declared inventory evidence');
 assert.ok(!kbEvidenceResult.eligibleStoreIds.includes('kb_unrelated'),
   'unrelated KB entries must not be admitted merely because they share a domain');
 const inflectedKbResult = engine.resolve('ترازوهای هوشمند برای آشپزخانه', kbEvidenceFixture, [], null);
-for (const id of ['kb_alias_only','kb_signal_only','kb_family_only','digikala']) {
+for (const id of ['kb_alias_only','kb_family_only','digikala']) {
   assert.ok(inflectedKbResult.eligibleStoreIds.includes(id),
     `Persian inflection/word order prevented KB retrieval for ${id}`);
 }
+assert.ok(!inflectedKbResult.eligibleStoreIds.includes('kb_signal_only'),
+  'a broad query signal must not override missing product inventory');
 
 const browser = window.DigiYarStoreBrowser;
 assert.ok(browser && typeof browser.resolveSearchUrl === 'function', 'Store Browser must expose the real URL resolver');
@@ -95,6 +99,8 @@ for (const id of ids) {
     assert.ok(!(url.pathname === '/' && !url.search && !url.hash),
       'homepage-only URLs must not be presented as product-search results');
     assert.ok(!url.hostname.endsWith('google.com'), `${id} must not send the user to Google instead of the merchant`);
+    assert.ok(['q','query','s','search','title','kw','keywords','w','term','text','keyword','product','search_query'].some(key => (url.searchParams.get(key)||'').trim().length >= 2),
+      `${id} must carry a non-empty merchant-side product-search parameter, not a static category page`);
     assert.ok(url.pathname !== '/' || url.search || url.hash,
       `${id} must not fall back to a homepage without a product-search query`);
   } catch (error) {
