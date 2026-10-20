@@ -3,7 +3,7 @@
 */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-eligibility.63';
+var VERSION='7.0.0-store-eligibility.64';
 
 var DOMAINS={};
 var STORE_DOMAINS={};
@@ -126,6 +126,15 @@ function kbMatchedStoreIds(query){
       }
       return false;
     });
+    /* Accessory requests must not admit device-only electronics stores just
+       because their catalogs also contain the word «موبایل». */
+    var accessoryRequest=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(s);
+    if(accessoryRequest&&(merchantDomains.indexOf('digital')!==-1||merchantDomains.indexOf('accessories')!==-1)){
+      var explicitAccessoryEvidence=expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).some(function(term){
+        return /(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(norm(term));
+      });
+      if(!explicitAccessoryEvidence)return;
+    }
     if(directMatch||intentMatch||semanticFamilyMatch)out.push(id);
   });
   return out;
