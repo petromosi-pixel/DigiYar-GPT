@@ -22,6 +22,23 @@ await import('../js/v7-ai-shopping-orchestrator.js');
 await import('../js/v6-store-browser.js');
 
 const catalog = window.DigiYarStoreBusinessDomains.catalog;
+const engine = window.DigiYarHooshyarThreeEngine;
+/* Regression: a merchant declared only through a KB alias/query signal/
+   specialty/product family must be retrievable without a hard-coded query rule. */
+const kbEvidenceFixture = {
+  kb_alias_only: {name:'Alias-only specialist',domains:['home'],products:[],aliases:['ترازوی هوشمند آشپزخانه'],querySignals:[],specialties:[],productFamilies:[]},
+  kb_signal_only: {name:'Signal-only specialist',domains:['home'],products:[],aliases:[],querySignals:['ترازوی هوشمند آشپزخانه'],specialties:[],productFamilies:[]},
+  kb_family_only: {name:'Family-only specialist',domains:['home'],products:[],aliases:[],querySignals:[],specialties:[],productFamilies:['ترازوی هوشمند آشپزخانه']},
+  kb_general: {name:'General store',domains:['home'],products:['ترازوی هوشمند آشپزخانه'],aliases:[],querySignals:[],specialties:[],productFamilies:[]},
+  kb_unrelated: {name:'Unrelated furniture',domains:['furniture'],products:['میز ناهارخوری'],aliases:[],querySignals:[],specialties:[],productFamilies:[]}
+};
+const kbEvidenceResult = engine.resolve('ترازوی هوشمند آشپزخانه', kbEvidenceFixture, [], null);
+for (const id of ['kb_alias_only','kb_signal_only','kb_family_only','kb_general']) {
+  assert.ok(kbEvidenceResult.eligibleStoreIds.includes(id), `KB evidence field failed to retrieve ${id}`);
+}
+assert.ok(!kbEvidenceResult.eligibleStoreIds.includes('kb_unrelated'),
+  'unrelated KB entries must not be admitted merely because they share a domain');
+
 const browser = window.DigiYarStoreBrowser;
 assert.ok(browser && typeof browser.resolveSearchUrl === 'function', 'Store Browser must expose the real URL resolver');
 
