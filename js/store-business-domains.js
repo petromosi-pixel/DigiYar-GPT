@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.34';
+var VERSION='7.0.0-store-business-domains.35';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری','بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای','لوازم جانبی موبایل','قاب گوشی','شارژر موبایل','پاوربانک','هندزفری'],aliases:['خرید آنلاین عمومی']},
@@ -40,7 +40,7 @@ safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هوا�
 eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار','رویداد آنلاین','سمینار'],aliases:['وبینار','آموزش آنلاین'],exclude:['کالای فیزیکی']},
 maktabkhooneh:{name:'مکتب‌خونه',domains:['education'],products:['دوره آموزشی','دوره برنامه نویسی','آموزش مهارتی','کلاس آنلاین'],aliases:['دوره آنلاین','آموزش'],exclude:['کالای فیزیکی']},
 karnameh:{name:'کارنامه',domains:['auto_service'],products:['کارشناسی خودرو','قیمت خودرو','فروش خودرو','خرید خودرو','خودرو کارکرده'],aliases:['کارشناسی ماشین','قیمت ماشین','خدمات خودرو'],exclude:['موبایل','لپ تاپ']},
-iransetkor:{name:'ایران ستکور',homepage:'https://iransetkor.com/',domains:["furniture","home"],products:["میز و صندلی","تخت خواب","مبل تخت خواب شو","کمد","تشک","میز تحریر"],aliases:["مبلمان و دکوراسیون","خانه"]},
+iransetkor:{name:'ایران ستکور',homepage:'https://iransetkor.com/',intents:['furniture'],domains:["furniture","home"],products:["میز و صندلی","تخت خواب","مبل تخت خواب شو","مبل","مبلمان","کمد","تشک","میز تحریر"],aliases:["مبلمان و دکوراسیون","خانه","مبل راحتی","سرویس خواب"]},
 '19kala':{name:'۱۹کالا',hooshyarExcludeConcepts:["mobile_phone","mobile_accessory"],homepage:'https://www.19kala.com/',domains:["digital"],products:["موبایل","تبلت","ساعت هوشمند","لوازم جانبی موبایل","لوازم خانگی","کالای دیجیتال"],aliases:["کالای دیجیتال"]},
 banistyle:{name:'بانی استایل',hooshyarExcludeConcepts:["mobile_accessory"],homepage:'https://banistyle.com/',domains:["fashion"],products:["لباس زنانه","لباس مردانه","کفش","پوشاک","اکسسوری"],aliases:["پوشاک"]},
 aysoocollection:{name:'آیسو کالکشن',homepage:'https://aysoocollection.com/',domains:["fashion"],products:["پوشاک زنانه","پوشاک مردانه","لباس","پوشاک"],aliases:["پوشاک"]},
@@ -76,8 +76,8 @@ kalatik:{name:'کالاتیک',hooshyarExcludeConcepts:["mobile_phone","mobile_a
 mobile140:{name:'موبایل ۱۴۰',hooshyarExcludeConcepts:["mobile_phone","mobile_accessory"],intents:['mobile'],homepage:'https://mobile140.com/',domains:["digital"],products:["موبایل،تبلت،لوازم جانبی"],aliases:["کالای دیجیتال"]},
 mobileir:{name:'موبایل‌آی‌آر',hooshyarExcludeConcepts:["mobile_phone","mobile_accessory"],intents:['mobile'],homepage:'https://mobile.ir/',domains:["digital"],products:["موبایل،قیمت موبایل،مشخصات گوشی"],aliases:["کالای دیجیتال"]},
 kala360:{name:'کالا۳۶۰',hooshyarExcludeConcepts:["mobile_phone","mobile_accessory"],intents:['mobile'],homepage:'https://kala360.com/',domains:["digital","home"],products:["کالای دیجیتال،لوازم خانگی،موبایل"],aliases:["کالای دیجیتال","خانه و آشپزخانه"]},
-mobliran:{name:'مبل ایران',homepage:'https://mobliran.com/',domains:["furniture","home"],products:["مبل،مبلمان،سرویس خواب،میز ناهارخوری"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
-choobineh:{name:'چوبینه',homepage:'https://choobineh.com/',domains:["furniture","home"],products:["مبلمان،محصولات چوبی،میز،صندلی"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
+mobliran:{name:'مبل ایران',homepage:'https://mobliran.com/',intents:['furniture'],domains:["furniture","home"],products:["مبل","مبلمان","مبل راحتی","سرویس خواب","میز ناهارخوری"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
+choobineh:{name:'چوبینه',homepage:'https://choobineh.com/',intents:['furniture'],domains:["furniture","home"],products:["مبل","مبلمان","مبل راحتی","محصولات چوبی","میز","صندلی"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
 moblmarket:{name:'مبل مارکت',homepage:'https://moblmarket.com/',domains:["furniture","home"],products:["مبل،مبلمان،میز،سرویس خواب"],aliases:["مبلمان و دکوراسیون","خانه و آشپزخانه"]},
 digistyle:{name:'دیجی‌استایل',hooshyarExcludeConcepts:["mobile_accessory"],homepage:'https://www.digistyle.com/',domains:["fashion","beauty"],products:["پوشاک،کفش،کیف،اکسسوری"],aliases:["پوشاک و مد","آرایشی و بهداشتی"]},
 shixon:{name:'شیکسون',homepage:'https://shixon.com/',domains:["fashion"],products:["پوشاک،لباس،کفش،کیف"],aliases:["پوشاک و مد"]},
@@ -95,7 +95,7 @@ ofood:{name:'اوفود',homepage:'https://ofood.ir/',domains:["supermarket"],pr
 homeplus:{name:'هوم‌پلاس',homepage:'https://homeplus.ir/',domains:["home"],products:["لوازم خانه،آشپزخانه،نظافت"],aliases:["خانه و آشپزخانه"]},
 sakhtemoononline:{name:'ساختمان آنلاین',homepage:'https://sakhtemoononline.com/',domains:["home"],products:["مصالح ساختمانی،شیرآلات،کاشی،ابزار خانه"],aliases:["خانه و آشپزخانه"]},
 khaneyeiran:{name:'خانه ایرانی',homepage:'https://khaneyeiran.com/',domains:["home","furniture"],products:["لوازم خانه،دکوراسیون،مبلمان"],aliases:["خانه و آشپزخانه","مبلمان و دکوراسیون"]},
-sportland:{name:'اسپرت‌لند',homepage:'https://sportland.ir/',domains:["sports","fashion"],products:["کفش ورزشی،لباس ورزشی،لوازم ورزشی"],aliases:["ورزش","پوشاک و مد"]},
+sportland:{name:'اسپرت‌لند',homepage:'https://sportland.ir/',intents:['sportswear'],domains:["sports","fashion"],products:["کفش ورزشی","لباس ورزشی","لوازم ورزشی","تیشرت ورزشی","شلوار ورزشی"],aliases:["ورزش","پوشاک و مد","استایل ورزشی"]},
 iransport:{name:'ایران اسپرت',homepage:'https://iransport.com/',domains:["sports"],products:["لوازم ورزشی،پوشاک ورزشی،کفش ورزشی"],aliases:["ورزش"]},
 sporttime:{name:'اسپرت تایم',homepage:'https://sporttime.ir/',domains:["sports"],products:["لباس ورزشی،کفش ورزشی،لوازم ورزشی"],aliases:["ورزش"]},
 ninimarket:{name:'نی‌نی مارکت',homepage:'https://ninimarket.com/',domains:["kids","home"],products:["سیسمونی،کالسکه،لباس کودک،اسباب‌بازی"],aliases:["کودک و نوزاد","خانه و آشپزخانه"]},
