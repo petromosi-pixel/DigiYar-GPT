@@ -107,9 +107,9 @@ assert.equal(orchestrator.resolveDirectorySearch('لوازم جانبی موبا
   'A product query containing the store name «جانبی» must not be misclassified as a store-directory query.');
 const accessoryPlan = await orchestrator.run('لوازم جانبی موبایل');
 assert.equal(accessoryPlan.ai.directorySearch, undefined, 'Mobile accessories must use the product-search path.');
-assert.deepEqual(accessoryPlan.ai.eligibleStoreIds,
-  ['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'],
-  'The knowledge-base resolver must preserve the established mobile-accessory merchant set.');
+assert.deepEqual([...accessoryPlan.ai.eligibleStoreIds].sort(),
+  ['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].sort(),
+  'The knowledge-base resolver must preserve the established mobile-accessory merchant set without unrelated device-only stores.');
 
 
 const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
