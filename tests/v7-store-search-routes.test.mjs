@@ -39,7 +39,7 @@ for (const id of ['iranmiz','partochoob','chidahome','tidawood','mobliran','choo
   assert.ok(url.searchParams.get('s') === furnitureQuery && url.searchParams.get('post_type') === 'product',
     `${id} must search the full furniture request rather than open a fixed category/homepage`);
 }
-for (const id of ['shixon','banistyle','aysoocollection']) {
+for (const id of ['shixon','banistyle','aysoocollection','sportland']) {
   const url = new URL(browser.resolveSearchUrl(id, 'یه لباس اسپرت می‌خوام'));
   assert.ok((url.searchParams.get('s') || url.searchParams.get('q') || '').includes('لباس'),
     `${id} must preserve the user's fashion query`);
