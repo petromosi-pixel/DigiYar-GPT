@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.88';
+const VERSION='7.0.0-store-browser.89';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Category landing pages are not verified search endpoints. Fail closed until
@@ -58,7 +58,19 @@ function isHomepageOnlyUrl(id,url){
   return target.origin===base.origin&&targetPath===basePath&&!target.search&&!target.hash;
  }catch(e){return String(url).replace(/\/+$/,'')===String(home).replace(/\/+$/,'');}
 }
-function storeSearchUrl(id,q){
+function hasProductSearchQuery(url){
+ try{
+  var u=new URL(url);
+  if(u.protocol!=='https:'||!u.hostname||u.hostname.endsWith('google.com'))return false;
+  var keys=['q','query','s','search','title','kw','keywords','w','term','text','keyword','product','search_query'];
+  for(var i=0;i<keys.length;i++){
+   var value=u.searchParams.get(keys[i]);
+   if(value&&value.trim().length>=2)return true;
+  }
+  return false;
+ }catch(_){return false;}
+}
+function storeSearchUrlRaw(id,q){
  var key=String(id||'').toLowerCase();
  window.__DigiYarCurrentStoreSearchId=key;
  var s=storeSearchQuery(q);
@@ -84,10 +96,17 @@ function storeSearchUrl(id,q){
  if(key==='daroo-online')return 'https://daroo-online.com/?s='+encodeURIComponent(hs);
  if(SEARCH[key]){
   var mapped=SEARCH[key](s);
-  if(mapped&&!isHomepageOnlyUrl(key,mapped))return mapped;
+  if(mapped&&!isHomepageOnlyUrl(key,mapped)&&hasProductSearchQuery(mapped))return mapped;
  }
  /* Never show a homepage-only link as if it were a product search result. */
  return genericMerchantSearchUrl(key,s);
+}
+function storeSearchUrl(id,q){
+ /* A route is eligible only when it carries an explicit merchant-side search
+    parameter. Static category pages, homepages, and guessed landing pages fail
+    closed instead of being shown as product-search results. */
+ var url=storeSearchUrlRaw(id,q);
+ return url&&hasProductSearchQuery(url)?url:'';
 }
 function basalamSearchQuery(q){
  var s=storeSearchQuery(q);
