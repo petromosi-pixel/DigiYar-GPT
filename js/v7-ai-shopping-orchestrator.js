@@ -379,7 +379,7 @@
         plan.ai.attributes=threeEngineResult.need.attributes||[];
         plan.ai.targetObject=threeEngineResult.need.targetObject||plan.ai.targetObject;
         plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
-        plan.ai.searchQueries=Object.assign({},plan.ai.searchQueries||{},threeEngineResult.searchQueries||{});
+        plan.ai.searchQueries=Object.assign({},threeEngineResult.searchQueries||{},plan.ai.searchQueries||{});
         plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
       }else{
         plan.ai.fallbackReason='three-engine-empty-preserved-kb-eligibility';
