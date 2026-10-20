@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.20';
+var VERSION='7.0.0-hooshyar-three-engine.21';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -95,7 +95,14 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var genericProductWords=['میز','مبل','مبلمان','کیف','لباس','پوشاک','کفش','خانه','صندلی','لوازم','محصول','دیجیتال','زیبایی','آرایشی','بهداشتی','اکسسوری','مد','خواب','اتاق','مناسب','محل','کار','دنبال','هستم','چیزی','میخواهم','میخوام','روزمره'];
   var domains=Array.isArray(item.domains)?item.domains:[];
   var cleaningIntent=/(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی|شستشوی\s*مبل)/i.test(q);
-  var terms=[].concat(item.products||[]).reduce(function(all,value){
+  /*
+   * The canonical merchant directory is the source of truth. Products alone
+   * are insufficient: many valid specialties are declared under aliases,
+   * querySignals, specialties, or productFamilies. Match across every declared
+   * inventory/evidence field so new KB entries work without adding query rules.
+   */
+  var terms=[].concat(item.products||[],item.aliases||[],item.querySignals||[],
+    item.specialties||[],item.productFamilies||[]).reduce(function(all,value){
    String(value==null?'':value).split(/[,،;؛\n]+/).map(function(x){return x.trim();}).filter(Boolean).forEach(function(x){all.push(x);});
    return all;
   },[]);
