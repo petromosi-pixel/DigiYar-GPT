@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.92';
+const VERSION='7.0.0-store-browser.93';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Live check: Khanoumi's /search?query= route returns a query-specific
@@ -37,7 +37,15 @@ function genericMerchantSearchUrl(id,q){
     guesses either ignored the query or redirected to an unrelated product.
     Keep only endpoints whose query results were confirmed; others fail closed. */
  if(['partochoob','iransetkor'].indexOf(key)>=0){
-   return home.replace(/\/+$/,'')+'/?s='+encodeURIComponent(term)+'&post_type=product';
+   /* Live content inspection showed that the full conversational sentence
+      yields an empty WooCommerce result set, while the product phrase returns
+      real sofa listings. Keep the full request for semantic matching, but use
+      the shortest verified product phrase only for these two search adapters. */
+   var merchantTerm=term;
+   if(/مبل|مبلمان/i.test(term)&&!/(?:تمیز|شستن|شستشو|نظافت|شوینده)/i.test(term)){
+     merchantTerm=/راحتی/i.test(term)?'مبل راحتی':'مبل';
+   }
+   return home.replace(/\/+$/,'')+'/?s='+encodeURIComponent(merchantTerm)+'&post_type=product';
  }
  if(key==='dayan')return 'https://noura1393.affdn.ir/products?title='+encodeURIComponent(term);
  if(key==='janebi')return 'https://janebi.com/search?q='+encodeURIComponent(term);
