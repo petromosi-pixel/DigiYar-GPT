@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.18';
+var VERSION='7.0.0-popular-store-discovery.19';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -127,7 +127,7 @@ function render(){
  function accordion(key,title,icon,description,items){
   var open=!!state.openCategories[key],cards=items.map(function(s){return card(s,title);}).join('');
   if(q&&!items.length)return '';
-  return '<section class="popular-discovery-accordion'+(open?' is-open':'')+'"><button type="button" class="popular-discovery-accordion-trigger" data-accordion-key="'+esc(key)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><span class="popular-discovery-accordion-icon" aria-hidden="true">'+esc(icon)+'</span><span class="popular-discovery-accordion-title-wrap"><strong>'+esc(title)+'</strong><small>'+esc(description)+'</small></span></button><button type="button" class="popular-discovery-accordion-chevron" data-accordion-key="'+esc(key)+'" aria-label="'+(open?'بستن':'باز کردن')+' '+esc(title)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="popular-discovery-accordion-panel" id="popularDiscoveryPanel-'+esc(key)+'"'+(open?'':' hidden')+'><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">فروشگاهی در این دسته پیدا نشد.</div>')+'</div></div></section>';
+  return '<section class="popular-discovery-accordion'+(open?' is-open':'')+'"><button type="button" class="popular-discovery-accordion-trigger" data-accordion-key="'+esc(key)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'">'+(icon?'<span class="popular-discovery-accordion-icon" aria-hidden="true">'+esc(icon)+'</span>':'')+'<span class="popular-discovery-accordion-title-wrap"><strong>'+esc(title)+'</strong>'+(description?'<small>'+esc(description)+'</small>':'')+'</span></button><button type="button" class="popular-discovery-accordion-chevron" data-accordion-key="'+esc(key)+'" aria-label="'+(open?'بستن':'باز کردن')+' '+esc(title)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="popular-discovery-accordion-panel" id="popularDiscoveryPanel-'+esc(key)+'"'+(open?'':' hidden')+'><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">فروشگاهی در این دسته پیدا نشد.</div>')+'</div></div></section>';
  }
  var general=generalIds.map(function(id){return makeStore(id,'');}).filter(matches);
  var html='';
@@ -142,7 +142,7 @@ function render(){
    if(!cats.length)cats=[isGeneral(id,store)?'فروشگاه عمومی':'فروشگاه تخصصی'];
    uniqueItems.push({id:id,name:store.name||id,homepage:store.homepage||'',tagline:'دسته‌بندی: '+Array.from(new Set(cats)).join('، '),domain:(store.domains||[])[0]||''});
   });
-  html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجو','🔎','هر فروشگاه فقط یک‌بار؛ دسته‌بندی‌های مرتبط کنار نام آن درج شده‌اند',uniqueItems);
+  html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار',state.query,'',uniqueItems);
  }else if(state.type==='general'){
   html=accordion('general','فروشگاه‌های عمومی','🏬','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general);
  }else{
@@ -153,7 +153,7 @@ function render(){
   }).join('');
  }
  var typeTabs=state.queryActive?'':'<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
- var queryHeading=state.queryActive?'<div class="popular-discovery-query-heading">فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار: <strong>'+esc(state.query)+'</strong></div>':'';
+ var queryHeading='';
  root.innerHTML=queryHeading+typeTabs+'<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
  root.querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type'),same=state.type===next;if(same){if(next==='general'){state.openCategories.general=!state.openCategories.general;}else{var anyOpen=domains.some(function(d){return !!state.openCategories[d];});domains.forEach(function(d){state.openCategories[d]=!anyOpen;});}}else{state.type=next;state.openCategories.general=false;domains.forEach(function(d){state.openCategories[d]=false;});}render();});});
@@ -166,6 +166,7 @@ function init(){
  var bottomToggle=document.getElementById('popularDiscoveryBottomToggle');
  if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
  toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(open&&!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
+ window.addEventListener('digiyar:v7-hooshyar-cleared',function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};state.type='general';render();var p=document.getElementById('popularDiscoveryPanel'),t=document.getElementById('popularDiscoveryToggle'),b=document.getElementById('popularDiscoveryBottomToggle');if(p)p.hidden=true;if(t)t.setAttribute('aria-expanded','false');if(b)b.setAttribute('aria-expanded','false');if(p)delete p.dataset.rendered;});
  window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query,storeIds){var resolved=resolveSearchContext(query),simulatorIds=Array.isArray(storeIds)?Array.from(new Set(storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean))):[];state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=simulatorIds.length?simulatorIds:resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
