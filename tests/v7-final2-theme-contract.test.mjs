@@ -35,9 +35,9 @@ for (const path of legacyStyles) {
   assert.equal((css.match(/\{/g) || []).length, (css.match(/\}/g) || []).length,
     path + ' must keep balanced CSS braces after legacy theme cleanup.');
 }
-const browser = fs.readFileSync('js/v6-store-browser.js', 'utf8');
-assert.doesNotMatch(browser, /html\.dark|body\.dark|\[data-theme=["']dark|body\.v6-dark\s+\.v6-auto/,
-  'Store Browser must use central --dy-* tokens, not its own dark-mode rules.');
+const discovery = fs.readFileSync('js/v7-popular-store-discovery.js', 'utf8');
+assert.doesNotMatch(discovery, /html\.dark|body\.dark|\[data-theme=["']dark|body\.v6-dark\s+\.v6-auto/,
+  'The active store discovery UI must use the central --dy-* theme contract.');
 const comparison = fs.readFileSync('js/v7-comparison-ui.js', 'utf8');
 assert.doesNotMatch(comparison, oldThemePattern,
   'Comparison UI must use the central theme contract rather than embedded dark-mode rules.');
