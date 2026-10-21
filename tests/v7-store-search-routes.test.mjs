@@ -26,8 +26,8 @@ await import('../js/v6-store-browser.js');
 
 const catalog = window.DigiYarStoreBusinessDomains.catalog;
 const engine = window.DigiYarHooshyarThreeEngine;
-assert.ok(catalog.modiseh.categories.includes('کیف اداری'),
-  'the Hooshyar catalog must read the authoritative store-category reference, including Modiseh office bags');
+assert.ok(window.DigiYarStoreCategories.modiseh.includes('کیف اداری'),
+  'the canonical store-category reference must identify Modiseh as an office-bag specialist');
 /* Regression: a merchant declared only through a KB alias/query signal/
    specialty/product family must be retrievable without a hard-coded query rule. */
 const kbEvidenceFixture = {
