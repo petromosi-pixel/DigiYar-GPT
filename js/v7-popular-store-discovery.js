@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.13';
+var VERSION='7.0.0-popular-store-discovery.14';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -43,7 +43,7 @@ var FEATURED={
  education:[['faradars','برای یادگیری مهارت‌های تخصصی'],['maktabkhooneh','برای دوره‌های آموزشی آنلاین'],['quera','برای یادگیری و تمرین برنامه‌نویسی'],['sabzlearn','برای آموزش مهارت‌های دیجیتال']],
  affiliate_network:[]
 };
-var state={type:'general',domain:'digital',query:'',openCategories:{}};
+var state={type:'general',domain:'digital',query:'',queryActive:false,queryStoreIds:null,openCategories:{}};
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function normalize(s){return String(s||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.catalog?kb.catalog:{};}
@@ -70,7 +70,7 @@ function render(){
  if(domains.indexOf(state.domain)<0)state.domain=domains[0];
  var q=normalize(state.query),generalIds=Object.keys(catalog).filter(function(id){return isGeneral(id,catalog[id]);});
  function makeStore(id,domain){var c=catalog[id]||{};return {id:id,name:c.name||id,homepage:c.homepage||'',tagline:((c.specialties||[]).slice(0,2).join('، '))||((c.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain||((c.domains||[])[0]||'')};}
- function matches(s){var c=catalog[s.id]||{};return !q||normalize([s.name,s.tagline,(c.products||[]).join(' '),(c.aliases||[]).join(' '),(c.specialties||[]).join(' '),(c.productFamilies||[]).join(' '),(c.querySignals||[]).join(' ')].join(' ')).indexOf(q)>=0;}
+ function matches(s){var c=catalog[s.id]||{};if(state.queryActive&&Array.isArray(state.queryStoreIds))return state.queryStoreIds.indexOf(String(s.id||'').toLowerCase())>=0;return !q||normalize([s.name,s.tagline,(c.products||[]).join(' '),(c.aliases||[]).join(' '),(c.specialties||[]).join(' '),(c.productFamilies||[]).join(' '),(c.querySignals||[]).join(' ')].join(' ')).indexOf(q)>=0;}
  var STORE_LOGOS_RAW={
  'اسنپ شاپ':'اسنپ شاپ.webp','ایسام':'ایسام.webp','ایسمینار':'ایسمینار.webp','ایمالز':'ایمالز.webp',
  'باسلام':'باسلام.webp','بانی مد':'بانی مد.webp','بروز کالا':'بروز کالا.webp','به روز کالا':'به روز کالا.webp',
@@ -111,7 +111,15 @@ function render(){
  }
  var general=generalIds.map(function(id){return makeStore(id,'');}).filter(matches);
  var html='';
- if(state.type==='general'){
+ if(state.queryActive){
+  var generalHtml=accordion('general','فروشگاه‌های عمومی','🏬','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general);
+  var specialistHtml=domains.map(function(domain){
+   var meta=DOMAIN_META[domain]||{title:domain,icon:'🏬',subtitle:'فروشگاه‌های این حوزه'};
+   var items=featuredFor(domain,catalog).filter(matches);
+   return accordion(domain,meta.title,meta.icon,meta.subtitle,items);
+  }).join('');
+  html=generalHtml+specialistHtml;
+ }else if(state.type==='general'){
   html=accordion('general','فروشگاه‌های عمومی','🏬','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general);
  }else{
   html=domains.map(function(domain){
@@ -120,8 +128,9 @@ function render(){
    return accordion(domain,meta.title,meta.icon,meta.subtitle,items);
   }).join('');
  }
- var typeTabs='<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
- root.innerHTML=typeTabs+'<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
+ var typeTabs=state.queryActive?'':'<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
+ var queryHeading=state.queryActive?'<div class="popular-discovery-query-heading">فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار: <strong>'+esc(state.query)+'</strong></div>':'';
+ root.innerHTML=queryHeading+typeTabs+'<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
  root.querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type'),same=state.type===next;if(same){if(next==='general'){state.openCategories.general=!state.openCategories.general;}else{var anyOpen=domains.some(function(d){return !!state.openCategories[d];});domains.forEach(function(d){state.openCategories[d]=!anyOpen;});}}else{state.type=next;state.openCategories.general=false;domains.forEach(function(d){state.openCategories[d]=false;});}render();});});
 
@@ -133,7 +142,7 @@ function init(){
  var bottomToggle=document.getElementById('popularDiscoveryBottomToggle');
  if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
  toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(open&&!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
- window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
+ window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,setSearchContext:function(query,storeIds){state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=Array.isArray(storeIds)?Array.from(new Set(storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean))):null;state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
