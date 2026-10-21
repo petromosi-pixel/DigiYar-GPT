@@ -133,8 +133,8 @@ for (const id of ['iranmiz','partochoob','chidahome','tidawood','mobliran','choo
 }
 for (const id of ['partochoob','iransetkor']) {
   const url = new URL(browser.resolveSearchUrl(id, furnitureQuery));
-  assert.ok(url.searchParams.get('s') === furnitureQuery && url.searchParams.get('post_type') === 'product',
-    `${id} must search the full furniture request rather than open a fixed category/homepage`);
+  assert.ok(url.searchParams.get('s') === 'مبل راحتی' && url.searchParams.get('post_type') === 'product',
+    `${id} must use the verified concise sofa query rather than return an empty result set`);
 }
 for (const id of ['iranmiz','chidahome','tidawood','mobliran','choobineh']) {
   assert.equal(browser.resolveSearchUrl(id, furnitureQuery), '',
