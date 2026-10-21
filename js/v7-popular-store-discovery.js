@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.27';
+var VERSION='7.0.0-popular-store-discovery.28';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -190,7 +190,9 @@ function render(){
   iranmiz:'ایران میز.webp',iransetkor:'ایران ستکور.webp',partochoob:'پرتو چوب.webp',tidawood:'تیدا چوب..webp',
   choobineh:'چوبینه.webp',chidahome:'چیدا هوم.webp',mobliran:'مبل ایران.webp',
   sportland:'اسپرت لند.webp',aysoocollection:'آیسو کالکشن.webp',banistyle:'بانی استایل.webp',
-  digistyle:'دیجی استایل.webp',shixon:'شیکستون..webp'
+  digistyle:'دیجی استایل.webp',shixon:'شیکستون..webp',
+  azki:'ازکی.webp',betadent:'بتا دنت.webp',bimebazar:'بیمه بازار.webp',bimeh:'بیمه دات کام.webp',
+  saba:'داروخانه صبا.webp',rojashop:'روژا شاپ.webp',zibamoon:'زیبامون.webp',mootanroo:'مو تن رو.webp',ninisite:'نی نی سایت.webp'
  };
  function card(s,domainTitle){var c=catalog[s.id]||{},url=state.queryActive?(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(s.id,state.query):''):(s.homepage||c.homepage||''),logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
  function accordion(key,title,icon,description,items){
