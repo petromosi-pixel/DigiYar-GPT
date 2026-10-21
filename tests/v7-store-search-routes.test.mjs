@@ -10,12 +10,15 @@ globalThis.window = {
   DigiYarPopularAffiliateStores: []
 };
 globalThis.document = {
+  readyState: 'loading',
+  addEventListener() {},
   getElementById() { return null; },
   createElement() { return { style: {}, appendChild() {}, addEventListener() {} }; },
   head: { appendChild() {} }
 };
 
 await import('../js/store-business-domains.js');
+await import('../js/user-profile.js');
 await import('../js/v7-store-eligibility.js');
 await import('../js/v7-hooshyar-three-engine.js');
 await import('../js/v7-ai-shopping-orchestrator.js');
@@ -40,6 +43,23 @@ assert.ok(!kbEvidenceResult.eligibleStoreIds.includes('kb_signal_only'),
   'querySignals alone must never qualify a merchant without declared inventory evidence');
 assert.ok(!kbEvidenceResult.eligibleStoreIds.includes('kb_unrelated'),
   'unrelated KB entries must not be admitted merely because they share a domain');
+const categoryOnlyFixture = {
+  skin_category_only: {name:'Skin-care category specialist',domains:['beauty'],products:[],aliases:[],specialties:[],productFamilies:[],categories:['مراقبت پوست']},
+  skin_wrong_category: {name:'Unrelated books store',domains:['beauty'],products:[],aliases:[],specialties:[],productFamilies:[],categories:['کتاب و لوازم تحریر']},
+  bag_category_only: {name:'Leather goods specialist',domains:['fashion'],products:[],aliases:[],specialties:[],productFamilies:[],categories:['کیف و محصولات چرمی']},
+  bag_broad_fashion_only: {name:'Generic fashion store',domains:['fashion'],products:[],aliases:[],specialties:[],productFamilies:[],categories:['مد و پوشاک']}
+};
+const categorySkinResult = engine.resolve('یه ضد آفتاب برای پوست خشک می‌خوام', categoryOnlyFixture, [], null);
+assert.ok(categorySkinResult.eligibleStoreIds.includes('skin_category_only'),
+  'matching store-category taxonomy must retrieve a specialist even when product aliases are incomplete');
+assert.ok(!categorySkinResult.eligibleStoreIds.includes('skin_wrong_category'),
+  'an unrelated store category must not qualify a merchant');
+const categoryBagResult = engine.resolve('کیف اداری برای محل کارم', categoryOnlyFixture, [], null);
+assert.ok(categoryBagResult.eligibleStoreIds.includes('bag_category_only'),
+  'the relevant leather/bag category must retrieve an office-bag specialist');
+assert.ok(!categoryBagResult.eligibleStoreIds.includes('bag_broad_fashion_only'),
+  'broad fashion category alone must not prove office-bag relevance');
+
 const inflectedKbResult = engine.resolve('ترازوهای هوشمند برای آشپزخانه', kbEvidenceFixture, [], null);
 for (const id of ['kb_alias_only','kb_family_only','digikala']) {
   assert.ok(inflectedKbResult.eligibleStoreIds.includes(id),
@@ -58,6 +78,15 @@ for (const [id,host] of [['snappshop','snappshop.ir'],['basalam','basalam.com']]
   assert.equal(url.pathname, '/search', `${id} must use the merchant search route`);
   assert.ok((url.searchParams.get('q') || url.searchParams.get('query') || '').includes(query),
     `${id} search URL must preserve the requested product phrase`);
+}
+/* These assertions exercise the same category reference used by the homepage. */
+assert.ok(window.DigiYarStoreCategories.khanoumi.includes('مراقبت پوست'));
+assert.ok(window.DigiYarStoreCategories.neshatrokh.includes('مراقبت پوست'));
+assert.ok(window.DigiYarStoreCategories.shavaz.includes('مراقبت پوست'));
+const skinPlan = await window.DigiYarShoppingOrchestrator.run('یه ضد آفتاب برای پوست خشک می‌خوام');
+for (const id of ['khanoumi','neshatrokh','shavaz','darukade','mosbatesabz']) {
+  assert.ok(skinPlan.ai.eligibleStoreIds.includes(id),
+    `skin-care category retrieval omitted specialist ${id}`);
 }
 const furnitureQuery = 'یه مبل راحتی برای پذیرایی می خوام';
 const furniturePlan = await window.DigiYarShoppingOrchestrator.run(furnitureQuery);
