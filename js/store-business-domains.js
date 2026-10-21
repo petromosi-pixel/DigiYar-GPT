@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.40';
+var VERSION='7.0.0-store-business-domains.41';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری','بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای','لوازم جانبی موبایل','قاب گوشی','شارژر موبایل','پاوربانک','هندزفری'],aliases:['خرید آنلاین عمومی']},
@@ -34,7 +34,9 @@ solokala:{name:'سولوکالا',domains:['beauty','health','accessories'],prod
 dayan:{name:'دایان شاپ',domains:['fashion','accessories'],products:['لباس مردانه','لباس زنانه','کیف اداری','کفش','کتانی','هودی','سوییشرت','کاپشن','شلوار','تیشرت','پیراهن','ساعت','عینک','کیف','زیورآلات'],aliases:['پوشاک','استایل','اکسسوری'],exclude:['موبایل']},
 memarket:{name:'می‌مارکت',hooshyarExcludeConcepts:["mobile_accessory","air_purifier","upholstery_cleaning"],domains:['digital','home','fashion','accessories','beauty'],products:['لپ تاپ','لوازم دیجیتال','تصفیه هوا','لوازم خانه','پوشاک','کفش','کیف','کیف اداری','آرایشی','ساعت','اکسسوری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['خرید آنلاین متنوع']},
 jeanswest:{name:'جین وست',domains:['fashion'],products:['پوشاک زنانه','پوشاک مردانه','پوشاک کودک','تیشرت','شلوار','کاپشن','کفش','اکسسوری'],aliases:['پوشاک','استایل'],exclude:['موبایل','لپ تاپ']},
-sabzgostar:{name:'سبز گستر',domains:['affiliate_network'],products:['شبکه همکاری در فروش'],aliases:['افیلیت مارکتینگ','شبکه افیلیت','همکاری در فروش'],exclude:['محصول فیزیکی نامرتبط']},
+sabzgostar:{name:'سبز گستر',homepage:'https://sabzgostarshop.ir/',domains:['fashion','accessories'],products:['پوشاک زنانه','پوشاک مردانه','لباس','هودی','سوییشرت','کفش','ساعت مچی','عینک آفتابی','گردنبند','اکسسوری','کیف پول'],aliases:['فروشگاه اینترنتی سبز گستر','پوشاک','کفش و اکسسوری'],exclude:['موبایل','لپ تاپ']},
+ dimaaffiliate:{name:'دیما افیلیت',homepage:'https://deema.agency/',domains:['affiliate_network'],products:['شبکه همکاری در فروش','افیلیت مارکتینگ','بازاریابی عملکردمحور'],aliases:['دیما','دیماافیلیت','همکاری در فروش','شبکه افیلیت']},
+ affilio:{name:'افیلیو',homepage:'https://affilio.ir/home',domains:['affiliate_network'],products:['شبکه همکاری در فروش','افیلیت مارکتینگ','بازاریابی عملکردمحور'],aliases:['افیلیو','Affilio','همکاری در فروش','شبکه افیلیت']},
 shab:{name:'شب',domains:['lodging','travel_ticket'],products:['ویلا','سوئیت','کلبه','اقامتگاه','بوم گردی','بلیط قطار','بلیط اتوبوس','سفر'],aliases:['رزرو ویلا','اقامت','رزرو سفر'],exclude:['کالای فیزیکی']},
 safarme:{name:'سفرمی',domains:['travel_ticket'],products:['بلیط هواپیما','بلیط قطار','بلیط اتوبوس','پرواز','سفر'],aliases:['پرواز','بلیط هواپیما'],exclude:['کالای فیزیکی']},
 eseminar:{name:'ایسمینار',domains:['education'],products:['وبینار','رویداد آنلاین','سمینار'],aliases:['وبینار','آموزش آنلاین'],exclude:['کالای فیزیکی']},
