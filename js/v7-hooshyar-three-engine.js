@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.40';
+var VERSION='7.0.0-hooshyar-three-engine.41';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -325,8 +325,30 @@ function rankCandidates(need,candidates,eligibleIds){
   return a.name.localeCompare(b.name,'fa');
  });
 }
+function buildCanonicalCatalog(catalog){
+ var source=catalog||{};
+ var categoryRef=root.DigiYarStoreCategories||{};
+ var merged={};
+ Object.keys(source).forEach(function(id){
+  var item=source[id]||{};
+  merged[String(id).toLowerCase()]=Object.assign({},item,{
+   categories:Array.isArray(categoryRef[String(id).toLowerCase()])
+    ?Array.from(new Set([].concat(item.categories||[],categoryRef[String(id).toLowerCase()])))
+    :Array.isArray(item.categories)?item.categories.slice():[]
+  });
+ });
+ /* Category-only entries are legitimate catalog members too. Do not require
+    a duplicate product alias in the business-domain KB to recognize them. */
+ Object.keys(categoryRef).forEach(function(id){
+  if(!merged[String(id).toLowerCase()]){
+   merged[String(id).toLowerCase()]={name:id,domains:[],products:[],aliases:[],specialties:[],productFamilies:[],categories:categoryRef[id]};
+  }
+ });
+ return merged;
+}
 function resolve(query,catalog,eligibleIds,classified){
  var need=parseNeed(query);
+ catalog=buildCanonicalCatalog(catalog);
  if(classified&&classified.kind==='travel_ticket'){need.concept='train_ticket';need.requestedProduct=classified.product||need.requestedProduct;need.domain='travel_ticket';need.domains=['travel_ticket'];need.taskType='ticket_search';}
  /* Reuse the established eligibility contract as one evidence source, then
     enrich/rank those candidates with the three-stage resolver. */
@@ -353,7 +375,7 @@ function resolve(query,catalog,eligibleIds,classified){
   /* Do not replace a specific product with a broad category just because a store is general. */
   queries[id]=clean(phrase)||clean(query);
  });
- return {version:VERSION,need:need,candidates:ranked,eligibleStoreIds:ids,searchQueries:queries,trace:{parsedConcept:need.concept,candidateCount:ranked.length,top:ranked.slice(0,8).map(function(x){return {id:x.id,score:x.score,directMatch:x.directMatch,proof:x.proof};})}};
+ return {version:VERSION,need:need,candidates:ranked,eligibleStoreIds:ids,searchQueries:queries,trace:{parsedConcept:need.concept,candidateCount:ranked.length,catalogStoreCount:Object.keys(catalog).length,categoryReferenceStoreCount:Object.keys(root.DigiYarStoreCategories||{}).length,categoryReferenceUsed:true,top:ranked.slice(0,8).map(function(x){return {id:x.id,score:x.score,directMatch:x.directMatch,proof:x.proof};})}};
 }
 var api={version:VERSION,parseNeed:parseNeed,retrieveCandidates:retrieveCandidates,rankCandidates:rankCandidates,resolve:resolve};
 root.DigiYarHooshyarThreeEngine=api;
