@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.91';
+const VERSION='7.0.0-store-browser.92';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Live check: Khanoumi's /search?query= route returns a query-specific
@@ -73,6 +73,16 @@ function hasProductSearchQuery(url){
   return false;
  }catch(_){return false;}
 }
+function isVerifiedServiceSearchUrl(id,url,q){
+ try{
+  if(!/(?:قطار|ریل)/i.test(String(q||'')))return false;
+  var u=new URL(url);
+  var key=String(id||'').toLowerCase();
+  return (key==='mrbilit'&&u.hostname==='mrbilit.com'&&u.pathname==='/train-ticket')||
+    (key==='ghasedak24'&&u.hostname==='ghasedak24.com'&&u.pathname==='/train-ticket')||
+    (key==='alibaba'&&u.hostname==='www.alibaba.ir'&&u.pathname==='/train');
+ }catch(_){return false;}
+}
 function storeSearchUrlRaw(id,q){
  var key=String(id||'').toLowerCase();
  window.__DigiYarCurrentStoreSearchId=key;
@@ -91,6 +101,9 @@ function storeSearchUrlRaw(id,q){
  /* These entries only had guessed /search?q= adapters, not confirmed merchant routes. */
  if(['meghdadit','shavaz','jeanswest','sabzgostar'].indexOf(key)>=0)return '';
  if(['iranmiz','partochoob','chidahome','tidawood','mobliran','choobineh','moblmarket','khaneyeiran','iransetkor'].indexOf(key)>=0)return genericMerchantSearchUrl(key,s);
+ if(key==='ghasedak24'&&/(?:قطار|ریل)/i.test(s))return 'https://ghasedak24.com/train-ticket';
+ if(key==='mrbilit'&&/(?:قطار|ریل)/i.test(s))return 'https://mrbilit.com/train-ticket';
+ if(key==='alibaba'&&/(?:قطار|ریل)/i.test(s))return 'https://www.alibaba.ir/train';
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
@@ -109,7 +122,7 @@ function storeSearchUrl(id,q){
     parameter. Static category pages, homepages, and guessed landing pages fail
     closed instead of being shown as product-search results. */
  var url=storeSearchUrlRaw(id,q);
- return url&&hasProductSearchQuery(url)?url:'';
+ return url&&(hasProductSearchQuery(url)||isVerifiedServiceSearchUrl(id,url,q))?url:'';
 }
 function basalamSearchQuery(q){
  var s=storeSearchQuery(q);
