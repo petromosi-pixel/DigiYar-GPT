@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.38';
+var VERSION='7.0.0-hooshyar-three-engine.39';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -143,12 +143,7 @@ function categoryEvidence(need,item){
  };
  if(need.concept==='sofa_cleaning')rules.sofa_cleaning=[/شوینده/i,/نظافت/i,/بخارشوی/i,/جاروبرقی/i,/ابزارآلات و تجهیزات/i,/مراقبت در منزل/i];
  var patterns=rules[need.concept]||[];
- return cats.filter(function(category){
-  var c=norm(category);
-  /* A laptop bag/accessory category is not evidence that the store sells laptops. */
-  if(need.concept==='laptop'&&/(?:کیف|کوله|کاور|لوازم\s*جانبی|پایه|استند|کول\s*پد)/i.test(c))return false;
-  return patterns.some(function(pattern){return pattern.test(c);});
- });
+ return cats.filter(function(category){var c=norm(category);return patterns.some(function(pattern){return pattern.test(c);});});
 }
 function retrieveCandidates(need,catalog,eligibleIds){
  var base=Array.isArray(eligibleIds)?eligibleIds.map(function(x){return String(x&&x.id||x||'').toLowerCase();}):[];
@@ -171,10 +166,6 @@ function retrieveCandidates(need,catalog,eligibleIds){
   terms.forEach(function(raw){
    var term=norm(raw);
    if(!term||term.length<3)return;
-   /* Concept-specific inventory guards: contextual token overlap is not proof
-      that a store carries the requested product itself. */
-   if(need.concept==='laptop'&&/(?:کیف|کوله|کاور|محافظ|لوازم\s*جانبی|پایه|استند|کول\s*پد|فن\s*لپ)/i.test(term))return;
-   if(need.concept==='headphone'&&!/(?:هدفون|هندزفری|ایرباد|ایرپاد|هدست|headphone|earbud|headset|earphone|سماعت)/i.test(term))return;
    /* Context words must not masquerade as product evidence. */
    if(need.concept==='kitchen_scale'&&!/(?:ترازو|ترازوی)/i.test(term))return;
    if(need.concept==='sofa_cleaning'&&!/(?:تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شوی|فرش\s*شوی|بخارشوی)/i.test(term))return;
@@ -207,25 +198,16 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var productTerms=concept?concept.terms:[need.requestedProduct];
   var direct=false;
   productTerms.forEach(function(term){
-   var t=norm(term);
-   var inventoryMatch=t&&t.length>2&&[].concat(s.products||[]).some(function(value){
-    var declared=norm(value);
-    if(declared.indexOf(t)<0)return false;
-    /* Accessory inventory mentioning a laptop is not laptop-computer inventory. */
-    if(need.concept==='laptop'&&/(?:کیف|کوله|کاور|محافظ|لوازم\s*جانبی|شارژر|کول\s*پد|استند|پایه|فن\s*لپ)/i.test(declared))return false;
-    return true;
-   });
-   if(inventoryMatch){score+=s.specialties&&s.specialties.some(function(v){return norm(v).indexOf(t)>=0;})?7:5;direct=true;proof.push(term);}
+   var t=norm(term);if(t&&t.length>2&&text.indexOf(t)>=0){score+=s.specialties&&s.specialties.some(function(v){return norm(v).indexOf(t)>=0;})?7:5;direct=true;proof.push(term);}
   });
   /* Shared open-catalog retrieval: inspect every merchant's declared product
      evidence, not only concept-specific seed lists. Exact phrases, or a
      complete match of a multi-word product's meaningful tokens, can admit
      new merchants without adding a per-query allowlist. */
   var evidence=evidenceTerms(need.normalized,s);
-  /* Category taxonomy is a retrieval index, not UI-only metadata. */
-  categoryEvidence(need,s).forEach(function(category){evidence.push('store-category:'+category);});
-  /* Category taxonomy is a retrieval index, not UI-only metadata. Precise
-     subcategory matches recover specialists with incomplete product aliases. */
+  /* Canonical store-category taxonomy is a retrieval index, not UI-only metadata.
+     Matching the requested concept against a merchant's actual category list
+     can recover specialists whose product aliases are incomplete. */
   categoryEvidence(need,s).forEach(function(category){evidence.push('store-category:'+category);});
   /* Apparel words are a semantic family: a request for «لباس اسپرت» should
      find merchants whose declared inventory lists shirts, trousers or sportswear. */
