@@ -195,14 +195,16 @@ const strictPhone = threeEngine.resolve('یه گوشی سامسونگ می‌خ�
 ['banimode','khanoumi','daroo-online','dayan','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictPhone.eligibleStoreIds.includes(id), `merchant exclusion text or unrelated taxonomy leaked into phone results: ${id}`));
 const strictAccessory = threeEngine.resolve('لوازم جانبی موبایل', catalog, [], orchestrator.classifyLocalNeed('لوازم جانبی موبایل'));
 ['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictAccessory.eligibleStoreIds.includes(id), `strict accessory search omitted ${id}`));
-['meghdadit','takhfifan','esam','memarket','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictAccessory.eligibleStoreIds.includes(id), `non-approved accessory merchant leaked into results: ${id}`));
+['takhfifan','esam','memarket','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictAccessory.eligibleStoreIds.includes(id), `non-approved accessory merchant leaked into results: ${id}`));
 assert.equal(orchestrator.resolveDirectorySearch('لوازم جانبی موبایل', catalog), null,
   'A product query containing the store name «جانبی» must not be misclassified as a store-directory query.');
 const accessoryPlan = await orchestrator.run('لوازم جانبی موبایل');
 assert.equal(accessoryPlan.ai.directorySearch, undefined, 'Mobile accessories must use the product-search path.');
 assert.deepEqual([...accessoryPlan.ai.eligibleStoreIds].sort(),
-  ['janebi','digido','gooshishop','technolife','digiland','berozkala','digikala','snappshop','torob','basalam'].sort(),
+  ['janebi','digido','gooshishop','technolife','digiland','berozkala','meghdadit','digikala','snappshop','torob','basalam'].sort(),
   'The knowledge-base resolver must preserve the established mobile-accessory merchant set without unrelated device-only stores.');
+assert.equal(browser.resolveSearchUrl('meghdadit','لوازم جانبی موبایل'),'',
+  'Meghdad IT must remain hidden in the visible simulator until its actual product-search URL is verified');
 
 
 const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
