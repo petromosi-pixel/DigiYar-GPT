@@ -281,7 +281,7 @@ assert.deepEqual(mergedFurniturePlan.ai.eligibleStoreIds,['digikala'],
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
   assert.equal(intent && intent.kind, 'travel_ticket', `train intent not recognized: ${phrase}`);
-  ['raja', 'ghasedak24', 'mrbilit', 'safarmarket'].forEach(id =>
+  ['raja', 'ghasedak24', 'mrbilit', 'alibaba'].forEach(id =>
     assert.ok(intent.stores.includes(id), `missing train-ticket merchant ${id} for ${phrase}`)
   );
 }
