@@ -5,11 +5,11 @@ Branch: `main`
 
 ## Purpose
 
-The product-category knowledge base contains 120 merchant IDs. The independent URL resolver currently has explicit search-route handlers for only 26 IDs. This audit tracks the gap between merchant eligibility in the KB and a verified, query-bearing destination. A merchant must not be rendered as a product-search result until its route is confirmed to be a real product/category search endpoint.
+The product-category knowledge base contains 120 merchant IDs. The independent URL resolver currently has explicit search-route handlers for 27 IDs, but several handlers still require browser-level destination validation. This audit tracks the gap between merchant eligibility in the KB and a verified, query-bearing destination. A merchant must not be rendered as a product-search result until its route is confirmed to be a real product/category search endpoint.
 
 ## Changes made in this pass
 
-- Added product-search handling for `meghdadit` using the official site's product-search interface.
+- Added a candidate product-search route for `meghdadit` based on the official site's visible product-search interface; the query-parameter behavior still needs runtime confirmation.
 - Expanded Meghdad IT's KB terms to cover computers, components, monitors, printers, networking, and digital accessories.
 - Added explicit `digital_product` and `digital_accessory` query intents so category matching does not depend only on accidental word overlap.
 - Updated cache versions for the KB, resolver, and discovery module.
@@ -17,8 +17,9 @@ The product-category knowledge base contains 120 merchant IDs. The independent U
 ## Audit summary
 
 - Catalog merchant IDs: 120
-- Explicit resolver route IDs: 26
-- Catalog IDs without an explicit resolver route: 94
+- Explicit resolver route IDs: 27
+- Catalog IDs without an explicit resolver route: 93
+- The Meghdad IT route is present in code but is not counted as end-to-end verified until a browser test confirms that the query opens product results.
 - This is a route-coverage audit, not a claim that every listed merchant is relevant to every query.
 - Missing routes must be checked individually. Do not invent a URL pattern or substitute a homepage/login/affiliate page for product search.
 - Some IDs are travel, education, services, affiliate networks, or furniture specialists; their appropriate search/booking route and supported intents must be reviewed separately.
