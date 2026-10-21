@@ -64,6 +64,12 @@ assert.equal(mobile.domain, 'digital');
 ['digido','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'].forEach(id=>assert.ok(mobile.eligibleIds.includes(id)));
 assert.ok(!mobile.eligibleIds.includes('khanoumi'));
 
+const catalog = globalThis.DigiYarStoreBusinessDomains.catalog;
+assert.equal(catalog.digikala.storeType, 'general', 'broad marketplace belongs in general stores');
+assert.equal(catalog.janebi.storeType, 'specialist', 'multi-domain accessory merchant remains specialist by activity');
+assert.equal(catalog.khanoumi.storeType, 'specialist', 'beauty/health merchant remains specialist by activity');
+assert.equal(catalog.berozkala.storeType, 'specialist', 'digital retailer remains specialist by activity');
+
 const unknown = eligibility.explain('یک محصول عجیب و ناشناخته', stores);
 assert.equal(unknown.domain, null);
 assert.ok(unknown.eligibleCount >= 0);
