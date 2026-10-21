@@ -65,31 +65,24 @@ function resolveSearchContext(query){
  var tokens=wordTokens(raw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={};
  if(!tokens.length)return {query:String(query||''),storeIds:[],categoriesByStore:{},source:'product-category-catalog',intent:intent};
- var fixedGeneral={
-  office_bag:['digikala','snappshop','torob','basalam'],
-  air_purifier:['digikala','snappshop','torob','basalam'],
-  upholstery_cleaning:['digikala','snappshop','torob','basalam'],
-  mobile_accessory:['digikala','snappshop','torob','basalam']
- };
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
   var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
   var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0;});
+  if(Array.isArray(store.hooshyarExcludeConcepts)&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
   var score=0,matchedPhrase=false;
   fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
   tokens.forEach(function(t){if(fieldTokens.indexOf(t)>=0)score+=t.length>=5?2:1;});
   if(intent==='office_bag'){
-   var generalAllowed=(fixedGeneral.office_bag.indexOf(key)>=0)&&(/کیف/.test(hay)||/کیف/.test(raw));
+   var generalAllowed=store.storeType==='general'&&/کیف/.test(hay);
    var specialistExact=store.storeType!=='general'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
    if(!generalAllowed&&!specialistExact)return;
    score=generalAllowed?10:25;
   }else if(intent==='air_purifier'){
-   if((fixedGeneral.air_purifier.indexOf(key)<0)&&!(/تصفیه\s*هوا|تصفیه هوا/.test(hay)&&store.storeType!=='general'))return;
-   if(['esam','takhfifan','memarket'].indexOf(key)>=0)return;
+   if(!/تصفیه\s*هوا/.test(hay))return;
    score=matchedPhrase?25:12;
   }else if(intent==='upholstery_cleaning'){
-   if(fixedGeneral.upholstery_cleaning.indexOf(key)<0)return;
-   if(['esam','takhfifan','memarket'].indexOf(key)>=0)return;
+   if(store.storeType!=='general'||!/(تمیزکننده مبل پارچه‌ای|دستگاه مبل شوی|فرش شوی|بخارشوی)/.test(hay))return;
    score=matchedPhrase?25:12;
   }else if(intent==='mobile_accessory'){
    if(store.hooshyarExcludeConcepts&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
@@ -99,7 +92,6 @@ function resolveSearchContext(query){
    var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
    var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
    if(excluded||(!phraseInQuery&&!strongToken))return;
-   if(store.hooshyarExcludeConcepts&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
    if(score<3&&!phraseInQuery)return;
   }
   if(excluded)return;
