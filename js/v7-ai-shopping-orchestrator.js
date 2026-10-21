@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.32';
+  const VERSION='7.0.0-hooshyar-local.33';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -385,7 +385,7 @@
         plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
         const engineSearchQueries=threeEngineResult.searchQueries||{};
         const localSearchQueries=plan.ai.searchQueries||{};
-        const keepLocalPhrase=['sofa_cleaning','train_ticket'].indexOf(threeEngineResult.need&&threeEngineResult.need.concept)>=0;
+        const keepLocalPhrase=['sofa_cleaning','train_ticket','sofa','furniture'].indexOf(threeEngineResult.need&&threeEngineResult.need.concept)>=0;
         plan.ai.searchQueries=keepLocalPhrase
           ?Object.assign({},engineSearchQueries,localSearchQueries)
           :Object.assign({},localSearchQueries,engineSearchQueries);
