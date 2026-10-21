@@ -126,21 +126,6 @@ function storeSearchUrlRaw(id,q){
  /* Never show a homepage-only link as if it were a product search result. */
  return genericMerchantSearchUrl(key,s);
 }
-function queryRelevanceAllows(id,query){
- var key=String(id||'').toLowerCase();
- var q=String(query||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();
- var broad=['digikala','snappshop','torob','basalam'];
- if(/کیف\s*اداری|کیف.{0,10}محل کار|کیف.{0,10}محیط کار/.test(q)){
-  if(broad.indexOf(key)>=0||key==='dayan'||key==='janebi')return true;
-  var catalog=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};
-  var item=catalog[key]||{},terms=[].concat(item.products||[],item.aliases||[]);
-  return terms.some(function(term){return /کیف\s*اداری|کیف اداری زنانه|کیف اداری مردانه/.test(String(term||'').toLowerCase().replace(/[‌\u200c]/g,' '));});
- }
- if(/(?:لوازم\s*جانبی|اکسسوری).{0,12}(?:موبایل|گوشی)|(?:موبایل|گوشی).{0,12}(?:لوازم\s*جانبی|اکسسوری)/.test(q)){
-  return broad.indexOf(key)>=0||['digido','janebi','digiland','berozkala','gooshishop','technolife','meghdadit'].indexOf(key)>=0;
- }
- return true;
-}
 function storeSearchUrl(id,q){
  /* A route is eligible only when it carries an explicit merchant-side search
     parameter. Static category pages, homepages, and guessed landing pages fail
