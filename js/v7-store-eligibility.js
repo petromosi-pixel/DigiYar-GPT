@@ -316,6 +316,8 @@ function relevantGeneralStores(query,list){
   return (Array.isArray(list)?list:[]).filter(function(store){
     if(!store||!isGeneralStore(store.id))return false;
     var id=String(store.id||'').toLowerCase();
+    /* MeMarket explicitly excludes the air-purifier concept in its KB. */
+    if(id==='memarket'&&/(?:تصفیه\\s*هوا|تصفیه\\s*کننده\\s*هوا|دستگاه\\s*تصفیه)/i.test(norm(query)))return false;
     /* The four broad marketplaces may use their category coverage as a
        semantic signal. Esam and MeMarket are deliberately stricter: they
        enter only on a direct KB product/alias match. */
