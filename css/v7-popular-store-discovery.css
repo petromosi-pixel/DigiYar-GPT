@@ -244,3 +244,49 @@
 #v7PopularDiscoveryTabs .popular-discovery-type-tabs{margin:0!important;}
 
 @media(max-width:420px){.popular-discovery-query-text{font-size:.81rem!important;}}
+
+
+/* Hooshyar result header: keep the title and query on separate RTL lines,
+   with a consistent 3 mm breathing space above and below the header content. */
+.popular-discovery-accordion[data-search-results="true"]{
+  margin-block:3mm!important;
+}
+.popular-discovery-accordion[data-search-results="true"]>.popular-discovery-accordion-trigger{
+  padding-top:3mm!important;
+  padding-bottom:3mm!important;
+}
+.popular-discovery-accordion[data-search-results="true"] .popular-discovery-accordion-title-wrap{
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:2px!important;
+  min-width:0!important;
+  text-align:right!important;
+}
+.popular-discovery-accordion[data-search-results="true"] .popular-discovery-accordion-title-wrap strong{
+  display:block!important;
+  width:100%!important;
+  overflow:visible!important;
+  white-space:normal!important;
+  text-align:right!important;
+  font-size:.87rem!important;
+  line-height:1.55!important;
+}
+.popular-discovery-accordion[data-search-results="true"] .popular-discovery-query-text{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  color:#d66b78!important;
+  font-size:.87rem!important;
+  font-weight:650!important;
+  line-height:1.65!important;
+  text-align:right!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:420px){
+  .popular-discovery-accordion[data-search-results="true"] .popular-discovery-accordion-title-wrap strong,
+  .popular-discovery-accordion[data-search-results="true"] .popular-discovery-query-text{
+    font-size:.81rem!important;
+  }
+}
