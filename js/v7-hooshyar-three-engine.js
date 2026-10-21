@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.32';
+var VERSION='7.0.0-hooshyar-three-engine.33';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -272,6 +272,10 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='sofa_cleaning'&&hasCleaningProduct&&!direct){score+=4;direct=true;proof.push('sofa-cleaning-appliance');}
   if(need.concept==='sofa_cleaning'&&!isGeneral&&!hasCleaningProduct){score=-100;proof=[];direct=false;}
   var coreMarketplaces=['digikala','snappshop','torob','basalam'];
+  if(need.concept==='mobile_accessory'&&!isGeneral&&!matchedCategoryEvidence.length){
+    var digitalAccessoryDomain=(s.domains||[]).some(function(domain){return /digital|mobile|accessor|electronics/i.test(norm(domain));});
+    if(!digitalAccessoryDomain){score=-100;proof=[];direct=false;}
+  }
   /* Broad resale/deal sites are not reliable product matches for these narrow
      needs even if their domain tags or generic inventory overlap. */
   if(isGeneral&&['air_purifier','sofa_cleaning','mobile_accessory','kitchen_scale'].indexOf(need.concept)>=0&&coreMarketplaces.indexOf(sid)<0){score=-100;proof=[];direct=false;}
