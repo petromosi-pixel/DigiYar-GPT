@@ -227,7 +227,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
      explicit current category inventory in their KB. This is not a domain-only
      fallback: the concept must be recognized, the store must declare products,
      and cleaning/air-purifier safeguards below still apply. */
-  if(need.concept&&isGeneral&&domainHit&&!direct){
+  if(need.concept&&isGeneral&&domainHit&&!direct&&['office_bag','mobile_accessory','air_purifier','sofa_cleaning','skincare'].indexOf(need.concept)<0){
    var declaredProducts=norm([].concat(s.products||[],s.aliases||[]).join(' '));
    var categoryInventory={
     digital:['دیجیتال','موبایل','گوشی','لپ تاپ','تبلت','کامپیوتر','لوازم جانبی'],
