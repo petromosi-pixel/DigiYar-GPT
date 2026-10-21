@@ -408,11 +408,6 @@ function openBrowser(query,list){
      const semanticPlan=window.DigiYarShoppingPlan&&
        String(window.DigiYarShoppingPlan.query||'').trim()===String(query||'').trim()
        ?window.DigiYarShoppingPlan.ai:null;
-     if(!semanticPlan){
-       box.style.display='block';
-       tabsAndResults([]);
-       return;
-     }
      const canonicalList=Array.isArray(window.DigiYarPopularAffiliateStores)
        ? window.DigiYarPopularAffiliateStores
        : (Array.isArray(list)?list:stores());
@@ -443,13 +438,13 @@ function openBrowser(query,list){
      const usable=sourceList.filter(function(x){
          if(!x||!x.id)return false;
          var id=String(x.id).toLowerCase();
-         return queryRelevanceAllows(id,query) && (!!storeSearchUrl(id,query)||(semanticPlan&&semanticPlan.directorySearch===true&&!!(window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id])));
+         return (!!storeSearchUrl(id,query)||(semanticPlan&&semanticPlan.directorySearch===true&&!!(window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id])));
        }).map(function(x){
          var id=String(x.id||'').toLowerCase();
          return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
        });
      box.style.display='block';
-     tabsAndResults(usable,semanticPlan.directorySearch===true);
+     tabsAndResults(usable,!!(semanticPlan&&semanticPlan.directorySearch===true));
    }catch(error){
      console.error('DigiYar Store Browser render:',error);
      box.style.display='block';
