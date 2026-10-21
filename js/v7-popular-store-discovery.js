@@ -47,35 +47,74 @@ var state={type:'general',domain:'digital',query:'',queryActive:false,queryStore
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function normalize(s){return String(s||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.catalog?kb.catalog:{};}
+function detectIntent(raw){
+ if((/کیف\s*اداری/.test(raw))||(/کیف/.test(raw)&&/محل کار/.test(raw)))return 'office_bag';
+ if(/تصفیه\s*هوا|دستگاه تصفیه هوا|پاکسازی هوا/.test(raw))return 'air_purifier';
+ if(/مبل|روکش مبلمان/.test(raw)&&/تمیز|تمیزکردن|شستن|شستشو|نظافت|لکه|پاک کردن/.test(raw))return 'upholstery_cleaning';
+ if(/گوشی|موبایل/.test(raw)&&/قاب|گلس|شارژر|کابل|پاوربانک|هندزفری|هدفون/.test(raw))return 'mobile_accessory';
+ return 'general_product';
+}
+function wordTokens(text){
+ return normalize(text).split(/[^\u0600-\u06FFa-z0-9]+/i).filter(function(t){return t.length>1;});
+}
 function resolveSearchContext(query){
- /* Canonical merchant resolver for both Hooshyar surfaces. Eligibility comes
-    from product/category KB evidence, never from simulator state or AI IDs. */
- var catalog=getCatalog(),raw=normalize(query);
- var stop='برای دنبال میخوام میخواهم می خوام می‌خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا لطفاً قیمت بودجه متوسط ارزان گران بهترین خوب'.split(' ');
- var tokens=raw.split(/[^\u0600-\u06FFa-z0-9]+/i).filter(function(t){return t.length>1&&stop.indexOf(t)<0;});
+ /* The product/category KB is the sole source of merchant eligibility.
+    Intent rules prevent generic word overlap from masquerading as relevance. */
+ var catalog=getCatalog(),raw=normalize(query),intent=detectIntent(raw);
+ var stop='برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق'.split(' ');
+ var tokens=wordTokens(raw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={};
- if(!tokens.length)return {query:String(query||''),storeIds:[],categoriesByStore:{},source:'product-category-catalog'};
+ if(!tokens.length)return {query:String(query||''),storeIds:[],categoriesByStore:{},source:'product-category-catalog',intent:intent};
+ var fixedGeneral={
+  office_bag:['digikala','snappshop','torob','basalam'],
+  air_purifier:['digikala','snappshop','torob','basalam'],
+  upholstery_cleaning:['digikala','snappshop','torob','basalam'],
+  mobile_accessory:['digikala','snappshop','torob','basalam']
+ };
  Object.keys(catalog).forEach(function(id){
-  var s=catalog[id]||{},domains=Array.isArray(s.domains)?s.domains:[];
-  var fields=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[]);
-  var hay=normalize(fields.join(' ')),score=0,hits=0;
-  tokens.forEach(function(t){if(hay.indexOf(t)>=0){hits++;score+=t.length>=5?3:1;}});
-  var phraseMatch=fields.some(function(field){var f=normalize(field);return f.length>=5&&raw.indexOf(f)>=0;});
-  var excluded=(s.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0;});
-  /* Explicit KB exclusions override positive catalog matches (e.g. furniture
-     sellers must not appear for upholstery-cleaning services). */
-  if(!excluded&&(phraseMatch||(score>=3&&hits>=1&&(hits>=2||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;}))))){
-   var categories=domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;});
-   if(!categories.length)categories=['فروشگاه عمومی'];
-   out.push({id:String(id).toLowerCase(),score:score+(phraseMatch?5:0),categories:Array.from(new Set(categories))});
+  var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
+  var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
+  var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0;});
+  var score=0,matchedPhrase=false;
+  fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
+  tokens.forEach(function(t){if(fieldTokens.indexOf(t)>=0)score+=t.length>=5?2:1;});
+  if(intent==='office_bag'){
+   var generalAllowed=(fixedGeneral.office_bag.indexOf(key)>=0)&&(/کیف/.test(hay)||/کیف/.test(raw));
+   var specialistExact=store.storeType!=='general'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
+   if(!generalAllowed&&!specialistExact)return;
+   score=generalAllowed?10:25;
+  }else if(intent==='air_purifier'){
+   if((fixedGeneral.air_purifier.indexOf(key)<0)&&!(/تصفیه\s*هوا|تصفیه هوا/.test(hay)&&store.storeType!=='general'))return;
+   if(['esam','takhfifan','memarket'].indexOf(key)>=0)return;
+   score=matchedPhrase?25:12;
+  }else if(intent==='upholstery_cleaning'){
+   if(fixedGeneral.upholstery_cleaning.indexOf(key)<0)return;
+   if(['esam','takhfifan','memarket'].indexOf(key)>=0)return;
+   score=matchedPhrase?25:12;
+  }else if(intent==='mobile_accessory'){
+   if(store.hooshyarExcludeConcepts&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
+   if(!matchedPhrase&&score<4)return;
+   if(store.storeType!=='general'&&domains.indexOf('accessories')<0&&domains.indexOf('digital')<0)return;
+  }else{
+   var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
+   var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
+   if(excluded||(!phraseInQuery&&!strongToken))return;
+   if(store.hooshyarExcludeConcepts&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
+   if(score<3&&!phraseInQuery)return;
   }
+  if(excluded)return;
+  var urlResolver=window.DigiYarStoreSearchUrl;
+  if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw))return;
+  var categories=domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;});
+  if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
+  if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories))});}
  });
  out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});
- out.forEach(function(x){if(!seen[x.id])seen[x.id]=x.categories;});
- return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),categoriesByStore:seen,source:'product-category-catalog'};
+ var categoriesByStore={};out.forEach(function(x){categoriesByStore[x.id]=x.categories;});
+ return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent};
 }
 function homepage(id,store){return (store&&store.homepage)||((window.DigiYarStoreBrowser&&window.DigiYarStoreBrowser.storesByDomain)?'':'')||'';}
-function isGeneral(id,s){return (s&&s.storeType==='general')||['digikala','snappshop','torob','basalam','esam','memarket','takhfifan','divar','sheypoor'].indexOf(String(id||'').toLowerCase())>=0;}
+function isGeneral(id,s){return !!(s&&s.storeType==='general');}
 function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
 function featuredFor(domain,catalog){
  var seen={},out=[],featured=FEATURED[domain]||[];
@@ -134,7 +173,7 @@ function render(){
  function accordion(key,title,icon,description,items){
   var open=!!state.openCategories[key],cards=items.map(function(s){return card(s,title);}).join('');
   if(q&&!items.length)return '';
-  return '<section class="popular-discovery-accordion'+(open?' is-open':'')+'"><button type="button" class="popular-discovery-accordion-trigger" data-accordion-key="'+esc(key)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'">'+(icon?'<span class="popular-discovery-accordion-icon" aria-hidden="true">'+esc(icon)+'</span>':'')+'<span class="popular-discovery-accordion-title-wrap"><strong>'+esc(title)+'</strong>'+(description?'<small>'+esc(description)+'</small>':'')+'</span></button><button type="button" class="popular-discovery-accordion-chevron" data-accordion-key="'+esc(key)+'" aria-label="'+(open?'بستن':'باز کردن')+' '+esc(title)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="popular-discovery-accordion-panel" id="popularDiscoveryPanel-'+esc(key)+'"'+(open?'':' hidden')+'><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">فروشگاهی در این دسته پیدا نشد.</div>')+'</div></div></section>';
+  return '<section class="popular-discovery-accordion'+(open?' is-open':'')+'"><button type="button" class="popular-discovery-accordion-trigger" data-accordion-key="'+esc(key)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'">'+(icon?'<span class="popular-discovery-accordion-icon" aria-hidden="true">'+esc(icon)+'</span>':'')+'<span class="popular-discovery-accordion-title-wrap"><strong>'+esc(title)+'</strong>'+(key==='search-results'&&description?'<span class="popular-discovery-query-text">'+esc(description)+'</span>':(description?'<small>'+esc(description)+'</small>':''))+'</span></button><button type="button" class="popular-discovery-accordion-chevron" data-accordion-key="'+esc(key)+'" aria-label="'+(open?'بستن':'باز کردن')+' '+esc(title)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="popular-discovery-accordion-panel" id="popularDiscoveryPanel-'+esc(key)+'"'+(open?'':' hidden')+'><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">فروشگاهی در این دسته پیدا نشد.</div>')+'</div></div></section>';
  }
  var general=generalIds.map(function(id){return makeStore(id,'');}).filter(matches);
  var html='';
@@ -142,14 +181,14 @@ function render(){
   var uniqueItems=[],seenSearchIds={};
   (state.queryStoreIds||[]).forEach(function(id){
    id=String(id||'').toLowerCase();if(!id||seenSearchIds[id]||!catalog[id])return;
-   var searchUrl=window.DigiYarStoreBrowser&&typeof window.DigiYarStoreBrowser.resolveSearchUrl==='function'?window.DigiYarStoreBrowser.resolveSearchUrl(id,state.query):'';
+   var searchUrl=window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(id,state.query):'';
    if(!searchUrl)return;
    seenSearchIds[id]=true;
    var store=catalog[id]||{},cats=state.categoriesByStore[id]||((store.domains||[]).map(function(d){return (DOMAIN_META[d]||{}).title||d;}));
    if(!cats.length)cats=[isGeneral(id,store)?'فروشگاه عمومی':'فروشگاه تخصصی'];
    uniqueItems.push({id:id,name:store.name||id,homepage:store.homepage||'',tagline:'دسته‌بندی: '+Array.from(new Set(cats)).join('، '),domain:(store.domains||[])[0]||''});
   });
-  html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار',state.query,'',uniqueItems);
+  html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار:', '',state.query,uniqueItems);
  }else if(state.type==='general'){
   html=accordion('general','فروشگاه‌های عمومی','🏬','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general);
  }else{
@@ -160,8 +199,8 @@ function render(){
   }).join('');
  }
  var typeTabs=state.queryActive?'':'<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
- var queryHeading='';
- root.innerHTML=queryHeading+typeTabs+'<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
+ var tabsRoot=document.getElementById('v7PopularDiscoveryTabs');if(tabsRoot)tabsRoot.innerHTML=typeTabs;
+ root.innerHTML='<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
  root.querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type'),same=state.type===next;if(same){if(next==='general'){state.openCategories.general=!state.openCategories.general;}else{var anyOpen=domains.some(function(d){return !!state.openCategories[d];});domains.forEach(function(d){state.openCategories[d]=!anyOpen;});}}else{state.type=next;state.openCategories.general=false;domains.forEach(function(d){state.openCategories[d]=false;});}render();});});
 
@@ -172,9 +211,9 @@ function init(){
  toggle.setAttribute('aria-expanded','false');panel.hidden=true;
  var bottomToggle=document.getElementById('popularDiscoveryBottomToggle');
  if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
- toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(open&&!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
+ toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
  window.addEventListener('digiyar:v7-hooshyar-cleared',function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};state.type='general';render();var p=document.getElementById('popularDiscoveryPanel'),t=document.getElementById('popularDiscoveryToggle'),b=document.getElementById('popularDiscoveryBottomToggle');if(p)p.hidden=true;if(t)t.setAttribute('aria-expanded','false');if(b)b.setAttribute('aria-expanded','false');if(p)delete p.dataset.rendered;});
- window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query){var resolved=resolveSearchContext(query);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
+ window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query){var resolved=resolveSearchContext(query);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.openCategories['search-results']=true;state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){init();render();});else{init();render();}
 })();
