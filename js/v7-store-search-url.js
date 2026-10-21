@@ -9,7 +9,7 @@ function productTerm(id,q){
  var s=normalize(q),key=String(id||'').toLowerCase();
  /* Merchant-specific query terms are used only where the store's search is
     known to perform better with a concise product phrase. */
- if(/کیف\s*اداری|محل کار/.test(s))return 'کیف اداری';
+ if(/کیف\s*اداری/.test(s)||(/کیف/.test(s)&&/محل کار/.test(s)))return 'کیف اداری';
  if(/تصفیه\s*هوا/.test(s))return 'تصفیه هوا';
  if(/تمیز|تمیزکردن|تمیز کردن|شستن|شستشو|نظافت|لکه/.test(s)&&/مبل|پارچه/.test(s))return 'تمیزکننده مبل پارچه‌ای';
  if(key==='basalam'){
@@ -41,8 +41,10 @@ SEARCH.solokala=q=>'https://solokala.com/search?q='+encodeURIComponent(productTe
 SEARCH.mosbatesabz=q=>'https://mosbatesabz.com/?s='+encodeURIComponent(productTerm('mosbatesabz',q));
 SEARCH.darmankala=q=>'https://darmankala.com/catalogsearch/result/?q='+encodeURIComponent(productTerm('darmankala',q));
 SEARCH.darukade=q=>'https://darukade.com/products?w='+encodeURIComponent(productTerm('darukade',q));
-SEARCH.dayan=q=>'https://noura1393.affdn.ir/products?title='+encodeURIComponent(productTerm('dayan',q));
-SEARCH.memarket=q=>'https://memarket24.ir/search/'+encodeURIComponent(productTerm('memarket',q).replace(/\s+/g,'-'));
+/* Dayan's previously tested affiliate route resolved to login/home, so fail closed until a real product-search route is verified. */
+SEARCH.dayan=q=>'';
+/* MiMarket's product-search route has not been verified; do not send users to a guessed URL. */
+SEARCH.memarket=q=>'';
 SEARCH.alibaba=q=>/(?:قطار|ریل)/.test(normalize(q))?'https://www.alibaba.ir/train':'';
 SEARCH.mrbilit=q=>/(?:قطار|ریل)/.test(normalize(q))?'https://mrbilit.com/train-ticket':'';
 SEARCH.ghasedak24=q=>/(?:قطار|ریل)/.test(normalize(q))?'https://ghasedak24.com/train-ticket':'';
