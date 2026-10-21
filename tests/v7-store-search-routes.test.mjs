@@ -84,7 +84,7 @@ assert.ok(window.DigiYarStoreCategories.khanoumi.includes('مراقبت پوست
 assert.ok(window.DigiYarStoreCategories.neshatrokh.includes('مراقبت پوست'));
 assert.ok(window.DigiYarStoreCategories.shavaz.includes('مراقبت پوست'));
 const skinPlan = await window.DigiYarShoppingOrchestrator.run('یه ضد آفتاب برای پوست خشک می‌خوام');
-for (const id of ['khanoumi','neshatrokh','shavaz','darukade','mosbatesabz']) {
+for (const id of ['digikala','snappshop','torob','basalam','banimode','khanoumi','neshatrokh','shavaz','darukade','mosbatesabz']) {
   assert.ok(skinPlan.ai.eligibleStoreIds.includes(id),
     `skin-care category retrieval omitted specialist ${id}`);
 }
@@ -216,6 +216,10 @@ assert.equal(khanoumiSearch.searchParams.get('query'),'ضد آفتاب پوست 
   'Khanoumi must open its verified query-specific product-search page');
 assert.equal(browser.resolveSearchUrl('neshatrokh','ضد آفتاب پوست خشک'),'',
   'NeshatRokh must remain hidden because its tested ?s= route returned the homepage rather than product results');
+const banimodeSearch = new URL(browser.resolveSearchUrl('banimode','ضد آفتاب پوست خشک'));
+assert.equal(banimodeSearch.pathname,'/search');
+assert.equal(banimodeSearch.searchParams.get('q'),'ضد آفتاب پوست خشک',
+  'Banimode must use its query-specific search route for its declared beauty category');
 assert.equal(browser.resolveSearchUrl('pinket','ضد آفتاب پوست خشک'),'',
   'Pinket must remain hidden until its blocked search route can be verified');
 
