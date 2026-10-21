@@ -61,6 +61,32 @@ assert.ok(categoryBagResult.eligibleStoreIds.includes('bag_category_only'),
   'the relevant leather/bag category must retrieve an office-bag specialist');
 assert.ok(!categoryBagResult.eligibleStoreIds.includes('bag_broad_fashion_only'),
   'broad fashion category alone must not prove office-bag relevance');
+/* Integration regression: the homepage's canonical category map is joined to
+   the search catalog, including specialists absent from the business-domain
+   inventory. This catches the former split-brain state where categories were
+   visible in UI but invisible to Hooshyar retrieval. */
+window.DigiYarStoreCategories.category_only_skin_specialist = ['مراقبت پوست'];
+window.DigiYarStoreCategories.category_only_bag_specialist = ['کیف و محصولات چرمی'];
+window.DigiYarStoreCategories.category_only_laptop_specialist = ['لپ‌تاپ'];
+window.DigiYarStoreCategories.category_only_accessory_store = ['کوله و کیف لپ‌تاپ','لوازم جانبی موبایل'];
+const canonicalSkinResult = engine.resolve('یه ضد آفتاب برای پوست خشک می‌خوام', {}, [], null);
+assert.ok(canonicalSkinResult.eligibleStoreIds.includes('category_only_skin_specialist'),
+  'Hooshyar must discover a specialist from the canonical category reference even without a KB product alias');
+assert.equal(canonicalSkinResult.trace.categoryReferenceUsed, true,
+  'resolver trace must confirm use of the canonical store-category reference');
+assert.ok(canonicalSkinResult.trace.catalogStoreCount >= Object.keys(window.DigiYarStoreCategories).length,
+  'the canonical category map must be merged into the resolver catalog');
+const canonicalBagResult = engine.resolve('کیف اداری برای محل کارم', {}, [], null);
+assert.ok(canonicalBagResult.eligibleStoreIds.includes('category_only_bag_specialist'),
+  'leather/bag specialist must be discovered from the canonical taxonomy alone');
+assert.ok(!canonicalBagResult.eligibleStoreIds.includes('category_only_skin_specialist'),
+  'a skin-care-only specialist must not leak into office-bag results');
+const canonicalLaptopResult = engine.resolve('لپ‌تاپ برای دانشجو', {}, [], null);
+assert.ok(canonicalLaptopResult.eligibleStoreIds.includes('category_only_laptop_specialist'),
+  'laptop specialist must be discovered from canonical laptop category');
+assert.ok(!canonicalLaptopResult.eligibleStoreIds.includes('category_only_accessory_store'),
+  'laptop bags/accessories must not qualify as laptop-computer merchants');
+
 
 const inflectedKbResult = engine.resolve('ترازوهای هوشمند برای آشپزخانه', kbEvidenceFixture, [], null);
 for (const id of ['kb_alias_only','kb_family_only','digikala']) {
