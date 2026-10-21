@@ -181,7 +181,7 @@ assert.equal(orchestrator.resolveDirectorySearch('لوازم جانبی موبا
 const accessoryPlan = await orchestrator.run('لوازم جانبی موبایل');
 assert.equal(accessoryPlan.ai.directorySearch, undefined, 'Mobile accessories must use the product-search path.');
 assert.deepEqual([...accessoryPlan.ai.eligibleStoreIds].sort(),
-  ['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].sort(),
+  ['janebi','digido','gooshishop','technolife','berozkala','digikala','snappshop','torob','basalam'].sort(),
   'The knowledge-base resolver must preserve the established mobile-accessory merchant set without unrelated device-only stores.');
 
 
