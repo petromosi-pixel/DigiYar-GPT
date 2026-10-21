@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.27';
+var VERSION='7.0.0-hooshyar-three-engine.28';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -49,6 +49,7 @@ var CONCEPTS=[
  {key:'air_conditioner',label:'کولر گازی',domain:'home',terms:['کولر گازی','اسپلیت','تهویه مطبوع'],patterns:/(?:کولر\s*گازی|اسپلیت|تهویه\s*مطبوع)/i},
  {key:'vacuum',label:'جاروبرقی',domain:'home',terms:['جاروبرقی','جارو برقی','جارو شارژی'],patterns:/(?:جارو\s*برقی|جاروبرقی|جارو\s*شارژی)/i},
  {key:'kitchen_appliance',label:'لوازم آشپزخانه',domain:'home',terms:['مایکروویو','مایکروفر','اسپرسوساز','قهوه ساز','چای ساز','مخلوط کن','آبمیوه گیری','سرخ کن','پلوپز','توستر','ساندویچ ساز'],patterns:/(?:مایکروویو|مایکروفر|اسپرسوساز|قهوه\s*ساز|چای\s*ساز|مخلوط\s*کن|آبمیوه\s*گیری|سرخ\s*کن|پلوپز|توستر|ساندویچ\s*ساز)/i},
+ {key:'kitchen_scale',label:'ترازوی آشپزخانه',domain:'home',terms:['ترازو آشپزخانه','ترازوی آشپزخانه','ترازو دیجیتال آشپزخانه','ترازوی هوشمند آشپزخانه'],patterns:/(?:ترازوی?|ترازوهای?).{0,24}(?:آشپزخانه|هوشمند.{0,8}آشپزخانه|دیجیتال.{0,8}آشپزخانه)|آشپزخانه.{0,18}ترازو/i},
  {key:'train_ticket',label:'بلیط قطار',domain:'travel_ticket',terms:['بلیط قطار','بلیت قطار','قطار','سفر ریلی','رزرو قطار'],patterns:/(?:بلیط|بلیت|رزرو|سفر|برم|بروم).{0,30}(?:قطار|ریل)|(?:قطار|ریل).{0,30}(?:بلیط|بلیت|تهران|مشهد)|قطار/i},
  {key:'air_purifier',label:'دستگاه تصفیه هوا',domain:'home',terms:['تصفیه هوا','دستگاه تصفیه','پاکسازی هوا','هوای پاک','تصفیه کننده هوا'],patterns:/(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|هوای\s*(?:اتاق|خانه).{0,20}(?:تمیز|پاک|آلوده))/i},
  {key:'sofa_cleaning',label:'محصول نظافت مبل پارچه‌ای',domain:'home',terms:['تمیزکننده مبل پارچه‌ای','شوینده مبل','بخارشوی مبل','نظافت مبل'],patterns:/(?:تمیز\s*کردن|تمیزکاری|شستشو|شستن|نظافت|شوینده|پاک\s*کردن|پاکسازی|مبل\s*شویی).{0,35}(?:مبل|مبلمان|پارچه)|(?:مبل|مبلمان).{0,35}(?:تمیز|شستن|شستشو|نظافت|پارچه)/i},
@@ -102,41 +103,15 @@ function parseNeed(query){
  ['جادار','سبک','ضد آب','ارزان','اقتصادی','اصل','رسمی','برای محل کار','اتاق خواب','پارچه‌ای','بی‌سیم'].forEach(function(a){if(q.indexOf(norm(a))>=0)attrs.push(a);});
  var targetObject=concept&&concept.key==='sofa_cleaning'?'مبل پارچه‌ای':concept&&concept.key==='air_purifier'&&/اتاق\s*خواب/.test(q)?'اتاق خواب':null;
  var product=concept?concept.label:q;
+ if(concept&&concept.key==='skincare'){
+  var skinProduct=q.match(/ضد\s*آفتاب|مرطوب\s*کننده|آبرسان|شوینده\s*صورت|سرم\s*پوست|کرم\s*پوست/i);
+  product=skinProduct?skinProduct[0].replace(/\s+/g,' '):'محصول مراقبت پوست';
+  var skinType=q.match(/پوست\s*(?:خشک|چرب|مختلط|حساس)/i);
+  if(skinType)product+=' '+skinType[0];
+ }
  if(concept&&concept.key==='mobile_phone'&&brand)product='گوشی '+brand;
  if(concept&&concept.key==='mobile_accessory'&&brand)product='لوازم جانبی '+brand;
  return {query:clean(query),normalized:q,concept:concept?concept.key:null,requestedProduct:product,domain:concept?concept.domain:null,domains:concept?[concept.domain]:[],brand:brand,maxBudgetToman:budget,attributes:attrs,targetObject:targetObject,taskType:concept&&concept.key==='train_ticket'?'ticket_search':concept&&concept.key==='sofa_cleaning'?'cleaning_task':'shopping_search'};
-}
-function categoryEvidence(need,item){
- var cats=Array.isArray(item.categories)?item.categories:[];
- if(!cats.length||!need.concept)return [];
- var rules={
-  laptop:[/لپ.?تاپ/i,/کامپیوتر(?: و قطعات| و اداری)?/i,/لپ.?تاپ.*کامپیوتر/i],
-  tablet:[/تبلت/i],
-  headphone:[/هدفون/i,/هندزفری/i,/صوتی و تصویری/i,/لوازم جانبی موبایل/i,/لوازم جانبی دیجیتال/i],
-  television:[/صوتی و تصویری/i],
-  monitor:[/مانیتور/i,/کامپیوتر و قطعات/i,/کامپیوتر و اداری/i],
-  camera:[/دوربین/i],
-  smartwatch:[/ساعت هوشمند/i,/ساعت و پوشیدنی/i],
-  printer:[/پرینتر/i,/ماشین.?های اداری/i,/پرینتر و تجهیزات اداری/i],
-  refrigerator:[/لوازم خانگی/i,/لوازم برقی/i,/یخچال/i],
-  washing_machine:[/لوازم خانگی/i,/لوازم برقی/i,/لباسشویی/i],
-  air_conditioner:[/لوازم خانگی/i,/لوازم برقی/i,/تهویه/i],
-  vacuum:[/جاروبرقی/i,/لوازم خانگی/i,/لوازم برقی/i],
-  kitchen_appliance:[/آشپزخانه/i,/لوازم خانگی/i,/لوازم برقی/i],
-  air_purifier:[/تصفیه هوا/i,/تهویه/i],
-  sofa:[/مبلمان/i,/مبل و راحتی/i,/دکوراسیون/i,/مبلمان اداری/i,/لوازم خانگی و مبلمان/i,/میز و صندلی/i],
-  furniture:[/مبلمان/i,/مبل و راحتی/i,/دکوراسیون/i,/مبلمان اداری/i,/لوازم خانگی و مبلمان/i,/میز و صندلی/i,/میز و دکور/i],
-  office_bag:[/کیف و محصولات چرمی/i,/کیف و اکسسوری/i,/کیف و کفش/i,/کوله و کیف/i,/کیف اداری/i,/محصولات چرمی/i],
-  mobile_accessory:[/لوازم جانبی/i,/پاوربانک/i,/کابل و شارژر/i,/هدفون و هندزفری/i,/هولدر موبایل/i],
-  mobile_phone:[/گوشی موبایل/i,/موبایل و تبلت/i,/موبایل/i,/تلفن همراه/i],
-  skincare:[/مراقبت پوست/i,/پوست و مو/i,/ضد آفتاب/i,/آرایشی و بهداشتی/i,/بهداشت و سلامت/i,/آرایشی و زیبایی/i,/محصولات آرایشی/i,/محصولات بهداشتی/i,/آرایش صورت/i],
-  shoe:[/کفش/i,/کیف و کفش/i],
-  clothing:[/پوشاک/i,/مد و پوشاک/i,/لباس/i,/پوشاک ورزشی/i]
- };
- if(need.concept==='sofa_cleaning')patterns=[/شوینده/i,/نظافت/i,/بخارشوی/i,/جاروبرقی/i,/ابزارآلات و تجهیزات/i,/مراقبت در منزل/];
- var patterns=rules[need.concept]||[];
- if(need.concept==='sofa_cleaning')patterns=[/شوینده/i,/نظافت/i,/بخارشوی/i,/جاروبرقی/i,/ابزارآلات و تجهیزات/i,/مراقبت در منزل/i];
- return cats.filter(function(category){var c=norm(category);return patterns.some(function(pattern){return pattern.test(c);});});
 }
 function categoryEvidence(need,item){
  var cats=Array.isArray(item.categories)?item.categories:[];
@@ -155,6 +130,7 @@ function categoryEvidence(need,item){
   air_conditioner:[/لوازم خانگی/i,/لوازم برقی/i,/تهویه/i],
   vacuum:[/جاروبرقی/i,/لوازم خانگی/i,/لوازم برقی/i],
   kitchen_appliance:[/آشپزخانه/i,/لوازم خانگی/i,/لوازم برقی/i],
+  kitchen_scale:[/آشپزخانه/i,/لوازم خانگی/i,/لوازم برقی/i],
   air_purifier:[/تصفیه هوا/i,/تهویه/i],
   sofa:[/مبلمان/i,/مبل و راحتی/i,/دکوراسیون/i,/مبلمان اداری/i,/لوازم خانگی و مبلمان/i,/میز و صندلی/i],
   furniture:[/مبلمان/i,/مبل و راحتی/i,/دکوراسیون/i,/مبلمان اداری/i,/لوازم خانگی و مبلمان/i,/میز و صندلی/i,/میز و دکور/i],
@@ -291,6 +267,10 @@ function retrieveCandidates(need,catalog,eligibleIds){
   });
   if(need.concept==='sofa_cleaning'&&hasCleaningProduct&&!direct){score+=4;direct=true;proof.push('sofa-cleaning-appliance');}
   if(need.concept==='sofa_cleaning'&&!isGeneral&&!hasCleaningProduct){score=-100;proof=[];direct=false;}
+  var coreMarketplaces=['digikala','snappshop','torob','basalam'];
+  /* Broad resale/deal sites are not reliable product matches for these narrow
+     needs even if their domain tags or generic inventory overlap. */
+  if(isGeneral&&['air_purifier','sofa_cleaning','mobile_accessory'].indexOf(need.concept)>=0&&coreMarketplaces.indexOf(sid)<0){score=-100;proof=[];direct=false;}
   var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized);
   var exclusions=Array.isArray(s.exclude||s.exclusions)?(s.exclude||s.exclusions).slice():[];
   if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
