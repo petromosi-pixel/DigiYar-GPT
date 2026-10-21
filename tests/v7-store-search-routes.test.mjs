@@ -86,6 +86,11 @@ assert.ok(canonicalLaptopResult.eligibleStoreIds.includes('category_only_laptop_
   'laptop specialist must be discovered from canonical laptop category');
 assert.ok(!canonicalLaptopResult.eligibleStoreIds.includes('category_only_accessory_store'),
   'laptop bags/accessories must not qualify as laptop-computer merchants');
+/* Keep synthetic category-only fixtures isolated from later end-to-end cases. */
+delete window.DigiYarStoreCategories.category_only_skin_specialist;
+delete window.DigiYarStoreCategories.category_only_bag_specialist;
+delete window.DigiYarStoreCategories.category_only_laptop_specialist;
+delete window.DigiYarStoreCategories.category_only_accessory_store;
 
 
 const inflectedKbResult = engine.resolve('ترازوهای هوشمند برای آشپزخانه', kbEvidenceFixture, [], null);
