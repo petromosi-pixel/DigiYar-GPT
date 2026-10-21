@@ -273,7 +273,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var coreMarketplaces=['digikala','snappshop','torob','basalam'];
   /* Broad resale/deal sites are not reliable product matches for these narrow
      needs even if their domain tags or generic inventory overlap. */
-  if(isGeneral&&['air_purifier','sofa_cleaning','mobile_accessory'].indexOf(need.concept)>=0&&coreMarketplaces.indexOf(sid)<0){score=-100;proof=[];direct=false;}
+  if(isGeneral&&['air_purifier','sofa_cleaning','mobile_accessory','kitchen_scale'].indexOf(need.concept)>=0&&coreMarketplaces.indexOf(sid)<0){score=-100;proof=[];direct=false;}
   var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized);
   var exclusions=Array.isArray(s.exclude||s.exclusions)?(s.exclude||s.exclusions).slice():[];
   if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
