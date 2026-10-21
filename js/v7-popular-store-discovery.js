@@ -60,7 +60,7 @@ function resolveSearchContext(query){
   var fields=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[]);
   var hay=normalize(fields.join(' ')),score=0,hits=0;
   tokens.forEach(function(t){if(hay.indexOf(t)>=0){hits++;score+=t.length>=5?3:1;}});
-  var phraseMatch=fields.some(function(field){var f=normalize(field);return f.length>=3&&raw.indexOf(f)>=0;});
+  var phraseMatch=fields.some(function(field){var f=normalize(field);return f.length>=5&&raw.indexOf(f)>=0;});
   /* Require direct product/alias evidence. Store names and broad domain titles
      alone can never make an unrelated merchant eligible. */
   if(phraseMatch||(score>=3&&hits>=1&&(hits>=2||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;})))){
