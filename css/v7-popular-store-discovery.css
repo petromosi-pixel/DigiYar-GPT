@@ -229,3 +229,7 @@
  .popular-discovery-store-logo,.popular-discovery-store-monogram{flex-basis:28px!important;width:28px!important;height:28px!important;max-width:28px!important;max-height:28px!important}
  .popular-discovery-store-name{font-size:.57rem!important}
 }
+
+/* Hooshyar synchronized category-card search context */
+.popular-discovery-query-heading{margin:0 0 10px;padding:8px 10px;border:1px solid var(--pd-border);border-radius:10px;color:var(--pd-muted);font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.popular-discovery-query-heading strong{color:var(--pd-text);font-weight:800}
