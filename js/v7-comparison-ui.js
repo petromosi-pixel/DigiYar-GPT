@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.49';
+const VERSION='7.0.0-comparison-ui.50';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();}
@@ -51,7 +51,7 @@ function installStyle(){if(document.getElementById('v7-comparison-ui-style'))ret
 function ensureMount(){
  let m=document.getElementById('v7ComparisonMount');
  if(!m){m=document.createElement('div');m.id='v7ComparisonMount';m.style.width='100%';m.style.boxSizing='border-box';}
- const anchor=document.getElementById('v6StoreSimulatorResults')||document.getElementById('v5SmartSearchResults')||document.getElementById('v5SmartSearchForm');
+ const anchor=document.getElementById('popularStoresDiscovery')||document.getElementById('v5SmartSearchForm');
  if(anchor&&anchor.parentNode){
    const parent=anchor.parentNode;
    if(m.parentElement!==parent||m.previousElementSibling!==anchor)parent.insertBefore(m,anchor.nextSibling);
@@ -174,8 +174,6 @@ function clearComparison(){const s=source();if(s&&s.clearComparison)s.clearCompa
 function addSlot(){const c=ensureCard(),wrap=c&&c.querySelector('#v7CompareSlots');if(!wrap)return;const n=wrap.querySelectorAll('.v7c-slot').length;if(n>=MAX)return;wrap.insertAdjacentHTML('beforeend',slotMarkup(n+1,null));const b=c.querySelector('#v7AddCompareProduct');if(n+1>=MAX)b.style.display='none';}
 function bind(){const c=ensureCard();if(!c||c.dataset.bound==='1')return;c.dataset.bound='1';c.addEventListener('input',e=>{const t=e.target;if(!t||!t.matches||!t.matches('[data-v7-url]'))return;const st=t.closest('.v7c-slot')&&t.closest('.v7c-slot').querySelector('.v7c-status');if(st)st.textContent='';});c.addEventListener('paste',e=>{const t=e.target;if(!t||!t.matches||!t.matches('[data-v7-url]'))return;const data=e.clipboardData||window.clipboardData;let text=String((data&&data.getData('text/uri-list'))||(data&&data.getData('text/html')?urlFromClipboardHtml(data.getData('text/html')):'')||(data&&data.getData('text/plain'))||'').trim();if(text.includes('\n'))text=text.split(/\r?\n/).find(x=>x&&!/^#/.test(x))||text;if(!text)return;e.preventDefault();console.info('[DigiYar V7 comparison] native clipboard URL:',text);t.value=text;const st=t.closest('.v7c-slot')&&t.closest('.v7c-slot').querySelector('.v7c-status');if(st)st.textContent='✓ لینک دریافت شد؛ حالا «دریافت اطلاعات محصول» را لمس کن.';});c.addEventListener('click',e=>{const t=e.target;const guide=t.closest&&t.closest('.v7c-guide-toggle');if(guide){const open=guide.getAttribute('aria-expanded')==='true';guide.setAttribute('aria-expanded',String(!open));return;}if(t.id==='v7AddCompareProduct')addSlot();else if(t.dataset.v7Fetch)fetchSlot(Number(t.dataset.v7Fetch));else if(t.closest&&t.closest('[data-v7-paste]')){const b=t.closest('[data-v7-paste]');pasteSlot(Number(b.dataset.v7Paste));}else if(t.dataset.v7Remove){const idx=Number(t.dataset.v7Remove)-1;const ps=selected(),s=source();if(s&&s.removeComparisonProduct&&ps[idx])s.removeComparisonProduct(ps[idx].id);renderControls();}else if(t.id==='v7CompareRun')runComparison();else if(t.id==='v7CompareClear')clearComparison();});}
 function show(){
- const sim=document.getElementById('v6StoreSimulatorResults');
- if(!sim||!sim.parentNode)return;
  const mount=ensureMount();
  if(!mount)return;
  const card=ensureCard();
