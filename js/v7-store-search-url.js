@@ -29,6 +29,8 @@ berozkala:q=>'https://berozkala.com/search?q='+encodeURIComponent(productTerm('b
 };
 SEARCH.berozkala=q=>'https://berozkala.com/search?q='+encodeURIComponent(productTerm('berozkala',q));
 SEARCH.technolife=q=>'https://www.technolife.com/product/list/search?keywords='+encodeURIComponent(productTerm('technolife',q));
+/* Official Meghdad IT storefront exposes a product search field; use the standard product-search query rather than its homepage. */
+SEARCH.meghdadit=q=>'https://meghdadit.com/?s='+encodeURIComponent(productTerm('meghdadit',q))+'&post_type=product';
 SEARCH.digiland=q=>'https://dgland.com/search?q='+encodeURIComponent(productTerm('digiland',q));
 SEARCH.digido=q=>'https://www.digido.ir/search?s='+encodeURIComponent(productTerm('digido',q));
 SEARCH.gooshishop=q=>'https://gooshishop.com/search?q='+encodeURIComponent(productTerm('gooshishop',q));
@@ -69,5 +71,5 @@ function resolve(id,q){
  var url=make(query);
  return typeof url==='string'&&hasQuery(url)?url:'';
 }
-root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.4',resolve:resolve,productTerm:productTerm};
+root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.5',resolve:resolve,productTerm:productTerm};
 })(typeof window!=='undefined'?window:globalThis);
