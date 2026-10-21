@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.25';
+var VERSION='7.0.0-popular-store-discovery.26';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -107,10 +107,16 @@ function resolveSearchContext(query){
    if(store.storeType!=='general'&&domains.indexOf('accessories')<0&&domains.indexOf('digital')<0)return;
    if(intent==='digital_accessory'&&!accessoryMatch)return;
   }else if(intent==='digital_product'){
-   var productTerms=/موبایل|گوشی|لپ\s*تاپ|کامپیوتر|مانیتور|پرینتر|کارت گرافیک|مادربرد|حافظه ssd|هارد|تبلت|کالای دیجیتال|تجهیزات دیجیتال/;
+   var broadDigitalQuery=/کالای دیجیتال|تجهیزات دیجیتال/.test(raw);
+   var productTerms=/موبایل|گوشی|لپ\s*تاپ|کامپیوتر|مانیتور|پرینتر|کارت گرافیک|مادربرد|حافظه ssd|هارد|تبلت/;
    if(store.storeType!=='general'&&domains.indexOf('digital')<0)return;
-   if(!productTerms.test(hay))return;
-   if(!matchedPhrase&&score<2&&tokens.filter(function(t){return fieldTokens.indexOf(t)>=0;}).length===0)return;
+   if(broadDigitalQuery){
+    if(domains.indexOf('digital')<0)return;
+    score=Math.max(score,10);
+   }else{
+    if(!productTerms.test(hay))return;
+    if(!matchedPhrase&&score<2&&tokens.filter(function(t){return fieldTokens.indexOf(t)>=0;}).length===0)return;
+   }
   }else{
    var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
    var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
