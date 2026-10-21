@@ -71,5 +71,5 @@ function resolve(id,q){
  var url=make(query);
  return typeof url==='string'&&hasQuery(url)?url:'';
 }
-root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.5',resolve:resolve,productTerm:productTerm};
+root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.6',resolve:resolve,productTerm:productTerm,hasHandler:function(id){return typeof SEARCH[String(id||'').toLowerCase()]==='function';},handlerIds:function(){return Object.keys(SEARCH).sort();}};
 })(typeof window!=='undefined'?window:globalThis);
