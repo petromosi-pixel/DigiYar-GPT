@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.19';
+var VERSION='7.0.0-popular-store-discovery.20';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -48,19 +48,25 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function normalize(s){return String(s||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.catalog?kb.catalog:{};}
 function resolveSearchContext(query){
- var catalog=getCatalog(),raw=normalize(query),stop='برای دنبال میخوام میخواهم می خوام می‌خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا لطفاً قیمت بودجه متوسط ارزان گران بهترین خوب'.split(' ');
+ /* Canonical merchant resolver for both Hooshyar surfaces. Eligibility comes
+    from product/category KB evidence, never from simulator state or AI IDs. */
+ var catalog=getCatalog(),raw=normalize(query);
+ var stop='برای دنبال میخوام میخواهم می خوام می‌خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا لطفاً قیمت بودجه متوسط ارزان گران بهترین خوب'.split(' ');
  var tokens=raw.split(/[^\u0600-\u06FFa-z0-9]+/i).filter(function(t){return t.length>1&&stop.indexOf(t)<0;});
  var out=[],seen={};
  if(!tokens.length)return {query:String(query||''),storeIds:[],categoriesByStore:{},source:'product-category-catalog'};
  Object.keys(catalog).forEach(function(id){
   var s=catalog[id]||{},domains=Array.isArray(s.domains)?s.domains:[];
-  var fields=[s.name].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[],domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;}));
+  var fields=[].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[]);
   var hay=normalize(fields.join(' ')),score=0,hits=0;
   tokens.forEach(function(t){if(hay.indexOf(t)>=0){hits++;score+=t.length>=5?3:1;}});
-  if(score>=2&&(hits>=2||tokens.length===1&&hits===1||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;}))){
+  var phraseMatch=fields.some(function(field){var f=normalize(field);return f.length>=3&&raw.indexOf(f)>=0;});
+  /* Require direct product/alias evidence. Store names and broad domain titles
+     alone can never make an unrelated merchant eligible. */
+  if(phraseMatch||(score>=3&&hits>=1&&(hits>=2||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;})))){
    var categories=domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;});
    if(!categories.length)categories=['فروشگاه عمومی'];
-   out.push({id:String(id).toLowerCase(),score:score,categories:Array.from(new Set(categories))});
+   out.push({id:String(id).toLowerCase(),score:score+(phraseMatch?5:0),categories:Array.from(new Set(categories))});
   }
  });
  out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});
@@ -68,7 +74,7 @@ function resolveSearchContext(query){
  return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),categoriesByStore:seen,source:'product-category-catalog'};
 }
 function homepage(id,store){return (store&&store.homepage)||((window.DigiYarStoreBrowser&&window.DigiYarStoreBrowser.storesByDomain)?'':'')||'';}
-function isGeneral(id,s){var domains=s&&Array.isArray(s.domains)?Array.from(new Set(s.domains)):[];return (s&&s.storeType==='general')||domains.length>1||['digikala','snappshop','torob','basalam','esam','memarket','takhfifan','divar','sheypoor'].indexOf(String(id||'').toLowerCase())>=0;}
+function isGeneral(id,s){return (s&&s.storeType==='general')||['digikala','snappshop','torob','basalam','esam','memarket','takhfifan','divar','sheypoor'].indexOf(String(id||'').toLowerCase())>=0;}
 function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
 function featuredFor(domain,catalog){
  var seen={},out=[],featured=FEATURED[domain]||[];
@@ -167,7 +173,7 @@ function init(){
  if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
  toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(open&&!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
  window.addEventListener('digiyar:v7-hooshyar-cleared',function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};state.type='general';render();var p=document.getElementById('popularDiscoveryPanel'),t=document.getElementById('popularDiscoveryToggle'),b=document.getElementById('popularDiscoveryBottomToggle');if(p)p.hidden=true;if(t)t.setAttribute('aria-expanded','false');if(b)b.setAttribute('aria-expanded','false');if(p)delete p.dataset.rendered;});
- window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query,storeIds){var resolved=resolveSearchContext(query),simulatorIds=Array.isArray(storeIds)?Array.from(new Set(storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean))):[];state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=simulatorIds.length?simulatorIds:resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
+ window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query){var resolved=resolveSearchContext(query);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
