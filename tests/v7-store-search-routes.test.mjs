@@ -97,6 +97,21 @@ assert.ok(scalePlan.ai.eligibleStoreIds.every(id => {
   const q=scalePlan.ai.searchQueries[id]||'';
   return /ترازو/i.test(q);
 }), 'kitchen-scale merchant queries must preserve the requested product, not substitute a generic category');
+const trainPlan = await window.DigiYarShoppingOrchestrator.run('بلیط قطار تهران مشهد');
+assert.deepEqual(trainPlan.ai.eligibleStoreIds.slice().sort(),['alibaba','ghasedak24','mrbilit','raja'].sort(),
+  'train-ticket intent must use train-ticket providers only, not hotels or flight services');
+assert.equal(browser.resolveSearchUrl('ghasedak24','بلیط قطار تهران مشهد'),'https://ghasedak24.com/train-ticket',
+  'Ghasedak24 must open its live-confirmed train-ticket search page');
+assert.equal(browser.resolveSearchUrl('mrbilit','بلیط قطار تهران مشهد'),'https://mrbilit.com/train-ticket',
+  'MrBilit must open its live-confirmed train-ticket search page');
+assert.equal(browser.resolveSearchUrl('alibaba','بلیط قطار تهران مشهد'),'https://www.alibaba.ir/train',
+  'Alibaba must open its live-confirmed train-ticket search page');
+assert.equal(browser.resolveSearchUrl('raja','بلیط قطار تهران مشهد'),'',
+  'Raja must remain hidden until its blocked route can be verified');
+for (const id of ['shab','safarme','eghamat24','jobama','flytoday','flysepehran','safarmarket']) {
+  assert.ok(!trainPlan.ai.eligibleStoreIds.includes(id),
+    `non-train or dead-route provider ${id} must not appear for train tickets`);
+}
 const strictAirPurifier = await window.DigiYarShoppingOrchestrator.run('دستگاه تصفیه هوا');
 assert.deepEqual(strictAirPurifier.ai.eligibleStoreIds.slice().sort(),['basalam','digikala','snappshop','torob'].sort(),
   'air-purifier results must not include Esam, Takhfifan, or MiMarket based on broad category overlap');
