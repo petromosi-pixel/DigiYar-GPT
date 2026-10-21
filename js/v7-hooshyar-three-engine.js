@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.35';
+var VERSION='7.0.0-hooshyar-three-engine.36';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -137,7 +137,7 @@ function categoryEvidence(need,item){
   office_bag:[/کیف و محصولات چرمی/i,/کیف و اکسسوری/i,/کیف و کفش/i,/کوله و کیف/i,/کیف اداری/i,/محصولات چرمی/i],
   mobile_accessory:[/لوازم جانبی/i,/پاوربانک/i,/کابل و شارژر/i,/هدفون و هندزفری/i,/هولدر موبایل/i],
   mobile_phone:[/گوشی موبایل/i,/موبایل و تبلت/i,/موبایل/i,/تلفن همراه/i],
-  skincare:[/مراقبت پوست/i,/پوست و مو/i,/ضد آفتاب/i,/آرایشی و بهداشتی/i,/بهداشت و سلامت/i,/آرایشی و زیبایی/i,/محصولات آرایشی/i,/محصولات بهداشتی/i,/آرایش صورت/i],
+  skincare:[/مراقبت پوست/i,/پوست و مو/i,/ضد آفتاب/i,/آرایشی و بهداشتی/i,/بهداشت و سلامت/i,/آرایشی و زیبایی/i,/زیبایی و بهداشت/i,/سلامت و زیبایی/i,/محصولات آرایشی/i,/محصولات بهداشتی/i,/آرایش صورت/i],
   shoe:[/کفش/i,/کیف و کفش/i],
   clothing:[/پوشاک/i,/مد و پوشاک/i,/لباس/i,/پوشاک ورزشی/i]
  };
