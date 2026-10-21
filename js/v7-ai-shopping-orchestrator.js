@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.30';
+  const VERSION='7.0.0-hooshyar-local.31';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -345,18 +345,17 @@
        * keep the grounded seed list instead of blanking the whole simulator.
        */
       if(engineIds.length){
-        /* Three-engine ranks the result set; it must not erase merchants
-           already admitted by the canonical KB eligibility resolver. */
-        const parsedConcept=threeEngineResult.need&&threeEngineResult.need.concept;
-        const generalIds=new Set(['digikala','snappshop','torob','basalam','esam','memarket','divar','sheypoor']);
-        const previousSpecialists=ids.filter(id=>{
-          if(generalIds.has(id))return false;
-          const item=catalog[id]||{};
-          const blocked=Array.isArray(item.hooshyarExcludeConcepts)?item.hooshyarExcludeConcepts:[];
-          return !parsedConcept||!blocked.includes(parsedConcept);
-        });
-        ids=engineIds.concat(previousSpecialists.filter(id=>!engineIds.includes(id)));
+        /* This resolver scans the entire canonical KB, including store
+           categories. Do not append the older seed list: it reintroduced
+           merchants without product/category evidence for the current query. */
+        ids=engineIds;
         useThreeEngineCandidates=true;
+      }else if(classified&&classified.kind==='travel_ticket'){
+        /* Preserve explicit travel intent only as a service-specific fallback. */
+        ids=(classified.stores||[]).map(id=>String(id).toLowerCase())
+          .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+      }else{
+        ids=[];
       }
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
