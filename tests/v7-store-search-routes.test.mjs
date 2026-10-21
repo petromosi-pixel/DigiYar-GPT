@@ -198,6 +198,8 @@ for (const [phrase, expected, excluded] of [
 assert.equal(threeEngine.parseNeed('کیف اداری تا ۳ میلیون تومان').maxBudgetToman, 3000000, 'Persian budget must be parsed into toman');
 
 const orchestrator = window.DigiYarShoppingOrchestrator;
+const laptopComputer = threeEngine.resolve('لپ‌تاپ برای دانشجو با بودجه متوسط', catalog, [], orchestrator.classifyLocalNeed('لپ‌تاپ برای دانشجو با بودجه متوسط'));
+assert.ok(!laptopComputer.eligibleStoreIds.includes('janebi'), 'accessory-only Janebi must not be offered for a laptop-computer request');
 
 /* Final2 relevance guard: user context words and generated semanticText must not
    count as product evidence; only explicit product inventory can qualify a store. */
