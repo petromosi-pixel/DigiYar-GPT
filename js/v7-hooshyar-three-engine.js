@@ -138,6 +138,37 @@ function categoryEvidence(need,item){
  if(need.concept==='sofa_cleaning')patterns=[/شوینده/i,/نظافت/i,/بخارشوی/i,/جاروبرقی/i,/ابزارآلات و تجهیزات/i,/مراقبت در منزل/i];
  return cats.filter(function(category){var c=norm(category);return patterns.some(function(pattern){return pattern.test(c);});});
 }
+function categoryEvidence(need,item){
+ var cats=Array.isArray(item.categories)?item.categories:[];
+ if(!cats.length||!need.concept)return [];
+ var rules={
+  laptop:[/لپ.?تاپ/i,/کامپیوتر(?: و قطعات| و اداری)?/i],
+  tablet:[/تبلت/i],
+  headphone:[/هدفون/i,/هندزفری/i,/صوتی و تصویری/i,/لوازم جانبی موبایل/i,/لوازم جانبی دیجیتال/i],
+  television:[/صوتی و تصویری/i],
+  monitor:[/مانیتور/i,/کامپیوتر و قطعات/i,/کامپیوتر و اداری/i],
+  camera:[/دوربین/i],
+  smartwatch:[/ساعت هوشمند/i,/ساعت و پوشیدنی/i],
+  printer:[/پرینتر/i,/ماشین.?های اداری/i,/پرینتر و تجهیزات اداری/i],
+  refrigerator:[/لوازم خانگی/i,/لوازم برقی/i,/یخچال/i],
+  washing_machine:[/لوازم خانگی/i,/لوازم برقی/i,/لباسشویی/i],
+  air_conditioner:[/لوازم خانگی/i,/لوازم برقی/i,/تهویه/i],
+  vacuum:[/جاروبرقی/i,/لوازم خانگی/i,/لوازم برقی/i],
+  kitchen_appliance:[/آشپزخانه/i,/لوازم خانگی/i,/لوازم برقی/i],
+  air_purifier:[/تصفیه هوا/i,/تهویه/i],
+  sofa:[/مبلمان/i,/مبل و راحتی/i,/دکوراسیون/i,/مبلمان اداری/i,/لوازم خانگی و مبلمان/i,/میز و صندلی/i],
+  furniture:[/مبلمان/i,/مبل و راحتی/i,/دکوراسیون/i,/مبلمان اداری/i,/لوازم خانگی و مبلمان/i,/میز و صندلی/i,/میز و دکور/i],
+  office_bag:[/کیف و محصولات چرمی/i,/کیف و اکسسوری/i,/کیف و کفش/i,/کوله و کیف/i,/کیف اداری/i,/محصولات چرمی/i],
+  mobile_accessory:[/لوازم جانبی/i,/پاوربانک/i,/کابل و شارژر/i,/هدفون و هندزفری/i,/هولدر موبایل/i],
+  mobile_phone:[/گوشی موبایل/i,/موبایل و تبلت/i,/موبایل/i,/تلفن همراه/i],
+  skincare:[/مراقبت پوست/i,/پوست و مو/i,/ضد آفتاب/i,/آرایشی و بهداشتی/i,/بهداشت و سلامت/i,/آرایشی و زیبایی/i,/محصولات آرایشی/i,/محصولات بهداشتی/i,/آرایش صورت/i],
+  shoe:[/کفش/i,/کیف و کفش/i],
+  clothing:[/پوشاک/i,/مد و پوشاک/i,/لباس/i,/پوشاک ورزشی/i]
+ };
+ if(need.concept==='sofa_cleaning')rules.sofa_cleaning=[/شوینده/i,/نظافت/i,/بخارشوی/i,/جاروبرقی/i,/ابزارآلات و تجهیزات/i,/مراقبت در منزل/i];
+ var patterns=rules[need.concept]||[];
+ return cats.filter(function(category){var c=norm(category);return patterns.some(function(pattern){return pattern.test(c);});});
+}
 function retrieveCandidates(need,catalog,eligibleIds){
  var base=Array.isArray(eligibleIds)?eligibleIds.map(function(x){return String(x&&x.id||x||'').toLowerCase();}):[];
  var candidates=[];
@@ -195,6 +226,8 @@ function retrieveCandidates(need,catalog,eligibleIds){
      complete match of a multi-word product's meaningful tokens, can admit
      new merchants without adding a per-query allowlist. */
   var evidence=evidenceTerms(need.normalized,s);
+  /* Category taxonomy is a retrieval index, not UI-only metadata. */
+  categoryEvidence(need,s).forEach(function(category){evidence.push('store-category:'+category);});
   /* Category taxonomy is a retrieval index, not UI-only metadata. Precise
      subcategory matches recover specialists with incomplete product aliases. */
   categoryEvidence(need,s).forEach(function(category){evidence.push('store-category:'+category);});
