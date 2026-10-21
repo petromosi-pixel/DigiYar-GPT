@@ -125,6 +125,21 @@ function storeSearchUrlRaw(id,q){
  /* Never show a homepage-only link as if it were a product search result. */
  return genericMerchantSearchUrl(key,s);
 }
+function queryRelevanceAllows(id,query){
+ var key=String(id||'').toLowerCase();
+ var q=String(query||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').replace(/\\s+/g,' ').trim();
+ var broad=['digikala','snappshop','torob','basalam'];
+ if(/کیف\\s*اداری|کیف.{0,10}محل کار|کیف.{0,10}محیط کار/.test(q)){
+  if(broad.indexOf(key)>=0||key==='dayan'||key==='janebi')return true;
+  var catalog=window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog||{};
+  var item=catalog[key]||{},terms=[].concat(item.products||[],item.aliases||[]);
+  return terms.some(function(term){return /کیف\\s*اداری|کیف اداری زنانه|کیف اداری مردانه/.test(String(term||'').toLowerCase().replace(/[‌\\u200c]/g,' '));});
+ }
+ if(/(?:لوازم\\s*جانبی|اکسسوری).{0,12}(?:موبایل|گوشی)|(?:موبایل|گوشی).{0,12}(?:لوازم\\s*جانبی|اکسسوری)/.test(q)){
+  return broad.indexOf(key)>=0||['digido','janebi','digiland','berozkala','gooshishop','technolife','meghdadit'].indexOf(key)>=0;
+ }
+ return true;
+}
 function storeSearchUrl(id,q){
  /* A route is eligible only when it carries an explicit merchant-side search
     parameter. Static category pages, homepages, and guessed landing pages fail
@@ -416,9 +431,9 @@ function openBrowser(query,list){
         when the category card has no matching merchant records for this query. */
      const categoryIds=categoryResolution&&Array.isArray(categoryResolution.storeIds)
        ? categoryResolution.storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean):[];
-     const plannedIds=categoryIds.length?categoryIds:(Array.isArray(semanticPlan.eligibleStoreIds)
-       ? semanticPlan.eligibleStoreIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean)
-       : []);
+     const planIds=Array.isArray(semanticPlan.eligibleStoreIds)
+       ? semanticPlan.eligibleStoreIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean):[];
+     const plannedIds=Array.from(new Set(planIds.concat(categoryIds)));
      const plannedList=Array.isArray(semanticPlan.eligibleStoreIds)
        ? plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||((window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id]&&window.DigiYarStoreBusinessDomains.catalog[id].name)||id)};})
        : [];
@@ -430,7 +445,7 @@ function openBrowser(query,list){
      const usable=sourceList.filter(function(x){
          if(!x||!x.id)return false;
          var id=String(x.id).toLowerCase();
-         return !!storeSearchUrl(id,query)||(semanticPlan&&semanticPlan.directorySearch===true&&!!(window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id]));
+         return queryRelevanceAllows(id,query) && (!!storeSearchUrl(id,query)||(semanticPlan&&semanticPlan.directorySearch===true&&!!(window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id])));
        }).map(function(x){
          var id=String(x.id||'').toLowerCase();
          return {id:id,name:STORE_NAMES[id]||String(x.name||'فروشگاه')};
