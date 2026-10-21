@@ -88,6 +88,15 @@ for (const id of ['khanoumi','neshatrokh','shavaz','darukade','mosbatesabz']) {
   assert.ok(skinPlan.ai.eligibleStoreIds.includes(id),
     `skin-care category retrieval omitted specialist ${id}`);
 }
+const scalePlan = await window.DigiYarShoppingOrchestrator.run('ترازوهای هوشمند برای آشپزخانه');
+assert.equal(scalePlan.ai.engineTrace.parsedConcept,'kitchen_scale',
+  'kitchen-scale queries must be parsed as a specific product rather than drifting into furniture/home defaults');
+assert.ok(['digikala','snappshop','torob','basalam'].every(id=>scalePlan.ai.eligibleStoreIds.includes(id)),
+  'kitchen-scale category retrieval must discover relevant broad marketplaces');
+assert.ok(scalePlan.ai.eligibleStoreIds.every(id => {
+  const q=scalePlan.ai.searchQueries[id]||'';
+  return /ترازو/i.test(q);
+}), 'kitchen-scale merchant queries must preserve the requested product, not substitute a generic category');
 const furnitureQuery = 'یه مبل راحتی برای پذیرایی می خوام';
 const furniturePlan = await window.DigiYarShoppingOrchestrator.run(furnitureQuery);
 const simulatorFurnitureIds = window.DigiYarStoreEligibility.storesForQuery(furnitureQuery, []).map(x => x.id);
@@ -287,9 +296,10 @@ window.DigiYarHooshyarThreeEngine.resolve = () => ({
 });
 const preservedKbPlan = await orchestrator.run('کیف اداری');
 window.DigiYarHooshyarThreeEngine.resolve = originalThreeEngineResolveForEmptyTest;
-assert.ok(['modiseh','janebi','dayan'].every(id => preservedKbPlan.ai.eligibleStoreIds.includes(id)),
-  'an empty three-engine parse must preserve the existing KB-validated office-bag matches');
-assert.equal(preservedKbPlan.ai.fallbackReason, 'three-engine-empty-preserved-kb-eligibility', 'an empty descriptive parse must preserve KB-validated merchants and record the fallback');
+assert.deepEqual(preservedKbPlan.ai.eligibleStoreIds,[],
+  'an empty resolver result must not resurrect stale merchants without current product/category evidence');
+assert.equal(preservedKbPlan.ai.fallbackReason, 'three-engine-empty-no-evidence',
+  'an empty descriptive parse must record that no evidence-backed result was found');
 const localPhone = await orchestrator.run('یه گوشی سامسونگ می‌خوام');
 const expectedPhoneIds = ['digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam','takhfifan','esam'];
 expectedPhoneIds.forEach(id => assert.ok(localPhone.ai.eligibleStoreIds.includes(id), `local phone plan omitted expected merchant ${id}`));
