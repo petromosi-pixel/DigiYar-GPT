@@ -97,6 +97,17 @@ assert.ok(scalePlan.ai.eligibleStoreIds.every(id => {
   const q=scalePlan.ai.searchQueries[id]||'';
   return /ترازو/i.test(q);
 }), 'kitchen-scale merchant queries must preserve the requested product, not substitute a generic category');
+const strictAirPurifier = await orchestrator.run('دستگاه تصفیه هوا');
+assert.deepEqual(strictAirPurifier.ai.eligibleStoreIds.slice().sort(),['basalam','digikala','snappshop','torob'].sort(),
+  'air-purifier results must not include Esam, Takhfifan, or MiMarket based on broad category overlap');
+const strictCleaning = await orchestrator.run('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای');
+assert.deepEqual(strictCleaning.ai.eligibleStoreIds.slice().sort(),['basalam','digikala','snappshop','torob'].sort(),
+  'sofa-cleaning results must exclude accessory-only merchants and broad resale sites');
+const strictScale = await orchestrator.run('ترازوهای هوشمند برای آشپزخانه');
+assert.ok(!strictScale.ai.eligibleStoreIds.some(id => ['iranmiz','partochoob','chidahome','tidawood','janebi'].includes(id)),
+  'kitchen-scale context must not retrieve furniture stores or health-scale categories without a kitchen-scale match');
+assert.ok(!strictAirPurifier.ai.eligibleStoreIds.includes('memarket'));
+
 const furnitureQuery = 'یه مبل راحتی برای پذیرایی می خوام';
 const furniturePlan = await window.DigiYarShoppingOrchestrator.run(furnitureQuery);
 const simulatorFurnitureIds = window.DigiYarStoreEligibility.storesForQuery(furnitureQuery, []).map(x => x.id);
@@ -184,13 +195,13 @@ const strictPhone = threeEngine.resolve('یه گوشی سامسونگ می‌خ�
 ['banimode','khanoumi','daroo-online','dayan','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictPhone.eligibleStoreIds.includes(id), `merchant exclusion text or unrelated taxonomy leaked into phone results: ${id}`));
 const strictAccessory = threeEngine.resolve('لوازم جانبی موبایل', catalog, [], orchestrator.classifyLocalNeed('لوازم جانبی موبایل'));
 ['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(id => assert.ok(strictAccessory.eligibleStoreIds.includes(id), `strict accessory search omitted ${id}`));
-['digiland','meghdadit','takhfifan','esam','memarket','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictAccessory.eligibleStoreIds.includes(id), `non-approved accessory merchant leaked into results: ${id}`));
+['meghdadit','takhfifan','esam','memarket','19kala','emalls','sheypoor','kala360','kalatik','mobile140','mobileir'].forEach(id => assert.ok(!strictAccessory.eligibleStoreIds.includes(id), `non-approved accessory merchant leaked into results: ${id}`));
 assert.equal(orchestrator.resolveDirectorySearch('لوازم جانبی موبایل', catalog), null,
   'A product query containing the store name «جانبی» must not be misclassified as a store-directory query.');
 const accessoryPlan = await orchestrator.run('لوازم جانبی موبایل');
 assert.equal(accessoryPlan.ai.directorySearch, undefined, 'Mobile accessories must use the product-search path.');
 assert.deepEqual([...accessoryPlan.ai.eligibleStoreIds].sort(),
-  ['janebi','digido','gooshishop','technolife','berozkala','digikala','snappshop','torob','basalam'].sort(),
+  ['janebi','digido','gooshishop','technolife','digiland','berozkala','digikala','snappshop','torob','basalam'].sort(),
   'The knowledge-base resolver must preserve the established mobile-accessory merchant set without unrelated device-only stores.');
 
 
