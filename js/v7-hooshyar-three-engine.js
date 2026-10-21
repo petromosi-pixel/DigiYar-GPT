@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.28';
+var VERSION='7.0.0-hooshyar-three-engine.29';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -166,6 +166,9 @@ function retrieveCandidates(need,catalog,eligibleIds){
   terms.forEach(function(raw){
    var term=norm(raw);
    if(!term||term.length<3)return;
+   /* Context words must not masquerade as product evidence. */
+   if(need.concept==='kitchen_scale'&&!/(?:ترازو|ترازوی)/i.test(term))return;
+   if(need.concept==='sofa_cleaning'&&!/(?:تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شوی|فرش\s*شوی|بخارشوی)/i.test(term))return;
    var words=term.split(/[^\u0600-\u06FFa-z0-9]+/i).filter(Boolean)
     .filter(function(w){return w.length>=3&&broadTerms.indexOf(w)<0;});
    /* Preserve the former category-aware retrieval for broad furniture and
@@ -276,6 +279,23 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
   var excluded=exclusions.some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
+  var strictTaxonomyConcepts=['air_purifier','sofa_cleaning','mobile_accessory','office_bag','skincare','kitchen_scale'];
+  var matchedCategoryEvidence=categoryEvidence(need,s);
+  var hasCategoryReference=Array.isArray(s.categories)&&s.categories.length>0;
+  if(strictTaxonomyConcepts.indexOf(need.concept)>=0&&hasCategoryReference&&!matchedCategoryEvidence.length){
+    var coreMarketplaces=['digikala','snappshop','torob','basalam'];
+    var exactInventoryTerms={
+      air_purifier:/تصفیه\s*هوا|دستگاه\s*تصفیه/i,
+      sofa_cleaning:/تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شوی|فرش\s*شوی|بخارشوی/i,
+      mobile_accessory:/لوازم\s*جانبی|قاب\s*گوشی|کاور\s*گوشی|شارژر|پاوربانک|هندزفری|هدفون|کابل/i,
+      office_bag:/کیف\s*(?:اداری|کاری|رسمی)|کیف\s*و\s*محصولات\s*چرمی/i,
+      skincare:/ضد\s*آفتاب|مرطوب\s*کننده|آبرسان|مراقبت\s*پوست|کرم\s*پوست/i,
+      kitchen_scale:/ترازوی?\s*(?:هوشمند\s*)?آشپزخانه|ترازو\s*دیجیتال\s*آشپزخانه/i
+    };
+    var hasExactInventory=[].concat(s.products||[]).some(function(value){return exactInventoryTerms[need.concept]&&exactInventoryTerms[need.concept].test(norm(value));});
+    var generalMarketplaceException=isGeneral&&coreMarketplaces.indexOf(sid)>=0&&hasExactInventory;
+    if(!generalMarketplaceException){score=-100;proof=[];direct=false;}
+  }
   /* Domain tags and curated seed lists are not sufficient: require direct product or use-case evidence. */
   if(score>=3&&direct)candidates.push({id:sid,name:s.name||sid,score:score,directMatch:direct,domainMatch:domainHit,general:isGeneral,proof:Array.from(new Set(proof)),homepage:s.homepage||''});
  });
