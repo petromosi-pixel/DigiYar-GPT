@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.41';
+var VERSION='7.0.0-hooshyar-three-engine.42';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -369,11 +369,12 @@ function resolve(query,catalog,eligibleIds,classified){
  var queries={};
  ids.forEach(function(id){
   var s=catalog[id]||{};
-  var phrase=need.concept==='train_ticket'?clean(query):need.requestedProduct;
-  if(need.brand&&need.concept!=='mobile_phone'&&need.concept!=='mobile_accessory')phrase+=' '+need.brand;
-  if(need.attributes.length)phrase+=' '+need.attributes.slice(0,2).join(' ');
-  /* Do not replace a specific product with a broad category just because a store is general. */
-  queries[id]=clean(phrase)||clean(query);
+  /* Keep the user's full descriptive intent for merchant-side search. The
+     parsed product label is for discovery/ranking, not a lossy replacement
+     for use case, destination, budget, or other meaningful query context. */
+  var phrase=clean(query)||need.requestedProduct;
+  if(need.brand&&need.concept!=='mobile_phone'&&need.concept!=='mobile_accessory'&&!norm(phrase).includes(norm(need.brand)))phrase+=' '+need.brand;
+  queries[id]=clean(phrase)||clean(need.requestedProduct);
  });
  return {version:VERSION,need:need,candidates:ranked,eligibleStoreIds:ids,searchQueries:queries,trace:{parsedConcept:need.concept,candidateCount:ranked.length,catalogStoreCount:Object.keys(catalog).length,categoryReferenceStoreCount:Object.keys(root.DigiYarStoreCategories||{}).length,categoryReferenceUsed:true,top:ranked.slice(0,8).map(function(x){return {id:x.id,score:x.score,directMatch:x.directMatch,proof:x.proof};})}};
 }
