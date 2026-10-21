@@ -64,6 +64,18 @@ function resolveSearchContext(query){
  var stop='برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق'.split(' ');
  var tokens=wordTokens(raw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={};
+ /* Exact merchant-name/domain lookups are directory requests, not product
+    searches. Keep them KB-backed and open the merchant's known homepage. */
+ var exactStores=Object.keys(catalog).filter(function(id){
+  var st=catalog[id]||{},name=normalize(st.name||''),key=normalize(id);
+  var host='';try{host=normalize(new URL(st.homepage||'').hostname.replace(/^www\./i,''));}catch(e){}
+  return raw===name||raw===key||(host&&raw===host);
+ });
+ if(exactStores.length){
+  var exactCategories={};
+  exactStores.forEach(function(id){var st=catalog[id]||{};exactCategories[id]=(st.domains||[]).map(function(d){return (DOMAIN_META[d]||{}).title||d;});});
+  return {query:String(query||''),storeIds:exactStores,categoriesByStore:exactCategories,source:'product-category-catalog',intent:'store_lookup'};
+ }
  if(!tokens.length)return {query:String(query||''),storeIds:[],categoriesByStore:{},source:'product-category-catalog',intent:intent};
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
