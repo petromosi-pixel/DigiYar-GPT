@@ -104,6 +104,7 @@ function storeSearchUrlRaw(id,q){
  if(key==='snappshop')return 'https://snappshop.ir/search?query='+encodeURIComponent(s);
  if(key==='modiseh'&&/کیف\s*اداری/i.test(s))return genericMerchantSearchUrl(key,'کیف اداری');
  if(key==='modiseh')return genericMerchantSearchUrl(key,s);
+ if(key==='dayan'&&/کیف\\s*اداری/i.test(s))return genericMerchantSearchUrl(key,'کیف اداری');
  if(key==='dayan')return genericMerchantSearchUrl(key,s);
  if(key==='memarket')return genericMerchantSearchUrl(key,s);
  /* These entries only had guessed /search?q= adapters, not confirmed merchant routes. */
