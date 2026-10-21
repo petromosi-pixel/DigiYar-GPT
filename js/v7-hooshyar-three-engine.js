@@ -207,7 +207,15 @@ function retrieveCandidates(need,catalog,eligibleIds){
   var productTerms=concept?concept.terms:[need.requestedProduct];
   var direct=false;
   productTerms.forEach(function(term){
-   var t=norm(term);if(t&&t.length>2&&text.indexOf(t)>=0){score+=s.specialties&&s.specialties.some(function(v){return norm(v).indexOf(t)>=0;})?7:5;direct=true;proof.push(term);}
+   var t=norm(term);
+   var inventoryMatch=t&&t.length>2&&[].concat(s.products||[]).some(function(value){
+    var declared=norm(value);
+    if(declared.indexOf(t)<0)return false;
+    /* Accessory inventory mentioning a laptop is not laptop-computer inventory. */
+    if(need.concept==='laptop'&&/(?:کیف|کوله|کاور|محافظ|لوازم\s*جانبی|شارژر|کول\s*پد|استند|پایه|فن\s*لپ)/i.test(declared))return false;
+    return true;
+   });
+   if(inventoryMatch){score+=s.specialties&&s.specialties.some(function(v){return norm(v).indexOf(t)>=0;})?7:5;direct=true;proof.push(term);}
   });
   /* Shared open-catalog retrieval: inspect every merchant's declared product
      evidence, not only concept-specific seed lists. Exact phrases, or a
