@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.99';
+const VERSION='7.0.0-store-browser.100';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Live check: Khanoumi's /search?query= route returns a query-specific
@@ -385,10 +385,9 @@ function openBrowser(query,list){
  function renderResults(){
    try{
      /*
-      * Production V7 is semantic-AI authoritative.
-      * The legacy deterministic merchant resolver is intentionally NOT allowed
-      * to produce visible Store Browser tabs. This prevents stale/default
-      * merchants from appearing while the AI plan is pending or unavailable.
+      * The product-category knowledge base is authoritative for merchant IDs.
+      * The AI plan may provide directory-mode context, but it cannot add,
+      * remove, or replace category-matched merchants in this result list.
       */
      const semanticPlan=window.DigiYarShoppingPlan&&
        String(window.DigiYarShoppingPlan.query||'').trim()===String(query||'').trim()
@@ -400,25 +399,19 @@ function openBrowser(query,list){
      canonicalList.forEach(function(x){
        if(x&&x.id)canonicalById[String(x.id).toLowerCase()]=x;
      });
-     /*
-      * The local orchestrator has already made the eligibility decision.
-      * Do not run a second, legacy eligibility pass here: it can discard
-      * valid local-plan stores and leave the results panel empty.
-      */
+     /* Resolve merchants through the same product-category catalog used by
+        the category card; do not merge a second eligibility list here. */
      const categorySource=window.DigiYarPopularStoreDiscovery;
      const categoryResolution=categorySource&&typeof categorySource.resolveSearchContext==='function'
        ? categorySource.resolveSearchContext(query):null;
-     /* Product-category KB is the primary merchant source. Hooshyar's plan is only a fallback
-        when the category card has no matching merchant records for this query. */
+     /* Product-category KB is the sole source of merchant IDs. */
      const categoryIds=categoryResolution&&Array.isArray(categoryResolution.storeIds)
        ? categoryResolution.storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean):[];
      /* Product-category KB is the only source of merchant IDs. */
      const plannedIds=categoryIds;
      const plannedList=plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||((window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id]&&window.DigiYarStoreBusinessDomains.catalog[id].name)||id)};});
-     /* Keep the query-driven KB eligibility hook active for compatibility,
-        but let the local plan's store IDs survive a legacy filtering mismatch. */
-     /* The three-engine local plan is the single source of merchant eligibility.
-        Do not merge legacy eligibility results back in: that reintroduced unrelated stores. */
+     /* Keep the simulator as a thin compatibility view: category matching and
+        KB exclusions are owned by the category discovery module. */
      const sourceList=plannedList;
      const usable=sourceList.filter(function(x){
          if(!x||!x.id)return false;
