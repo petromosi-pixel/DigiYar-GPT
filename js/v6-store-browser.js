@@ -1,12 +1,12 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.90';
+const VERSION='7.0.0-store-browser.91';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
- /* Category landing pages are not verified search endpoints. Fail closed until
-    Khanoumi's actual query-search URL is confirmed. */
- return genericMerchantSearchUrl('khanoumi',storeQueryTerms(q));
+ /* Live check: Khanoumi's /search?query= route returns a query-specific
+    result page (including matching product results), unlike its homepage. */
+ return 'https://www.khanoumi.com/search?query='+encodeURIComponent(storeQueryTerms(q));
 }
 function siteSearchUrl(domain,q){
  var s=storeQueryTerms(q);
@@ -94,7 +94,7 @@ function storeSearchUrlRaw(id,q){
  if(key==='darmankala')return 'https://www.darmankala.com/catalogsearch/result/?q='+encodeURIComponent(hs);
  if(key==='mosbatesabz')return 'https://mosbatesabz.com/?s='+encodeURIComponent(hs);
  if(key==='darukade')return 'https://darukade.com/products?w='+encodeURIComponent(hs);
- if(key==='neshatrokh')return 'https://www.neshatrokh.com/?s='+encodeURIComponent(hs);
+ if(key==='neshatrokh'||key==='pinket')return ''; /* live checks: NeshatRokh ignored ?s=; Pinket returned 403 */
  if(key==='solokala')return 'https://solokala.com/?s='+encodeURIComponent(hs);
  if(key==='daroo-online')return 'https://daroo-online.com/?s='+encodeURIComponent(hs);
  if(SEARCH[key]){
