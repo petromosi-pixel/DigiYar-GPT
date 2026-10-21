@@ -207,6 +207,16 @@ assert.equal(browser.resolveSearchUrl('meghdadit','لوازم جانبی موب�
   'Meghdad IT must remain hidden in the visible simulator until its actual product-search URL is verified');
 
 
+const khanoumiSearch = new URL(browser.resolveSearchUrl('khanoumi','ضد آفتاب پوست خشک'));
+assert.equal(khanoumiSearch.hostname,'www.khanoumi.com');
+assert.equal(khanoumiSearch.pathname,'/search');
+assert.equal(khanoumiSearch.searchParams.get('query'),'ضد آفتاب پوست خشک',
+  'Khanoumi must open its verified query-specific product-search page');
+assert.equal(browser.resolveSearchUrl('neshatrokh','ضد آفتاب پوست خشک'),'',
+  'NeshatRokh must remain hidden because its tested ?s= route returned the homepage rather than product results');
+assert.equal(browser.resolveSearchUrl('pinket','ضد آفتاب پوست خشک'),'',
+  'Pinket must remain hidden until its blocked search route can be verified');
+
 const expandedCatalog = {...catalog, testoffice: {name: 'فروشگاه آزمایشی کیف اداری', domains: ['fashion'], products: ['کیف اداری'], aliases: []}};
 const expandedOffice = threeEngine.resolve('کیف اداری برای محل کارم', expandedCatalog, [], orchestrator.classifyLocalNeed('کیف اداری برای محل کارم'));
 assert.ok(expandedOffice.eligibleStoreIds.includes('testoffice'), 'a direct KB product match outside the curated list must not be filtered out');
