@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.17';
+var VERSION='7.0.0-popular-store-discovery.18';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -68,7 +68,7 @@ function resolveSearchContext(query){
  return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),categoriesByStore:seen,source:'product-category-catalog'};
 }
 function homepage(id,store){return (store&&store.homepage)||((window.DigiYarStoreBrowser&&window.DigiYarStoreBrowser.storesByDomain)?'':'')||'';}
-function isGeneral(id,s){return (s&&s.storeType==='general')||['digikala','snappshop','torob','basalam','esam','memarket','takhfifan','divar','sheypoor'].indexOf(String(id||'').toLowerCase())>=0;}
+function isGeneral(id,s){var domains=s&&Array.isArray(s.domains)?Array.from(new Set(s.domains)):[];return (s&&s.storeType==='general')||domains.length>1||['digikala','snappshop','torob','basalam','esam','memarket','takhfifan','divar','sheypoor'].indexOf(String(id||'').toLowerCase())>=0;}
 function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
 function featuredFor(domain,catalog){
  var seen={},out=[],featured=FEATURED[domain]||[];
@@ -123,7 +123,7 @@ function render(){
   sportland:'اسپرت لند.webp',aysoocollection:'آیسو کالکشن.webp',banistyle:'بانی استایل.webp',
   digistyle:'دیجی استایل.webp',shixon:'شیکستون..webp'
  };
- function card(s,domainTitle){var c=catalog[s.id]||{},url=s.homepage||c.homepage||'',logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
+ function card(s,domainTitle){var c=catalog[s.id]||{},url=state.queryActive?(window.DigiYarStoreBrowser&&typeof window.DigiYarStoreBrowser.resolveSearchUrl==='function'?window.DigiYarStoreBrowser.resolveSearchUrl(s.id,state.query):''):(s.homepage||c.homepage||''),logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
  function accordion(key,title,icon,description,items){
   var open=!!state.openCategories[key],cards=items.map(function(s){return card(s,title);}).join('');
   if(q&&!items.length)return '';
@@ -135,6 +135,8 @@ function render(){
   var uniqueItems=[],seenSearchIds={};
   (state.queryStoreIds||[]).forEach(function(id){
    id=String(id||'').toLowerCase();if(!id||seenSearchIds[id]||!catalog[id])return;
+   var searchUrl=window.DigiYarStoreBrowser&&typeof window.DigiYarStoreBrowser.resolveSearchUrl==='function'?window.DigiYarStoreBrowser.resolveSearchUrl(id,state.query):'';
+   if(!searchUrl)return;
    seenSearchIds[id]=true;
    var store=catalog[id]||{},cats=state.categoriesByStore[id]||((store.domains||[]).map(function(d){return (DOMAIN_META[d]||{}).title||d;}));
    if(!cats.length)cats=[isGeneral(id,store)?'فروشگاه عمومی':'فروشگاه تخصصی'];
@@ -164,7 +166,7 @@ function init(){
  var bottomToggle=document.getElementById('popularDiscoveryBottomToggle');
  if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
  toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(open&&!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
- window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query,storeIds){var resolved=resolveSearchContext(query);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds.length?resolved.storeIds:(Array.isArray(storeIds)?Array.from(new Set(storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean))):[]);state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
+ window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,setSearchContext:function(query,storeIds){var resolved=resolveSearchContext(query),simulatorIds=Array.isArray(storeIds)?Array.from(new Set(storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean))):[];state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=simulatorIds.length?simulatorIds:resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
