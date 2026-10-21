@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.36';
+var VERSION='7.0.0-hooshyar-three-engine.37';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -143,7 +143,12 @@ function categoryEvidence(need,item){
  };
  if(need.concept==='sofa_cleaning')rules.sofa_cleaning=[/شوینده/i,/نظافت/i,/بخارشوی/i,/جاروبرقی/i,/ابزارآلات و تجهیزات/i,/مراقبت در منزل/i];
  var patterns=rules[need.concept]||[];
- return cats.filter(function(category){var c=norm(category);return patterns.some(function(pattern){return pattern.test(c);});});
+ return cats.filter(function(category){
+  var c=norm(category);
+  /* A laptop bag/accessory category is not evidence that the store sells laptops. */
+  if(need.concept==='laptop'&&/(?:کیف|کوله|کاور|لوازم\s*جانبی|پایه|استند|کول\s*پد)/i.test(c))return false;
+  return patterns.some(function(pattern){return pattern.test(c);});
+ });
 }
 function retrieveCandidates(need,catalog,eligibleIds){
  var base=Array.isArray(eligibleIds)?eligibleIds.map(function(x){return String(x&&x.id||x||'').toLowerCase();}):[];
@@ -166,6 +171,10 @@ function retrieveCandidates(need,catalog,eligibleIds){
   terms.forEach(function(raw){
    var term=norm(raw);
    if(!term||term.length<3)return;
+   /* Concept-specific inventory guards: contextual token overlap is not proof
+      that a store carries the requested product itself. */
+   if(need.concept==='laptop'&&/(?:کیف|کوله|کاور|محافظ|لوازم\s*جانبی|پایه|استند|کول\s*پد|فن\s*لپ)/i.test(term))return;
+   if(need.concept==='headphone'&&!/(?:هدفون|هندزفری|ایرباد|ایرپاد|هدست|headphone|earbud|headset|earphone|سماعت)/i.test(term))return;
    /* Context words must not masquerade as product evidence. */
    if(need.concept==='kitchen_scale'&&!/(?:ترازو|ترازوی)/i.test(term))return;
    if(need.concept==='sofa_cleaning'&&!/(?:تمیزکننده\s*مبل|شوینده\s*مبل|مبل\s*شوی|فرش\s*شوی|بخارشوی)/i.test(term))return;
