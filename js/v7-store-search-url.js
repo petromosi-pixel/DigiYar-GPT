@@ -63,5 +63,5 @@ function resolve(id,q){
  var url=make(query);
  return typeof url==='string'&&hasQuery(url)?url:'';
 }
-root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.1',resolve:resolve,productTerm:productTerm};
+root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.2',resolve:resolve,productTerm:productTerm};
 })(typeof window!=='undefined'?window:globalThis);
