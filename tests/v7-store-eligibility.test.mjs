@@ -15,7 +15,14 @@ const stores = [
   {id:'takhfifan',name:'تخفیفان'},
   {id:'berozkala',name:'بروزکالا'},
   {id:'gooshishop',name:'گوشی شاپ'},
-  {id:'khanoumi',name:'خانومی'}
+  {id:'khanoumi',name:'خانومی'},
+  {id:'dayan',name:'دایان'},
+  {id:'esam',name:'ایسام'},
+  {id:'solokala',name:'سولوکالا'},
+  {id:'takhfifan',name:'تخفیفان'},
+  {id:'partochoob',name:'پرتوچوب'},
+  {id:'iransetkor',name:'ایران ستکور'},
+  {id:'sportland',name:'اسپرت‌لند'}
 ];
 
 const office = eligibility.explain('مبلمان اداری برای محل کار ۱۲۰ تا ۲۰۰ میلیون تومان', stores);
@@ -47,6 +54,11 @@ const dining = eligibility.explain('میز ناهارخوری چوبی ۶ نفر
 assert.equal(dining.domain, 'furniture');
 ['iranmiz','partochoob','chidahome','tidawood','digikala','snappshop','torob','basalam'].forEach(id=>assert.ok(dining.eligibleIds.includes(id)));
 
+const officeBag = eligibility.explain('یه کیف اداری برای محل کارم می‌خوام', stores);
+assert.ok(!officeBag.eligibleIds.includes('berozkala'), 'office-bag query must not include BerozKala merely for its digital domain');
+assert.ok(officeBag.eligibleIds.includes('dayan'), 'Dayan has the office-bag product even though it needs a shortened store query');
+assert.ok(officeBag.eligibleIds.includes('janebi'), 'Janebi has the office-bag category');
+
 const mobile = eligibility.explain('گوشی سامسونگ تا ۳۰۰ میلیون تومان', stores);
 assert.equal(mobile.domain, 'digital');
 ['digido','digiland','takhfifan','berozkala','gooshishop','technolife','meghdadit'].forEach(id=>assert.ok(mobile.eligibleIds.includes(id)));
@@ -62,14 +74,15 @@ const samsung = eligibility.explain('گوشی سامسونگ', stores);
 assert.ok(!samsung.eligibleIds.includes('khanoumi'));
 
 const accessories = eligibility.explain('لوازم جانبی موبایل', stores);
-['janebi','digido','gooshishop','technolife','digikala','snappshop','torob','basalam'].forEach(id=>assert.ok(accessories.eligibleIds.includes(id), `missing accessory merchant: ${id}`));
-['digiland','meghdadit','takhfifan','esam','memarket'].forEach(id=>assert.ok(!accessories.eligibleIds.includes(id), `unrelated accessory merchant leaked: ${id}`));
+['janebi','digido','digiland','berozkala','gooshishop','technolife','meghdadit','digikala','snappshop','torob','basalam'].forEach(id=>assert.ok(accessories.eligibleIds.includes(id), `missing accessory merchant: ${id}`));
+['takhfifan','esam','memarket','khanoumi','solokala','dayan','partochoob','iransetkor','sportland'].forEach(id=>assert.ok(!accessories.eligibleIds.includes(id), `unrelated accessory merchant leaked: ${id}`));
 
 const train = eligibility.explain('بلیط قطار تهران مشهد', stores);
 ['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket'].forEach(id=>assert.ok(train.eligibleIds.includes(id), `missing train-ticket merchant: ${id}`));
 
 const purifier = eligibility.explain('دستگاه تصفیه هوای مناسب اتاق خواب', stores);
-['digikala','snappshop','torob','basalam','memarket'].forEach(id=>assert.ok(purifier.eligibleIds.includes(id), `missing general marketplace for air purifier: ${id}`));
+['digikala','snappshop','torob','basalam'].forEach(id=>assert.ok(purifier.eligibleIds.includes(id), `missing general marketplace for air purifier: ${id}`));
+assert.ok(!purifier.eligibleIds.includes('memarket'), 'MeMarket is explicitly excluded for air-purifier queries');
 assert.ok(!purifier.eligibleIds.some(id=>['iranmiz','partochoob','chidahome','tidawood'].includes(id)));
 
 console.log('V7 store eligibility tests: PASS — old/new merchant coverage and comma-separated product matching');
