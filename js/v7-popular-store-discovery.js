@@ -57,7 +57,7 @@ function resolveSearchContext(query){
   var fields=[s.name].concat(s.products||[],s.aliases||[],s.specialties||[],s.productFamilies||[],s.querySignals||[],domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;}));
   var hay=normalize(fields.join(' ')),score=0,hits=0;
   tokens.forEach(function(t){if(hay.indexOf(t)>=0){hits++;score+=t.length>=5?3:1;}});
-  if(score>=3&&(hits>=2||tokens.length===1&&hits===1)){
+  if(score>=2&&(hits>=2||tokens.length===1&&hits===1||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;}))){
    var categories=domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;});
    if(!categories.length)categories=['فروشگاه عمومی'];
    out.push({id:String(id).toLowerCase(),score:score,categories:Array.from(new Set(categories))});
