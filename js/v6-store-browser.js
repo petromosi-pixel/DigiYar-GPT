@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.94';
+const VERSION='7.0.0-store-browser.95';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Live check: Khanoumi's /search?query= route returns a query-specific
@@ -409,9 +409,16 @@ function openBrowser(query,list){
       * Do not run a second, legacy eligibility pass here: it can discard
       * valid local-plan stores and leave the results panel empty.
       */
-     const plannedIds=Array.isArray(semanticPlan.eligibleStoreIds)
+     const categorySource=window.DigiYarPopularStoreDiscovery;
+     const categoryResolution=categorySource&&typeof categorySource.resolveSearchContext==='function'
+       ? categorySource.resolveSearchContext(query):null;
+     /* Product-category KB is the primary merchant source. Hooshyar's plan is only a fallback
+        when the category card has no matching merchant records for this query. */
+     const categoryIds=categoryResolution&&Array.isArray(categoryResolution.storeIds)
+       ? categoryResolution.storeIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean):[];
+     const plannedIds=categoryIds.length?categoryIds:(Array.isArray(semanticPlan.eligibleStoreIds)
        ? semanticPlan.eligibleStoreIds.map(function(id){return String(id||'').toLowerCase();}).filter(Boolean)
-       : [];
+       : []);
      const plannedList=Array.isArray(semanticPlan.eligibleStoreIds)
        ? plannedIds.map(function(id){return canonicalById[id]||{id:id,name:STORE_NAMES[id]||((window.DigiYarStoreBusinessDomains&&window.DigiYarStoreBusinessDomains.catalog&&window.DigiYarStoreBusinessDomains.catalog[id]&&window.DigiYarStoreBusinessDomains.catalog[id].name)||id)};})
        : [];
