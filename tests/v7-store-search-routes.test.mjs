@@ -97,6 +97,12 @@ assert.ok(scalePlan.ai.eligibleStoreIds.every(id => {
   const q=scalePlan.ai.searchQueries[id]||'';
   return /ترازو/i.test(q);
 }), 'kitchen-scale merchant queries must preserve the requested product, not substitute a generic category');
+const laptopPlan = await window.DigiYarShoppingOrchestrator.run('لپ‌تاپ برای دانشجو با بودجه متوسط');
+assert.ok(!laptopPlan.ai.eligibleStoreIds.includes('janebi'),
+  'a store listing laptop bags must not qualify for a laptop-computer request');
+const headphonePlan = await window.DigiYarShoppingOrchestrator.run('هدفون بی‌سیم برای ورزش');
+assert.ok(!headphonePlan.ai.eligibleStoreIds.includes('sportland'),
+  'sports-related product words must not qualify a store for headphones without headphone inventory');
 const trainPlan = await window.DigiYarShoppingOrchestrator.run('بلیط قطار تهران مشهد');
 assert.deepEqual(trainPlan.ai.eligibleStoreIds.slice().sort(),['alibaba','ghasedak24','mrbilit','raja'].sort(),
   'train-ticket intent must use train-ticket providers only, not hotels or flight services');
