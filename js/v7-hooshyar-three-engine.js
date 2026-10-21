@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.31';
+var VERSION='7.0.0-hooshyar-three-engine.32';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -253,6 +253,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(need.concept==='sofa_cleaning'&&isGeneral&&domainHit)score+=3;
   var blockedConcepts=Array.isArray(s.hooshyarExcludeConcepts)?s.hooshyarExcludeConcepts:[];
   if(need.concept&&blockedConcepts.indexOf(need.concept)>=0){score=-100;proof=[];direct=false;}
+  if(need.concept==='mobile_accessory'&&need.brand==='سامسونگ'&&blockedConcepts.indexOf('mobile_accessory_samsung')>=0){score=-100;proof=[];direct=false;}
   var furnitureMerchant=!isGeneral&&((s.domains||[]).indexOf('furniture')>=0||(s.intents||[]).indexOf('furniture')>=0);
   var hasAirPurifierProduct=[].concat(s.products||[]).some(function(v){
    return /(?:تصفیه\s*هوا|دستگاه\s*تصفیه|پاکسازی\s*هوا|تصفیه\s*کننده\s*هوا|air\s*purifier)/i.test(norm(v));
