@@ -97,13 +97,13 @@ assert.ok(scalePlan.ai.eligibleStoreIds.every(id => {
   const q=scalePlan.ai.searchQueries[id]||'';
   return /ترازو/i.test(q);
 }), 'kitchen-scale merchant queries must preserve the requested product, not substitute a generic category');
-const strictAirPurifier = await orchestrator.run('دستگاه تصفیه هوا');
+const strictAirPurifier = await window.DigiYarShoppingOrchestrator.run('دستگاه تصفیه هوا');
 assert.deepEqual(strictAirPurifier.ai.eligibleStoreIds.slice().sort(),['basalam','digikala','snappshop','torob'].sort(),
   'air-purifier results must not include Esam, Takhfifan, or MiMarket based on broad category overlap');
-const strictCleaning = await orchestrator.run('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای');
+const strictCleaning = await window.DigiYarShoppingOrchestrator.run('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای');
 assert.deepEqual(strictCleaning.ai.eligibleStoreIds.slice().sort(),['basalam','digikala','snappshop','torob'].sort(),
   'sofa-cleaning results must exclude accessory-only merchants and broad resale sites');
-const strictScale = await orchestrator.run('ترازوهای هوشمند برای آشپزخانه');
+const strictScale = await window.DigiYarShoppingOrchestrator.run('ترازوهای هوشمند برای آشپزخانه');
 assert.ok(!strictScale.ai.eligibleStoreIds.some(id => ['iranmiz','partochoob','chidahome','tidawood','janebi'].includes(id)),
   'kitchen-scale context must not retrieve furniture stores or health-scale categories without a kitchen-scale match');
 assert.ok(!strictAirPurifier.ai.eligibleStoreIds.includes('memarket'));
