@@ -227,6 +227,13 @@ for (const [phrase, expected, excluded] of [
   assert.ok(resolved.need.concept, `three-engine failed to parse concept for ${phrase}`);
 }
 assert.equal(threeEngine.parseNeed('کیف اداری تا ۳ میلیون تومان').maxBudgetToman, 3000000, 'Persian budget must be parsed into toman');
+const descriptiveBagQuery = 'یه کیف اداری برای محل کارم با بودجه متوسط می‌خوام';
+const descriptiveBagResolution = threeEngine.resolve(descriptiveBagQuery, catalog, [], orchestrator.classifyLocalNeed(descriptiveBagQuery));
+assert.ok(descriptiveBagResolution.eligibleStoreIds.includes('janebi'), 'Janebi should be discoverable through its canonical office-bag category');
+assert.ok(descriptiveBagResolution.searchQueries.janebi.includes('محل کارم'),
+  'merchant-side search must preserve meaningful use-case context from the descriptive query');
+assert.ok(descriptiveBagResolution.searchQueries.janebi.includes('بودجه متوسط'),
+  'merchant-side search must not silently discard budget/context qualifiers');
 
 const orchestrator = window.DigiYarShoppingOrchestrator;
 const laptopComputer = threeEngine.resolve('لپ‌تاپ برای دانشجو با بودجه متوسط', catalog, [], orchestrator.classifyLocalNeed('لپ‌تاپ برای دانشجو با بودجه متوسط'));
