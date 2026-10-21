@@ -213,8 +213,8 @@ const fashionResolved=threeEngine.resolve(fashionPhrase,catalog,[],orchestrator.
   assert.ok(fashionResolved.eligibleStoreIds.includes(id), `fashion phrase omitted specialist ${id}`)
 );
 
-/* Even if the ranking engine returns a partial list, preserve specialist
-   candidates already validated by the canonical KB resolver. */
+/* The final set must not re-add stale eligibility seeds when the KB
+   resolver has returned a narrower, evidence-backed result. */
 const originalThreeEngineResolveForMerge=threeEngine.resolve;
 threeEngine.resolve=function(query,source,seed,classified){
   const result=originalThreeEngineResolveForMerge(query,source,seed,classified);
@@ -222,9 +222,8 @@ threeEngine.resolve=function(query,source,seed,classified){
 };
 const mergedFurniturePlan=await orchestrator.run(furniturePhrase);
 threeEngine.resolve=originalThreeEngineResolveForMerge;
-['iranmiz','partochoob','mobliran','choobineh'].forEach(id =>
-  assert.ok(mergedFurniturePlan.ai.eligibleStoreIds.includes(id), `orchestrator lost KB specialist ${id} when engine returned a partial list`)
-);
+assert.deepEqual(mergedFurniturePlan.ai.eligibleStoreIds,['digikala'],
+  'orchestrator must not append specialists unsupported by the resolver result');
 
 for (const phrase of ['بلیط قطار تهران مشهد', 'از تهران می‌خوام برم مشهد با قطار']) {
   const intent = orchestrator.classifyLocalNeed(phrase);
