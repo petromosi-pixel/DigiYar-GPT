@@ -355,7 +355,8 @@
         ids=(classified.stores||[]).map(id=>String(id).toLowerCase())
           .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
       }else{
-        ids=[];
+        /* If the engine has no candidate at all, retain the independently
+           KB-validated seed set; partial engine results are never unioned. */
       }
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
