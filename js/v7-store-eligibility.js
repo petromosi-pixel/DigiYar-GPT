@@ -128,23 +128,23 @@ function kbMatchedStoreIds(query){
     });
     /* Accessory requests must not admit device-only electronics stores just
        because their catalogs also contain the word «موبایل». */
-    var accessoryRequest=/(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(s);
+    var accessoryRequest=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(s);
     if(accessoryRequest){
       /* Accessory intent must not leak into unrelated merchant domains. */
       var accessoryStoreAllowlist=['digikala','snappshop','torob','basalam','digido','janebi','digiland','berozkala','gooshishop','technolife','meghdadit'];
       if(accessoryStoreAllowlist.indexOf(String(id||'').toLowerCase())===-1)return;
       if(['digikala','snappshop','torob','basalam'].indexOf(String(id||'').toLowerCase())===-1){
         var explicitAccessoryEvidence=expandTerms([].concat(item.products||[],item.aliases||[],item.specialties||[],item.productFamilies||[])).some(function(term){
-          return /(?:قاب|کاور|گلس|محافظ\\s*صفحه|محافظ\\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\\s*جانبی|اکسسوری)/i.test(norm(term));
+          return /(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(norm(term));
         });
         if(!explicitAccessoryEvidence)return;
       }
     }
     /* «کیف اداری» is a specific product family; generic bags and laptop bags
        are not equivalent evidence. */
-    if(/کیف\\s*اداری|کیف.{0,10}محل کار|کیف.{0,10}محیط کار/i.test(s)){
+    if(/کیف\s*اداری|کیف.{0,10}محل کار|کیف.{0,10}محیط کار/i.test(s)){
       var officeBagTerms=expandTerms([].concat(item.products||[],item.aliases||[]));
-      var hasOfficeBag=officeBagTerms.some(function(term){return /کیف\\s*اداری|کیف اداری زنانه|کیف اداری مردانه/i.test(norm(term));});
+      var hasOfficeBag=officeBagTerms.some(function(term){return /کیف\s*اداری|کیف اداری زنانه|کیف اداری مردانه/i.test(norm(term));});
       if(!hasOfficeBag&&['dayan','janebi'].indexOf(String(id||'').toLowerCase())===-1)return;
     }
     if(directMatch||intentMatch||semanticFamilyMatch)out.push(id);
