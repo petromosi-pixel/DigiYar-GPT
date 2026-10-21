@@ -5,7 +5,7 @@
  */
 (function(root){
 'use strict';
-var VERSION='7.0.0-hooshyar-three-engine.30';
+var VERSION='7.0.0-hooshyar-three-engine.31';
 function clean(v){return String(v==null?'':v).replace(/[\u200c]/g,' ').replace(/\s+/g,' ').trim();}
 function norm(v){
  return clean(v).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک')
@@ -276,7 +276,7 @@ function retrieveCandidates(need,catalog,eligibleIds){
   if(isGeneral&&['air_purifier','sofa_cleaning','mobile_accessory','kitchen_scale'].indexOf(need.concept)>=0&&coreMarketplaces.indexOf(sid)<0){score=-100;proof=[];direct=false;}
   var accessoryQuery=/(?:قاب|کاور|گلس|محافظ\s*صفحه|محافظ\s*لنز|شارژر|کابل|پاوربانک|هندزفری|هدفون|هدست|ایرباد|هولدر|لوازم\s*جانبی|اکسسوری)/i.test(need.normalized);
   var exclusions=Array.isArray(s.exclude||s.exclusions)?(s.exclude||s.exclusions).slice():[];
-  if(accessoryQuery&&(s.intents||[]).indexOf('mobile_accessories')!==-1){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
+  if(accessoryQuery&&((s.intents||[]).indexOf('mobile_accessories')!==-1||categoryEvidence(need,s).length>0)){exclusions=exclusions.filter(function(x){return !/(?:موبایل|گوشی)(?:\s*(?:سامسونگ|آیفون|شیائومی))?/i.test(norm(x));});}
   var excluded=exclusions.some(function(x){var t=norm(x);return t&&need.normalized.indexOf(t)>=0;});
   if(excluded)score=-100;
   var strictTaxonomyConcepts=['air_purifier','sofa_cleaning','mobile_accessory','office_bag','skincare','kitchen_scale'];
