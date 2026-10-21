@@ -61,9 +61,10 @@ function resolveSearchContext(query){
   var hay=normalize(fields.join(' ')),score=0,hits=0;
   tokens.forEach(function(t){if(hay.indexOf(t)>=0){hits++;score+=t.length>=5?3:1;}});
   var phraseMatch=fields.some(function(field){var f=normalize(field);return f.length>=5&&raw.indexOf(f)>=0;});
-  /* Require direct product/alias evidence. Store names and broad domain titles
-     alone can never make an unrelated merchant eligible. */
-  if(phraseMatch||(score>=3&&hits>=1&&(hits>=2||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;})))){
+  var excluded=(s.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0;});
+  /* Explicit KB exclusions override positive catalog matches (e.g. furniture
+     sellers must not appear for upholstery-cleaning services). */
+  if(!excluded&&(phraseMatch||(score>=3&&hits>=1&&(hits>=2||tokens.some(function(t){return t.length>=5&&hay.indexOf(t)>=0;}))))){
    var categories=domains.map(function(d){return (DOMAIN_META[d]||{}).title||d;});
    if(!categories.length)categories=['فروشگاه عمومی'];
    out.push({id:String(id).toLowerCase(),score:score+(phraseMatch?5:0),categories:Array.from(new Set(categories))});
