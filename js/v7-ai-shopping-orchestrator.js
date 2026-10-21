@@ -345,9 +345,9 @@
        * keep the grounded seed list instead of blanking the whole simulator.
        */
       if(engineIds.length){
-        /* This resolver scans the entire canonical KB, including store
+        /* The resolver scans the entire canonical KB, including store
            categories. Do not append the older seed list: it reintroduced
-           merchants without product/category evidence for the current query. */
+           merchants without product/category evidence for this query. */
         ids=engineIds;
         useThreeEngineCandidates=true;
       }else if(classified&&classified.kind==='travel_ticket'){
