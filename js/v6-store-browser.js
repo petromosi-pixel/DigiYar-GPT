@@ -1,7 +1,7 @@
 /* DigiYar V6 — Hooshyar simulated store browser */
 (function(){
 'use strict';
-const VERSION='7.0.0-store-browser.93';
+const VERSION='7.0.0-store-browser.94';
 function storeQueryTerms(q){return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();}
 function khanoumiSearchUrl(q){
  /* Live check: Khanoumi's /search?query= route returns a query-specific
@@ -460,6 +460,11 @@ function openBrowser(query,list){
  window.addEventListener('digiyar:shopping-plan-ready',semanticRefreshHandler);
 
  function tabsAndResults(usable,directoryMode){
+   /* Keep the category card in lockstep with the exact merchant set shown in the simulator. */
+   const discovery=window.DigiYarPopularStoreDiscovery;
+   if(discovery&&typeof discovery.setSearchContext==='function'){
+    discovery.setSearchContext(query,Array.isArray(usable)?usable.map(function(item){return item&&item.id?String(item.id).toLowerCase():'';}).filter(Boolean):[]);
+   }
    if(!Array.isArray(usable)||!usable.length){
      box.innerHTML='<div class="v6-auto-head">برای این درخواست، فروشگاهی با مسیر جست‌وجوی مستقیمِ تأییدشده پیدا نشد؛ لینک صفحهٔ اصلی یا جست‌وجوی حدسی نمایش داده نمی‌شود.</div>';
      return;
