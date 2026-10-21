@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.31';
+  const VERSION='7.0.0-hooshyar-local.32';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -355,8 +355,9 @@
         ids=(classified.stores||[]).map(id=>String(id).toLowerCase())
           .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
       }else{
-        /* If the engine has no candidate at all, retain the independently
-           KB-validated seed set; partial engine results are never unioned. */
+        /* No product/category evidence means no results; never resurrect a
+           broad seed list that may point to an unrelated product family. */
+        ids=[];
       }
     }
     plan.ai=localNeed(raw,catalog,ids,classified);
@@ -382,10 +383,15 @@
         plan.ai.attributes=threeEngineResult.need.attributes||[];
         plan.ai.targetObject=threeEngineResult.need.targetObject||plan.ai.targetObject;
         plan.ai.taskType=threeEngineResult.need.taskType||plan.ai.taskType;
-        plan.ai.searchQueries=Object.assign({},threeEngineResult.searchQueries||{},plan.ai.searchQueries||{});
+        const engineSearchQueries=threeEngineResult.searchQueries||{};
+        const localSearchQueries=plan.ai.searchQueries||{};
+        const keepLocalPhrase=['sofa_cleaning','train_ticket'].indexOf(threeEngineResult.need&&threeEngineResult.need.concept)>=0;
+        plan.ai.searchQueries=keepLocalPhrase
+          ?Object.assign({},engineSearchQueries,localSearchQueries)
+          :Object.assign({},localSearchQueries,engineSearchQueries);
         plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
       }else{
-        plan.ai.fallbackReason='three-engine-empty-preserved-kb-eligibility';
+        plan.ai.fallbackReason='three-engine-empty-no-evidence';
       }
     }
     plan.candidateStores=ids.slice();
