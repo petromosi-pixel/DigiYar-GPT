@@ -242,3 +242,5 @@
 #v7PopularDiscoveryTabs{display:block!important;margin:0 0 6px!important;}
 #v7PopularDiscoveryTabs:empty{display:none!important;}
 #v7PopularDiscoveryTabs .popular-discovery-type-tabs{margin:0!important;}
+
+@media(max-width:420px){.popular-discovery-query-text{font-size:.81rem!important;}}
