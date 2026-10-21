@@ -59,9 +59,14 @@ function hasQuery(url){
 function resolve(id,q){
  var key=String(id||'').toLowerCase(),query=normalize(q);
  if(!key||!query)return '';
+ var catalog=root.DigiYarStoreBusinessDomains&&root.DigiYarStoreBusinessDomains.catalog||{};
+ var merchant=catalog[key]||{},merchantName=normalize(merchant.name||''),merchantHome=String(merchant.homepage||'');
+ if(query===merchantName||query===normalize(key)){
+  try{var homeUrl=new URL(merchantHome);if(homeUrl.protocol==='https:'&&!/affdn\.ir$/i.test(homeUrl.hostname))return homeUrl.href;}catch(e){}
+ }
  var make=SEARCH[key];if(typeof make!=='function')return '';
  var url=make(query);
  return typeof url==='string'&&hasQuery(url)?url:'';
 }
-root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.2',resolve:resolve,productTerm:productTerm};
+root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.3',resolve:resolve,productTerm:productTerm};
 })(typeof window!=='undefined'?window:globalThis);
