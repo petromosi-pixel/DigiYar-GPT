@@ -205,6 +205,8 @@ assert.deepEqual([...accessoryPlan.ai.eligibleStoreIds].sort(),
   'The knowledge-base resolver must preserve the established mobile-accessory merchant set without unrelated device-only stores.');
 assert.equal(browser.resolveSearchUrl('meghdadit','لوازم جانبی موبایل'),'',
   'Meghdad IT must remain hidden in the visible simulator until its actual product-search URL is verified');
+assert.ok(!accessoryPlan.ai.eligibleStoreIds.includes('dayan'),
+  'office-supply stores without a mobile/digital accessory category must not match mobile-accessory requests');
 
 
 const khanoumiSearch = new URL(browser.resolveSearchUrl('khanoumi','ضد آفتاب پوست خشک'));
