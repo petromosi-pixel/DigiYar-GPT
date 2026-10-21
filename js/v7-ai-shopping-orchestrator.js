@@ -6,7 +6,7 @@
 (function(window){
   'use strict';
 
-  const VERSION='7.0.0-hooshyar-local.33';
+  const VERSION='7.0.0-hooshyar-local.34';
 
   function clean(value){
     return String(value==null?'':value).replace(/\s+/g,' ').trim();
@@ -94,7 +94,7 @@
     if(ticketIntent&&/(?:قطار|ریل|هواپیما|پرواز|اتوبوس)/i.test(q)){
       const mode=/(?:قطار|ریل)/i.test(q)?'قطار':(/(?:اتوبوس)/i.test(q)?'اتوبوس':'هواپیما');
       const stores=mode==='قطار'
-        ?['shab','safarme','raja','ghasedak24','mrbilit','trip','safarmarket','alibaba']
+        ?['raja','ghasedak24','mrbilit','alibaba']
         :mode==='اتوبوس'?['ghasedak24','mrbilit','safarmarket','alibaba']:['alibaba','flytoday','ghasedak24','mrbilit','safarmarket','trip','flysepehran'];
       return {kind:'travel_ticket',product:'بلیط '+mode,category:'travel_ticket',domains:['travel_ticket'],stores:stores,targetObject:null,taskType:'ticket_search'};
     }
@@ -344,19 +344,18 @@
        * The three-engine ranking is used when it found evidence; otherwise
        * keep the grounded seed list instead of blanking the whole simulator.
        */
-      if(engineIds.length){
-        /* The resolver scans the entire canonical KB, including store
-           categories. Do not append the older seed list: it reintroduced
-           merchants without product/category evidence for this query. */
-        ids=engineIds;
-        useThreeEngineCandidates=true;
-      }else if(classified&&classified.kind==='travel_ticket'){
-        /* Preserve explicit travel intent only as a service-specific fallback. */
+      if(classified&&classified.kind==='travel_ticket'){
+        /* A train-ticket intent is a service-specific whitelist. Never let
+           broad travel domains add hotels, flights, or unrelated services. */
         ids=(classified.stores||[]).map(id=>String(id).toLowerCase())
           .filter((id,i,a)=>catalog[id]&&a.indexOf(id)===i);
+      }else if(engineIds.length){
+        /* The resolver scans the entire canonical KB, including store
+           categories. Do not append unsupported older seed matches. */
+        ids=engineIds;
+        useThreeEngineCandidates=true;
       }else{
-        /* No product/category evidence means no results; never resurrect a
-           broad seed list that may point to an unrelated product family. */
+        /* No product/category evidence means no results. */
         ids=[];
       }
     }
@@ -390,6 +389,9 @@
           ?Object.assign({},engineSearchQueries,localSearchQueries)
           :Object.assign({},localSearchQueries,engineSearchQueries);
         plan.ai.confidence=threeEngineResult.need.concept?0.78:(ids.length?0.55:0.2);
+      }else if(classified&&classified.kind==='travel_ticket'){
+        plan.ai.fallbackReason='curated-train-ticket-service-set';
+        plan.ai.confidence=ids.length?0.95:0.1;
       }else{
         plan.ai.fallbackReason='three-engine-empty-no-evidence';
       }
