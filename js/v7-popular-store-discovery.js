@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.35';
+var VERSION='7.0.0-popular-store-discovery.36';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -251,7 +251,25 @@ function render(){
  'روژا شاپ':'روژا شاپ.webp',
  'زیبامون':'زیبامون.webp',
  'مو تن رو':'مو تن رو.webp',
- 'نی نی سایت':'نی نی سایت.webp'
+ 'نی نی سایت':'نی نی سایت.webp',
+ 'آیتول':'آیتول.webp',
+ 'اسکای روم':'اسکای روم.webp',
+ 'اکالا':'اُکالا.webp',
+ 'اُکالا':'اُکالا.webp',
+ 'تاپ لرن':'تاپ لرن.webp',
+ 'تاپ‌لرن':'تاپ لرن.webp',
+ 'جانبو':'جانبو.webp',
+ 'خودرو۴۵':'خودرو ۴۵.webp',
+ 'خودرو ۴۵':'خودرو ۴۵.webp',
+ 'راکت':'راکت.webp',
+ 'سبزلرن':'سبز لرن.webp',
+ 'سبز لرن':'سبز لرن.webp',
+ 'فرادرس':'فرادرس.webp',
+ 'فلای سپهران':'فلای سپهران.webp',
+ 'کلید':'کلید.webp',
+ 'کوئرا':'کوئرا.webp',
+ 'هایپرمی':'هایپرمی.webp',
+ 'همراه مکانیک':'همراه مکانیک.webp'
  };
  var STORE_LOGOS={};
  Object.keys(STORE_LOGOS_RAW).forEach(function(name){STORE_LOGOS[normalize(name)]=STORE_LOGOS_RAW[name];});
@@ -338,7 +356,21 @@ function render(){
   pinket:'پینکت.webp',
   karnameh:'کارنامه.webp',
   gooshishop:'گوشی شاپ.webp',
-  daru24:'داروخانه آنلاین.webp'
+  daru24:'داروخانه آنلاین.webp',
+  aytol:'آیتول.webp',
+  skyroom:'اسکای روم.webp',
+  okala:'اُکالا.webp',
+  toplearn:'تاپ لرن.webp',
+  janbo:'جانبو.webp',
+  khodro45:'خودرو ۴۵.webp',
+  roocket:'راکت.webp',
+  sabzlearn:'سبز لرن.webp',
+  faradars:'فرادرس.webp',
+  flysepehran:'فلای سپهران.webp',
+  kilid:'کلید.webp',
+  quera:'کوئرا.webp',
+  hyperme:'هایپرمی.webp',
+  hamrahmechanic:'همراه مکانیک.webp'
  };
  function card(s,domainTitle){var c=catalog[s.id]||{},url=state.queryActive?(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(s.id,state.query):''):(s.homepage||c.homepage||''),logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="ورود به '+esc(s.name)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';}
  function accordion(key,title,icon,description,items){
