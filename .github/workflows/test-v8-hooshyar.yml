@@ -1,0 +1,34 @@
+name: Hooshyar V8 regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/v8-hooshyar-engine.js'
+      - 'js/v8-store-catalog.js'
+      - 'js/v8-store-search-url.js'
+      - 'js/v8-hooshyar-input.js'
+      - 'css/v8-hooshyar.css'
+      - 'index.html'
+      - 'sw.js'
+      - 'tests/v7-store-relevance.test.mjs'
+      - 'tests/v7-store-taxonomy-audit.test.mjs'
+      - 'tests/v7-store-search-routes.test.mjs'
+      - 'tests/v7-final2-theme-contract.test.mjs'
+      - 'package.json'
+      - '.github/workflows/test-v8-hooshyar.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run Hooshyar V8 checks
+        run: npm run test:v8:hooshyar
