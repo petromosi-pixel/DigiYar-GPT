@@ -48,8 +48,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `iransetkor` — ایران ستکور
 - [ ] `mobliran` — مبل ایران
 - [ ] `choobineh` — چوبینه
-- [ ] `moblmarket` — مبل مارکت
-- [ ] `khaneyeiran` — خانه ایرانی
 
 ### پوشاک، کیف و کفش — 9 فروشگاه
 
@@ -59,7 +57,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `divar` — دیوار
 - [ ] `digistyle` — دیجی‌استایل
 - [ ] `shixon` — شیکسون
-- [ ] `limoo` — لیمو
 - [ ] `sportland` — اسپرت‌لند
 - [ ] `sheypoor` — شیپور
 
@@ -68,12 +65,10 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `neshatrokh` — نشاط رخ
 - [ ] `shavaz` — شاواز
 - [ ] `daroo-online` — داروخانه آنلاین
-- [ ] `shider` — شیدر
 - [ ] `digistyle` — دیجی‌استایل
 - [ ] `mootanroo` — مو تن رو
 - [ ] `zibamoon` — زیبامون
 - [ ] `rojashop` — روژا شاپ
-- [ ] `safirstore` — سفیر
 
 ### سلامت و محصولات بهداشتی — 16 فروشگاه
 
@@ -82,12 +77,8 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `daroo-online` — داروخانه آنلاین
 - [ ] `daru24` — دارو۲۴
 - [ ] `betadent` — بتادنت
-- [ ] `darupedia` — داروپدیا
-- [ ] `darucenter` — داروسنتر
 - [ ] `webdaru` — وب‌دارو
 - [ ] `saba` — داروخانه صبا
-- [ ] `darupost` — داروپست
-- [ ] `shider` — شیدر
 - [ ] `mootanroo` — مو تن رو
 - [ ] `ninisite` — نی‌نی سایت
 - [ ] `azki` — ازکی
@@ -99,11 +90,8 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `daroo-online` — داروخانه آنلاین
 - [ ] `daru24` — دارو۲۴
 - [ ] `betadent` — بتادنت
-- [ ] `darupedia` — داروپدیا
-- [ ] `darucenter` — داروسنتر
 - [ ] `webdaru` — وب‌دارو
 - [ ] `saba` — داروخانه صبا
-- [ ] `darupost` — داروپست
 
 ### سوپرمارکت و مواد غذایی — 6 فروشگاه
 
@@ -112,7 +100,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `janbo` — جانبو
 - [ ] `shahrvand` — شهروند
 - [ ] `hyperme` — هایپرمی
-- [ ] `ofood` — اوفود
 
 ### خانه، آشپزخانه و ساختمان — 17 فروشگاه
 
@@ -125,26 +112,17 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `kala360` — کالا۳۶۰
 - [ ] `mobliran` — مبل ایران
 - [ ] `choobineh` — چوبینه
-- [ ] `moblmarket` — مبل مارکت
 - [ ] `okala` — اکالا
-- [ ] `homeplus` — هوم‌پلاس
-- [ ] `sakhtemoononline` — ساختمان آنلاین
-- [ ] `khaneyeiran` — خانه ایرانی
-- [ ] `ninimarket` — نی‌نی مارکت
 - [ ] `sheypoor` — شیپور
 - [ ] `kilid` — کلید
 
 ### ورزش و تجهیزات ورزشی — 3 فروشگاه
 
 - [ ] `sportland` — اسپرت‌لند
-- [ ] `iransport` — ایران اسپرت
-- [ ] `sporttime` — اسپرت تایم
 
 ### کودک و نوزاد — 3 فروشگاه
 
-- [ ] `ninimarket` — نی‌نی مارکت
 - [ ] `ninisite` — نی‌نی سایت
-- [ ] `babyland` — بیبی‌لند
 
 ### کتاب و محصولات فرهنگی — 3 فروشگاه
 
@@ -158,7 +136,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `bama` — باما
 - [ ] `yadakmarket` — یدک مارکت
 - [ ] `yadakyar` — یدک‌یار
-- [ ] `partsaz` — پارت‌ساز
 - [ ] `sheypoor` — شیپور
 
 ### خدمات خودرو — 12 فروشگاه
@@ -171,7 +148,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `aytol` — آیتول
 - [ ] `yadakmarket` — یدک مارکت
 - [ ] `yadakyar` — یدک‌یار
-- [ ] `partsaz` — پارت‌ساز
 - [ ] `azki` — ازکی
 - [ ] `bimebazar` — بیمه‌بازار
 - [ ] `bimeh` — بیمه
@@ -194,26 +170,21 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `jobama` — جاباما
 - [ ] `trip` — تریپ
 - [ ] `eghamat24` — اقامت ۲۴
-- [ ] `hotelban` — هتل‌بان
 
 ### آموزش و یادگیری — 16 فروشگاه
 
 - [ ] `eseminar` — ایسمینار
 - [ ] `maktabkhooneh` — مکتب‌خونه
-- [ ] `siroom` — سی‌روم
-- [ ] `roomit` — رومیت
 - [ ] `classino` — کلاسینو
 - [ ] `alocom` — الوکام
 - [ ] `skyroom` — اسکای‌روم
 - [ ] `faradars` — فرادرس
-- [ ] `faranesh` — فرانش
 - [ ] `toplearn` — تاپ‌لرن
 - [ ] `daneshjooyar` — دانشجویار
 - [ ] `quera` — کوئرا
 - [ ] `roocket` — راکت
 - [ ] `sabzlearn` — سبزلرن
 - [ ] `hamyarit` — همیار آی‌تی
-- [ ] `learnfile` — لرن‌فایل
 
 ### شبکه‌های همکاری در فروش — 1 فروشگاه
 
