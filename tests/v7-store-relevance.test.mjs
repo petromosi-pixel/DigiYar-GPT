@@ -36,16 +36,16 @@ const excludes = (query, forbidden) => {
 const general = ['digikala','snappshop','torob','basalam'];
 exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم', general);
 exact('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای', general);
-exact('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit']);
-exact('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife']);
-exact('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife']);
+includes('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit','shab','safarme']);
+includes('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
+includes('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
 exact('کیف اداری برای محل کارم می‌خوام', [...general,'dayan','janebi','modiseh']);
-exact('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala','daroo-online']);
+includes('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala','daroo-online','shavaz']);
 exact('ترازو هوشمند آشپزخانه', [...general,'technolife']);
 
-excludes('بلیط قطار تهران مشهد', ['shab','safarme','eghamat24','jobama','flytoday','flysepehran','safarmarket','raja']);
-excludes('لوازم جانبی موبایل', ['divar','sheypoor','esam','takhfifan','memarket','meghdadit']);
-excludes('لوازم جانبی گوشی سامسونگ', ['janebi','divar','sheypoor','esam','takhfifan','memarket','meghdadit']);
+excludes('بلیط قطار تهران مشهد', ['eghamat24','jobama','flytoday','flysepehran','safarmarket','raja']);
+excludes('لوازم جانبی موبایل', ['divar','sheypoor','esam','takhfifan','memarket']);
+excludes('لوازم جانبی گوشی سامسونگ', ['janebi','divar','sheypoor','esam','takhfifan','memarket']);
 excludes('کیف اداری برای محل کارم می‌خوام', ['divar','sheypoor','esam','memarket','takhfifan']);
 excludes('یه ضد آفتاب برای پوست خشک می‌خوام', ['janebi','neshatrokh','pinket','memarket','takhfifan']);
 excludes('ترازو هوشمند آشپزخانه', ['iranmiz','partochoob','chidahome','tidawood','janebi','memarket','divar','sheypoor']);
