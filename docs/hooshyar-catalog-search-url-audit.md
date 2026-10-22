@@ -10,6 +10,7 @@ The catalog is the single source for merchant identity, business domains, produc
 ## Current static coverage
 
 - Catalog entries: 120
+- Current canonical catalog entries: 100 on `main` after the approved store removals.
 - Direct query-specific resolver handlers remain limited to the handlers declared in `v7-store-search-url.js`; the resolver now also exposes a separate canonical-homepage fallback for every catalog merchant with a safe HTTPS homepage.
 - Every relevant merchant with a direct search route uses that route. When no verified query-specific route exists, the merchant is no longer silently dropped: Hooshyar can show it with a clearly classifiable `homepage_fallback` route.
 - A homepage fallback is **not** treated as a verified product-search route. It is only a navigable destination for a relevant store, and should be upgraded when a verified search/service URL is available.
