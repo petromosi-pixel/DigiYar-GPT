@@ -46,7 +46,6 @@ iransetkor:{name:'ایران ستکور',homepage:'https://iransetkor.com/',inte
 '19kala':{name:'۱۹کالا',hooshyarExcludeConcepts:["mobile_phone","mobile_accessory"],homepage:'https://www.19kala.com/',domains:["digital"],products:["موبایل","تبلت","ساعت هوشمند","لوازم جانبی موبایل","لوازم خانگی","کالای دیجیتال"],aliases:["کالای دیجیتال"]},
 banistyle:{name:'بانی استایل',hooshyarExcludeConcepts:["mobile_accessory"],homepage:'https://banistyle.com/',domains:["fashion"],products:["لباس زنانه","لباس مردانه","کفش","پوشاک","اکسسوری"],aliases:["پوشاک"]},
 aysoocollection:{name:'آیسو کالکشن',homepage:'https://aysoocollection.com/',domains:["fashion"],products:["پوشاک زنانه","پوشاک مردانه","لباس","پوشاک"],aliases:["پوشاک"]},
-daru24:{name:'دارو۲۴',homepage:'https://daru24.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
 betadent:{name:'بتادنت',homepage:'https://betadent.com/',domains:["health","medicine"],products:["دندانپزشکی","تجهیزات دندانپزشکی","محصولات سلامت دهان"],aliases:["سلامت","داروخانه"]},
 
 saba:{name:'داروخانه صبا',homepage:'https://sabadaru.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
