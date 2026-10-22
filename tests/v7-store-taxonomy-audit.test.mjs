@@ -15,12 +15,14 @@ assert.ok(kb.byDomain.travel_ticket.storeIds.includes('safarme'));
 assert.ok(kb.byDomain.auto_service.storeIds.includes('karnameh'));
 assert.ok(kb.byType.general.storeIds.includes('digikala'));
 assert.ok(kb.byType.specialist.storeIds.includes('meghdadit'));
-assert.equal(resolver.hasHandler('meghdadit'), true);
-assert.equal(resolver.hasHandler('shab'), false);
-const configured = ids.filter(id => resolver.hasHandler(id));
+assert.equal(resolver.hasSearchHandler('meghdadit'), true);
+assert.equal(resolver.hasHandler('shab'), true);
+const configured = ids.filter(id => resolver.hasSearchHandler(id));
+const fallback = ids.filter(id => resolver.hasHandler(id) && !resolver.hasSearchHandler(id));
 const missing = ids.filter(id => !resolver.hasHandler(id));
-assert.equal(configured.length + missing.length, ids.length,
-  'Every catalog entry must be accounted for by the route-coverage audit');
-assert.ok(missing.length > 0,
-  'Missing routes must remain visible as an audit gap rather than be hidden by homepage fallback');
+assert.equal(configured.length + fallback.length + missing.length, ids.length,
+  'Every catalog entry must be accounted for by direct-search, homepage fallback, or missing route');
+assert.ok(configured.length > 0, 'Known query-specific search handlers must remain available');
+assert.equal(missing.length, 0, 'Every catalog store should have a routable official homepage fallback');
+assert.ok(fallback.length > 0, 'Fallback routes must remain visible as a separate coverage class');
 console.log('V7 catalog taxonomy and route-coverage contract: PASS');
