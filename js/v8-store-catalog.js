@@ -162,7 +162,6 @@ if(C['iransetkor'])C['iransetkor'].homepage=C['iransetkor'].homepage||'https://i
 if(C['19kala'])C['19kala'].homepage=C['19kala'].homepage||'https://www.19kala.com/';
 if(C['banistyle'])C['banistyle'].homepage=C['banistyle'].homepage||'https://banistyle.com/';
 if(C['aysoocollection'])C['aysoocollection'].homepage=C['aysoocollection'].homepage||'https://aysoocollection.com/';
-if(C['daru24'])C['daru24'].homepage=C['daru24'].homepage||'https://daru24.com/';
 if(C['betadent'])C['betadent'].homepage=C['betadent'].homepage||'https://betadent.com/';
 
 if(C['saba'])C['saba'].homepage=C['saba'].homepage||'https://sabadaru.com/';
