@@ -4,12 +4,12 @@ import fs from 'node:fs';
 const theme = fs.readFileSync('css/digiyar-theme-system.css', 'utf8');
 const index = fs.readFileSync('index.html', 'utf8');
 const legacyStyles = [
-  'css/style.css',
-  'css/v5-splash.css',
-  'css/v5-ui.css',
-  'css/v5-step4.css',
-  'css/v5-step4-toggle-direction.css',
-  'css/v5-smart-search.css',
+  'css/v8-base.css',
+  'css/v8-splash.css',
+  'css/v8-ui.css',
+  'css/v8-step4.css',
+  'css/v8-step4-toggle-direction.css',
+  'css/v8-smart-search.css',
   'css/v8-hooshyar.css'
 ];
 const oldThemePattern = /(?:html\.dark|body\.dark|\[data-theme\s*=\s*["']dark["']\]|html\.v6-dark|body\.v6-dark|\.v6-dark\b|prefers-color-scheme\s*:\s*dark)/i;
@@ -38,7 +38,7 @@ for (const path of legacyStyles) {
 const discovery = fs.readFileSync('js/v8-hooshyar-engine.js', 'utf8');
 assert.doesNotMatch(discovery, /html\.dark|body\.dark|\[data-theme=["']dark|body\.v6-dark\s+\.v6-auto/,
   'The active store discovery UI must use the central --dy-* theme contract.');
-const comparison = fs.readFileSync('js/v7-comparison-ui.js', 'utf8');
+const comparison = fs.readFileSync('js/v8-comparison-ui.js', 'utf8');
 assert.doesNotMatch(comparison, oldThemePattern,
   'Comparison UI must use the central theme contract rather than embedded dark-mode rules.');
 const platforms = fs.readFileSync('js/platforms.js', 'utf8');
