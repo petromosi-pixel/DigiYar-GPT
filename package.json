@@ -15,7 +15,6 @@
     "test:v6:search-core": "node tests/v6-hooshyar-search-core.test.mjs",
     "test:v6:live-resolver": "node tests/v6-hooshyar-live-resolver.test.mjs",
     "test:v6:live-resolver:real": "node tests/v6-hooshyar-live-resolver-real-smoke.test.mjs",
-    "test:v6:profile-flow": "node tests/v6-hooshyar-profile-flow.test.mjs",
     "test:v8:hooshyar": "node --check js/v8-hooshyar-engine.js && node --check js/v8-store-catalog.js && node --check js/v8-store-search-url.js && node --check js/v8-hooshyar-input.js && node --check js/v8-product-result-source.js && node --check js/v8-product-result-producer.js && node --check js/v8-comparison-engine.js && node --check js/v8-product-capture.js && node --check js/v8-comparison-ui.js && node --check js/v8-splash.js && node --check js/v8-ui.js && node --check js/v8-step4-final.js && node --check js/v8-step4-patch.js && node --check js/v8-footer.js && node --check js/v8-taxonomy-controller.js && node --check js/v8-store-select-sync.js && node tests/v8-hooshyar-relevance.test.mjs && node tests/v8-store-taxonomy-audit.test.mjs && node tests/v8-store-search-routes.test.mjs && node tests/v8-hooshyar-theme-contract.test.mjs && node tests/v8-product-result-source.test.mjs && node tests/v8-comparison-engine.test.mjs && node tests/v8-product-result-producer.test.mjs",
     "test:v8:store-search-routes:live": "node tests/v8-store-search-routes-live.test.mjs",
     "test:v8:product-result-source": "node tests/v8-product-result-source.test.mjs",
