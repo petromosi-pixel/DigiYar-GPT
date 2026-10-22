@@ -48,7 +48,7 @@ banistyle:{name:'بانی استایل',hooshyarExcludeConcepts:["mobile_accesso
 aysoocollection:{name:'آیسو کالکشن',homepage:'https://aysoocollection.com/',domains:["fashion"],products:["پوشاک زنانه","پوشاک مردانه","لباس","پوشاک"],aliases:["پوشاک"]},
 daru24:{name:'دارو۲۴',homepage:'https://daru24.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
 betadent:{name:'بتادنت',homepage:'https://betadent.com/',domains:["health","medicine"],products:["دندانپزشکی","تجهیزات دندانپزشکی","محصولات سلامت دهان"],aliases:["سلامت","داروخانه"]},
-webdaru:{name:'وب‌دارو',homepage:'https://webdaru.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
+
 saba:{name:'داروخانه صبا',homepage:'https://sabadaru.com/',domains:["medicine","health"],products:["دارو","مکمل","ویتامین","محصولات سلامت"],aliases:["داروخانه","سلامت"]},
 alibaba:{name:'علی‌بابا',homepage:'https://www.alibaba.ir/',domains:["travel_ticket"],products:["بلیط هواپیما","بلیط قطار","بلیط اتوبوس","رزرو سفر"],aliases:["بلیط سفر"]},
 jobama:{name:'جاباما',homepage:'https://www.jabama.com/',domains:["lodging","travel_ticket"],products:["رزرو اقامتگاه","ویلا","سوئیت","هتل","اقامتگاه"],aliases:["اقامتگاه","بلیط سفر"]},
@@ -165,7 +165,7 @@ if(C['banistyle'])C['banistyle'].homepage=C['banistyle'].homepage||'https://bani
 if(C['aysoocollection'])C['aysoocollection'].homepage=C['aysoocollection'].homepage||'https://aysoocollection.com/';
 if(C['daru24'])C['daru24'].homepage=C['daru24'].homepage||'https://daru24.com/';
 if(C['betadent'])C['betadent'].homepage=C['betadent'].homepage||'https://betadent.com/';
-if(C['webdaru'])C['webdaru'].homepage=C['webdaru'].homepage||'https://webdaru.com/';
+
 if(C['saba'])C['saba'].homepage=C['saba'].homepage||'https://sabadaru.com/';
 if(C['alibaba'])C['alibaba'].homepage=C['alibaba'].homepage||'https://www.alibaba.ir/';
 if(C['jobama'])C['jobama'].homepage=C['jobama'].homepage||'https://www.jabama.com/';
