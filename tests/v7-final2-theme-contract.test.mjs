@@ -10,7 +10,7 @@ const legacyStyles = [
   'css/v5-step4.css',
   'css/v5-step4-toggle-direction.css',
   'css/v5-smart-search.css',
-  'css/v7-popular-store-discovery.css'
+  'css/v8-hooshyar.css'
 ];
 const oldThemePattern = /(?:html\.dark|body\.dark|\[data-theme\s*=\s*["']dark["']\]|html\.v6-dark|body\.v6-dark|\.v6-dark\b|prefers-color-scheme\s*:\s*dark)/i;
 
@@ -35,7 +35,7 @@ for (const path of legacyStyles) {
   assert.equal((css.match(/\{/g) || []).length, (css.match(/\}/g) || []).length,
     path + ' must keep balanced CSS braces after legacy theme cleanup.');
 }
-const discovery = fs.readFileSync('js/v7-popular-store-discovery.js', 'utf8');
+const discovery = fs.readFileSync('js/v8-hooshyar-engine.js', 'utf8');
 assert.doesNotMatch(discovery, /html\.dark|body\.dark|\[data-theme=["']dark|body\.v6-dark\s+\.v6-auto/,
   'The active store discovery UI must use the central --dy-* theme contract.');
 const comparison = fs.readFileSync('js/v7-comparison-ui.js', 'utf8');
@@ -45,4 +45,4 @@ const platforms = fs.readFileSync('js/platforms.js', 'utf8');
 assert.doesNotMatch(platforms, oldThemePattern,
   'Platform widgets must use the central theme contract rather than embedded dark-mode rules.');
 
-console.log('V7 Final2 global theme contract: PASS — page root, shared tokens, future components, button-color preservation, and legacy selector removal.');
+console.log('V8 global theme contract: PASS — page root, shared tokens, future components, button-color preservation, and legacy selector removal.');

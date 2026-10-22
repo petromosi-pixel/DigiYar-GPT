@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import '../js/store-business-domains.js';
+import '../js/v8-store-catalog.js';
 import eligibility from '../js/v7-store-eligibility.js';
 
 const stores = [

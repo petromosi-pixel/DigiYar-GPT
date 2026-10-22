@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 
 globalThis.window = globalThis;
-await import('../js/store-business-domains.js');
-await import('../js/v7-store-search-url.js');
+await import('../js/v8-store-catalog.js');
+await import('../js/v8-store-search-url.js');
 
 const kb = window.DigiYarStoreBusinessDomains;
 const resolver = window.DigiYarStoreSearchUrl;
@@ -56,7 +56,7 @@ assert.equal(fallback?.kind, 'homepage_fallback',
   'Dayan must remain explicitly marked as a homepage fallback until a product-search URL is verified');
 assert.equal(new URL(fallback.url).hostname, 'dayanshop.com');
 
-console.log('V7 live route smoke test');
+console.log('V8 live route smoke test');
 for (const result of results) {
   console.log(`${result.status}\t${result.name}\t${result.id}\t${result.finalUrl || result.note}`);
 }
