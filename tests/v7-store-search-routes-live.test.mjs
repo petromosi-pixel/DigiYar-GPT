@@ -14,7 +14,7 @@ const cases = [
   { name:'air purifier', id:'basalam', query:'تصفیه هوای اتاق خواب', host:'basalam.com', path:'/s' },
   { name:'train tickets', id:'ghasedak24', query:'بلیط قطار تهران مشهد', host:'ghasedak24.com', path:'/train-ticket' },
   { name:'train tickets', id:'mrbilit', query:'بلیط قطار تهران مشهد', host:'mrbilit.com', path:'/train-ticket' },
-  { name:'train tickets', id:'alibaba', query:'بلیط قطار تهران مشهد', host:'www.alibaba.ir', path:'/train-ticket' },
+  { name:'train tickets', id:'alibaba', query:'بلیط قطار تهران مشهد', host:'www.alibaba.ir', path:'/train' },
   { name:'office bag', id:'modiseh', query:'کیف اداری برای محل کارم می‌خوام', host:'www.modiseh.com', path:'/catalogsearch/result/' },
   { name:'sunscreen', id:'solokala', query:'ضد آفتاب برای پوست خشک', host:'solokala.com', path:'/' },
   { name:'mobile accessories', id:'janebi', query:'لوازم جانبی موبایل', host:'janebi.com', path:'/search' },
