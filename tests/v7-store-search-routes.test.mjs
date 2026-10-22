@@ -25,6 +25,13 @@ assert.equal(resolver.resolveRoute('memarket', 'تصفیه هوا').kind, 'homep
   'MiMarket must use its canonical homepage until a verified product-search route exists');
 assert.equal(resolver.resolveRoute('iranmiz', 'میز اداری').kind, 'homepage_fallback',
   'Relevant specialist stores without a direct search route must remain visible via their canonical homepage');
+const modiseh = resolver.resolve('modiseh', 'کیف اداری');
+assert.match(modiseh, /^https:\/\/www\\.modiseh\\.com\/catalogsearch\/result\/\?q=/);
+assert.match(decodeURIComponent(modiseh), /کیف اداری/);
+const solokala = resolver.resolve('solokala', 'ضد آفتاب برای پوست خشک');
+assert.match(solokala, /^https:\/\/solokala\\.com\/\?s=/);
+assert.match(solokala, /post_type=product/);
+assert.match(decodeURIComponent(solokala), /ضد آفتاب برای پوست خشک/);
 assert.equal(resolver.hasHandler('meghdadit'), true);
 assert.equal(resolver.hasSearchHandler('meghdadit'), true);
 assert.equal(resolver.hasHandler('iranmiz'), true);
