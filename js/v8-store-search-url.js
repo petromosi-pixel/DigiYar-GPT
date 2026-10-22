@@ -1,8 +1,8 @@
-/* DigiYar V7 — catalog-wide merchant route resolver.
+/* DigiYar V8 — catalog-wide merchant route resolver.
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-search-url.9';
+var VERSION='8.0.0-store-search-url.9';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }

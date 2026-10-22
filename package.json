@@ -1,6 +1,6 @@
 {
-  "name": "smart-search",
-  "version": "1.0.0",
+  "name": "digiyar-v8",
+  "version": "8.0.0",
   "description": "Smart product search with affiliate links",
   "scripts": {
     "dev": "vercel dev",

@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.41';
+var VERSION='8.0.0-hooshyar-engine.1';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -87,7 +87,7 @@ function resolveSearchContext(query){
   if(Array.isArray(store.hooshyarExcludeConcepts)&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
   var score=0,matchedPhrase=false;
   fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
-  tokens.forEach(function(t){if(fieldTokens.indexOf(t)>=0)score+=t.length>=5?2:1;});
+  tokens.forEach(function(t){var matched=fieldTokens.some(function(ft){return ft===t||(t.length>=4&&ft.length>=4&&(ft.indexOf(t)===0||t.indexOf(ft)===0));});if(matched)score+=t.length>=5?2:1;});
   if(intent==='office_bag'){
    var generalAllowed=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0&&/کیف/.test(hay);
    var specialistExact=store.storeType!=='general'&&(domains.indexOf('fashion')>=0||key==='janebi')&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
@@ -148,7 +148,7 @@ function resolveSearchContext(query){
   if(excluded)return;
   var urlResolver=window.DigiYarStoreSearchUrl;
   var categories=domains.map(function(d){return getDomainTitle(d);});
-  if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw)){unavailableRoutes.push({id:key,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});return;}
+  if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw)){unavailableRoutes.push({id:key,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories)),routeUnavailable:true});}return;}
   if(intent==='train_ticket'&&typeof urlResolver.resolveRoute==='function'){
    var trainRoute=urlResolver.resolveRoute(key,raw);
    if(!trainRoute||trainRoute.kind!=='search')return;
@@ -409,8 +409,8 @@ function render(){
  };
  function card(s,domainTitle){
   var c=catalog[s.id]||{},route=state.queryActive&&window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolveRoute==='function'?window.DigiYarStoreSearchUrl.resolveRoute(s.id,state.query):null,
-   url=state.queryActive?(route&&route.url||(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(s.id,state.query):'')):(s.homepage||c.homepage||''),
-   fallback=!!route&&route.kind==='homepage_fallback',
+   url=state.queryActive?(route&&route.url||(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(s.id,state.query):'')||(c.homepage||s.homepage||'')):(s.homepage||c.homepage||''),
+   fallback=!!(state.queryActive&&url&&(!route||route.kind==='homepage_fallback')),
    homepage=!!route&&route.kind==='homepage',
    logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],
    initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',
@@ -431,7 +431,8 @@ function render(){
   var uniqueItems=[],seenSearchIds={};
   (state.queryStoreIds||[]).forEach(function(id){
    id=String(id||'').toLowerCase();if(!id||seenSearchIds[id]||!catalog[id])return;
-   var searchUrl=window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(id,state.query):'';
+   var route=window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolveRoute==='function'?window.DigiYarStoreSearchUrl.resolveRoute(id,state.query):null;
+   var searchUrl=(route&&route.url)||(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(id,state.query):'')||(catalog[id]&&catalog[id].homepage)||'';
    if(!searchUrl)return;
    seenSearchIds[id]=true;
    var store=catalog[id]||{},cats=state.categoriesByStore[id]||((store.domains||[]).map(function(d){return getDomainTitle(d);}));

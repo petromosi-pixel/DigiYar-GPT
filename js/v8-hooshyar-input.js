@@ -1,4 +1,4 @@
-/* DigiYar V7 — Hooshyar search routed directly to product-category discovery */
+/* DigiYar V8 — Hooshyar search routed directly to product-category discovery */
 (function(){
 'use strict';
 const hints=[
@@ -28,7 +28,7 @@ body:has(#v7ProfileSearchHost[data-active-store="memarket"]) .v7-hooshyar-hint{v
 @media(prefers-reduced-motion:reduce){.v7-hooshyar-hint-text{animation:none!important}}
 `;document.head.appendChild(s);}
 function init(){const form=document.getElementById('v5SmartSearchForm'),input=document.getElementById('v5SmartSearchInput'),hint=document.getElementById('v5SmartSearchHint');if(!form||!input||!hint)return;const clear=document.getElementById('v5SmartSearchClear'),submit=form.querySelector('.v5-smart-search-submit');installCardStyle();const field=form.querySelector('.v5-smart-search-field');if(!field)return;
-let robotZone=field.querySelector('.v7-hooshyar-robot-zone');if(!robotZone){robotZone=document.createElement('div');robotZone.className='v7-hooshyar-robot-zone';robotZone.setAttribute('aria-hidden','true');robotZone.innerHTML='<img src="assets/hooshyar/hooshyar-robot.svg?v=7.0.0-robot.3" alt="" draggable="false">';field.appendChild(robotZone);}
+let robotZone=field.querySelector('.v7-hooshyar-robot-zone');if(!robotZone){robotZone=document.createElement('div');robotZone.className='v7-hooshyar-robot-zone';robotZone.setAttribute('aria-hidden','true');robotZone.innerHTML='<img src="assets/hooshyar/hooshyar-robot.svg?v=8.0.0-robot.1" alt="" draggable="false">';field.appendChild(robotZone);}
 let actionZone=field.querySelector('.v7-hooshyar-action-zone');if(!actionZone){actionZone=document.createElement('div');actionZone.className='v7-hooshyar-action-zone';actionZone.setAttribute('aria-hidden','true');field.appendChild(actionZone);}if(submit)actionZone.appendChild(submit);if(clear)actionZone.appendChild(clear);
 const stale=document.getElementById('v5SmartSearchResults');if(stale)stale.remove();let searched=false;
 function renderHint(){const h=hints[i];if(typingTimer){clearInterval(typingTimer);typingTimer=null;}hint.classList.add('v7-hooshyar-hint');hint.classList.remove('v6-hooshyar-brand');hint.innerHTML='<div class="v7-hooshyar-hint-inner"><div class="v7-hooshyar-hint-text"></div></div>';const textEl=hint.querySelector('.v7-hooshyar-hint-text');if(!textEl)return;const box=document.createElement('span');box.innerHTML=h.text;const full=box.innerHTML;let n=0;textEl.innerHTML='';typingTimer=setInterval(()=>{if(n>=full.length){clearInterval(typingTimer);typingTimer=null;return;}let end=n+1;while(end<full.length&&full[end-1]==='<')end++;if(full[n]==='<'){const close=full.indexOf('>',n);end=close<0?full.length:close+1;}textEl.innerHTML=full.slice(0,end);n=end;},18);}
