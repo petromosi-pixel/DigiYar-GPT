@@ -168,7 +168,7 @@ function resolveSearchContext(query){
   }else if(intent==='sunscreen'){
    var sunscreenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
    var directStoreTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
-   var sunscreenSpecialist=domains.some(function(d){return ['beauty','health','medicine'].indexOf(d)>=0;})&&/(ضد\s*آفتاب|ضدآفتاب|sunscreen)/.test(directStoreTerms);
+   var sunscreenSpecialist=domains.some(function(d){return ['beauty','health','medicine'].indexOf(d)>=0;})&&!domains.some(function(d){return ['digital','furniture','fashion','supermarket','auto','sports','kids','books'].indexOf(d)>=0;})&&/(ضد\s*آفتاب|ضدآفتاب|sunscreen)/.test(directStoreTerms);
    if(!sunscreenGeneral&&!sunscreenSpecialist)return;
    score=sunscreenGeneral?15:25;
   }else if(intent==='kitchen_scale'){
