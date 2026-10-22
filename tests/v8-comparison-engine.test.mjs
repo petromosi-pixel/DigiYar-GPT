@@ -36,7 +36,7 @@ assert.equal(out.meta.networkCalls,0);
 assert.equal(out.meta.storeQuery,false);
 assert.equal(out.priceComparison.min,10000000);
 assert.equal(out.priceComparison.max,15000000);
-assert.deepEqual(out.priceComparison.cheapestIds,['c']);
+assert.deepEqual(Array.from(out.priceComparison.cheapestIds),['c']);
 assert.equal(out.matchComparison.available,true);
 assert.equal(out.storeComparison.length,2);
 
