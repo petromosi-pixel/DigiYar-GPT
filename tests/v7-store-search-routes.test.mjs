@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 
 globalThis.window = globalThis;
-await import('../js/store-business-domains.js');
-await import('../js/v7-store-search-url.js');
+await import('../js/v8-store-catalog.js');
+await import('../js/v8-store-search-url.js');
 
 const kb = window.DigiYarStoreBusinessDomains;
 const resolver = window.DigiYarStoreSearchUrl;
@@ -52,4 +52,4 @@ for (const id of kb.ids()) {
   assert.equal(resolver.hasHandler(id), true, `Every catalog store must be routable: ${id}`);
 }
 
-console.log('V7 active search resolver contract: PASS');
+console.log('V8 active search resolver contract: PASS');

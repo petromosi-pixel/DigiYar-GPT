@@ -10,10 +10,10 @@ globalThis.document = {
   querySelector(){ return null; },
   querySelectorAll(){ return []; }
 };
-await import('../js/store-business-domains.js');
-await import('../js/v7-store-search-url.js');
+await import('../js/v8-store-catalog.js');
+await import('../js/v8-store-search-url.js');
 
-const source = fs.readFileSync(new URL('../js/v7-popular-store-discovery.js', import.meta.url), 'utf8');
+const source = fs.readFileSync(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
 assert.ok(source.includes('function init(){'), 'Discovery init anchor must exist');
 vm.runInThisContext(source.replace(
   'function init(){',

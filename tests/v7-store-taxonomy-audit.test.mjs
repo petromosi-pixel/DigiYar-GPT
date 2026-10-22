@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 
 globalThis.window = globalThis;
-await import('../js/store-business-domains.js');
-await import('../js/v7-store-search-url.js');
+await import('../js/v8-store-catalog.js');
+await import('../js/v8-store-search-url.js');
 const kb = window.DigiYarStoreBusinessDomains;
 const resolver = window.DigiYarStoreSearchUrl;
 
@@ -25,4 +25,4 @@ assert.equal(configured.length + fallback.length + missing.length, ids.length,
 assert.ok(configured.length > 0, 'Known query-specific search handlers must remain available');
 assert.equal(missing.length, 0, 'Every catalog store should have a routable official homepage fallback');
 assert.ok(fallback.length > 0, 'Fallback routes must remain visible as a separate coverage class');
-console.log('V7 catalog taxonomy and route-coverage contract: PASS');
+console.log('V8 catalog taxonomy and route-coverage contract: PASS');
