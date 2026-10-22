@@ -2,7 +2,7 @@
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-search-url.7';
+var VERSION='7.0.0-store-search-url.8';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
@@ -36,11 +36,11 @@ SEARCH.digiland=q=>'https://dgland.com/search?q='+encodeURIComponent(productTerm
 SEARCH.digido=q=>'https://www.digido.ir/search?s='+encodeURIComponent(productTerm('digido',q));
 SEARCH.gooshishop=q=>'https://gooshishop.com/search?q='+encodeURIComponent(productTerm('gooshishop',q));
 SEARCH.khanoumi=q=>'https://www.khanoumi.com/search?query='+encodeURIComponent(productTerm('khanoumi',q));
-SEARCH.modiseh=q=>'https://www.modiseh.com/search?q='+encodeURIComponent(productTerm('modiseh',q));
+SEARCH.modiseh=q=>'https://www.modiseh.com/catalogsearch/result/?q='+encodeURIComponent(productTerm('modiseh',q));
 SEARCH.banimode=q=>'https://www.banimode.com/search?q='+encodeURIComponent(productTerm('banimode',q));
 SEARCH.takhfifan=q=>'https://takhfifan.com/search?q='+encodeURIComponent(productTerm('takhfifan',q));
 SEARCH.pinket=q=>'https://pinket.com/search?q='+encodeURIComponent(productTerm('pinket',q));
-SEARCH.solokala=q=>'https://solokala.com/search?q='+encodeURIComponent(productTerm('solokala',q));
+SEARCH.solokala=q=>'https://solokala.com/?s='+encodeURIComponent(productTerm('solokala',q))+'&post_type=product';
 SEARCH.mosbatesabz=q=>'https://mosbatesabz.com/?s='+encodeURIComponent(productTerm('mosbatesabz',q));
 SEARCH.darmankala=q=>'https://darmankala.com/catalogsearch/result/?q='+encodeURIComponent(productTerm('darmankala',q));
 SEARCH.darukade=q=>'https://darukade.com/products?w='+encodeURIComponent(productTerm('darukade',q));
