@@ -17,3 +17,8 @@
 .v8-hooshyar-hero-chip span{color:#63ddff;font-size:12px}
 @media(min-width:700px){.v8-hooshyar-hero{padding:24px 26px 20px}.v8-hooshyar-hero-top{gap:18px}.v8-hooshyar-hero-bot{flex-basis:150px;width:150px;min-height:138px}.v8-hooshyar-hero-bot img{width:150px;height:148px}.v8-hooshyar-hero h2{font-size:27px}.v8-hooshyar-hero-copy p{font-size:13px}.v8-hooshyar-hero-search-text{font-size:13px}}
 @media(max-width:420px){.v8-hooshyar-hero{padding:15px 10px;border-radius:20px}.v8-hooshyar-hero-top{gap:6px}.v8-hooshyar-hero-bot{flex-basis:88px;width:88px;min-height:100px}.v8-hooshyar-hero-bot img{width:88px;height:108px}.v8-hooshyar-hero-copy{padding:10px 6px}.v8-hooshyar-hero h2{font-size:clamp(13px,4.1vw,18px);letter-spacing:-.65px}.v8-hooshyar-hero-kicker{font-size:clamp(10px,3.2vw,12px);gap:5px}.v8-hooshyar-hero-copy p{font-size:11px}.v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{font-size:10px}.v8-hooshyar-hero-chip{font-size:9px;padding:5px 8px}}@media(prefers-reduced-motion:reduce){.v8-hooshyar-hero-kicker:before{animation:none}}
+
+/* Keep the existing functional search field inside the Hooshyar hero card. */
+.v8-hooshyar-hero>.v5-smart-search-bar{width:100%;max-width:100%;margin:14px 0 0;padding:0;background:transparent;border:0;box-shadow:none}
+.v8-hooshyar-hero>.v5-smart-search-bar form{width:100%;margin:0}
+.v8-hooshyar-hero>.v5-smart-search-bar .v5-smart-search-field{width:100%;box-sizing:border-box}
