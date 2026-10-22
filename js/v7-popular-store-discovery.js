@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.38';
+var VERSION='7.0.0-popular-store-discovery.39';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -45,6 +45,10 @@ function getDomainTitle(domain){var kb=window.DigiYarStoreBusinessDomains,labels
 function getDomainMeta(domain){var meta=DOMAIN_META[domain]||{title:domain,icon:'🏬',subtitle:'فروشگاه‌ها و خدمات این حوزه'};return Object.assign({},meta,{title:getDomainTitle(domain)});}
 function detectIntent(raw){
  if((/کیف\s*اداری/.test(raw))||(/کیف/.test(raw)&&/محل کار/.test(raw)))return 'office_bag';
+ if(/(?:بلیط|بلیت|رزرو).{0,12}(?:قطار|ریل)|(?:قطار|ریل).{0,12}(?:بلیط|بلیت)|سفر ریلی/.test(raw))return 'train_ticket';
+ if(/ضد\s*آفتاب|ضدآفتاب/.test(raw))return 'sunscreen';
+ if(/ترازو/.test(raw)&&/آشپزخانه|آشپزخونه|هوشمند/.test(raw))return 'kitchen_scale';
+ if(/(?:لوازم|تجهیزات)\s*جانبی/.test(raw)&&/گوشی|موبایل/.test(raw))return 'mobile_accessory';
  if(/تصفیه\s*هوا|دستگاه تصفیه هوا|پاکسازی هوا/.test(raw))return 'air_purifier';
  if(/مبل|روکش مبلمان/.test(raw)&&/تمیز|تمیزکردن|شستن|شستشو|نظافت|لکه|پاک کردن/.test(raw))return 'upholstery_cleaning';
  if(/گوشی|موبایل/.test(raw)&&/قاب|گلس|شارژر|کابل|پاوربانک|هندزفری|هدفون/.test(raw))return 'mobile_accessory';
@@ -85,8 +89,8 @@ function resolveSearchContext(query){
   fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
   tokens.forEach(function(t){if(fieldTokens.indexOf(t)>=0)score+=t.length>=5?2:1;});
   if(intent==='office_bag'){
-   var generalAllowed=store.storeType==='general'&&/کیف/.test(hay);
-   var specialistExact=store.storeType!=='general'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
+   var generalAllowed=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0&&/کیف/.test(hay);
+   var specialistExact=store.storeType!=='general'&&(domains.indexOf('fashion')>=0||key==='janebi')&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
    if(!generalAllowed&&!specialistExact)return;
    score=generalAllowed?10:25;
   }else if(intent==='air_purifier'){
@@ -100,6 +104,15 @@ function resolveSearchContext(query){
    var accessoryTerms=/لوازم جانبی|تجهیزات جانبی|قطعات کامپیوتر|کیبورد|ماوس|کابل|شارژر|قاب|گلس|پاوربانک|هندزفری|هدفون|ssd|هارد|رم کامپیوتر|کارت گرافیک|مادربرد/;
    var accessoryMatch=accessoryTerms.test(hay);
    if(!matchedPhrase&&score<4&&!accessoryMatch)return;
+   var generalMarketplace=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
+   if(intent==='mobile_accessory'){
+    var mobileSpecialists=['janebi','digido','digiland','gooshishop','berozkala','technolife'];
+    if(!generalMarketplace&&mobileSpecialists.indexOf(key)<0)return;
+    if(/سامسونگ/.test(raw)&&key==='janebi')return;
+   }else{
+    var accessorySpecialists=['janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit'];
+    if(!generalMarketplace&&accessorySpecialists.indexOf(key)<0)return;
+   }
    if(store.storeType!=='general'&&domains.indexOf('accessories')<0&&domains.indexOf('digital')<0)return;
    if(intent==='digital_accessory'&&!accessoryMatch)return;
   }else if(intent==='digital_product'){
@@ -113,6 +126,19 @@ function resolveSearchContext(query){
     if(!productTerms.test(hay))return;
     if(!matchedPhrase&&score<2&&tokens.filter(function(t){return fieldTokens.indexOf(t)>=0;}).length===0)return;
    }
+  }else if(intent==='train_ticket'){
+   if(['alibaba','mrbilit','ghasedak24'].indexOf(key)<0)return;
+   score=25;
+  }else if(intent==='sunscreen'){
+   var sunscreenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
+   var sunscreenSpecialists=['khanoumi','darukade','mosbatesabz','solokala','daroo-online'];
+   if(!sunscreenGeneral&&sunscreenSpecialists.indexOf(key)<0)return;
+   if(!sunscreenGeneral&&!/ضد\s*آفتاب|ضدآفتاب/.test(hay))return;
+   score=25;
+  }else if(intent==='kitchen_scale'){
+   var kitchenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
+   if(!kitchenGeneral&&key!=='technolife')return;
+   score=25;
   }else{
    var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
    var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
@@ -123,6 +149,10 @@ function resolveSearchContext(query){
   var urlResolver=window.DigiYarStoreSearchUrl;
   var categories=domains.map(function(d){return getDomainTitle(d);});
   if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw)){unavailableRoutes.push({id:key,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});return;}
+  if(intent==='train_ticket'&&typeof urlResolver.resolveRoute==='function'){
+   var trainRoute=urlResolver.resolveRoute(key,raw);
+   if(!trainRoute||trainRoute.kind!=='search')return;
+  }
   if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
   if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories))});}
  });
