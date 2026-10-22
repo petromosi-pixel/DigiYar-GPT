@@ -1,6 +1,6 @@
 # Hooshyar Catalog-to-Search URL Coverage Audit
 
-Last reviewed: 2026-10-21  
+Last reviewed: 2026-10-22  
 Branch: `main`
 
 ## Purpose
@@ -10,10 +10,10 @@ The catalog is the single source for merchant identity, business domains, produc
 ## Current static coverage
 
 - Catalog entries: 120
-- IDs with an explicit resolver handler: 26
-- IDs without an explicit resolver handler: 94
-- Important: an explicit handler is **not** proof of a working destination. Some handlers are intentionally fail-closed for unsupported queries, and configured URLs still need browser-level validation.
-- Counts are based on static source inspection of `store-business-domains.js` and `v7-store-search-url.js`, not end-to-end browser tests.
+- Direct query-specific resolver handlers remain limited to the handlers declared in `v7-store-search-url.js`; the resolver now also exposes a separate canonical-homepage fallback for every catalog merchant with a safe HTTPS homepage.
+- Every relevant merchant with a direct search route uses that route. When no verified query-specific route exists, the merchant is no longer silently dropped: Hooshyar can show it with a clearly classifiable `homepage_fallback` route.
+- A homepage fallback is **not** treated as a verified product-search route. It is only a navigable destination for a relevant store, and should be upgraded when a verified search/service URL is available.
+- Route audit output now separates `configuredHandlerCount`, `homepageFallbackCount`, and `missingHandlerCount`. Counts are derived at runtime from the canonical catalog and resolver, not hard-coded.
 - Stores may appear in multiple domain groups; each store ID is unique in the catalog but can have multiple business domains.
 
 ## Changes in this pass
@@ -193,6 +193,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 1. Verify the official destination in a browser.
 2. Verify that the query or category is actually carried into a useful results page, service page, or booking flow.
 3. Preserve the user's product/service intent; only simplify the query when a merchant's behavior is known to require it.
-4. Do not fall back to a homepage, login, affiliate registration, or unrelated landing page when a search route is missing.
+4. Prefer a verified query-specific product/service route. If none exists, keep the relevant merchant visible using its canonical HTTPS homepage as an explicitly identified fallback; never present that homepage as a verified search-results page, and never use an affiliate-registration URL.
 5. Distinguish merchant type: marketplace, price-comparison engine, product specialist, travel/booking service, education service, auto service, property listing, and affiliate network.
 6. Test query families independently and inspect actual destination pages before marking a route verified.
