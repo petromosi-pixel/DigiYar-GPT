@@ -1,7 +1,7 @@
 /* DigiYar V7 — unified merchant business-domain knowledge base */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-business-domains.44';
+var VERSION='7.0.0-store-business-domains.45';
 var C={
 digikala:{name:'دیجی‌کالا',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','books','auto'],products:['موبایل','تبلت','لپ تاپ','کامپیوتر','لوازم جانبی','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','خانه','ورزش','کودک','کتاب','خودرو','قرص','مکمل','ویتامین','کیف اداری', 'بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای'],aliases:['فروشگاه عمومی','مارکت پلیس']},
 snappshop:{name:'اسنپ‌شاپ',domains:['digital','furniture','fashion','beauty','health','supermarket','home','sports','kids','auto'],products:['موبایل','تبلت','لپ تاپ','دیجیتال','تصفیه هوا','لوازم خانگی','پوشاک','کفش','آرایشی','بهداشتی','روزمره','قرص','مکمل','ویتامین','کیف اداری','بخارشوی','جاروبرقی','فرش شوی','دستگاه مبل شوی','تمیزکننده مبل پارچه‌ای','لوازم جانبی موبایل','قاب گوشی','شارژر موبایل','پاوربانک','هندزفری'],aliases:['خرید آنلاین عمومی']},
@@ -165,24 +165,17 @@ if(C['banistyle'])C['banistyle'].homepage=C['banistyle'].homepage||'https://bani
 if(C['aysoocollection'])C['aysoocollection'].homepage=C['aysoocollection'].homepage||'https://aysoocollection.com/';
 if(C['daru24'])C['daru24'].homepage=C['daru24'].homepage||'https://daru24.com/';
 if(C['betadent'])C['betadent'].homepage=C['betadent'].homepage||'https://betadent.com/';
-if(C['darupedia'])C['darupedia'].homepage=C['darupedia'].homepage||'https://darupedia.com/';
-if(C['darucenter'])C['darucenter'].homepage=C['darucenter'].homepage||'https://darucenter.com/';
 if(C['webdaru'])C['webdaru'].homepage=C['webdaru'].homepage||'https://webdaru.com/';
 if(C['saba'])C['saba'].homepage=C['saba'].homepage||'https://sabadaru.com/';
-if(C['darupost'])C['darupost'].homepage=C['darupost'].homepage||'https://darupost.com/';
-if(C['shider'])C['shider'].homepage=C['shider'].homepage||'https://shider.com/';
 if(C['alibaba'])C['alibaba'].homepage=C['alibaba'].homepage||'https://www.alibaba.ir/';
 if(C['jobama'])C['jobama'].homepage=C['jobama'].homepage||'https://www.jabama.com/';
 if(C['flytoday'])C['flytoday'].homepage=C['flytoday'].homepage||'https://www.flytoday.ir/';
 if(C['raja'])C['raja'].homepage=C['raja'].homepage||'https://www.raja.ir/';
 if(C['ghasedak24'])C['ghasedak24'].homepage=C['ghasedak24'].homepage||'https://ghasedak24.com/';
-if(C['siroom'])C['siroom'].homepage=C['siroom'].homepage||'https://siroom.ir/';
-if(C['roomit'])C['roomit'].homepage=C['roomit'].homepage||'https://roomit.ir/';
 if(C['classino'])C['classino'].homepage=C['classino'].homepage||'https://classino.com/';
 if(C['alocom'])C['alocom'].homepage=C['alocom'].homepage||'https://alocom.co/';
 if(C['skyroom'])C['skyroom'].homepage=C['skyroom'].homepage||'https://www.skyroom.online/';
 if(C['faradars'])C['faradars'].homepage=C['faradars'].homepage||'https://faradars.org/';
-if(C['faranesh'])C['faranesh'].homepage=C['faranesh'].homepage||'https://faranesh.com/';
 if(C['toplearn'])C['toplearn'].homepage=C['toplearn'].homepage||'https://toplearn.com/';
 if(C['daneshjooyar'])C['daneshjooyar'].homepage=C['daneshjooyar'].homepage||'https://daneshjooyar.com/';
 if(C['divar'])C['divar'].homepage=C['divar'].homepage||'https://divar.ir/';
