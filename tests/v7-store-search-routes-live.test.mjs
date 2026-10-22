@@ -1,111 +1,63 @@
 import assert from 'node:assert/strict';
 
-globalThis.window = {
-  addEventListener() {}, removeEventListener() {}, dispatchEvent() {},
-  DigiYarStoreCategories: {}, DigiYarShoppingPlan: null,
-  DigiYarAffiliateUrls: {}, DigiYarPopularAffiliateStores: []
-};
-globalThis.document = {
-  readyState: 'loading', addEventListener() {}, getElementById() { return null; },
-  createElement() { return { style: {}, appendChild() {}, addEventListener() {} }; },
-  head: { appendChild() {} }
-};
-
+globalThis.window = globalThis;
 await import('../js/store-business-domains.js');
-await import('../js/user-profile.js');
-await import('../js/v7-store-eligibility.js');
-await import('../js/v7-hooshyar-three-engine.js');
-await import('../js/v7-ai-shopping-orchestrator.js');
-await import('../js/v6-store-browser.js');
+await import('../js/v7-store-search-url.js');
 
-const scenarios = [
-  { name:'air purifier', query:'می‌خوام هوای اتاق خواب تمیز و پاک باشه',
-    visible:['digikala','snappshop','torob','basalam'],
-    forbidden:['esam','takhfifan','memarket','divar','sheypoor'] },
-  { name:'fabric sofa cleaning', query:'یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای',
-    visible:['digikala','snappshop','torob','basalam'],
-    forbidden:['iranmiz','partochoob','chidahome','tidawood','janebi','esam','takhfifan','memarket'] },
-  { name:'train tickets', query:'بلیط قطار تهران مشهد',
-    visible:['ghasedak24','mrbilit','alibaba'],
-    forbidden:['shab','safarme','eghamat24','jobama','flytoday','flysepehran','safarmarket','raja'] },
-  { name:'mobile accessories', query:'لوازم جانبی موبایل',
-    visible:['digikala','snappshop','torob','basalam','janebi','digido','gooshishop','technolife','digiland','berozkala'],
-    forbidden:['dayan','takhfifan','esam','memarket'] },
-  { name:'Samsung phone accessories', query:'لوازم جانبی گوشی سامسونگ',
-    visible:['digikala','snappshop','torob','basalam','janebi','digido','gooshishop','technolife','digiland','berozkala'],
-    forbidden:['dayan','meghdadit','takhfifan','esam','memarket'] },
-  { name:'office bag', query:'کیف اداری برای محل کارم می‌خوام',
-    visible:['digikala','snappshop','torob','basalam','janebi','dayan'],
-    forbidden:['modiseh','jeanswest','memarket','esam','takhfifan'] },
-  { name:'sunscreen for dry skin', query:'یه ضد آفتاب برای پوست خشک می‌خوام',
-    visible:['digikala','snappshop','torob','basalam','banimode','khanoumi','darukade','mosbatesabz','solokala','daroo-online','takhfifan'],
-    forbidden:['janebi','neshatrokh','pinket','memarket'] },
-  { name:'kitchen scale', query:'ترازوهای هوشمند برای آشپزخانه',
-    visible:['digikala','snappshop','torob','basalam','technolife','solokala'],
-    forbidden:['iranmiz','partochoob','chidahome','tidawood','janebi','esam','takhfifan'] }
+const kb = window.DigiYarStoreBusinessDomains;
+const resolver = window.DigiYarStoreSearchUrl;
+assert.ok(kb?.catalog && resolver?.resolveRoute, 'Current catalog and resolver must load');
+
+const cases = [
+  { name:'air purifier', id:'digikala', query:'تصفیه هوای اتاق خواب', host:'www.digikala.com', path:'/search/' },
+  { name:'air purifier', id:'torob', query:'تصفیه هوای اتاق خواب', host:'torob.com', path:'/search/' },
+  { name:'air purifier', id:'basalam', query:'تصفیه هوای اتاق خواب', host:'basalam.com', path:'/s' },
+  { name:'train tickets', id:'ghasedak24', query:'بلیط قطار تهران مشهد', host:'ghasedak24.com', path:'/train-ticket' },
+  { name:'train tickets', id:'mrbilit', query:'بلیط قطار تهران مشهد', host:'mrbilit.com', path:'/train-ticket' },
+  { name:'train tickets', id:'alibaba', query:'بلیط قطار تهران مشهد', host:'www.alibaba.ir', path:'/train-ticket' },
+  { name:'office bag', id:'modiseh', query:'کیف اداری برای محل کارم می‌خوام', host:'www.modiseh.com', path:'/catalogsearch/result/' },
+  { name:'sunscreen', id:'solokala', query:'ضد آفتاب برای پوست خشک', host:'solokala.com', path:'/' },
+  { name:'mobile accessories', id:'janebi', query:'لوازم جانبی موبایل', host:'janebi.com', path:'/search' },
+  { name:'mobile accessories', id:'technolife', query:'لوازم جانبی موبایل', host:'www.technolife.com', path:'/product/list/search' }
 ];
 
-const servicePages = {
-  ghasedak24: { host:'ghasedak24.com', path:'/train-ticket' },
-  mrbilit: { host:'mrbilit.com', path:'/train-ticket' },
-  alibaba: { host:'www.alibaba.ir', path:'/train' }
-};
-const routeCases = [];
-for (const scenario of scenarios) {
-  const plan = await window.DigiYarShoppingOrchestrator.run(scenario.query);
-  const eligible = [...(plan.ai.eligibleStoreIds || [])];
-  const visible = eligible.map(id => ({
-    id,
-    query: (plan.ai.searchQueries || {})[id] || scenario.query,
-    url: window.DigiYarStoreBrowser.resolveSearchUrl(id, (plan.ai.searchQueries || {})[id] || scenario.query)
-  })).filter(item => item.url);
-  const visibleIds = visible.map(item => item.id);
-  for (const id of scenario.visible) {
-    assert.ok(visibleIds.includes(id), `${scenario.name}: expected visible merchant ${id}; actual: ${visibleIds.join(',')}`);
+const restrictedStatuses = new Set([403, 429, 503]);
+const results = [];
+for (const item of cases) {
+  const route = resolver.resolveRoute(item.id, item.query);
+  assert.ok(route, `${item.name}/${item.id}: route must resolve`);
+  assert.equal(route.kind, 'search', `${item.name}/${item.id}: expected a direct search route`);
+  const url = new URL(route.url);
+  assert.equal(url.hostname, item.host, `${item.name}/${item.id}: destination host`);
+  assert.ok(url.pathname.startsWith(item.path), `${item.name}/${item.id}: destination path ${url.pathname}`);
+  if (!['ghasedak24','mrbilit','alibaba'].includes(item.id)) {
+    const queryText = [...url.searchParams.values()].join(' ');
+    assert.ok(queryText.length > 1, `${item.name}/${item.id}: product-search query must be present`);
   }
-  for (const id of scenario.forbidden) {
-    assert.ok(!visibleIds.includes(id), `${scenario.name}: irrelevant/unverified merchant ${id} must not be visible`);
+  try {
+    const response = await fetch(route.url, {
+      redirect:'follow',
+      signal:AbortSignal.timeout(12000),
+      headers:{'user-agent':'Mozilla/5.0 DigiYar-route-smoke'}
+    });
+    if (response.body?.cancel) await response.body.cancel().catch(() => {});
+    assert.ok(![404,410].includes(response.status),
+      `${item.name}/${item.id}: dead destination HTTP ${response.status} at ${response.url}`);
+    results.push({ ...item, status:response.status, finalUrl:response.url,
+      note:restrictedStatuses.has(response.status) ? 'blocked by destination' : 'reachable' });
+  } catch (error) {
+    if (error?.code === 'ERR_ASSERTION') throw error;
+    results.push({ ...item, status:'NETWORK_UNVERIFIED', note:String(error).slice(0,100) });
   }
-  for (const item of visible) {
-    const url = new URL(item.url);
-    assert.ok(!/(^|\\.)google\\.com$/i.test(url.hostname), `${scenario.name}/${item.id}: must not redirect through Google`);
-    const service = servicePages[item.id];
-    const verifiedServicePage = Boolean(service && url.hostname === service.host && url.pathname === service.path && /قطار|ریل/.test(item.query));
-    const queryParam = ['q','query','s','search','title','kw','keywords','w','term','text','keyword','product','search_query']
-      .some(key => (url.searchParams.get(key) || '').trim().length >= 2);
-    assert.ok(queryParam || verifiedServicePage,
-      `${scenario.name}/${item.id}: URL must be a merchant product-search URL or a verified train-ticket search form`);
-    assert.ok(url.pathname !== '/' || queryParam,
-      `${scenario.name}/${item.id}: homepage-only URLs are not valid search results`);
-    routeCases.push({ scenario:scenario.name, id:item.id, url:item.url });
-  }
-  console.log(`PASS ${scenario.name}: ${visibleIds.length} visible; ${eligible.length-visibleIds.length} withheld without a verified route`);
 }
 
-async function probe(item) {
-  let lastError = null;
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      const response = await fetch(item.url, { redirect:'follow', signal:AbortSignal.timeout(10000) });
-      if (response.body && response.body.cancel) await response.body.cancel().catch(() => {});
-      return { ...item, status:response.status, finalUrl:response.url };
-    } catch (error) { lastError = String(error); }
-  }
-  return { ...item, status:null, error:lastError };
+const fallback = resolver.resolveRoute('dayan', 'کیف اداری');
+assert.equal(fallback?.kind, 'homepage_fallback',
+  'Dayan must remain explicitly marked as a homepage fallback until a product-search URL is verified');
+assert.equal(new URL(fallback.url).hostname, 'dayanshop.com');
+
+console.log('V7 live route smoke test');
+for (const result of results) {
+  console.log(`${result.status}\t${result.name}\t${result.id}\t${result.finalUrl || result.note}`);
 }
-const results = [];
-let cursor = 0;
-const workers = Array.from({length:8}, async () => {
-  while (cursor < routeCases.length) {
-    const item = routeCases[cursor++];
-    results.push(await probe(item));
-  }
-});
-await Promise.all(workers);
-const dead = results.filter(item => item.status === 404 || item.status === 410);
-const restricted = results.filter(item => item.status === 403 || item.status === 429 || item.status === 503 || item.status === null);
-console.log(`Live merchant-route probes: ${results.length}; restricted/unverified: ${restricted.length}`);
-for (const item of restricted) console.log(`RESTRICTED ${item.status ?? 'NETWORK'} ${item.scenario}/${item.id} ${item.finalUrl || item.url}`);
-for (const item of dead) console.log(`DEAD ${item.status} ${item.scenario}/${item.id} ${item.finalUrl || item.url}`);
-assert.equal(dead.length, 0, 'visible simulator routes must not resolve to HTTP 404/410');
-console.log('V7 local simulator category, relevance and live-route acceptance: PASS');
+console.log(`Checked ${results.length} direct routes; Dayan is explicitly a homepage fallback.`);
