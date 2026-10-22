@@ -77,7 +77,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `daroo-online` — داروخانه آنلاین
 - [ ] `daru24` — دارو۲۴
 - [ ] `betadent` — بتادنت
-- [ ] `webdaru` — وب‌دارو
 - [ ] `saba` — داروخانه صبا
 - [ ] `mootanroo` — مو تن رو
 - [ ] `ninisite` — نی‌نی سایت
@@ -90,7 +89,6 @@ The lists below are missing resolver handlers, not irrelevant merchants. A merch
 - [ ] `daroo-online` — داروخانه آنلاین
 - [ ] `daru24` — دارو۲۴
 - [ ] `betadent` — بتادنت
-- [ ] `webdaru` — وب‌دارو
 - [ ] `saba` — داروخانه صبا
 
 ### سوپرمارکت و مواد غذایی — 6 فروشگاه
