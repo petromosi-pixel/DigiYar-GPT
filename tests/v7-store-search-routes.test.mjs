@@ -19,12 +19,21 @@ assert.match(decodeURIComponent(digikala), /گوشی موبایل/);
 const meghdad = resolver.resolve('meghdadit', 'لوازم جانبی دیجیتال');
 assert.match(meghdad, /^https:\/\/meghdadit\.com\/\?s=/);
 assert.match(decodeURIComponent(meghdad), /لوازم جانبی دیجیتال/);
-assert.equal(resolver.resolve('dayan', 'کیف اداری'), '',
-  'Unverified Dayan affiliate routes must fail closed rather than open login/home');
-assert.equal(resolver.resolve('memarket', 'تصفیه هوا'), '',
-  'MiMarket must fail closed until its product search route is verified');
-assert.equal(resolver.resolve('iranmiz', 'میز اداری'), '',
-  'A missing specialist route must not be replaced by its homepage');
+assert.equal(resolver.resolveRoute('dayan', 'کیف اداری').kind, 'homepage_fallback',
+  'Dayan must use its canonical homepage until a verified product-search route exists');
+assert.equal(resolver.resolveRoute('memarket', 'تصفیه هوا').kind, 'homepage_fallback',
+  'MiMarket must use its canonical homepage until a verified product-search route exists');
+assert.equal(resolver.resolveRoute('iranmiz', 'میز اداری').kind, 'homepage_fallback',
+  'Relevant specialist stores without a direct search route must remain visible via their canonical homepage');
 assert.equal(resolver.hasHandler('meghdadit'), true);
-assert.equal(resolver.hasHandler('iranmiz'), false);
+assert.equal(resolver.hasSearchHandler('meghdadit'), true);
+assert.equal(resolver.hasHandler('iranmiz'), true);
+assert.equal(resolver.hasSearchHandler('iranmiz'), false);
+for (const id of kb.ids()) {
+  const route = resolver.resolveRoute(id, 'نمونه کالا');
+  assert.ok(route && /^https:\/\//.test(route.url), `Every catalog store must have a safe route: ${id}`);
+  assert.ok(['search', 'homepage_fallback'].includes(route.kind), `Route kind must be explicit: ${id}`);
+  assert.equal(resolver.hasHandler(id), true, `Every catalog store must be routable: ${id}`);
+}
+
 console.log('V7 active search resolver contract: PASS');
