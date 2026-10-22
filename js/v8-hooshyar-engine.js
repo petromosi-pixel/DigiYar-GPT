@@ -423,7 +423,6 @@ function render(){
   pinket:'پینکت.webp',
   karnameh:'کارنامه.webp',
   gooshishop:'گوشی شاپ.webp',
-  daru24:'داروخانه آنلاین.webp',
   aytol:'آیتول.webp',
   skyroom:'اسکای روم.webp',
   okala:'اُکالا.webp',
