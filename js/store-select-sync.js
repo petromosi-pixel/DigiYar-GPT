@@ -17,22 +17,6 @@
     return value(id);
   }
 
-  function loadStoreBrowser(callback){
-    if(window.DigiYarStoreBrowser){ callback(window.DigiYarStoreBrowser); return; }
-    var existing=document.querySelector('script[data-digiyar-store-browser]');
-    if(existing){
-      existing.addEventListener('load',function(){ callback(window.DigiYarStoreBrowser); },{once:true});
-      return;
-    }
-    var script=document.createElement('script');
-    script.src='js/v6-store-browser.js?v=7.0.0-store-browser.70';
-    script.async=false;
-    script.dataset.digiyarStoreBrowser='1';
-    script.onload=function(){ callback(window.DigiYarStoreBrowser); };
-    script.onerror=function(){ console.error('DigiYar Hooshyar: failed to load store browser'); };
-    document.head.appendChild(script);
-  }
-
   function syncStores(){
     var select=el('storeSelect');
     var stores=window.DigiYarPopularAffiliateStores;
@@ -141,18 +125,9 @@
     smartInput.value=query;
     syncHooshyarHint();
     /* Keep the original bridge: the profile card submits through the Hooshyar search form. */
-    if(smartInput.form && typeof smartInput.form.requestSubmit==='function'){
-      smartInput.form.requestSubmit();
-    }else{
-      loadStoreBrowser(function(browser){
-        try{
-          var host=browser.open(query);
-          requestAnimationFrame(function(){
-            var target=host||el('v6StoreSimulatorResults');
-            if(target && typeof target.scrollIntoView==='function') target.scrollIntoView({behavior:'smooth',block:'start'});
-          });
-        }catch(error){ console.error('DigiYar Hooshyar browser:',error); }
-      });
+    if(smartInput.form){
+      if(typeof smartInput.form.requestSubmit==='function') smartInput.form.requestSubmit();
+      else smartInput.form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
     }
     return true;
   }
