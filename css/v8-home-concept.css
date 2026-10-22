@@ -1,0 +1,54 @@
+/* DigiYar V8 — concept home shell. Presentation-only layer; existing search/comparison engines remain authoritative. */
+:root{--v8-ink:#172b50;--v8-blue:#316de0;--v8-cyan:#50d8f4;--v8-line:#dce7f8;--v8-muted:#6d7e99;--v8-card:#fff}
+html{scroll-padding-top:88px}
+body{background:radial-gradient(ellipse at 90% 5%,rgba(65,127,255,.13),transparent 32%),linear-gradient(180deg,#f2f6ff 0%,#f8faff 55%,#fff 100%)}
+.app-shell{max-width:1120px!important;padding-bottom:94px!important}
+.main-header{background:linear-gradient(120deg,#101d3b,#1c3a70)!important;border:0!important;border-bottom:2px solid #4f9bff!important;box-shadow:0 8px 28px rgba(17,42,91,.2)!important}
+.header-brand strong{color:#fff!important}.header-brand span{color:#c8dcff!important}
+#digiyarConversation.digiyar-conversation-card{display:block!important;position:relative;overflow:hidden;margin:10px 0 16px!important;padding:22px!important;border:1px solid rgba(106,154,230,.35)!important;border-radius:25px!important;background:radial-gradient(ellipse at 100% 0%,rgba(70,146,255,.24),transparent 45%),linear-gradient(135deg,#101d3c 0%,#183566 58%,#17477c 100%)!important;color:#fff!important;box-shadow:0 16px 36px rgba(22,52,104,.19)!important}
+#digiyarConversation:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.035) 50%,transparent 75%)}
+#digiyarConversation .v5-chat-head{position:relative;display:flex!important;align-items:center;gap:15px;margin:0 0 17px!important}
+#digiyarConversation .v5-chat-avatar{display:grid;place-items:center;flex:0 0 76px;width:76px;height:76px;border:1px solid rgba(106,216,255,.38);border-radius:22px;background:linear-gradient(145deg,rgba(73,147,255,.24),rgba(68,221,255,.08));box-shadow:inset 0 0 22px rgba(74,171,255,.1)}
+#digiyarConversation .v5-chat-avatar img{width:64px;height:70px;object-fit:contain}
+#digiyarConversation .section-title{margin:0!important;text-align:right}
+#digiyarConversation .section-title h2{color:#fff!important;font-size:clamp(20px,4vw,27px)!important;letter-spacing:-.3px}
+#digiyarConversation .section-title p{color:#d1e2ff!important;font-size:12px!important;line-height:1.9}
+#digiyarConversation .digiyar-chat-messages,#digiyarConversation .digiyar-chat-form,#digiyarConversation #v5InlineResults{display:none!important}
+#digiyarConversation #v5SmartSearchForm{position:relative;z-index:1;display:block!important;margin:0!important}
+#digiyarConversation .v5-smart-search-bar{margin:0!important;padding:0!important}
+#digiyarConversation .v5-smart-search-field{min-height:58px!important;border:1px solid rgba(151,188,255,.55)!important;border-radius:17px!important;background:#fff!important;box-shadow:0 8px 24px rgba(0,0,0,.17)!important}
+#digiyarConversation .v5-smart-search-field input{height:58px!important;padding-right:55px!important;padding-left:54px!important;color:#182b4b!important;font-size:14px!important}
+#digiyarConversation .v5-smart-search-field input::placeholder{color:#8190a9!important;opacity:1}
+#digiyarConversation .v5-smart-search-field .v7-hooshyar-robot-zone{right:9px!important}
+#digiyarConversation .v5-smart-search-field .v7-hooshyar-action-zone{left:8px!important}
+#v8HomeShortcuts{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:13px}
+.v8-home-shortcut{display:flex;align-items:center;gap:10px;min-height:61px;padding:10px 12px;border:1px solid rgba(153,193,255,.22);border-radius:15px;background:rgba(255,255,255,.075);color:#fff;text-align:right;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+.v8-home-shortcut:hover{transform:translateY(-2px);border-color:rgba(119,213,255,.65);background:rgba(255,255,255,.12)}
+.v8-home-shortcut .v8-shortcut-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,rgba(74,145,255,.32),rgba(79,216,244,.15));color:#8ce9ff;font-size:21px}
+.v8-home-shortcut strong{display:block;color:#fff;font-size:12px;line-height:1.6}
+.v8-home-shortcut small{display:block;color:#c5d8f7;font-size:10px;line-height:1.5}
+#resultSection{position:relative;margin-top:0!important;border:1px solid var(--v8-line)!important;border-radius:21px!important;background:var(--v8-card)!important;box-shadow:0 8px 24px rgba(31,64,118,.06)!important}
+#resultSection .section-title h2{color:var(--v8-ink)!important;font-size:19px!important}
+#resultSection .section-title p{color:var(--v8-muted)!important}
+#resultSection:has(#needSummary.empty) #needSummary{display:none!important}
+#v7ComparisonCard.v7c-simulator-shell{margin-top:12px!important;border-radius:18px!important;border-color:var(--v8-line)!important}
+#popularStoresDiscovery{margin-top:15px!important;border:1px solid var(--v8-line)!important;border-radius:21px!important;background:var(--v8-card)!important;box-shadow:0 8px 24px rgba(31,64,118,.06)!important}
+#popularStoresDiscovery .popular-discovery-toggle{background:linear-gradient(120deg,#172d54,#2857a1)!important;box-shadow:0 7px 19px rgba(30,75,145,.17)!important}
+#popularStoresDiscovery .popular-discovery-toggle h2{font-size:16px!important}
+.v5-smart-search-bar:not(#digiyarConversation .v5-smart-search-bar){display:none!important}
+#v8HomeDealsJump{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px;padding:13px 15px;border:1px solid var(--v8-line);border-radius:16px;background:linear-gradient(110deg,#fff,#f2f7ff);color:#243d68}
+#v8HomeDealsJump strong{font-size:13px}#v8HomeDealsJump span{font-size:11px;color:#6d7e99}
+.v8-bottom-nav{position:fixed;z-index:10000;right:50%;bottom:max(9px,env(safe-area-inset-bottom));transform:translateX(50%);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:min(calc(100% - 22px),560px);padding:7px;border:1px solid rgba(155,177,211,.42);border-radius:20px;background:rgba(255,255,255,.94);box-shadow:0 10px 35px rgba(19,43,82,.18);backdrop-filter:blur(18px)}
+.v8-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;border:0;border-radius:13px;background:transparent;color:#687b98;font:inherit;cursor:pointer}
+.v8-bottom-nav button[aria-current="page"]{background:linear-gradient(135deg,#e8f1ff,#f2f7ff);color:#1f5cc3}
+.v8-bottom-nav .v8-nav-icon{font-size:19px;line-height:1.3}.v8-bottom-nav small{font-size:10px;font-weight:700}
+body.v6-dark{background:radial-gradient(ellipse at 90% 5%,rgba(44,103,204,.17),transparent 32%),#0b1220!important}
+body.v6-dark #digiyarConversation.digiyar-conversation-card{background:radial-gradient(ellipse at 100% 0%,rgba(70,146,255,.2),transparent 45%),linear-gradient(135deg,#101a30,#142a4d 58%,#15395e)!important;border-color:#29466f!important}
+body.v6-dark #resultSection,body.v6-dark #popularStoresDiscovery{background:#121e32!important;border-color:#293d5c!important}
+body.v6-dark #resultSection .section-title h2{color:#e8f0ff!important}
+body.v6-dark #v8HomeDealsJump{background:#14243c;border-color:#2a4164;color:#e8f0ff}
+body.v6-dark .v8-bottom-nav{background:rgba(15,25,43,.95);border-color:#2b4164}
+body.v6-dark .v8-bottom-nav button{color:#b7c7e2}
+body.v6-dark .v8-bottom-nav button[aria-current="page"]{background:#1d3559;color:#91c6ff}
+@media(max-width:540px){.app-shell{padding-left:12px!important;padding-right:12px!important}#digiyarConversation.digiyar-conversation-card{padding:17px!important;border-radius:21px!important;margin-top:7px!important}#digiyarConversation .v5-chat-avatar{flex-basis:62px;width:62px;height:62px;border-radius:18px}#digiyarConversation .v5-chat-avatar img{width:54px;height:60px}#digiyarConversation .v5-chat-head{gap:11px;margin-bottom:14px!important}#digiyarConversation .section-title h2{font-size:20px!important}#digiyarConversation .section-title p{font-size:11px!important}#v8HomeShortcuts{gap:8px}.v8-home-shortcut{padding:9px;gap:8px;min-height:58px}.v8-home-shortcut .v8-shortcut-icon{flex-basis:32px;width:32px;height:32px;font-size:18px}.v8-home-shortcut strong{font-size:11px}.v8-home-shortcut small{font-size:9px}.card{padding:15px}#popularStoresDiscovery .popular-discovery-toggle{padding:13px!important}}
+@media(prefers-reduced-motion:reduce){.v8-home-shortcut{transition:none}}
