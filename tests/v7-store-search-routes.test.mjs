@@ -16,6 +16,15 @@ assert.ok(kb.catalog.meghdadit.products.some(x => /لوازم جانبی دیج�
 const digikala = resolver.resolve('digikala', 'گوشی موبایل');
 assert.match(digikala, /^https:\/\/www\.digikala\.com\/search\/\?q=/);
 assert.match(decodeURIComponent(digikala), /گوشی موبایل/);
+const descriptive = resolver.resolve('digikala', 'دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم');
+assert.match(decodeURIComponent(descriptive), /اتاق خواب/);
+assert.match(decodeURIComponent(descriptive), /مناسب/);
+const descriptiveTorob = resolver.resolve('torob', 'کیف اداری برای محل کارم می‌خوام');
+assert.match(decodeURIComponent(descriptiveTorob), /محل کارم/);
+const basalamAccessories = resolver.resolve('basalam', 'لوازم جانبی موبایل');
+assert.match(decodeURIComponent(basalamAccessories), /لوازم جانبی موبایل/);
+const basalamSamsung = resolver.resolve('basalam', 'لوازم جانبی گوشی سامسونگ');
+assert.match(decodeURIComponent(basalamSamsung), /سامسونگ/);
 const meghdad = resolver.resolve('meghdadit', 'لوازم جانبی دیجیتال');
 assert.match(meghdad, /^https:\/\/meghdadit\.com\/\?s=/);
 assert.match(decodeURIComponent(meghdad), /لوازم جانبی دیجیتال/);
