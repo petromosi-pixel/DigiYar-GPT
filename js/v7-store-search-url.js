@@ -68,7 +68,7 @@ function safeHomepage(id){
  var merchant=catalog[String(id||'').toLowerCase()]||{};
  try{
   var u=new URL(String(merchant.homepage||''));
-  if(u.protocol!=='https:'||!u.hostname||/^(?:localhost|127\\.|0\\.0\\.0\\.0)/i.test(u.hostname)||/affdn\\.ir$/i.test(u.hostname))return '';
+  if(u.protocol!=='https:'||!u.hostname||/^(?:localhost|127\.|0\.0\.0\.0)/i.test(u.hostname)||/affdn\.ir$/i.test(u.hostname))return '';
   return u.href;
  }catch(e){return '';}
 }
@@ -77,7 +77,7 @@ function resolveRoute(id,q){
  if(!key||!query)return null;
  var catalog=root.DigiYarStoreBusinessDomains&&root.DigiYarStoreBusinessDomains.catalog||{};
  var merchant=catalog[key]||{},merchantName=normalize(merchant.name||''),home=safeHomepage(key),merchantHost='';
- try{merchantHost=normalize(new URL(String(merchant.homepage||'')).hostname.replace(/^www\\./i,''));}catch(e){}
+ try{merchantHost=normalize(new URL(String(merchant.homepage||'')).hostname.replace(/^www\./i,''));}catch(e){}
  if(query===merchantName||query===normalize(key)||(merchantHost&&query===merchantHost)){
   return home?{storeId:key,url:home,kind:'homepage',directSearch:false,query:query}:null;
  }
