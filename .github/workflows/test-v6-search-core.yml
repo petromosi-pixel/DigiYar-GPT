@@ -1,10 +1,6 @@
 name: V6 Hooshyar Search Core
 
 on:
-  push:
-    branches:
-      - main
-      - hooshyar-search-core
   workflow_dispatch:
 
 permissions:
