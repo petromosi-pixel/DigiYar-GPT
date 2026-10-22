@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='7.0.0-popular-store-discovery.39';
+var VERSION='7.0.0-popular-store-discovery.40';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -83,7 +83,7 @@ function resolveSearchContext(query){
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
   var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
-  var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0;});
+  var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0&&!(intent==='mobile_accessory'&&key==='janebi'&&x==='موبایل');});
   if(Array.isArray(store.hooshyarExcludeConcepts)&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
   var score=0,matchedPhrase=false;
   fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
