@@ -1,7 +1,7 @@
 # Hooshyar Catalog-to-Search URL Coverage Audit
 
 Last reviewed: 2026-10-22  
-Branch: `main`
+Branch: `main` · Hooshyar core promoted to V8
 
 ## Purpose
 
@@ -11,7 +11,7 @@ The catalog is the single source for merchant identity, business domains, produc
 
 - Catalog entries: 120
 - Current canonical catalog entries: 100 on `main` after the approved store removals.
-- Direct query-specific resolver handlers remain limited to the handlers declared in `v7-store-search-url.js`; the resolver now also exposes a separate canonical-homepage fallback for every catalog merchant with a safe HTTPS homepage.
+- Direct query-specific resolver handlers remain limited to the handlers declared in `v8-store-search-url.js`; the resolver now also exposes a separate canonical-homepage fallback for every catalog merchant with a safe HTTPS homepage.
 - Every relevant merchant with a direct search route uses that route. When no verified query-specific route exists, the merchant is no longer silently dropped: Hooshyar can show it with a clearly classifiable `homepage_fallback` route.
 - A homepage fallback is **not** treated as a verified product-search route. It is only a navigable destination for a relevant store, and should be upgraded when a verified search/service URL is available.
 - Route audit output now separates `configuredHandlerCount`, `homepageFallbackCount`, and `missingHandlerCount`. Counts are derived at runtime from the canonical catalog and resolver, not hard-coded.
@@ -20,7 +20,7 @@ The catalog is the single source for merchant identity, business domains, produc
 ## Changes in this pass
 
 - Hooshyar's category labels now prefer the canonical `domainTitles` dictionary from the catalog KB instead of maintaining a second competing title source.
-- The discovery module exposes `auditCatalogRoutes()`, which reports handler coverage by business domain.
+- The V8 Hooshyar discovery engine exposes `auditCatalogRoutes()`, which reports handler coverage by business domain.
 - Query resolution now distinguishes catalog-eligible stores from eligible stores whose route handler is still missing. This makes the gap inspectable without falsely classifying a store as irrelevant.
 - Resolver exposes `hasHandler()` and `handlerIds()` for coverage auditing.
 - Cache references were bumped in `index.html`.
