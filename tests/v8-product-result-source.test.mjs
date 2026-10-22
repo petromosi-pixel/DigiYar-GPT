@@ -5,10 +5,10 @@ import assert from 'node:assert/strict';
 const source=fs.readFileSync('js/v8-product-result-source.js','utf8');
 const events=[];
 const context={
+  CustomEvent:function(name,init){this.type=name;this.detail=init&&init.detail;},
   window:{
     addEventListener:(name,fn)=>{context.listener=fn;},
-    dispatchEvent:(event)=>events.push(event),
-    CustomEvent:function(name,init){this.type=name;this.detail=init&&init.detail;}
+    dispatchEvent:(event)=>events.push(event)
   },
   console
 };
