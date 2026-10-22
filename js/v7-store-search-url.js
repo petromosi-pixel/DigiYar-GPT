@@ -2,21 +2,21 @@
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='7.0.0-store-search-url.8';
+var VERSION='7.0.0-store-search-url.9';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
 function productTerm(id,q){
  var s=normalize(q),key=String(id||'').toLowerCase();
- /* Merchant-specific query terms are used only where the store's search is
-    known to perform better with a concise product phrase. */
+ /* Preserve the user's full need by default. Only Basalam uses concise
+    category terms where its marketplace search is more reliable. */
+ if(key!=='basalam')return s;
+ if(/سامسونگ/.test(s))return s;
  if(/کیف\s*اداری/.test(s)||(/کیف/.test(s)&&/محل کار/.test(s)))return 'کیف اداری';
  if(/تصفیه\s*هوا/.test(s))return 'تصفیه هوا';
  if(/تمیز|تمیزکردن|تمیز کردن|شستن|شستشو|نظافت|لکه/.test(s)&&/مبل|پارچه/.test(s))return 'تمیزکننده مبل پارچه‌ای';
- if(key==='basalam'){
-  var preferred=[/تصفیه\s*هوا/i,/رطوبت\s*ساز/i,/جارو\s*برقی/i,/بخارشوی/i,/ماشین\s*لباسشویی/i,/یخچال/i,/پنکه/i,/کولر/i,/تلویزیون/i,/لپ.?تاپ/i,/موبایل|گوشی/i,/شارژر/i,/پاوربانک/i,/هندزفری|هدفون/i,/کابل/i,/کیف\s*اداری/i];
-  for(var i=0;i<preferred.length;i++){var m=s.match(preferred[i]);if(m)return m[0].replace(/\s+/g,' ');}
- }
+ var preferred=[/لوازم\s*جانبی\s*(?:موبایل|گوشی)/i,/تصفیه\s*هوا/i,/رطوبت\s*ساز/i,/جارو\s*برقی/i,/بخارشوی/i,/ماشین\s*لباسشویی/i,/یخچال/i,/پنکه/i,/کولر/i,/تلویزیون/i,/لپ.?تاپ/i,/شارژر/i,/پاوربانک/i,/هندزفری|هدفون/i,/کابل/i,/موبایل|گوشی/i,/کیف\s*اداری/i];
+ for(var i=0;i<preferred.length;i++){var m=s.match(preferred[i]);if(m)return m[0].replace(/\s+/g,' ');}
  return s;
 }
 var SEARCH={
