@@ -1,4 +1,4 @@
-const CACHE_VERSION="digiyar-v8-8.0.0-reference-layout.3";
+const CACHE_VERSION="digiyar-v8-8.0.0-baseline-restore.4";
 const APP_SHELL=["./","./index.html","./manifest.json","./css/v8-base.css","./css/v8-splash.css","./css/v8-step2-header.css","./css/v8-ui.css","./css/v8-step4.css","./css/v8-step4-toggle-direction.css","./css/v8-smart-search.css","./css/v8-hooshyar.css"];
 const isRuntimeAsset=request=>{const u=new URL(request.url);return u.pathname.endsWith("/index.html")||u.pathname.endsWith("/")||u.pathname.endsWith(".js")||u.pathname.endsWith(".css")||u.pathname.endsWith(".json")};
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE_VERSION).then(c=>c.addAll(APP_SHELL).catch(()=>{})).then(()=>self.skipWaiting()))});
