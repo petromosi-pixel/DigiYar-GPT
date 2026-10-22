@@ -24,7 +24,8 @@
     "test:v7:product-result-source": "node tests/v7-product-result-source.test.mjs",
     "test:v7:comparison": "node tests/v7-comparison-engine.test.mjs",
     "test:v7:product-result-producer": "node tests/v7-product-result-producer.test.mjs",
-    "test:v7:final2": "node tests/v7-final2-theme-contract.test.mjs && node tests/v7-store-search-routes.test.mjs && node tests/v7-store-taxonomy-audit.test.mjs"
+    "test:v7:final2": "node tests/v7-final2-theme-contract.test.mjs && node tests/v7-store-search-routes.test.mjs && node tests/v7-store-taxonomy-audit.test.mjs",
+    "test:v8:hooshyar": "node --check js/v8-hooshyar-engine.js && node --check js/v8-store-catalog.js && node --check js/v8-store-search-url.js && node tests/v7-store-relevance.test.mjs && node tests/v7-store-taxonomy-audit.test.mjs && node tests/v7-store-search-routes.test.mjs && node tests/v7-final2-theme-contract.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0",
