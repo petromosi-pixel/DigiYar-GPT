@@ -7,7 +7,7 @@ const kb = window.DigiYarStoreBusinessDomains;
 const resolver = window.DigiYarStoreSearchUrl;
 
 const ids = kb.ids();
-assert.equal(ids.length, 100, 'The current canonical catalog contains 100 stores after the approved removals');
+assert.equal(ids.length, 99, 'The canonical catalog excludes Daru24 and contains 99 active stores');
 assert.ok(kb.domainTitles.digital && kb.domainTitles.education && kb.domainTitles.auto_service,
   'The canonical taxonomy must cover product and service domains');
 assert.ok(kb.byDomain.education.storeIds.includes('maktabkhooneh'));
