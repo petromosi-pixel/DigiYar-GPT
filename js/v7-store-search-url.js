@@ -1,7 +1,8 @@
-/* DigiYar V7 — standalone, fail-closed merchant search URL resolver.
+/* DigiYar V7 — catalog-wide merchant route resolver.
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
+var VERSION='7.0.0-store-search-url.7';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
@@ -43,6 +44,10 @@ SEARCH.solokala=q=>'https://solokala.com/search?q='+encodeURIComponent(productTe
 SEARCH.mosbatesabz=q=>'https://mosbatesabz.com/?s='+encodeURIComponent(productTerm('mosbatesabz',q));
 SEARCH.darmankala=q=>'https://darmankala.com/catalogsearch/result/?q='+encodeURIComponent(productTerm('darmankala',q));
 SEARCH.darukade=q=>'https://darukade.com/products?w='+encodeURIComponent(productTerm('darukade',q));
+/* These two stores do not yet have verified query-specific paths. They still
+   receive a safe canonical-homepage route so relevant merchants are not
+   silently omitted from Hooshyar results. */
+var HOMEPAGE_ONLY={dayan:true,memarket:true};
 /* Dayan's previously tested affiliate route resolved to login/home, so fail closed until a real product-search route is verified. */
 SEARCH.dayan=q=>'';
 /* MiMarket's product-search route has not been verified; do not send users to a guessed URL. */
@@ -58,18 +63,40 @@ function hasQuery(url){
   return /\/(?:train-ticket|train)\/?$/.test(u.pathname);
  }catch(e){return false;}
 }
-function resolve(id,q){
- var key=String(id||'').toLowerCase(),query=normalize(q);
- if(!key||!query)return '';
+function safeHomepage(id){
  var catalog=root.DigiYarStoreBusinessDomains&&root.DigiYarStoreBusinessDomains.catalog||{};
- var merchant=catalog[key]||{},merchantName=normalize(merchant.name||''),merchantHome=String(merchant.homepage||''),merchantHost='';
- try{merchantHost=normalize(new URL(merchantHome).hostname.replace(/^www\\./i,''));}catch(e){}
- if(query===merchantName||query===normalize(key)||(merchantHost&&query===merchantHost)){
-  try{var homeUrl=new URL(merchantHome);if(homeUrl.protocol==='https:'&&!/affdn\.ir$/i.test(homeUrl.hostname))return homeUrl.href;}catch(e){}
- }
- var make=SEARCH[key];if(typeof make!=='function')return '';
- var url=make(query);
- return typeof url==='string'&&hasQuery(url)?url:'';
+ var merchant=catalog[String(id||'').toLowerCase()]||{};
+ try{
+  var u=new URL(String(merchant.homepage||''));
+  if(u.protocol!=='https:'||!u.hostname||/^(?:localhost|127\\.|0\\.0\\.0\\.0)/i.test(u.hostname)||/affdn\\.ir$/i.test(u.hostname))return '';
+  return u.href;
+ }catch(e){return '';}
 }
-root.DigiYarStoreSearchUrl={version:'7.0.0-store-search-url.6',resolve:resolve,productTerm:productTerm,hasHandler:function(id){return typeof SEARCH[String(id||'').toLowerCase()]==='function';},handlerIds:function(){return Object.keys(SEARCH).sort();}};
+function resolveRoute(id,q){
+ var key=String(id||'').toLowerCase(),query=normalize(q);
+ if(!key||!query)return null;
+ var catalog=root.DigiYarStoreBusinessDomains&&root.DigiYarStoreBusinessDomains.catalog||{};
+ var merchant=catalog[key]||{},merchantName=normalize(merchant.name||''),home=safeHomepage(key),merchantHost='';
+ try{merchantHost=normalize(new URL(String(merchant.homepage||'')).hostname.replace(/^www\\./i,''));}catch(e){}
+ if(query===merchantName||query===normalize(key)||(merchantHost&&query===merchantHost)){
+  return home?{storeId:key,url:home,kind:'homepage',directSearch:false,query:query}:null;
+ }
+ var make=SEARCH[key],url='';
+ if(typeof make==='function'&&!HOMEPAGE_ONLY[key]){
+  try{url=make(query);}catch(e){url='';}
+  if(typeof url==='string'&&hasQuery(url))return {storeId:key,url:url,kind:'search',directSearch:true,query:query};
+ }
+ /* Route fallback is explicit and inspectable: it is a canonical merchant
+    homepage, never mislabeled as a product-search page. */
+ return home?{storeId:key,url:home,kind:'homepage_fallback',directSearch:false,query:query}:null;
+}
+function resolve(id,q){var route=resolveRoute(id,q);return route?route.url:'';}
+function hasSearchHandler(id){var key=String(id||'').toLowerCase();return typeof SEARCH[key]==='function'&&!HOMEPAGE_ONLY[key];}
+function hasHandler(id){return hasSearchHandler(id)||!!safeHomepage(id);}
+function handlerIds(){
+ var catalog=root.DigiYarStoreBusinessDomains&&root.DigiYarStoreBusinessDomains.catalog||{},ids=Object.keys(SEARCH);
+ Object.keys(catalog).forEach(function(id){if(ids.indexOf(id)<0&&safeHomepage(id))ids.push(id);});
+ return ids.filter(function(id){return hasHandler(id);}).sort();
+}
+root.DigiYarStoreSearchUrl={version:VERSION,resolve:resolve,resolveRoute:resolveRoute,productTerm:productTerm,hasHandler:hasHandler,hasSearchHandler:hasSearchHandler,handlerIds:handlerIds};
 })(typeof window!=='undefined'?window:globalThis);
