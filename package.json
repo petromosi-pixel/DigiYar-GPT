@@ -16,16 +16,11 @@
     "test:v6:live-resolver": "node tests/v6-hooshyar-live-resolver.test.mjs",
     "test:v6:live-resolver:real": "node tests/v6-hooshyar-live-resolver-real-smoke.test.mjs",
     "test:v6:profile-flow": "node tests/v6-hooshyar-profile-flow.test.mjs",
-    "test:v7:store-eligibility": "node tests/v7-store-eligibility.test.mjs",
-    "test:v7:store-catalog-coverage": "node tests/v7-store-eligibility.test.mjs",
-    "test:v7:store-search-routes": "node tests/v7-store-search-routes.test.mjs",
-    "test:v7:store-relevance": "node tests/v7-store-relevance.test.mjs",
-    "test:v7:store-search-routes:live": "node tests/v7-store-search-routes-live.test.mjs",
     "test:v7:product-result-source": "node tests/v7-product-result-source.test.mjs",
     "test:v7:comparison": "node tests/v7-comparison-engine.test.mjs",
     "test:v7:product-result-producer": "node tests/v7-product-result-producer.test.mjs",
-    "test:v7:final2": "node tests/v7-final2-theme-contract.test.mjs && node tests/v7-store-search-routes.test.mjs && node tests/v7-store-taxonomy-audit.test.mjs",
-    "test:v8:hooshyar": "node --check js/v8-hooshyar-engine.js && node --check js/v8-store-catalog.js && node --check js/v8-store-search-url.js && node tests/v7-store-relevance.test.mjs && node tests/v7-store-taxonomy-audit.test.mjs && node tests/v7-store-search-routes.test.mjs && node tests/v7-final2-theme-contract.test.mjs"
+    "test:v8:hooshyar": "node --check js/v8-hooshyar-engine.js && node --check js/v8-store-catalog.js && node --check js/v8-store-search-url.js && node tests/v8-hooshyar-relevance.test.mjs && node tests/v8-store-taxonomy-audit.test.mjs && node tests/v8-store-search-routes.test.mjs && node tests/v8-hooshyar-theme-contract.test.mjs",
+    "test:v8:store-search-routes:live": "node tests/v8-store-search-routes-live.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0",
