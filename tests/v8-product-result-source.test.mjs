@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 
-const source=fs.readFileSync('js/v7-product-result-source.js','utf8');
+const source=fs.readFileSync('js/v8-product-result-source.js','utf8');
 const events=[];
 const context={
   window:{
@@ -14,7 +14,7 @@ const context={
 };
 vm.runInNewContext(source,context);
 const api=context.window.DigiYarV7ProductResultSource;
-assert.ok(api,'V7 Product Result Source must exist');
+assert.ok(api,'V8 Product Result Source must exist');
 
 const snapshot=api.set([
   {id:'1',name:'محصول اول',priceToman:1200000,storeName:'دیجی‌کالا'},
@@ -36,4 +36,4 @@ api.publish([{id:'3',name:'محصول سوم'}],{query:'رویداد',source:'ev
 assert.equal(events.length,1);
 assert.equal(events[0].type,'digiyar:v7-product-results');
 
-console.log('V7 Product Result Source tests passed.');
+console.log('V8 Product Result Source tests passed.');

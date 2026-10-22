@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const source = fs.readFileSync('js/v7-comparison-engine.js', 'utf8');
+const source = fs.readFileSync('js/v8-comparison-engine.js', 'utf8');
 const context = { window:{}, console };
 vm.runInNewContext(source, context);
 
@@ -51,4 +51,4 @@ assert.equal(table[0].name,'محصول A');
 const insufficient = engine.compare([results[0]]);
 assert.equal(insufficient.status,'not_enough_results');
 
-console.log('V7 Comparison Engine contract passed.');
+console.log('V8 Comparison Engine contract passed.');

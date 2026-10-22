@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import vm from 'node:vm';
 
-const producerSource = await fs.readFile('js/v7-product-result-producer.js', 'utf8');
+const producerSource = await fs.readFile('js/v8-product-result-producer.js', 'utf8');
 
 const fixture = [
   { productId:'phone-s25', name:'Samsung Galaxy S25', brand:'سامسونگ', model:'Galaxy S25', category:'mobile', subcategory:'گوشی موبایل', priceToman:45000000, productUrl:'https://example.com/phone-s25' },
@@ -49,4 +49,4 @@ assert.ok(names.includes('گوشی موبایل سامسونگ Galaxy A56'), 'ex
 assert.ok(!names.includes('قاب گوشی سامسونگ S25'), 'phone search must reject Samsung case');
 assert.ok(!names.includes('شارژر سامسونگ 45 وات'), 'phone search must reject Samsung charger');
 
-console.log('PASS: V7 Product Result Producer strictly separates Samsung phones from accessory-only records.');
+console.log('PASS: V8 Product Result Producer strictly separates Samsung phones from accessory-only records.');
