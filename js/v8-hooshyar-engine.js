@@ -144,15 +144,11 @@ function resolveSearchContext(query){
    var accessoryMatch=accessoryTerms.test(hay);
    if(!matchedPhrase&&score<4&&!accessoryMatch)return;
    var generalMarketplace=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
-   if(intent==='mobile_accessory'){
-    var mobileSpecialists=['janebi','digido','digiland','gooshishop','berozkala','technolife'];
-    if(!generalMarketplace&&mobileSpecialists.indexOf(key)<0)return;
-    if(/سامسونگ/.test(raw)&&key==='janebi')return;
-   }else{
-    var accessorySpecialists=['janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit'];
-    if(!generalMarketplace&&accessorySpecialists.indexOf(key)<0)return;
-   }
-   if(store.storeType!=='general'&&domains.indexOf('accessories')<0&&domains.indexOf('digital')<0)return;
+   /* Eligibility is catalog-driven: every specialist is evaluated, not a hard-coded store whitelist. */
+   if(!generalMarketplace&&store.storeType==='general')return;
+   if(!generalMarketplace&&domains.indexOf('accessories')<0&&domains.indexOf('digital')<0)return;
+   if(!generalMarketplace&&!accessoryMatch&&score<4&&!matchedPhrase)return;
+   if(intent==='mobile_accessory'&&/سامسونگ/.test(raw)&&key==='janebi')return;
    if(intent==='digital_accessory'&&!accessoryMatch)return;
   }else if(intent==='digital_product'){
    var broadDigitalQuery=/کالای دیجیتال|تجهیزات دیجیتال/.test(raw);
@@ -166,18 +162,21 @@ function resolveSearchContext(query){
     if(!matchedPhrase&&score<2&&tokens.filter(function(t){return fieldTokens.indexOf(t)>=0;}).length===0)return;
    }
   }else if(intent==='train_ticket'){
-   if(['alibaba','mrbilit','ghasedak24'].indexOf(key)<0)return;
+   var travelTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
+   if(domains.indexOf('travel_ticket')<0||!/(بلیط\s*قطار|بلیت\s*قطار|سفر ریلی)/.test(travelTerms))return;
    score=25;
   }else if(intent==='sunscreen'){
    var sunscreenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
-   var sunscreenSpecialists=['khanoumi','darukade','mosbatesabz','solokala','daroo-online'];
-   if(!sunscreenGeneral&&sunscreenSpecialists.indexOf(key)<0)return;
-   if(!sunscreenGeneral&&!/ضد\s*آفتاب|ضدآفتاب/.test(hay))return;
-   score=25;
+   var directStoreTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
+   var sunscreenSpecialist=domains.some(function(d){return ['beauty','health','medicine'].indexOf(d)>=0;})&&/(ضد\s*آفتاب|ضدآفتاب|sunscreen)/.test(directStoreTerms);
+   if(!sunscreenGeneral&&!sunscreenSpecialist)return;
+   score=sunscreenGeneral?15:25;
   }else if(intent==='kitchen_scale'){
    var kitchenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
-   if(!kitchenGeneral&&key!=='technolife')return;
-   score=25;
+   var kitchenTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
+   var kitchenSpecialist=/(ترازو\s*(?:هوشمند\s*)?آشپزخانه|ترازو دیجیتال آشپزخانه)/.test(kitchenTerms);
+   if(!kitchenGeneral&&!kitchenSpecialist)return;
+   score=kitchenGeneral?15:25;
   }else{
    var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
    var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
@@ -188,10 +187,6 @@ function resolveSearchContext(query){
   var urlResolver=window.DigiYarStoreSearchUrl;
   var categories=domains.map(function(d){return getDomainTitle(d);});
   if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw)){unavailableRoutes.push({id:key,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories)),routeUnavailable:true});}return;}
-  if(intent==='train_ticket'&&typeof urlResolver.resolveRoute==='function'){
-   var trainRoute=urlResolver.resolveRoute(key,raw);
-   if(!trainRoute||trainRoute.kind!=='search')return;
-  }
   if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
   if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories))});}
  });
