@@ -1,4 +1,4 @@
-/* DigiYar V7 — unified merchant business-domain knowledge base */
+/* DigiYar V8 — canonical merchant catalog and business-domain knowledge base */
 (function(root){
 'use strict';
 var VERSION='8.0.0-store-catalog.1';
