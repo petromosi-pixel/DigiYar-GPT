@@ -81,3 +81,13 @@ html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v
  .v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchHint{right:11px}
  .v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchInput{padding-right:11px}
 }
+
+
+/* Align actual user-typed RTL text to the same ~3 mm inset as the rotating hint. */
+.v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchInput{
+  direction:rtl;
+  text-align:right;
+  padding-right:11px !important;
+  padding-inline-start:11px;
+  box-sizing:border-box;
+}
