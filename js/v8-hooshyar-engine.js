@@ -451,9 +451,8 @@ function render(){
    logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],
    initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',
    brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',
-   routeLabel=fallback?'صفحهٔ اصلی؛ جست‌وجوی مستقیم تأیید نشده':(homepage?'صفحهٔ اصلی':''),
    accessibleLabel=fallback?'ورود به صفحهٔ اصلی '+s.name+'؛ جست‌وجوی مستقیم تأیید نشده':(homepage?'ورود به صفحهٔ اصلی '+s.name:'مشاهدهٔ نتایج جست‌وجو در '+s.name),
-   content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>'+(routeLabel?'<small class="popular-discovery-route-kind">'+esc(routeLabel)+'</small>':'');
+   content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';
   return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(accessibleLabel)+'" title="'+esc(accessibleLabel)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';
  }
  function accordion(key,title,icon,description,items){
@@ -498,8 +497,20 @@ function render(){
     document.head.appendChild(negativeStyle);
    }
    emptyNotice.classList.add('v8-hooshyar-negative-highlight');
+   /* Inline styling makes the temporary red highlight reliable even if theme CSS overrides component styles. */
+   emptyNotice.style.setProperty('outline','2px solid rgba(220,53,69,.92)','important');
+   emptyNotice.style.setProperty('outline-offset','5px','important');
+   emptyNotice.style.setProperty('box-shadow','0 0 0 6px rgba(220,53,69,.16)','important');
+   emptyNotice.style.setProperty('border-radius','12px','important');
+   emptyNotice.style.setProperty('transition','outline-color .25s ease, box-shadow .25s ease','important');
    emptyNotice.scrollIntoView({behavior:'smooth',block:'center'});
-   setTimeout(function(){emptyNotice.classList.remove('v8-hooshyar-negative-highlight');},3000);
+   var pulseCount=0,negativePulse=setInterval(function(){
+    pulseCount++;
+    var strong=pulseCount%2===1;
+    emptyNotice.style.setProperty('outline-color',strong?'rgba(220,53,69,.98)':'rgba(220,53,69,.3)','important');
+    emptyNotice.style.setProperty('box-shadow',strong?'0 0 0 7px rgba(220,53,69,.2)':'0 0 0 2px rgba(220,53,69,.05)','important');
+    if(pulseCount>=6){clearInterval(negativePulse);emptyNotice.classList.remove('v8-hooshyar-negative-highlight');emptyNotice.style.removeProperty('outline');emptyNotice.style.removeProperty('outline-offset');emptyNotice.style.removeProperty('box-shadow');emptyNotice.style.removeProperty('border-radius');emptyNotice.style.removeProperty('transition');emptyNotice.style.removeProperty('outline-color');}
+   },400);
   }
  }
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
