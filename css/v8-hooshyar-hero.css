@@ -24,7 +24,23 @@
 .v8-hooshyar-hero>.v5-smart-search-bar .v5-smart-search-field{width:100%;box-sizing:border-box}
 
 /* Speech bubble: make Hooshyar's greeting look like the robot is saying it. */
-/* Hooshyar's greeting is styled as a spoken message from the robot. */
-.v8-hooshyar-hero-copy{position:relative;border:1px solid rgba(110,165,255,.42);border-radius:20px 20px 7px 20px;background:linear-gradient(135deg,rgba(31,61,112,.92),rgba(12,28,62,.88));box-shadow:0 7px 18px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.07)}
-.v8-hooshyar-hero-copy:before{content:"";position:absolute;right:-9px;left:auto;top:30px;width:16px;height:16px;background:#1b3769;border-right:1px solid rgba(110,165,255,.42);border-top:1px solid rgba(110,165,255,.42);transform:rotate(45deg);border-bottom-left-radius:0;border-top-right-radius:3px}
+/* Default V8 Hooshyar card: clean white, with a robot speech bubble. */
+.v8-hooshyar-hero{border-color:#d9e5f5;background:radial-gradient(ellipse at 12% 8%,rgba(58,132,255,.09),transparent 42%),radial-gradient(ellipse at 100% 100%,rgba(0,190,220,.06),transparent 42%),linear-gradient(135deg,#fff 0%,#f7faff 58%,#f1f7ff 100%);box-shadow:0 12px 30px rgba(24,54,96,.1);color:#172b49}
+.v8-hooshyar-hero:before{background:linear-gradient(115deg,transparent 35%,rgba(67,145,255,.035) 50%,transparent 68%)}
+.v8-hooshyar-hero h2{color:#172b49}
+.v8-hooshyar-hero-kicker{color:#087da8}
+.v8-hooshyar-hero-kicker:before{background:#16bfe5;box-shadow:0 0 8px rgba(22,191,229,.35)}
+.v8-hooshyar-hero-copy p{color:#405878}
+.v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#526987}
+/* Bubble tail is a curved, tapered pointer facing the robot; no diamond or shadow. */
+.v8-hooshyar-hero-copy{position:relative;border:1px solid #d7e5f7;border-radius:20px 20px 20px 8px;background:linear-gradient(135deg,#fff,#f4f8ff);box-shadow:0 4px 12px rgba(26,57,99,.06)}
+.v8-hooshyar-hero-copy:before{content:"";position:absolute;left:-10px;right:auto;top:30px;width:14px;height:22px;background:#f8fbff;clip-path:polygon(100% 0,100% 100%,0 50%);border:0;transform:none;filter:none;box-shadow:none}
 .v8-hooshyar-hero-copy:after{content:none}
+/* Preserve the dark presentation when the app/device is in dark mode. */
+html.dark .v8-hooshyar-hero,body.dark .v8-hooshyar-hero,html[data-theme="dark"] .v8-hooshyar-hero,body[data-theme="dark"] .v8-hooshyar-hero{border-color:rgba(86,139,255,.42);background:radial-gradient(ellipse at 12% 8%,rgba(26,111,255,.28),transparent 42%),radial-gradient(ellipse at 100% 100%,rgba(0,220,255,.13),transparent 42%),linear-gradient(135deg,#07152f 0%,#0d2450 52%,#101a3d 100%);box-shadow:0 16px 34px rgba(6,19,48,.22);color:#f5f8ff}
+html.dark .v8-hooshyar-hero h2,body.dark .v8-hooshyar-hero h2,html[data-theme="dark"] .v8-hooshyar-hero h2,body[data-theme="dark"] .v8-hooshyar-hero h2{color:#fff}
+html.dark .v8-hooshyar-hero-kicker,body.dark .v8-hooshyar-hero-kicker,html[data-theme="dark"] .v8-hooshyar-hero-kicker,body[data-theme="dark"] .v8-hooshyar-hero-kicker{color:#70dcff}
+html.dark .v8-hooshyar-hero-copy p,body.dark .v8-hooshyar-hero-copy p,html[data-theme="dark"] .v8-hooshyar-hero-copy p,body[data-theme="dark"] .v8-hooshyar-hero-copy p{color:#c3d6f7}
+html.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,html[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#9db5db}
+html.dark .v8-hooshyar-hero-copy,body.dark .v8-hooshyar-hero-copy,html[data-theme="dark"] .v8-hooshyar-hero-copy,body[data-theme="dark"] .v8-hooshyar-hero-copy{border-color:rgba(110,165,255,.42);background:linear-gradient(135deg,rgba(31,61,112,.92),rgba(12,28,62,.88));box-shadow:0 7px 18px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.07)}
+html.dark .v8-hooshyar-hero-copy:before,body.dark .v8-hooshyar-hero-copy:before,html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v8-hooshyar-hero-copy:before{background:#1b3769;border:0;clip-path:polygon(100% 0,100% 100%,0 50%);filter:none;box-shadow:none}
