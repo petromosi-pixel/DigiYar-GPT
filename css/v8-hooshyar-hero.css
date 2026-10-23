@@ -34,7 +34,7 @@
 .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#526987}
 /* Bubble tail is a curved, tapered pointer facing the robot; no diamond or shadow. */
 .v8-hooshyar-hero-copy{position:relative;border:1px solid #d7e5f7;border-radius:20px 20px 20px 8px;background:linear-gradient(135deg,#fff,#f4f8ff);box-shadow:0 4px 12px rgba(26,57,99,.06)}
-.v8-hooshyar-hero-copy:before{content:"";position:absolute;left:-10px;right:auto;top:30px;width:14px;height:22px;background:#f8fbff;clip-path:polygon(100% 0,100% 100%,0 50%);border:0;transform:none;filter:none;box-shadow:none}
+.v8-hooshyar-hero-copy:before{content:"";position:absolute;right:-10px;left:auto;top:30px;width:14px;height:22px;background:#f8fbff;clip-path:polygon(0 0,0 100%,100% 50%);border:0;transform:none;filter:none;box-shadow:none}
 .v8-hooshyar-hero-copy:after{content:none}
 /* Preserve the dark presentation when the app/device is in dark mode. */
 html.dark .v8-hooshyar-hero,body.dark .v8-hooshyar-hero,html[data-theme="dark"] .v8-hooshyar-hero,body[data-theme="dark"] .v8-hooshyar-hero{border-color:rgba(86,139,255,.42);background:radial-gradient(ellipse at 12% 8%,rgba(26,111,255,.28),transparent 42%),radial-gradient(ellipse at 100% 100%,rgba(0,220,255,.13),transparent 42%),linear-gradient(135deg,#07152f 0%,#0d2450 52%,#101a3d 100%);box-shadow:0 16px 34px rgba(6,19,48,.22);color:#f5f8ff}
@@ -43,4 +43,4 @@ html.dark .v8-hooshyar-hero-kicker,body.dark .v8-hooshyar-hero-kicker,html[data-
 html.dark .v8-hooshyar-hero-copy p,body.dark .v8-hooshyar-hero-copy p,html[data-theme="dark"] .v8-hooshyar-hero-copy p,body[data-theme="dark"] .v8-hooshyar-hero-copy p{color:#c3d6f7}
 html.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,html[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#9db5db}
 html.dark .v8-hooshyar-hero-copy,body.dark .v8-hooshyar-hero-copy,html[data-theme="dark"] .v8-hooshyar-hero-copy,body[data-theme="dark"] .v8-hooshyar-hero-copy{border-color:rgba(110,165,255,.42);background:linear-gradient(135deg,rgba(31,61,112,.92),rgba(12,28,62,.88));box-shadow:0 7px 18px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.07)}
-html.dark .v8-hooshyar-hero-copy:before,body.dark .v8-hooshyar-hero-copy:before,html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v8-hooshyar-hero-copy:before{background:#1b3769;border:0;clip-path:polygon(100% 0,100% 100%,0 50%);filter:none;box-shadow:none}
+html.dark .v8-hooshyar-hero-copy:before,body.dark .v8-hooshyar-hero-copy:before,html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v8-hooshyar-hero-copy:before{background:#1b3769;border:0;clip-path:polygon(0 0,0 100%,100% 50%);filter:none;box-shadow:none}
