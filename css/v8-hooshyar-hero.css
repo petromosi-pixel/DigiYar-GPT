@@ -196,3 +196,25 @@ body.v6-dark .v8-hooshyar-hero-copy:after{background:#202b3e !important}
  .v8-hooshyar-hero-copy:before{right:-21px !important;top:23px !important;width:23px !important;height:33px !important}
  .v8-hooshyar-hero-copy:after{right:-19px !important;top:25px !important;width:20px !important;height:29px !important}
 }
+
+/* V8 final welcome bubble: remove the speech pointer entirely and match the app surfaces. */
+.v8-hooshyar-hero-copy:before,
+.v8-hooshyar-hero-copy:after{
+  content:none !important;
+  display:none !important;
+  clip-path:none !important;
+  border:0 !important;
+}
+.v8-hooshyar-hero-copy{
+  background:#ffffff !important;
+  border-color:#d7e2f0 !important;
+  color:#26364b !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy{
+  background:#111827 !important;
+  border-color:#334155 !important;
+  color:#f5f8ff !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy h2{color:#f5f8ff !important}
+body.v6-dark .v8-hooshyar-hero-copy p{color:#dce5f2 !important}
+body.v6-dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#b9c8dc !important}
