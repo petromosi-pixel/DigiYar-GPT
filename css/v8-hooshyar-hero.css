@@ -24,5 +24,7 @@
 .v8-hooshyar-hero>.v5-smart-search-bar .v5-smart-search-field{width:100%;box-sizing:border-box}
 
 /* Speech bubble: make Hooshyar's greeting look like the robot is saying it. */
-.v8-hooshyar-hero-copy{position:relative;border-radius:18px 18px 18px 5px}
-.v8-hooshyar-hero-copy:before{content:"";position:absolute;left:-9px;top:30px;width:16px;height:16px;background:rgba(16,35,73,.96);border-left:1px solid rgba(110,165,255,.3);border-bottom:1px solid rgba(110,165,255,.3);transform:rotate(45deg);border-bottom-left-radius:3px}
+/* Hooshyar's greeting is styled as a spoken message from the robot. */
+.v8-hooshyar-hero-copy{position:relative;border:1px solid rgba(110,165,255,.42);border-radius:20px 20px 20px 7px;background:linear-gradient(135deg,rgba(31,61,112,.92),rgba(12,28,62,.88));box-shadow:0 7px 18px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.07)}
+.v8-hooshyar-hero-copy:before{content:"";position:absolute;left:-9px;top:30px;width:16px;height:16px;background:#1b3769;border-left:1px solid rgba(110,165,255,.42);border-bottom:1px solid rgba(110,165,255,.42);transform:rotate(45deg);border-bottom-left-radius:3px}
+.v8-hooshyar-hero-copy:after{content:"❝";position:absolute;top:-12px;right:9px;color:#70dcff;font-size:25px;font-weight:900;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.18);pointer-events:none}
