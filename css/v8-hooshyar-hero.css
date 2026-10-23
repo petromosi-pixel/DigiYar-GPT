@@ -22,3 +22,7 @@
 .v8-hooshyar-hero>.v5-smart-search-bar{width:100%;max-width:100%;margin:14px 0 0;padding:0;background:transparent;border:0;box-shadow:none}
 .v8-hooshyar-hero>.v5-smart-search-bar form{width:100%;margin:0}
 .v8-hooshyar-hero>.v5-smart-search-bar .v5-smart-search-field{width:100%;box-sizing:border-box}
+
+/* Speech bubble: make Hooshyar's greeting look like the robot is saying it. */
+.v8-hooshyar-hero-copy{position:relative;border-radius:18px 18px 18px 5px}
+.v8-hooshyar-hero-copy:before{content:"";position:absolute;left:-9px;top:30px;width:16px;height:16px;background:rgba(16,35,73,.96);border-left:1px solid rgba(110,165,255,.3);border-bottom:1px solid rgba(110,165,255,.3);transform:rotate(45deg);border-bottom-left-radius:3px}
