@@ -488,6 +488,20 @@ function render(){
  var typeTabs='<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
  var tabsRoot=document.getElementById('v7PopularDiscoveryTabs');if(tabsRoot)tabsRoot.innerHTML=typeTabs;
  root.innerHTML='<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
+ if(state.queryActive&&!html){
+  var emptyNotice=root.querySelector('.popular-discovery-empty');
+  if(emptyNotice){
+   if(!document.getElementById('v8-hooshyar-negative-highlight-style')){
+    var negativeStyle=document.createElement('style');
+    negativeStyle.id='v8-hooshyar-negative-highlight-style';
+    negativeStyle.textContent='.popular-discovery-empty.v8-hooshyar-negative-highlight{outline:2px solid rgba(220,53,69,.82)!important;outline-offset:4px!important;box-shadow:0 0 0 5px rgba(220,53,69,.10)!important;border-radius:12px;animation:v8HooshyarNegativePulse 1.2s ease 2}@keyframes v8HooshyarNegativePulse{0%,100%{outline-color:rgba(220,53,69,.28);box-shadow:0 0 0 2px rgba(220,53,69,.04)}50%{outline-color:rgba(220,53,69,.95);box-shadow:0 0 0 6px rgba(220,53,69,.16)}}@media(prefers-reduced-motion:reduce){.popular-discovery-empty.v8-hooshyar-negative-highlight{animation:none!important}}';
+    document.head.appendChild(negativeStyle);
+   }
+   emptyNotice.classList.add('v8-hooshyar-negative-highlight');
+   emptyNotice.scrollIntoView({behavior:'smooth',block:'center'});
+   setTimeout(function(){emptyNotice.classList.remove('v8-hooshyar-negative-highlight');},3000);
+  }
+ }
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
  (tabsRoot||root).querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type');if(state.queryActive){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};}var same=state.type===next,anyOpen=next==='general'?!!state.openCategories.general:domains.some(function(d){return !!state.openCategories[d];});if(same&&anyOpen){state.openCategories={};}else{state.type=next;state.openCategories={};if(next==='general'){state.openCategories.general=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}}render();});});
 
