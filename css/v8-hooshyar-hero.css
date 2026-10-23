@@ -91,3 +91,27 @@ html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v
   padding-inline-start:11px;
   box-sizing:border-box;
 }
+
+
+/* Final V8 speech-tail and dark-mode contrast correction.
+   The app's actual dark-mode switch adds .v6-dark to body. */
+.v8-hooshyar-hero-copy:before{
+  right:-15px;left:auto;top:24px;width:23px;height:38px;
+  background:#f4f8ff;
+  clip-path:polygon(0 0,13% 28%,35% 43%,100% 50%,35% 57%,13% 76%,0 100%,9% 66%,19% 54%,19% 46%,9% 34%);
+  filter:drop-shadow(1px 0 0 #a9c8f1) drop-shadow(0 1px 0 #a9c8f1) drop-shadow(0 -1px 0 #a9c8f1);
+  z-index:1;
+}
+.v8-hooshyar-hero-copy{overflow:visible}
+body.v6-dark .v8-hooshyar-hero-copy{
+  background:linear-gradient(135deg,#1b3769 0%,#10264b 100%) !important;
+  border-color:#477fca !important;
+  box-shadow:0 7px 18px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.1) !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy h2{color:#f7faff !important}
+body.v6-dark .v8-hooshyar-hero-copy p{color:#d7e6ff !important}
+body.v6-dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#b8cff2 !important}
+body.v6-dark .v8-hooshyar-hero-copy:before{
+  background:#193563 !important;
+  filter:drop-shadow(1px 0 0 #6399e4) drop-shadow(0 1px 0 #6399e4) drop-shadow(0 -1px 0 #6399e4) !important;
+}
