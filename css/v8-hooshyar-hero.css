@@ -44,3 +44,40 @@ html.dark .v8-hooshyar-hero-copy p,body.dark .v8-hooshyar-hero-copy p,html[data-
 html.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,html[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#9db5db}
 html.dark .v8-hooshyar-hero-copy,body.dark .v8-hooshyar-hero-copy,html[data-theme="dark"] .v8-hooshyar-hero-copy,body[data-theme="dark"] .v8-hooshyar-hero-copy{border-color:rgba(110,165,255,.42);background:linear-gradient(135deg,rgba(31,61,112,.92),rgba(12,28,62,.88));box-shadow:0 7px 18px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.07)}
 html.dark .v8-hooshyar-hero-copy:before,body.dark .v8-hooshyar-hero-copy:before,html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v8-hooshyar-hero-copy:before{background:#1b3769;border:0;clip-path:polygon(0 0,0 100%,100% 50%);filter:none;box-shadow:none}
+
+
+/* V8 polish: bordered curved speech tail, readable dark-mode welcome bubble,
+   and consistent 3 mm inset for the rotating search hint. */
+.v8-hooshyar-hero-copy:before{
+  right:-10px;left:auto;top:29px;width:16px;height:24px;
+  background:#f7faff;
+  clip-path:polygon(0 0,34% 37%,100% 50%,34% 66%,0 100%);
+  filter:drop-shadow(1px 0 0 #b9d2f3) drop-shadow(0 1px 0 #b9d2f3);
+}
+.v8-hooshyar-hero-copy{background:linear-gradient(135deg,#fff 0%,#f1f6ff 100%);border-color:#c9dcf7}
+.v8-hooshyar-hero-copy h2,.v8-hooshyar-hero-copy p{color:#172b49}
+html.dark .v8-hooshyar-hero-copy,body.dark .v8-hooshyar-hero-copy,
+html[data-theme="dark"] .v8-hooshyar-hero-copy,body[data-theme="dark"] .v8-hooshyar-hero-copy{
+  background:linear-gradient(135deg,#1b3769 0%,#10264b 100%);
+  border-color:#477fca;
+  box-shadow:0 7px 18px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.09);
+}
+html.dark .v8-hooshyar-hero-copy h2,body.dark .v8-hooshyar-hero-copy h2,
+html[data-theme="dark"] .v8-hooshyar-hero-copy h2,body[data-theme="dark"] .v8-hooshyar-hero-copy h2{color:#f7faff}
+html.dark .v8-hooshyar-hero-copy p,body.dark .v8-hooshyar-hero-copy p,
+html[data-theme="dark"] .v8-hooshyar-hero-copy p,body[data-theme="dark"] .v8-hooshyar-hero-copy p{color:#d7e6ff}
+html.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body.dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,
+html[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction,body[data-theme="dark"] .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#afc9f1}
+html.dark .v8-hooshyar-hero-copy:before,body.dark .v8-hooshyar-hero-copy:before,
+html[data-theme="dark"] .v8-hooshyar-hero-copy:before,body[data-theme="dark"] .v8-hooshyar-hero-copy:before{
+  background:#193563;
+  filter:drop-shadow(1px 0 0 #477fca) drop-shadow(0 1px 0 #477fca);
+}
+/* Rotating placeholder/hint sits about 3 mm (11 px) from the RTL field edge. */
+.v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchHint{right:11px;margin-right:0}
+.v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchInput{padding-right:11px}
+@media(max-width:420px){
+ .v8-hooshyar-hero-copy:before{right:-9px;top:26px;width:15px;height:22px}
+ .v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchHint{right:11px}
+ .v8-hooshyar-hero .v5-smart-search-field #v5SmartSearchInput{padding-right:11px}
+}
