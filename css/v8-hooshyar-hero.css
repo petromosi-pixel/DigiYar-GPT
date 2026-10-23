@@ -115,3 +115,46 @@ body.v6-dark .v8-hooshyar-hero-copy:before{
   background:#193563 !important;
   filter:drop-shadow(1px 0 0 #6399e4) drop-shadow(0 1px 0 #6399e4) drop-shadow(0 -1px 0 #6399e4) !important;
 }
+
+
+/* User-requested final geometry: a crescent-like outlined tail starts exactly
+   at the speech-bubble border; light mode is white, dark mode stays legible. */
+.v8-hooshyar-hero-copy{
+  background:linear-gradient(135deg,#ffffff 0%,#f6f9ff 100%) !important;
+  border:1px solid #c9dcf7 !important;
+  color:#172b49 !important;
+  overflow:visible !important;
+}
+.v8-hooshyar-hero-copy h2{color:#172b49 !important}
+.v8-hooshyar-hero-copy p{color:#405878 !important}
+.v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#526987 !important}
+.v8-hooshyar-hero-copy:before{
+  /* Outer crescent: flush with bubble edge (right: -1px), no overlap with text. */
+  right:-1px !important;left:auto !important;top:24px !important;
+  width:28px !important;height:38px !important;
+  background:#a9c8f1 !important;
+  clip-path:polygon(0 0,18% 20%,46% 38%,100% 50%,46% 62%,18% 80%,0 100%,10% 70%,22% 55%,22% 45%,10% 30%) !important;
+  filter:none !important;
+  z-index:2 !important;
+}
+.v8-hooshyar-hero-copy:after{
+  content:"" !important;position:absolute !important;
+  right:0 !important;left:auto !important;top:25px !important;
+  width:26px !important;height:36px !important;
+  background:#f8fbff !important;
+  clip-path:polygon(0 0,18% 20%,46% 38%,100% 50%,46% 62%,18% 80%,0 100%,10% 70%,22% 55%,22% 45%,10% 30%) !important;
+  z-index:3 !important;pointer-events:none !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy{
+  background:linear-gradient(135deg,#1b3769 0%,#10264b 100%) !important;
+  border-color:#477fca !important;color:#f7faff !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy h2{color:#f7faff !important}
+body.v6-dark .v8-hooshyar-hero-copy p{color:#d7e6ff !important}
+body.v6-dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#b8cff2 !important}
+body.v6-dark .v8-hooshyar-hero-copy:before{background:#6399e4 !important}
+body.v6-dark .v8-hooshyar-hero-copy:after{background:#193563 !important}
+@media(max-width:420px){
+ .v8-hooshyar-hero-copy:before{right:-1px !important;top:23px !important;width:23px !important;height:32px !important}
+ .v8-hooshyar-hero-copy:after{right:0 !important;top:24px !important;width:21px !important;height:30px !important}
+}
