@@ -158,3 +158,41 @@ body.v6-dark .v8-hooshyar-hero-copy:after{background:#193563 !important}
  .v8-hooshyar-hero-copy:before{right:-1px !important;top:23px !important;width:23px !important;height:32px !important}
  .v8-hooshyar-hero-copy:after{right:0 !important;top:24px !important;width:21px !important;height:30px !important}
 }
+
+
+/* Correct speech pointer direction: crescent tail projects OUT from the right edge.
+   Use two curved bezier strokes rather than the previous sword/chevron silhouette. */
+.v8-hooshyar-hero-copy:before,
+.v8-hooshyar-hero-copy:after{
+  content:"" !important;position:absolute !important;
+  top:24px !important;left:auto !important;
+  clip-path:none !important;
+  border:0 !important;
+  pointer-events:none !important;
+}
+.v8-hooshyar-hero-copy:before{
+  right:-25px !important;width:27px !important;height:38px !important;
+  background:#c9dcf7 !important;
+  border-radius:0 !important;
+  clip-path:path("M 0 0 C 5 11 14 17 27 19 C 14 21 5 27 0 38 C 4 27 4 11 0 0 Z") !important;
+  z-index:2 !important;
+}
+.v8-hooshyar-hero-copy:after{
+  right:-23px !important;width:24px !important;height:34px !important;top:26px !important;
+  background:#ffffff !important;
+  clip-path:path("M 0 0 C 5 10 13 15 24 17 C 13 19 5 24 0 34 C 3 24 3 10 0 0 Z") !important;
+  z-index:3 !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy{
+  background:linear-gradient(135deg,#202b3e 0%,#171f2e 100%) !important;
+  border-color:#526783 !important;color:#f5f8ff !important;
+}
+body.v6-dark .v8-hooshyar-hero-copy h2{color:#f5f8ff !important}
+body.v6-dark .v8-hooshyar-hero-copy p{color:#dce5f2 !important}
+body.v6-dark .v8-hooshyar-hero-copy .v8-hooshyar-hero-instruction{color:#b9c8dc !important}
+body.v6-dark .v8-hooshyar-hero-copy:before{background:#526783 !important}
+body.v6-dark .v8-hooshyar-hero-copy:after{background:#202b3e !important}
+@media(max-width:420px){
+ .v8-hooshyar-hero-copy:before{right:-21px !important;top:23px !important;width:23px !important;height:33px !important}
+ .v8-hooshyar-hero-copy:after{right:-19px !important;top:25px !important;width:20px !important;height:29px !important}
+}
