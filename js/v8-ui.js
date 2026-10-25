@@ -30,7 +30,7 @@ form.addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntr
 function openAccountDashboard(){
 const sheet=document.querySelector('.v6-nav-sheet'),backdrop=document.querySelector('.v6-nav-backdrop'),body=document.getElementById('v6SheetBody');
 if(!sheet||!backdrop||!body)return;
-if(sheet.classList.contains('is-open')&&body.querySelector('.v6-account-dashboard')){close();return}
+if(sheet.classList.contains('is-open')&&body.querySelector('.v6-account-dashboard')){body.innerHTML='';sheet.classList.remove('is-open');backdrop.classList.remove('is-open');return}
 const esc=value=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 let profile={};try{profile=JSON.parse(localStorage.getItem('digiyar-account-profile-v1')||localStorage.getItem('digiyar-v5-profile')||'{}')||{}}catch(e){}
 const avatar=String(profile.avatarData||'');
