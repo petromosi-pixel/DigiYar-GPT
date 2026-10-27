@@ -1,0 +1,46 @@
+/* DigiYar V8 — deals slider refresh */
+.v5-deals-card{
+  --deals-ink:#203657;--deals-muted:#66758b;--deals-panel:#fff;--deals-border:#dfe7f2;
+  width:100%;min-height:80mm;height:80mm;margin:0 auto 16px;padding:10px 12px 8px;
+  border:1px solid var(--deals-border);border-radius:18px;background:var(--deals-panel);
+  box-shadow:0 8px 24px rgba(27,49,82,.08);overflow:hidden;box-sizing:border-box;
+}
+.v5-deals-card[hidden]{display:none!important}
+.v5-deals-card .v5-section-heading{margin:0 0 7px;text-align:center}
+.v5-deals-card .v5-section-heading h2{margin:0;color:var(--deals-ink);font-size:17px;font-weight:800;line-height:1.45}
+.v5-deals-card .v5-section-heading p{margin:1px 0 0;color:var(--deals-muted);font-size:11px;line-height:1.5;white-space:normal}
+.v5-deal-viewport{width:100%;height:60mm;min-height:60mm;overflow:hidden;border:1px solid var(--deals-border);border-radius:14px;background:var(--deals-panel);touch-action:pan-y;overscroll-behavior-x:contain}
+.v5-deal-track{display:flex;flex-direction:row;gap:0;width:100%;height:100%;direction:ltr;transition:transform .42s cubic-bezier(.22,.72,.2,1);will-change:transform}
+.v5-deal{position:relative;display:flex;flex:0 0 100%;width:100%;height:100%;min-width:0;box-sizing:border-box;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;padding:8px 12px 7px;direction:rtl;text-align:center;background:linear-gradient(155deg,#fff 0%,#f5f8fd 100%);color:#24334c;cursor:pointer;outline-offset:-4px}
+.v5-deal-store{font-size:15px;font-weight:800;line-height:1.35;color:#233b60}
+.v5-deal-badge{display:inline-flex;align-items:center;justify-content:center;max-width:90%;padding:2px 10px;border:1px solid #f5d59e;border-radius:999px;background:#fff5df;color:#8b5b0b;font-size:10px;font-weight:750;line-height:1.6}
+.v5-deal-widget{display:flex;position:relative;align-items:center;justify-content:center;width:min(100%,240px);height:31mm;min-height:31mm;overflow:hidden;border:1px solid #e2e8f2;border-radius:12px;background:linear-gradient(135deg,#f7f9fd,#edf2f9);box-sizing:border-box}
+.v5-deal-art{display:block;width:100%;height:100%;max-width:100%;object-fit:contain;padding:2px;box-sizing:border-box}
+.v5-deal-fallback{display:flex;align-items:center;justify-content:center;font-size:34px;line-height:1}
+.v5-deal-widget .v5-deal-fallback{position:absolute;inset:0;pointer-events:none}
+.v5-deal-widget img:not([hidden]){position:relative;z-index:1}
+.v5-deal-widget p{position:relative;z-index:1;max-width:250px;margin:0;padding:10px;color:#425574;font-size:12px;line-height:1.9}
+.v5-deal-cta{display:block;margin-top:auto;color:#2b568d;font-size:11px;font-weight:800;line-height:1.4}
+.v5-slider-controls{display:flex;justify-content:center;align-items:center;gap:8px;height:13px;margin:6px 0 0;direction:ltr}
+.v5-slider-controls button{width:7px;height:7px;min-width:7px;padding:0;border:0;border-radius:50%;background:#b8c5d7;opacity:.75;cursor:pointer;transition:width .2s ease,background .2s ease,opacity .2s ease}
+.v5-slider-controls button.active{width:20px;border-radius:999px;background:#e9a72b;opacity:1;box-shadow:0 1px 5px #e9a72b55}
+.v5-deals-footnote{margin:2px 0 0;color:var(--deals-muted);font-size:9px;line-height:1.4;text-align:center}
+.v6-nav-sheet .v5-menu-deals-card,.v6-nav-sheet .v6-menu-deals-card{--deals-panel:var(--dy-sheet,#fff);--deals-ink:var(--dy-text,#203657);--deals-muted:var(--dy-muted,#66758b);--deals-border:var(--dy-border,#dfe7f2);padding:10px!important;min-height:0;height:auto!important}
+.v6-nav-sheet .v6-menu-deals-card .v5-deal-viewport{height:60mm;min-height:60mm}
+.v6-nav-sheet .v6-menu-deals-card .v5-deal{background:linear-gradient(155deg,var(--dy-surface,#fff),var(--dy-control,#f5f8fd));color:var(--dy-text,#24334c)}
+.v6-nav-sheet .v6-menu-deals-card .v5-deal-store{color:var(--dy-text,#233b60)}
+.v6-nav-sheet .v6-menu-deals-card .v5-deal-widget{background:var(--dy-control,#f2f5fa);border-color:var(--dy-border,#e2e8f2)}
+.v6-nav-sheet .v6-menu-deals-card .v5-deal-widget p{color:var(--dy-text,#425574)}
+.v6-nav-sheet .v6-menu-deals-card .v5-deal-cta{color:var(--dy-link,#2b568d)}
+body.v6-dark .v5-deals-card{--deals-ink:#f0f4fb;--deals-muted:#b1bfd3;--deals-panel:#111c2d;--deals-border:#35455d;background:#111c2d;color:#edf2fa;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+body.v6-dark .v5-deals-card .v5-section-heading h2{color:#f0f4fb}
+body.v6-dark .v5-deal{background:linear-gradient(155deg,#17243a,#101a2a);color:#eaf0f9}
+body.v6-dark .v5-deal-store{color:#edf3fc}
+body.v6-dark .v5-deal-badge{background:#392f1c;border-color:#65502a;color:#f6d38a}
+body.v6-dark .v5-deal-widget{background:#0e1726;border-color:#35455d}
+body.v6-dark .v5-deal-widget p{color:#c8d4e5}
+body.v6-dark .v5-deal-cta{color:#9bc7ff}
+body.v6-dark .v5-deals-footnote{color:#aab8cc}
+body.v6-dark .v6-nav-sheet .v6-menu-deals-card{--deals-panel:#111c2d;--deals-ink:#f0f4fb;--deals-muted:#b1bfd3;--deals-border:#35455d}
+@media(max-width:380px){.v5-deals-card{padding-inline:8px}.v5-deals-card .v5-section-heading h2{font-size:15px}.v5-deal{padding-inline:7px}.v5-deal-widget{width:100%}.v5-deal-store{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.v5-deal-track,.v5-slider-controls button{transition:none!important}}
