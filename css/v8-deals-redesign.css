@@ -401,3 +401,31 @@ body.v6-dark .v8-deals-experience{background:radial-gradient(ellipse at 90% 0%,#
  .v8-deals-experience .v8-deal-name{font-size:20px!important}
  .v8-deals-experience .v8-deal-subtitle{font-size:11px!important}
 }
+
+
+/* V8.11 — photographic, category-matched deal slides; replace emoji artwork with real-world imagery */
+.v8-deals-experience .v8-deal-card{overflow:hidden!important;isolation:isolate!important;background-color:#152333!important}
+.v8-deals-experience .v8-deal-card::before{content:""!important;position:absolute!important;inset:0!important;z-index:-1!important;background-image:var(--deal-photo,linear-gradient(135deg,#24384a,#101a27))!important;background-position:center!important;background-size:cover!important;opacity:.96!important;transform:scale(1.015)!important}
+.v8-deals-experience .v8-deal-card::after{content:""!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;background:linear-gradient(180deg,rgba(5,13,23,.48) 0%,rgba(5,13,23,.12) 34%,rgba(5,13,23,.46) 65%,rgba(5,13,23,.86) 100%)!important}
+.v8-deals-experience .v8-deal-top,.v8-deals-experience .v8-deal-hero{position:relative!important;z-index:1!important}
+.v8-deals-experience .v8-deal-hero{width:100%!important;align-items:stretch!important;padding:0!important}
+.v8-deals-experience .v8-deal-art{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;filter:none!important;opacity:1!important;pointer-events:none!important;background-image:var(--deal-photo,linear-gradient(135deg,#24384a,#101a27))!important;background-size:cover!important;background-position:center!important}
+.v8-deals-experience .v8-deal-art::after{content:""!important;position:absolute!important;inset:0!important;background:linear-gradient(180deg,rgba(7,15,25,.18),rgba(7,15,25,.02) 35%,rgba(7,15,25,.52))!important}
+.v8-deals-experience .v8-deal-art .v8-deal-orbit,.v8-deals-experience .v8-deal-art .v8-deal-cube,.v8-deals-experience .v8-deal-art .v8-deal-spark{display:none!important}
+.v8-deals-experience .v8-deal-name{position:relative!important;z-index:2!important;text-shadow:0 2px 5px #000b,0 4px 14px #0008!important;-webkit-text-stroke:0!important}
+.v8-deals-experience .v8-deal-subtitle{position:relative!important;z-index:2!important;text-shadow:0 1px 5px #000c!important}
+.v8-deals-experience .v8-deal-brand{position:relative!important;z-index:2!important}
+/* Technology and electronics */
+.v8-deals-experience .v8-deal-card[data-store="digikala"],.v8-deals-experience .v8-deal-card[data-store="snappshop"],.v8-deals-experience .v8-deal-card[data-store="torob"],.v8-deals-experience .v8-deal-card[data-store="basalam"],.v8-deals-experience .v8-deal-card[data-store="technolife"],.v8-deals-experience .v8-deal-card[data-store="digiland"],.v8-deals-experience .v8-deal-card[data-store="digido"],.v8-deals-experience .v8-deal-card[data-store="janebi"],.v8-deals-experience .v8-deal-card[data-store="gooshishop"],.v8-deals-experience .v8-deal-card[data-store="moghaddam_it"]{--deal-photo:url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=78")}
+/* Fashion, apparel and beauty retail */
+.v8-deals-experience .v8-deal-card[data-store="modiseh"],.v8-deals-experience .v8-deal-card[data-store="banimode"],.v8-deals-experience .v8-deal-card[data-store="khanoumi"],.v8-deals-experience .v8-deal-card[data-store="takhfifan"]{--deal-photo:url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=78")}
+/* Grocery and everyday shopping */
+.v8-deals-experience .v8-deal-card[data-store="dayan"],.v8-deals-experience .v8-deal-card[data-store="memarket"],.v8-deals-experience .v8-deal-card[data-store="mymarket"],.v8-deals-experience .v8-deal-card[data-store="pinket"]{--deal-photo:url("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=78")}
+/* Travel and booking */
+.v8-deals-experience .v8-deal-card[data-store="snapptrip"],.v8-deals-experience .v8-deal-card[data-store="alibaba"]{--deal-photo:url("https://images.unsplash.com/photo-1488645830128-bc6a4a6a6c2b?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-store="shab"],.v8-deals-experience .v8-deal-card[data-store="safarme"]{--deal-photo:url("https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1000&q=78")}
+/* Office, publishing and knowledge services */
+.v8-deals-experience .v8-deal-card[data-store="esam"],.v8-deals-experience .v8-deal-card[data-store="fidibo"],.v8-deals-experience .v8-deal-card[data-store="zoomit"],.v8-deals-experience .v8-deal-card[data-store="digiato"]{--deal-photo:url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=78")}
+/* Pharmacy and healthcare */
+.v8-deals-experience .v8-deal-card[data-store="darukade"],.v8-deals-experience .v8-deal-card[data-store="darmankala"]{--deal-photo:url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=78")}
+@media(max-width:700px){.v8-deals-experience .v8-deal-art,.v8-deals-experience .v8-deal-card::before{background-position:center!important}}
