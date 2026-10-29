@@ -450,3 +450,22 @@ body.v6-dark .v8-deals-experience{background:radial-gradient(ellipse at 90% 0%,#
 .v8-deals-experience .v8-deal-card[data-domain="medicine"]{--deal-photo:url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=78")}
 .v8-deals-experience .v8-deal-card[data-domain="services"],
 .v8-deals-experience .v8-deal-card[data-domain="affiliate_network"]{--deal-photo:url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=78")}
+
+
+/* V8.12 — ensure the photographic layer is above the card background and spans the full card */
+.v8-deals-experience .v8-deal-card{background:transparent!important;background-color:#152333!important}
+.v8-deals-experience .v8-deal-card::before{z-index:0!important;opacity:1!important;background-image:var(--deal-photo,linear-gradient(135deg,#34495e,#111827))!important;background-size:cover!important;background-position:center!important}
+.v8-deals-experience .v8-deal-card::after{z-index:1!important;background:linear-gradient(180deg,rgba(3,10,18,.28) 0%,rgba(3,10,18,.04) 32%,rgba(3,10,18,.52) 62%,rgba(3,10,18,.9) 100%)!important}
+.v8-deals-experience .v8-deal-top,.v8-deals-experience .v8-deal-hero-copy,.v8-deals-experience .v8-deal-bottom{position:relative!important;z-index:2!important}
+.v8-deals-experience .v8-deal-hero{position:static!important;min-height:0!important;flex:1 1 auto!important;z-index:2!important}
+.v8-deals-experience .v8-deal-art{z-index:0!important;inset:0!important}
+.v8-deals-experience .v8-deal-brand{width:100%!important;justify-content:center!important;text-align:center!important}
+.v8-deals-experience .v8-deal-brand-text{align-items:center!important}
+.v8-deals-experience .v8-deal-mark{display:none!important}
+.v8-deals-experience .v8-deal-name{max-width:100%!important;font-size:18px!important;font-weight:950!important;color:#fff!important}
+.v8-deals-experience .v8-deal-subtitle{font-size:11px!important;color:#fff!important}
+.v8-deals-experience .v8-deal-hero-copy{align-self:flex-end!important;max-width:100%!important;width:100%!important;text-align:center!important;padding:0 2px 8px!important}
+.v8-deals-experience .v8-deal-kicker{display:none!important}
+.v8-deals-experience .v8-deal-title{font-size:18px!important;text-shadow:0 2px 8px #000!important}
+.v8-deals-experience .v8-deal-cta{display:none!important}
+.v8-deals-experience .v8-deal-bottom{display:none!important}
