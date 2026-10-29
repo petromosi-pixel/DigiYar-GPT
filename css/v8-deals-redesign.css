@@ -355,3 +355,19 @@ body.v6-dark .v8-deals-experience{background:radial-gradient(ellipse at 90% 0%,#
  .v8-deals-experience .v8-deal-bottom{padding:0 10px 10px!important}
  .v8-deals-experience .v8-deal-cta{min-height:39px!important;font-size:11px!important}
 }
+
+
+/* V8.8 requested final carousel corrections */
+.v8-deals-experience .v8-deal-viewport{height:340px!important;min-height:340px!important;padding-block:8px 16px!important;box-sizing:border-box!important;overflow-x:auto!important;overflow-y:hidden!important}
+.v8-deals-experience .v8-deal-track{align-items:stretch!important;padding-block:2px 8px!important;box-sizing:border-box!important}
+.v8-deals-experience .v8-deal-card{height:300px!important;min-height:300px!important;max-height:300px!important;align-self:center!important}
+.v8-deals-experience .v8-deal-brand{width:max-content!important;max-width:100%!important;align-self:center!important;flex:0 1 auto!important;justify-content:center!important;gap:9px!important;margin-inline:auto!important;padding:6px 12px!important}
+.v8-deals-experience .v8-deal-brand-text{flex:0 1 auto!important;min-width:0!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+.v8-deals-experience .v8-deal-name{text-align:center!important}
+.v8-deals-experience .v8-bag-percent{display:none!important;visibility:hidden!important}
+@media(max-width:700px){
+ .v8-deals-experience .v8-deal-viewport{height:330px!important;min-height:330px!important;padding-block:8px 14px!important}
+ .v8-deals-experience .v8-deal-track{padding-block:2px 7px!important}
+ .v8-deals-experience .v8-deal-card{height:300px!important;min-height:300px!important;max-height:300px!important}
+ .v8-deals-experience .v8-deal-brand{max-width:calc(100% - 2px)!important;padding:6px 9px!important;gap:8px!important}
+}
