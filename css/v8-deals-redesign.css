@@ -232,3 +232,9 @@ body.v6-dark .v8-deals-experience{background:radial-gradient(ellipse at 90% 0%,#
 @media(max-width:700px){
  .v8-deals-experience .v8-deal-track{padding-left:calc((100% - min(72vw,230px))/2)!important;padding-right:calc((100% - min(72vw,230px))/2)!important}
 }
+
+/* Clean, luminous 3D percent badge positioned above CTA */
+.v8-deals-experience .v8-deal-art{position:relative!important}
+.v8-deals-experience .v8-bag-percent{top:36%!important;left:50%!important;width:52px!important;height:52px!important;background:transparent!important;border:0!important;border-radius:0!important;color:#fff!important;font-size:43px!important;font-weight:1000!important;text-shadow:0 1px 0 #fff,0 3px 0 #a75a00,0 5px 10px #0008,0 0 14px #fff,0 0 25px #ffd34c!important;box-shadow:none!important;filter:drop-shadow(0 0 6px #ffe68a)!important}
+.v8-deals-experience .v8-deal-art .v8-deal-spark{top:12%!important}
+.v8-deals-experience .v8-deal-cta{position:relative!important;z-index:3!important}
