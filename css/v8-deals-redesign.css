@@ -429,3 +429,24 @@ body.v6-dark .v8-deals-experience{background:radial-gradient(ellipse at 90% 0%,#
 /* Pharmacy and healthcare */
 .v8-deals-experience .v8-deal-card[data-store="darukade"],.v8-deals-experience .v8-deal-card[data-store="darmankala"]{--deal-photo:url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=78")}
 @media(max-width:700px){.v8-deals-experience .v8-deal-art,.v8-deals-experience .v8-deal-card::before{background-position:center!important}}
+
+
+/* Category fallback ensures every store gets a photo suited to its catalog domain */
+.v8-deals-experience .v8-deal-card[data-domain="digital"],
+.v8-deals-experience .v8-deal-card[data-domain="accessories"]{--deal-photo:url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="fashion"],
+.v8-deals-experience .v8-deal-card[data-domain="beauty"]{--deal-photo:url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="supermarket"]{--deal-photo:url("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="home"],
+.v8-deals-experience .v8-deal-card[data-domain="furniture"]{--deal-photo:url("https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="sports"],
+.v8-deals-experience .v8-deal-card[data-domain="auto"]{--deal-photo:url("https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="kids"]{--deal-photo:url("https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="books"],
+.v8-deals-experience .v8-deal-card[data-domain="education"]{--deal-photo:url("https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="travel_ticket"]{--deal-photo:url("https://images.unsplash.com/photo-1488645830128-bc6a4a6a6c2b?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="lodging"]{--deal-photo:url("https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="health"],
+.v8-deals-experience .v8-deal-card[data-domain="medicine"]{--deal-photo:url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=78")}
+.v8-deals-experience .v8-deal-card[data-domain="services"],
+.v8-deals-experience .v8-deal-card[data-domain="affiliate_network"]{--deal-photo:url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=78")}
