@@ -22,7 +22,7 @@ function initDeals(){
  const slide=(id,i)=>{
   const name=names[id]||catalog[id]?.name||id, label=labels[id]||((catalog[id]?.specialties||[]).slice(0,2).join(' و ')||'خرید آنلاین از فروشگاه معتبر');
   const palette=palettes[id]||['#4768bb','#1b315f'],logo=logos[id]?'assets/store-logos/'+logos[id]:'';
-  return '<article class="v8-concept-slide v8-concept-'+esc(id)+'" data-store="'+esc(id)+'" style="--slide-a:'+palette[0]+';--slide-b:'+palette[1]+'"><div class="v8-concept-logo">'+(logo?'<img src="'+logo+'" alt="'+esc(name)+'" loading="lazy" onerror="this.style.display=\'none\';this.parentElement.textContent=\''+esc(name)+'\'">':esc(name))+'</div><p class="v8-concept-caption">'+esc(label)+'</p><div class="v8-concept-art">'+art(id)+'</div><div class="v8-concept-action">دیدن تخفیفات '+esc(name)+'</div></article>';
+  return '<article class="v8-concept-slide v8-concept-'+esc(id)+'" data-store="'+esc(id)+'" style="--slide-a:'+palette[0]+';--slide-b:'+palette[1]+'"><div class="v8-concept-logo">'+(logo?'<img src="'+logo+'" alt="'+esc(name)+'" loading="lazy">':esc(name))+'</div><p class="v8-concept-caption">'+esc(label)+'</p><div class="v8-concept-art">'+art(id)+'</div><div class="v8-concept-action">دیدن تخفیفات '+esc(name)+'</div></article>';
  };
  const cards=generalIds.map((id,i)=>({id,html:slide(id,i)}));
  cards.push({id:'more',html:'<button type="button" class="v8-concept-slide v8-concept-more" data-open-other-stores><span class="v8-concept-more-icon">＋</span><strong>فروشگاه‌های بیشتر</strong><small>مشاهدهٔ سایر فروشگاه‌های دیجی‌یار</small><span class="v8-concept-more-action">مشاهده همه فروشگاه‌ها ←</span></button>'});
