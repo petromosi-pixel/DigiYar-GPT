@@ -474,7 +474,7 @@ function render(){
    if(!searchUrl)return;
    seenSearchIds[id]=true;
    var store=catalog[id]||{},cats=state.categoriesByStore[id]||((store.domains||[]).map(function(d){return getDomainTitle(d);}));
-   if(!cats.length)cats=[isGeneral(id,store)?'فروشگاه عمومی':'فروشگاه تخصصی'];
+   if(!cats.length)cats=[isGeneral(id,store)?'فروشگاه عمومی':(isPortal(id,store)?'درگاه خرید و فروش':'فروشگاه تخصصی')];
    uniqueItems.push({id:id,name:store.name||id,homepage:store.homepage||'',tagline:'دسته‌بندی: '+Array.from(new Set(cats)).join('، '),domain:(store.domains||[])[0]||''});
   });
   html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار:', '',state.query,uniqueItems);
