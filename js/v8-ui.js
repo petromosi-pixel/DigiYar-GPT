@@ -33,7 +33,41 @@ function initDeals(){
  viewport.addEventListener('scroll',sync,{passive:true});viewport.addEventListener('mouseenter',function(){clearInterval(timer);});viewport.addEventListener('mouseleave',restart);viewport.addEventListener('touchstart',function(){paused=Date.now()+7000;},{passive:true});window.addEventListener('resize',function(){go(active,false);});
  dotsRender();requestAnimationFrame(function(){go(0,false);restart();});
 }
-function initOtherStoresSlide(){document.addEventListener('click',function(e){const trigger=e.target.closest('[data-open-other-stores]');if(!trigger)return;const page=document.querySelector('#v8OtherStoresPage,.v8-other-stores-page,.v8-store-directory-page');if(!page)return;page.hidden=false;page.removeAttribute('hidden');page.setAttribute('aria-hidden','false');page.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});}
+function initOtherStoresSlide(){
+ const page=$('v8OtherStoresPage'),grid=$('v8OtherStoresGrid'),search=$('v8OtherStoresSearch'),filters=$('v8OtherStoresFilters'),count=$('v8OtherStoresCount'),empty=$('v8OtherStoresEmpty');
+ if(!page||!grid||!filters)return;
+ const kb=window.DigiYarStoreBusinessDomains||{},catalog=kb.catalog||{},titles=kb.domainTitles||{};
+ const featured=new Set(['digikala','technolife','banimode','khanoumi','shahrvand','alibaba','mosbatesabz','modiseh','sportland','iransetkor','yadakmarket','book30']);
+ const stores=Object.keys(catalog).filter(id=>!featured.has(id)).map(id=>({id:id,data:catalog[id]})).sort((a,b)=>(a.data.name||a.id).localeCompare(b.data.name||b.id,'fa'));
+ let activeDomain='all';
+ const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ const domains=[...new Set(stores.flatMap(x=>x.data.domains||[]))].filter(d=>titles[d]).sort((a,b)=>(titles[a]||a).localeCompare(titles[b]||b,'fa'));
+ filters.innerHTML=[['all','همه دسته‌ها'],...domains.map(d=>[d,titles[d]])].map(([id,label])=>'<button type="button" class="v8-other-stores-filter'+(id==='all'?' is-active':'')+'" data-store-domain="'+esc(id)+'">'+esc(label)+'</button>').join('');
+ function render(){
+  const q=(search?.value||'').trim().toLocaleLowerCase('fa');
+  const visible=stores.filter(({data})=>{
+   const ds=data.domains||[];
+   if(activeDomain!=='all'&&!ds.includes(activeDomain))return false;
+   const hay=[data.name,...ds.map(d=>titles[d]||d),...(data.products||[]),...(data.aliases||[])].join(' ').toLocaleLowerCase('fa');
+   return !q||hay.includes(q);
+  });
+  grid.innerHTML=visible.map(({id,data})=>{
+   let url='';try{const u=new URL(data.homepage||'');if(u.protocol==='https:')url=u.href;}catch(e){}
+   const category=(data.domains||[]).slice(0,2).map(d=>titles[d]||d).join(' • ')||'فروشگاه اینترنتی';
+   const action=url?'<a class="v8-other-stores-visit" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">مشاهده پیشنهادهای فروشگاه <span aria-hidden="true">↗</span></a>':'<span class="v8-other-stores-no-link">نشانی رسمی در فهرست ثبت نشده</span>';
+   return '<article class="v8-other-stores-card"><div class="v8-other-stores-card-top"><span class="v8-other-stores-store-icon" aria-hidden="true">✦</span><span class="v8-other-stores-category">'+esc(category)+'</span></div><h3>'+esc(data.name||id)+'</h3><p>'+esc((data.specialties||data.products||[]).slice(0,3).join('، ')||'مشاهده محصولات و خدمات فروشگاه')+'</p>'+action+'</article>';
+  }).join('');
+  if(count)count.textContent=new Intl.NumberFormat('fa-IR').format(visible.length)+' فروشگاه';
+  if(empty)empty.hidden=visible.length!==0;
+  grid.hidden=visible.length===0;
+ }
+ function open(){page.hidden=false;page.setAttribute('aria-hidden','false');document.body.classList.add('v8-other-stores-open');render();if(search){search.value='';search.focus({preventScroll:true});}page.scrollTop=0;}
+ function close(){page.hidden=true;page.setAttribute('aria-hidden','true');document.body.classList.remove('v8-other-stores-open');const host=$('v7DealsHost');if(host)host.scrollIntoView({behavior:'smooth',block:'center'});}
+ filters.addEventListener('click',e=>{const b=e.target.closest('[data-store-domain]');if(!b)return;activeDomain=b.dataset.storeDomain;filters.querySelectorAll('button').forEach(x=>x.classList.toggle('is-active',x===b));render();});
+ if(search)search.addEventListener('input',render);
+ document.addEventListener('click',e=>{if(e.target.closest('[data-open-other-stores]')){e.preventDefault();open();}if(e.target.closest('[data-close-other-stores]'))close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!page.hidden)close();});
+}
 function initAffiliateDeals(){document.querySelectorAll('.v5-deal-affiliate').forEach(card=>{const go=()=>{const url=(card.dataset.affiliateUrl||'').trim();if(!url)return;try{const parsed=new URL(url,location.href);if(!/^https?:$/.test(parsed.protocol))return;window.location.href=parsed.href}catch(e){}};card.addEventListener('click',e=>{if(e.target.closest('.v6-store-deal-link'))return;go()});card.addEventListener('keydown',e=>{if(e.target.closest('.v6-store-deal-link'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})})}function initRevenueTracking(){const key='digiyar-v7-revenue-events';const read=()=>{try{const raw=localStorage.getItem(key);const data=raw?JSON.parse(raw):[];return Array.isArray(data)?data:[]}catch(e){return[]}};const save=data=>{try{localStorage.setItem(key,JSON.stringify(data.slice(-200)))}catch(e){}};const track=(store,url,source)=>{const event={type:'affiliate_click',store:String(store||'unknown'),source:String(source||'unknown'),timestamp:new Date().toISOString(),url:String(url||'')};const data=read();data.push(event);save(data);try{window.dispatchEvent(new CustomEvent('digiyar:affiliate-click',{detail:event}))}catch(e){}};document.querySelectorAll('[data-affiliate-url]').forEach(el=>{if(el.dataset.revenueTracked==='1')return;el.dataset.revenueTracked='1';el.addEventListener('click',function(e){const link=e.target.closest('a[data-affiliate-url],.v6-store-deal-link');const url=(link&&link.getAttribute('href'))||el.dataset.affiliateUrl||'';if(!url)return;track(el.dataset.store||el.getAttribute('data-store'),url,(el.classList.contains('v6-store-deal')||el.classList.contains('v8-deal-card'))?'deal':'affiliate')},{capture:true})});window.DigiYarRevenue={getEvents:read,clear:function(){try{localStorage.removeItem(key)}catch(e){}}};}
 function initHeader(){const brand=$('v5HeaderBrand'),tag=$('v5HeaderTagline');if(!brand||!tag)return;const states=[['دیجی‌یار','دستیار هوشمند خرید اینترنتی تو'],['دیجی‌یار','دنبال بهترین انتخابی؟ با دیجی‌یار پیداش کن'],['دیجی‌یار','قبل از خرید، هوشمندانه انتخاب کن']];let i=0;const apply=()=>{const s=states[i++%states.length];brand.textContent=s[0];tag.textContent=s[1]};apply();setInterval(apply,4800)}
 function moveRecommendations(){const result=$('resultSection'),target=$('v5InlineResults'),rec=$('recommendations');if(result&&target&&rec){target.appendChild(rec);result.classList.add('v5-result-card')}}
