@@ -34,39 +34,50 @@ function initDeals(){
  dotsRender();requestAnimationFrame(function(){go(0,false);restart();});
 }
 function initOtherStoresSlide(){
- const page=$('v8OtherStoresPage'),grid=$('v8OtherStoresGrid'),search=$('v8OtherStoresSearch'),filters=$('v8OtherStoresFilters'),count=$('v8OtherStoresCount'),empty=$('v8OtherStoresEmpty');
- if(!page||!grid||!filters)return;
+ const page=$('v8OtherStoresPage'),grid=$('v8OtherStoresGrid'),empty=$('v8OtherStoresEmpty');
+ if(!page||!grid)return;
  const kb=window.DigiYarStoreBusinessDomains||{},catalog=kb.catalog||{},titles=kb.domainTitles||{};
  const featured=new Set(['digikala','technolife','banimode','khanoumi','shahrvand','alibaba','mosbatesabz','modiseh','sportland','iransetkor','yadakmarket','book30']);
- const stores=Object.keys(catalog).filter(id=>!featured.has(id)).map(id=>({id:id,data:catalog[id]})).sort((a,b)=>(a.data.name||a.id).localeCompare(b.data.name||b.id,'fa'));
- let activeDomain='all';
  const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
- const domains=[...new Set(stores.flatMap(x=>x.data.domains||[]))].filter(d=>titles[d]).sort((a,b)=>(titles[a]||a).localeCompare(titles[b]||b,'fa'));
- filters.innerHTML=[['all','همه دسته‌ها'],...domains.map(d=>[d,titles[d]])].map(([id,label])=>'<button type="button" class="v8-other-stores-filter'+(id==='all'?' is-active':'')+'" data-store-domain="'+esc(id)+'">'+esc(label)+'</button>').join('');
- function render(){
-  const q=(search?.value||'').trim().toLocaleLowerCase('fa');
-  const visible=stores.filter(({data})=>{
-   const ds=data.domains||[];
-   if(activeDomain!=='all'&&!ds.includes(activeDomain))return false;
-   const hay=[data.name,...ds.map(d=>titles[d]||d),...(data.products||[]),...(data.aliases||[])].join(' ').toLocaleLowerCase('fa');
-   return !q||hay.includes(q);
-  });
-  grid.innerHTML=visible.map(({id,data})=>{
-   let url='';try{const u=new URL(data.homepage||'');if(u.protocol==='https:')url=u.href;}catch(e){}
-   const category=(data.domains||[]).slice(0,2).map(d=>titles[d]||d).join(' • ')||'فروشگاه اینترنتی';
-   const action=url?'<a class="v8-other-stores-visit" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">مشاهده پیشنهادهای فروشگاه <span aria-hidden="true">↗</span></a>':'<span class="v8-other-stores-no-link">نشانی رسمی در فهرست ثبت نشده</span>';
-   return '<article class="v8-other-stores-card"><div class="v8-other-stores-card-top"><span class="v8-other-stores-store-icon" aria-hidden="true">✦</span><span class="v8-other-stores-category">'+esc(category)+'</span></div><h3>'+esc(data.name||id)+'</h3><p>'+esc((data.specialties||data.products||[]).slice(0,3).join('، ')||'مشاهده محصولات و خدمات فروشگاه')+'</p>'+action+'</article>';
-  }).join('');
-  if(count)count.textContent=new Intl.NumberFormat('fa-IR').format(visible.length)+' فروشگاه';
-  if(empty)empty.hidden=visible.length!==0;
-  grid.hidden=visible.length===0;
- }
- function open(){page.hidden=false;page.setAttribute('aria-hidden','false');document.body.classList.add('v8-other-stores-open');render();if(search){search.value='';search.focus({preventScroll:true});}page.scrollTop=0;}
+ const normalize=v=>String(v||'').replace(/[\u200c\u200f\s‌ـًٌٍَُِّْ.,،؛:()\-]/g,'').toLocaleLowerCase('fa');
+ const logoFiles=['آیتول.webp','آیسو کالکشن.webp','ازکی.webp','اسنپ شاپ.webp','اسپرت لند.webp','اسکای روم.webp','افق کوروش.webp','افیلیو.webp','اقامت ۲۴.webp','الوکام.webp','اُکالا.webp','ایران ستکور.webp','ایران میز.webp','ایسام.webp','ایسمینار.webp','ایمالز.webp','باسلام.webp','باما.webp','بانی استایل.webp','بانی مد.webp','بتا دنت.webp','بروز کالا.webp','به روز کالا.webp','بیمه بازار.webp','بیمه دات کام.webp','تاپ لرن.webp','تخفیفان.webp','ترب.webp','تریپ.webp','تکنولایف.webp','تیدا چوب..webp','جاباما.webp','جانبو.webp','جانبی.webp','جین وست.webp','خانومی.webp','خودرو ۴۵.webp','داروخانه آنلاین.webp','داروخانه صبا.webp','داروکده.webp','دانشجویار.webp','دایان شاپ.webp','درمان کالا.webp','دیجی استایل.webp','دیجی دو.png','دیجی لند.webp','دیجی کالا.webp','دیما افیلیت.webp','دیوار.webp','راکت.webp','رجا.webp','روژا شاپ.webp','زیبامون.webp','سبز لرن.webp','سبز گستر.webp','سفر مارکت.webp','سفر می.webp','سولو کالا.webp','شاواز.webp','شب.webp','شهروند.webp','شیپور.webp','شیکستون..webp','طاقچه.webp','علی بابا.webp','فرادرس.webp','فلای تودی.webp','فلای سپهران.webp','فیدیبو.webp','قاصدک ۲۴.webp','مبل ایران.webp','مثبت سبز.webp','مدیسه.webp','مستر بلیط.webp','مقداد آی تی.webp','مو تن رو.webp','موبایل آی آر.webp','موبایل ۱۴۰.webp','مکتب خونه.webp','می مارکت.webp','نشاط رخ.webp','نی نی سایت.webp','هایپرمی.webp','همراه مکانیک.webp','همیار آی تی.webp','پرتو چوب.webp','پینکت.webp','چوبینه.webp','چیدا هوم.webp','کارنامه.webp','کالا ۳۶۰.webp','کالاتیک.webp','کلاسینو.webp','کلید.webp','کوئرا.webp','گوشی شاپ.webp','یدک مارکت.webp','یدک یار.webp','۱۹ کالا.webp','۳۰ بوک.webp'];
+ const logoIndex=new Map(logoFiles.map(file=>[normalize(file.replace(/\.(webp|png)$/i,'')),file]));
+ const logoAliases={'دیجیدو':'دیجی دو.png','اسنپشاپ':'اسنپ شاپ.webp','میمارکت':'می مارکت.webp','دایانشاپ':'دایان شاپ.webp','مقدادآی تی':'مقداد آی تی.webp'};
+ const featuredNames=new Set(['دیجی کالا','تکنولایف','بانی مد','خانومی','شهروند','علی بابا','مثبت سبز','مدیسه','اسپرت لند','ایران ستکور','یدک مارکت','۳۰ بوک'].map(normalize));
+ const stores=Object.keys(catalog).filter(id=>!featured.has(id)).map(id=>({id,data:catalog[id]})).filter(x=>!featuredNames.has(normalize(x.data.name))).sort((a,b)=>(a.data.name||a.id).localeCompare(b.data.name||b.id,'fa'));
+ const groups=new Map();
+ stores.forEach(({id,data})=>{
+  const domain=(data.domains||[]).find(d=>titles[d])||'other';
+  if(!groups.has(domain))groups.set(domain,[]);
+  groups.get(domain).push({id,data});
+ });
+ const ordered=[...groups.keys()].sort((a,b)=>(titles[a]||'سایر فروشگاه‌ها').localeCompare(titles[b]||'سایر فروشگاه‌ها','fa'));
+ const logoFor=data=>{
+  const key=normalize(data.name),file=logoAliases[key]||logoIndex.get(key);
+  return file?'assets/store-logos/'+encodeURIComponent(file).replace(/%2F/g,'/'):'';
+ };
+ const card=({id,data})=>{
+  const logo=logoFor(data);
+  let href='';try{const u=new URL(data.homepage||'');if(u.protocol==='https:')href=u.href;}catch(e){}
+  const image=logo?'<img src="'+esc(logo)+'" alt="'+esc(data.name||id)+'" width="76" height="76" loading="lazy" decoding="async">':'<span class="v8-other-stores-logo-fallback" aria-hidden="true">✦</span>';
+  const content='<span class="v8-other-stores-logo">'+image+'</span><strong>'+esc(data.name||id)+'</strong>';
+  return href?'<a class="v8-other-stores-store" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer" aria-label="مشاهده وب‌سایت '+esc(data.name||id)+'">'+content+'</a>':'<div class="v8-other-stores-store">'+content+'</div>';
+ };
+ grid.innerHTML=ordered.map(domain=>{
+  const list=groups.get(domain)||[];
+  return '<section class="v8-other-stores-category"><h2>'+esc(titles[domain]||'سایر فروشگاه‌ها')+'</h2><div class="v8-other-stores-category-grid">'+list.map(card).join('')+'</div></section>';
+ }).join('');
+ if(empty)empty.hidden=stores.length>0;
+ function open(){page.hidden=false;page.setAttribute('aria-hidden','false');document.body.classList.add('v8-other-stores-open');page.scrollTop=0;}
  function close(){page.hidden=true;page.setAttribute('aria-hidden','true');document.body.classList.remove('v8-other-stores-open');const host=$('v7DealsHost');if(host)host.scrollIntoView({behavior:'smooth',block:'center'});}
- filters.addEventListener('click',e=>{const b=e.target.closest('[data-store-domain]');if(!b)return;activeDomain=b.dataset.storeDomain;filters.querySelectorAll('button').forEach(x=>x.classList.toggle('is-active',x===b));render();});
- if(search)search.addEventListener('input',render);
- document.addEventListener('click',e=>{if(e.target.closest('[data-open-other-stores]')){e.preventDefault();open();}if(e.target.closest('[data-close-other-stores]'))close();});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!page.hidden)close();});
+ document.addEventListener('click',e=>{
+  if(e.target.closest('[data-open-other-stores]')){e.preventDefault();open();return;}
+  const drawer=e.target.closest('.v8-other-stores-back-drawer');
+  if(drawer){if(drawer.classList.contains('is-expanded'))close();else{drawer.classList.add('is-expanded');drawer.setAttribute('aria-expanded','true');}}
+  if(e.target.closest('[data-close-other-stores]')&&!drawer)close();
+ });
+ document.addEventListener('click',e=>{if(!e.target.closest('.v8-other-stores-back-drawer')){const drawer=page.querySelector('.v8-other-stores-back-drawer');if(drawer){drawer.classList.remove('is-expanded');drawer.setAttribute('aria-expanded','false');}}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!page.hidden){const drawer=page.querySelector('.v8-other-stores-back-drawer');if(drawer?.classList.contains('is-expanded')){drawer.classList.remove('is-expanded');drawer.setAttribute('aria-expanded','false');}else close();}});
 }
 function initAffiliateDeals(){document.querySelectorAll('.v5-deal-affiliate').forEach(card=>{const go=()=>{const url=(card.dataset.affiliateUrl||'').trim();if(!url)return;try{const parsed=new URL(url,location.href);if(!/^https?:$/.test(parsed.protocol))return;window.location.href=parsed.href}catch(e){}};card.addEventListener('click',e=>{if(e.target.closest('.v6-store-deal-link'))return;go()});card.addEventListener('keydown',e=>{if(e.target.closest('.v6-store-deal-link'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})})}function initRevenueTracking(){const key='digiyar-v7-revenue-events';const read=()=>{try{const raw=localStorage.getItem(key);const data=raw?JSON.parse(raw):[];return Array.isArray(data)?data:[]}catch(e){return[]}};const save=data=>{try{localStorage.setItem(key,JSON.stringify(data.slice(-200)))}catch(e){}};const track=(store,url,source)=>{const event={type:'affiliate_click',store:String(store||'unknown'),source:String(source||'unknown'),timestamp:new Date().toISOString(),url:String(url||'')};const data=read();data.push(event);save(data);try{window.dispatchEvent(new CustomEvent('digiyar:affiliate-click',{detail:event}))}catch(e){}};document.querySelectorAll('[data-affiliate-url]').forEach(el=>{if(el.dataset.revenueTracked==='1')return;el.dataset.revenueTracked='1';el.addEventListener('click',function(e){const link=e.target.closest('a[data-affiliate-url],.v6-store-deal-link');const url=(link&&link.getAttribute('href'))||el.dataset.affiliateUrl||'';if(!url)return;track(el.dataset.store||el.getAttribute('data-store'),url,(el.classList.contains('v6-store-deal')||el.classList.contains('v8-deal-card'))?'deal':'affiliate')},{capture:true})});window.DigiYarRevenue={getEvents:read,clear:function(){try{localStorage.removeItem(key)}catch(e){}}};}
 function initHeader(){const brand=$('v5HeaderBrand'),tag=$('v5HeaderTagline');if(!brand||!tag)return;const states=[['دیجی‌یار','دستیار هوشمند خرید اینترنتی تو'],['دیجی‌یار','دنبال بهترین انتخابی؟ با دیجی‌یار پیداش کن'],['دیجی‌یار','قبل از خرید، هوشمندانه انتخاب کن']];let i=0;const apply=()=>{const s=states[i++%states.length];brand.textContent=s[0];tag.textContent=s[1]};apply();setInterval(apply,4800)}
