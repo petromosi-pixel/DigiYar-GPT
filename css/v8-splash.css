@@ -19,3 +19,6 @@ body>img,body>.legacy-splash-logo,body>#splashPreview,body>#preSplashLogo,.splas
 /* Prevent the application shell from rendering beneath the splash overlay. */
 body:has(#splashScreen:not([data-dismissed="true"])) .app-shell{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 body .app-shell{transition:opacity .22s ease,visibility .22s ease}
+
+/* V8 offline state: compact connection hint on splash. */
+.v8-splash-offline{margin:13px auto 0!important;max-width:280px!important;color:#8792a3!important;font-size:8px!important;font-weight:500!important;line-height:1.8!important;text-align:center!important}.v8-splash-offline strong{display:block;color:#718096!important;font-size:10px!important;font-weight:700!important;line-height:1.8!important}.v8-splash-offline[hidden]{display:none!important}
