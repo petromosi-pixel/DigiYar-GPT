@@ -14,6 +14,11 @@ assert.ok(kb.byDomain.education.storeIds.includes('maktabkhooneh'));
 assert.ok(kb.byDomain.travel_ticket.storeIds.includes('safarme'));
 assert.ok(kb.byDomain.auto_service.storeIds.includes('karnameh'));
 assert.ok(kb.byType.general.storeIds.includes('digikala'));
+assert.deepEqual(['divar','sheypoor','esam'].filter(id => kb.byType.general.storeIds.includes(id)), [],
+  'Resale marketplaces must not be classified as general stores');
+assert.deepEqual(['divar','sheypoor','esam'].filter(id => kb.byType.portal.storeIds.includes(id)).sort(), ['divar','esam','sheypoor'],
+  'Divar, Sheypoor and Esam must be grouped as resale marketplaces');
+assert.equal(kb.byType.portal.subtitle, 'کالاهای نو و دست دوم در همه حوزه‌ها');
 assert.ok(kb.byType.specialist.storeIds.includes('meghdadit'));
 assert.equal(resolver.hasSearchHandler('meghdadit'), true);
 assert.equal(resolver.hasHandler('shab'), true);
