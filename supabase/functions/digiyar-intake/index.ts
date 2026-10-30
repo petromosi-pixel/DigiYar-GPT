@@ -8,6 +8,7 @@ const ALLOWED_ORIGINS = new Set([
   "https://digi-yar-core.vercel.app",
   "https://digi-yar-core-digi-yar.vercel.app",
   "https://digi-yar-core-git-main-digi-yar.vercel.app",
+  "https://digi-yar-core-i4r8sgtih-digi-yar.vercel.app",
   "http://localhost:3000",
   "http://127.0.0.1:3000"
 ]);
