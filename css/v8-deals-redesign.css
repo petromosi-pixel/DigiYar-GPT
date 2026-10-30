@@ -620,3 +620,34 @@ body.v6-dark .v8-other-stores-search input,body.v6-dark .v8-other-stores-card h3
 body.v6-dark .v8-other-stores-filter.is-active{background:#45371f;border-color:#8a6a31;color:#f4d58f}
 @media(max-width:420px){.v8-other-stores-page{padding-inline:12px}.v8-other-stores-grid{gap:8px}.v8-other-stores-card{padding:10px}.v8-other-stores-card h3{font-size:13px}.v8-other-stores-card p{font-size:9px}}
 @media(min-width:700px){.v8-other-stores-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+/* V8.16 — simplified other-stores page and grouped logo directory */
+.v8-other-stores-page{padding:22px clamp(14px,3vw,42px) 42px!important;background:radial-gradient(ellipse at 90% 0%,#e2edff 0%,transparent 38%),linear-gradient(180deg,#f8fbff,#edf3fc)!important}
+.v8-other-stores-page-title{display:block!important;max-width:1200px!important;margin:0 auto 16px!important;text-align:center!important;color:#173766!important;font-size:clamp(19px,2.4vw,27px)!important;font-weight:950!important;line-height:1.5!important}
+.v8-other-stores-header{display:block!important;max-width:1200px!important;min-height:5px!important;margin:0 auto 24px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.v8-other-stores-header>*{display:none!important}
+.v8-other-stores-back-drawer{position:fixed!important;z-index:20010!important;top:45%!important;right:0!important;display:flex!important;align-items:center!important;gap:9px!important;width:42px!important;min-height:54px!important;padding:8px 10px!important;overflow:hidden!important;border:1px solid #d9e5f6!important;border-right:0!important;border-radius:14px 0 0 14px!important;background:#173d78!important;color:#fff!important;box-shadow:0 5px 18px rgba(18,49,96,.22)!important;cursor:pointer!important;transition:width .22s ease!important;white-space:nowrap!important}
+.v8-other-stores-back-drawer .v8-other-stores-back-arrow{display:block!important;flex:0 0 20px!important;font-size:34px!important;line-height:1!important;text-align:center!important}
+.v8-other-stores-back-label{display:none!important;font-size:12px!important;font-weight:850!important}
+.v8-other-stores-back-drawer.is-expanded{width:190px!important}
+.v8-other-stores-back-drawer.is-expanded .v8-other-stores-back-label{display:inline!important}
+.v8-other-stores-grid{display:block!important;max-width:1200px!important;margin:0 auto!important}
+.v8-other-stores-category{margin:0 auto 28px!important;padding:0!important}
+.v8-other-stores-category>h2{margin:0 0 13px!important;padding:0 2px 8px!important;border-bottom:1px solid #d9e4f3!important;color:#1d3d70!important;font-size:16px!important;font-weight:950!important}
+.v8-other-stores-category-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px 10px!important}
+.v8-other-stores-store{display:flex!important;min-width:0!important;align-items:center!important;justify-content:flex-start!important;flex-direction:column!important;gap:7px!important;padding:9px 4px!important;border:0!important;border-radius:13px!important;background:transparent!important;color:#233b60!important;text-decoration:none!important;text-align:center!important}
+.v8-other-stores-logo{display:flex!important;width:2cm!important;height:2cm!important;align-items:center!important;justify-content:center!important;padding:4px!important;box-sizing:border-box!important;border:1px solid #e2eaf5!important;border-radius:12px!important;background:#fff!important;box-shadow:0 3px 10px rgba(30,55,95,.07)!important}
+.v8-other-stores-logo img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+.v8-other-stores-store strong{display:block!important;max-width:100%!important;color:#233b60!important;font-size:12px!important;font-weight:850!important;line-height:1.5!important;overflow-wrap:anywhere!important}
+.v8-other-stores-logo-fallback{font-size:25px!important;color:#4772ae!important}
+.v8-other-stores-empty{max-width:1200px!important;margin:30px auto!important;text-align:center!important;color:#71809a!important}
+@media(max-width:700px){
+ .v8-other-stores-page{padding:16px 12px 32px!important}
+ .v8-other-stores-page-title{margin-bottom:13px!important;font-size:18px!important}
+ .v8-other-stores-header{margin-bottom:17px!important}
+ .v8-other-stores-category-grid{gap:12px 7px!important}
+ .v8-other-stores-store{padding:7px 2px!important}
+ .v8-other-stores-store strong{font-size:11px!important}
+ .v8-other-stores-back-drawer{top:42%!important}
+}
