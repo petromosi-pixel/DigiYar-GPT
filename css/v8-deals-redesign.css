@@ -585,3 +585,38 @@ body.v8-other-stores-open{overflow:hidden!important}
  .v8-deals-experience .v8-concept-slide{flex:0 0 88vw!important;width:88vw!important;max-width:380px!important;height:auto!important;min-height:0!important;aspect-ratio:4/3!important}
  .v8-deals-experience .v8-concept-slide.is-active{height:auto!important;aspect-ratio:4/3!important}
 }
+
+/* V8 — independent directory for additional stores and their offers */
+.v8-other-stores-page[hidden]{display:none!important}
+.v8-other-stores-page{position:fixed;inset:0;z-index:10050;overflow-y:auto;overscroll-behavior:contain;padding:calc(18px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));background:var(--dy-bg,#f4f7fb);color:var(--dy-text,#20324d);box-sizing:border-box}
+body.v8-other-stores-open{overflow:hidden!important}
+.v8-other-stores-header{max-width:900px;margin:0 auto}
+.v8-other-stores-back{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid var(--dy-border,#dce4ef);border-radius:11px;background:var(--dy-surface,#fff);color:var(--dy-text,#20324d);font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+.v8-other-stores-eyebrow{display:block;margin-top:25px;color:#bd8b2d;font-size:9px;font-weight:900;letter-spacing:2px;direction:ltr;text-align:right}
+.v8-other-stores-header h2{margin:5px 0 4px;font-size:clamp(20px,5vw,27px);font-weight:900;line-height:1.55}
+.v8-other-stores-header>p{margin:0;color:var(--dy-muted,#718096);font-size:12px;line-height:1.9}
+.v8-other-stores-search{display:flex;align-items:center;gap:9px;max-width:560px;margin:18px 0 12px;padding:0 13px;border:1px solid var(--dy-border,#dce4ef);border-radius:13px;background:var(--dy-surface,#fff);color:var(--dy-muted,#718096)}
+.v8-other-stores-search>span{font-size:23px;line-height:1}
+.v8-other-stores-search input{width:100%;min-height:45px;border:0;outline:0;background:transparent;color:var(--dy-text,#20324d);font:inherit;font-size:12px}
+.v8-other-stores-filters{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.v8-other-stores-filters::-webkit-scrollbar{display:none}
+.v8-other-stores-filter{flex:0 0 auto;padding:7px 11px;border:1px solid var(--dy-border,#dce4ef);border-radius:999px;background:var(--dy-surface,#fff);color:var(--dy-muted,#718096);font:inherit;font-size:10px;font-weight:700;cursor:pointer}
+.v8-other-stores-filter.is-active{border-color:#d5a344;background:#fff4d9;color:#805813}
+.v8-other-stores-resultline{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:900px;margin:12px auto;color:var(--dy-muted,#718096);font-size:10px}
+.v8-other-stores-resultline strong{color:var(--dy-text,#20324d);font-size:12px}
+.v8-other-stores-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:900px;margin:0 auto}
+.v8-other-stores-card{min-width:0;padding:13px;border:1px solid var(--dy-border,#dce4ef);border-radius:15px;background:var(--dy-surface,#fff);box-shadow:0 5px 16px rgba(29,48,77,.045)}
+.v8-other-stores-card-top{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.v8-other-stores-store-icon{display:flex;align-items:center;justify-content:center;width:29px;height:29px;border-radius:9px;background:#fff2d3;color:#a8751e;font-size:15px}
+.v8-other-stores-category{overflow:hidden;color:var(--dy-muted,#718096);font-size:9px;white-space:nowrap;text-overflow:ellipsis}
+.v8-other-stores-card h3{margin:9px 0 3px;color:var(--dy-text,#20324d);font-size:14px;font-weight:850}
+.v8-other-stores-card p{min-height:34px;margin:0 0 10px;color:var(--dy-muted,#718096);font-size:10px;line-height:1.8}
+.v8-other-stores-visit{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:9px;border-top:1px solid var(--dy-border,#e5ebf3);color:var(--dy-link,#315d91);font-size:10px;font-weight:800;text-decoration:none}
+.v8-other-stores-no-link{display:block;padding-top:9px;border-top:1px solid var(--dy-border,#e5ebf3);color:var(--dy-muted,#8792a3);font-size:9px}
+.v8-other-stores-empty{max-width:900px;margin:30px auto;text-align:center;color:var(--dy-muted,#718096);font-size:12px}
+body.v6-dark .v8-other-stores-page{background:#0e1727;color:#edf3fc}
+body.v6-dark .v8-other-stores-back,body.v6-dark .v8-other-stores-search,body.v6-dark .v8-other-stores-filter,body.v6-dark .v8-other-stores-card{background:#152238;border-color:#34445c;color:#eaf0f9}
+body.v6-dark .v8-other-stores-search input,body.v6-dark .v8-other-stores-card h3,body.v6-dark .v8-other-stores-resultline strong{color:#edf3fc}
+body.v6-dark .v8-other-stores-filter.is-active{background:#45371f;border-color:#8a6a31;color:#f4d58f}
+@media(max-width:420px){.v8-other-stores-page{padding-inline:12px}.v8-other-stores-grid{gap:8px}.v8-other-stores-card{padding:10px}.v8-other-stores-card h3{font-size:13px}.v8-other-stores-card p{font-size:9px}}
+@media(min-width:700px){.v8-other-stores-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
