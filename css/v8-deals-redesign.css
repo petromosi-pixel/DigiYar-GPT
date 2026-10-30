@@ -651,3 +651,49 @@ body.v6-dark .v8-other-stores-filter.is-active{background:#45371f;border-color:#
  .v8-other-stores-store strong{font-size:11px!important}
  .v8-other-stores-back-drawer{top:42%!important}
 }
+
+
+/* V8.17 — dark theme contrast and centered side-drawer contents */
+body.v6-dark .v8-other-stores-page{
+ background:radial-gradient(ellipse at 90% 0%,rgba(47,75,119,.22),transparent 40%),linear-gradient(180deg,#101a2b,#0b1321)!important;
+ color:#edf3fc!important;
+}
+body.v6-dark .v8-other-stores-page-title{color:#f1f5fc!important}
+body.v6-dark .v8-other-stores-category>h2{
+ color:#e5edf9!important;
+ border-bottom-color:#34445b!important;
+}
+body.v6-dark .v8-other-stores-store{color:#e5edf9!important}
+body.v6-dark .v8-other-stores-store strong{color:#e5edf9!important}
+body.v6-dark .v8-other-stores-empty{color:#aab8cc!important}
+body.v6-dark .v8-other-stores-logo-fallback{color:#91b8ef!important}
+body.v6-dark .v8-other-stores-logo{
+ border-color:#3a4a61!important;
+ background:#f7f9fc!important;
+ box-shadow:0 3px 12px rgba(0,0,0,.24)!important;
+}
+.v8-other-stores-back-drawer{
+ justify-content:center!important;
+ padding:0!important;
+ gap:0!important;
+ text-align:center!important;
+}
+.v8-other-stores-back-drawer .v8-other-stores-back-arrow{
+ flex:0 0 22px!important;
+ width:22px!important;
+ margin:0!important;
+ padding:0!important;
+ text-align:center!important;
+ line-height:1!important;
+}
+.v8-other-stores-back-drawer.is-expanded{
+ justify-content:center!important;
+}
+.v8-other-stores-back-drawer.is-expanded .v8-other-stores-back-label{
+ flex:0 1 auto!important;
+ width:auto!important;
+ margin:0!important;
+ padding:0!important;
+ text-align:center!important;
+ line-height:1.5!important;
+}
