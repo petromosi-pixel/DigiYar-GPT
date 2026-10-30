@@ -245,14 +245,15 @@ Object.keys(BY_DOMAIN).forEach(function(domain){
 });
 
 /* Additive classification metadata; Hooshyar matching fields remain unchanged. */
-var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','esam','memarket','divar','sheypoor'];
+var GENERAL_STORE_IDS=['digikala','snappshop','torob','basalam','memarket'];
+var PORTAL_STORE_IDS=['divar','sheypoor','esam'];
 /* Classify by merchant business activity, not the number of product domains.
    Marketplaces and broad discovery platforms are general; focused merchants
    remain specialist even when they span adjacent product domains. */
 Object.keys(C).forEach(function(id){
- C[id].storeType=GENERAL_STORE_IDS.indexOf(String(id).toLowerCase())>=0?'general':'specialist';
+ C[id].storeType=GENERAL_STORE_IDS.indexOf(String(id).toLowerCase())>=0?'general':(PORTAL_STORE_IDS.indexOf(String(id).toLowerCase())>=0?'portal':'specialist');
 });
-var BY_TYPE={general:{id:'general',title:'فروشگاه‌های عمومی',storeIds:[],stores:[]},specialist:{id:'specialist',title:'فروشگاه‌های تخصصی',storeIds:[],stores:[]}};
+var BY_TYPE={general:{id:'general',title:'فروشگاه‌های عمومی',storeIds:[],stores:[]},portal:{id:'portal',title:'درگاه‌های خرید و فروش',subtitle:'کالاهای نو و دست دوم در همه حوزه‌ها',storeIds:[],stores:[]},specialist:{id:'specialist',title:'فروشگاه‌های تخصصی',storeIds:[],stores:[]}};
 Object.keys(C).forEach(function(id){var s=C[id],type=s.storeType;BY_TYPE[type].storeIds.push(id);BY_TYPE[type].stores.push({id:id,name:s.name,homepage:s.homepage||'',domains:s.domains||[],specialties:s.specialties||[],products:s.products||[]});});
 Object.keys(BY_TYPE).forEach(function(type){BY_TYPE[type].stores.sort(function(a,b){return a.name.localeCompare(b.name,'fa');});});
 /* Specialist-only taxonomy is additive. Preserve legacy byDomain for Hooshyar's existing retrieval contracts. */
@@ -270,6 +271,6 @@ Object.keys(SPECIALIST_BY_DOMAIN).forEach(function(domain){
  SPECIALIST_BY_DOMAIN[domain].storeIds=Array.from(new Set(SPECIALIST_BY_DOMAIN[domain].storeIds));
  SPECIALIST_BY_DOMAIN[domain].stores.sort(function(a,b){return a.name.localeCompare(b.name,'fa');});
 });
-root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,domainTitles:DOMAIN_TITLES,byDomain:BY_DOMAIN,specialistByDomain:SPECIALIST_BY_DOMAIN,byType:BY_TYPE,generalStoreIds:GENERAL_STORE_IDS.slice(),domains:function(){return BY_DOMAIN;},specialistDomains:function(){return SPECIALIST_BY_DOMAIN;},storesForSpecialistDomain:function(domain){return SPECIALIST_BY_DOMAIN[String(domain||'').toLowerCase()]||null;},storesForType:function(type){return BY_TYPE[String(type||'').toLowerCase()]||null;},storesForDomain:function(domain){return BY_DOMAIN[String(domain||'').toLowerCase()]||null;},get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
+root.DigiYarStoreBusinessDomains={version:VERSION,catalog:C,domainTitles:DOMAIN_TITLES,byDomain:BY_DOMAIN,specialistByDomain:SPECIALIST_BY_DOMAIN,byType:BY_TYPE,generalStoreIds:GENERAL_STORE_IDS.slice(),portalStoreIds:PORTAL_STORE_IDS.slice(),domains:function(){return BY_DOMAIN;},specialistDomains:function(){return SPECIALIST_BY_DOMAIN;},storesForSpecialistDomain:function(domain){return SPECIALIST_BY_DOMAIN[String(domain||'').toLowerCase()]||null;},storesForType:function(type){return BY_TYPE[String(type||'').toLowerCase()]||null;},storesForDomain:function(domain){return BY_DOMAIN[String(domain||'').toLowerCase()]||null;},get:function(id){return C[String(id||'').toLowerCase()]||null;},ids:function(){return Object.keys(C);},forAI:function(){return C;}};
 if(typeof module!=='undefined'&&module.exports)module.exports=root.DigiYarStoreBusinessDomains;
 })(typeof window!=='undefined'?window:globalThis);
