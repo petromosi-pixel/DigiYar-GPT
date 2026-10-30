@@ -93,3 +93,40 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
   #v7DealsHost.v5-deals-card.v8-deals-experience{padding:6px 8px 5px!important}
   #v5DealViewport.v8-deal-viewport{height:clamp(160px,56vw,210px)!important;max-height:210px!important}
 }
+
+
+/* V8 final carousel polish: crisp slide outlines, no slide shadows, native card border */
+#v5DealTrack>.v8-concept-slide.v8-photo-slide{
+  border:2px solid #8798b0!important;
+  box-shadow:none!important;
+}
+#v5DealTrack>.v8-concept-slide.v8-photo-slide.is-active{box-shadow:none!important}
+body.v6-dark #v5DealTrack>.v8-concept-slide.v8-photo-slide{
+  border-color:#8295b2!important;box-shadow:none!important;
+}
+#v7DealsHost.v5-deals-card.v8-deals-experience{
+  margin-left:0!important;margin-right:0!important;
+  padding-left:0!important;padding-right:0!important;
+  border:1px solid #dfe7f2!important;
+  box-shadow:0 10px 30px rgba(42,65,105,.09)!important;
+  border-radius:14px!important;
+}
+body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
+  border-color:#34445c!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
+}
+#v7DealsHost .v5-section-heading{padding-left:10px!important;padding-right:10px!important}
+#v5DealTrack.v8-deal-track{padding-left:10vw!important;padding-right:10vw!important}
+#v5DealTrack>.v8-photo-more{display:flex!important;align-items:center!important;justify-content:center!important}
+#v5DealTrack .v8-photo-more-label{
+  position:absolute!important;z-index:2!important;left:0!important;right:0!important;bottom:13px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+  color:#fff!important;font-size:15px!important;font-weight:900!important;
+  text-shadow:0 2px 7px rgba(0,0,0,.95)!important;pointer-events:none!important;
+}
+#v5DealTrack .v8-photo-more-label .v8-photo-more-arrow{font-size:25px!important;line-height:1!important;font-weight:900!important}
+@media(max-width:700px){
+  #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-width:2px!important}
+  #v5DealTrack .v8-photo-more-label{bottom:11px!important;font-size:13px!important}
+  #v5DealTrack .v8-photo-more-label .v8-photo-more-arrow{font-size:22px!important}
+}
