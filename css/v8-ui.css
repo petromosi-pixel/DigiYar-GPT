@@ -61,3 +61,35 @@ body.v6-dark #v5DealTrack .v8-photo-head,body.v6-dark #v5DealTrack .v8-photo-cta
 #v5DealTrack .v8-photo-head strong{font-size:12px!important;font-weight:800!important;white-space:nowrap!important;color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95)!important}
 body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
 @media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
+
+
+/* V8 carousel refinement: remove the inner rail frame and tighten the card */
+#v7DealsHost.v5-deals-card.v8-deals-experience{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  padding:7px 10px 6px!important;overflow:hidden!important;
+}
+#v7DealsHost .v5-section-heading{margin:0 0 2px!important;padding:0!important}
+#v7DealsHost .v5-section-heading h2{margin:0!important;line-height:1.18!important}
+#v7DealsHost .v5-section-heading p{margin:0!important;line-height:1.15!important}
+#v5DealViewport.v8-deal-viewport{
+  margin:0!important;padding:0!important;
+  border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;
+  height:clamp(165px,56vw,220px)!important;
+  min-height:0!important;max-height:220px!important;
+}
+#v5DealTrack.v8-deal-track{padding-top:0!important;padding-bottom:0!important}
+#v5DealDots{margin:3px auto 0!important;min-height:8px!important;height:8px!important}
+#v7DealsHost .v8-deals-bottom{margin-top:3px!important;padding-top:0!important}
+body:not(.v6-dark) #v7DealsHost.v5-deals-card.v8-deals-experience{
+  border:1.5px solid #8297b5!important;
+  box-shadow:0 0 0 1px rgba(48,72,110,.20),0 5px 15px rgba(33,57,94,.18)!important;
+}
+body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
+  border:1.5px solid #526783!important;
+  box-shadow:0 0 0 1px rgba(160,185,220,.15),0 5px 16px rgba(0,0,0,.34)!important;
+}
+@media(max-width:700px){
+  #v7DealsHost.v5-deals-card.v8-deals-experience{padding:6px 8px 5px!important}
+  #v5DealViewport.v8-deal-viewport{height:clamp(160px,56vw,210px)!important;max-height:210px!important}
+}
