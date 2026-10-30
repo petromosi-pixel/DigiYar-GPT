@@ -195,11 +195,12 @@ function resolveSearchContext(query){
  return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})),routeUnavailableStoreIds:unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent};
 }
 function isGeneral(id,s){return !!(s&&s.storeType==='general');}
-function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
+function isPortal(id,s){return !!(s&&s.storeType==='portal');}
+function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&!isPortal(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
 function featuredFor(domain,catalog){
  var seen={},out=[],featured=FEATURED[domain]||[];
  function add(id,tagline){
-  var s=catalog[id];if(!s||isGeneral(id,s)||seen[id]||!Array.isArray(s.domains)||s.domains.indexOf(domain)<0)return;
+  var s=catalog[id];if(!s||isGeneral(id,s)||isPortal(id,s)||seen[id]||!Array.isArray(s.domains)||s.domains.indexOf(domain)<0)return;
   seen[id]=true;out.push({id:id,name:s.name||id,homepage:s.homepage||'',tagline:tagline||((s.specialties||[]).slice(0,2).join('، '))||((s.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain});
  }
  featured.forEach(function(entry){add(entry[0],entry[1]);});
@@ -208,7 +209,7 @@ function featuredFor(domain,catalog){
  Object.keys(catalog).forEach(function(id){var s=catalog[id]||{};if((s.domains||[]).indexOf(domain)>=0)add(id,'');});
  return out;
 }
-function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return !isGeneral(id,catalog[id])&&(catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'};});}
+function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return !isGeneral(id,catalog[id])&&!isPortal(id,catalog[id])&&(catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'};});}
 function render(){
  var root=document.getElementById('v7PopularDiscovery');if(!root)return;
  var catalog=getCatalog(),domains=availableDomains(catalog);
@@ -461,6 +462,8 @@ function render(){
   return '<section class="popular-discovery-accordion'+(open?' is-open':'')+'"'+(key==='search-results'?' data-search-results="true"':'')+'><button type="button" class="popular-discovery-accordion-trigger" data-accordion-key="'+esc(key)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'">'+(icon?'<span class="popular-discovery-accordion-icon" aria-hidden="true">'+esc(icon)+'</span>':'')+'<span class="popular-discovery-accordion-title-wrap"><strong>'+esc(title)+'</strong>'+(key==='search-results'&&description?'<span class="popular-discovery-query-text">'+esc(description)+'</span>':(description?'<small>'+esc(description)+'</small>':''))+'</span></button><button type="button" class="popular-discovery-accordion-chevron" data-accordion-key="'+esc(key)+'" aria-label="'+(open?'بستن':'باز کردن')+' '+esc(title)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="popular-discovery-accordion-panel" id="popularDiscoveryPanel-'+esc(key)+'"'+(open?'':' hidden')+'><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">فروشگاهی در این دسته پیدا نشد.</div>')+'</div></div></section>';
  }
  var general=generalIds.map(function(id){return makeStore(id,'');}).filter(matches);
+ var portalIds=Object.keys(catalog).filter(function(id){return isPortal(id,catalog[id]);});
+ var portals=portalIds.map(function(id){return makeStore(id,'portal');}).filter(matches);
  var html='';
  if(state.queryActive){
   var uniqueItems=[],seenSearchIds={};
@@ -477,6 +480,8 @@ function render(){
   html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار:', '',state.query,uniqueItems);
  }else if(state.type==='general'){
   html=accordion('general','فروشگاه‌های عمومی','🏬','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general);
+ }else if(state.type==='portal'){
+  html=accordion('portal','درگاه‌های خرید و فروش','⇄','کالاهای نو و دست دوم در همه حوزه‌ها',portals);
  }else{
   html=domains.map(function(domain){
    var meta=getDomainMeta(domain);
@@ -484,7 +489,7 @@ function render(){
    return accordion(domain,meta.title,meta.icon,meta.subtitle,items);
   }).join('');
  }
- var typeTabs='<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
+ var typeTabs='<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="portal" aria-pressed="'+(state.type==='portal'?'true':'false')+'">درگاه‌های خرید و فروش</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
  var tabsRoot=document.getElementById('v7PopularDiscoveryTabs');if(tabsRoot)tabsRoot.innerHTML=typeTabs;
  root.innerHTML='<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
  if(state.queryActive&&!html){
@@ -514,7 +519,7 @@ function render(){
   }
  }
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
- (tabsRoot||root).querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type');if(state.queryActive){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};}var same=state.type===next,anyOpen=next==='general'?!!state.openCategories.general:domains.some(function(d){return !!state.openCategories[d];});if(same&&anyOpen){state.openCategories={};}else{state.type=next;state.openCategories={};if(next==='general'){state.openCategories.general=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}}render();});});
+ (tabsRoot||root).querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type');if(state.queryActive){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};}var same=state.type===next,anyOpen=next==='general'?!!state.openCategories.general:(next==='portal'?!!state.openCategories.portal:domains.some(function(d){return !!state.openCategories[d];}));if(same&&anyOpen){state.openCategories={};}else{state.type=next;state.openCategories={};if(next==='general'){state.openCategories.general=true;}else if(next==='portal'){state.openCategories.portal=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}}render();});});
 
 }
 function init(){
