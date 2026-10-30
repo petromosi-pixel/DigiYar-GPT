@@ -122,7 +122,22 @@
     if (legacyLogo) legacyLogo.remove();
 
     installStoreLogoObserver();
-    window.setTimeout(dismissSplash, 3000);
+    var offlineNotice = splash.querySelector('.v8-splash-offline');
+    function updateConnectionState() {
+      var offline = navigator.onLine === false;
+      if (offlineNotice) offlineNotice.hidden = !offline;
+      if (offline) {
+        splash.classList.remove('splash-hidden');
+        splash.style.display = 'flex';
+        splash.setAttribute('aria-hidden', 'false');
+      } else {
+        window.setTimeout(dismissSplash, 1200);
+      }
+    }
+    updateConnectionState();
+    window.addEventListener('offline', updateConnectionState);
+    window.addEventListener('online', updateConnectionState);
+    if (navigator.onLine !== false) window.setTimeout(dismissSplash, 3000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
