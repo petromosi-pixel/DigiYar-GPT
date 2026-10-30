@@ -697,3 +697,33 @@ body.v6-dark .v8-other-stores-logo{
  text-align:center!important;
  line-height:1.5!important;
 }
+
+
+/* V8.18 — enforce directory dark palette and true two-axis drawer centering */
+body.v6-dark #v8OtherStoresPage.v8-other-stores-page{
+ background:#0d1728!important;
+ color:#edf3fc!important;
+}
+body.v6-dark #v8OtherStoresPage .v8-other-stores-page-title{color:#f3f6fc!important}
+body.v6-dark #v8OtherStoresPage .v8-other-stores-category>h2{color:#e8effb!important;border-bottom-color:#34445b!important}
+body.v6-dark #v8OtherStoresPage .v8-other-stores-store,
+body.v6-dark #v8OtherStoresPage .v8-other-stores-store strong{color:#e5edf9!important}
+body.v6-dark #v8OtherStoresPage .v8-other-stores-empty{color:#aebbd0!important}
+body.v6-dark #v8OtherStoresPage .v8-other-stores-logo{background:#f7f9fc!important;border-color:#46566e!important}
+#v8OtherStoresPage .v8-other-stores-back-drawer{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex-direction:row!important;box-sizing:border-box!important;text-align:center!important;
+}
+#v8OtherStoresPage .v8-other-stores-back-drawer .v8-other-stores-back-arrow{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 22px!important;width:22px!important;height:100%!important;
+ line-height:1!important;text-align:center!important;
+}
+#v8OtherStoresPage .v8-other-stores-back-drawer.is-expanded{
+ width:190px!important;justify-content:center!important;gap:8px!important;
+}
+#v8OtherStoresPage .v8-other-stores-back-drawer.is-expanded .v8-other-stores-back-label{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 1 auto!important;min-width:0!important;text-align:center!important;
+ white-space:normal!important;line-height:1.5!important;
+}
