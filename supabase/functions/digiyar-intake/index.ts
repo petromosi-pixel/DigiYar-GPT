@@ -12,9 +12,8 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:3000"
 ]);
 
-const windows = new Map<string, { count: number; resetAt: number }>();
-const WINDOW_MS = 10 * 60 * 1000;
 const MAX_REQUESTS = 5;
+const WINDOW_SECONDS = 600;
 
 function json(data: unknown, status: number, origin: string | null) {
   const headers = new Headers({
@@ -39,17 +38,28 @@ function validOrigin(origin: string | null) {
   return !origin || ALLOWED_ORIGINS.has(origin);
 }
 
-function rateLimit(req: Request): boolean {
+async function rateLimit(req: Request): Promise<boolean> {
   const ip = (req.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
-  const now = Date.now();
-  const entry = windows.get(ip);
-  if (!entry || entry.resetAt <= now) {
-    windows.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    return true;
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
+  const bucketKey = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/consume_digiyar_intake_rate_limit`, {
+    method: "POST",
+    headers: {
+      apikey: SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      p_bucket_key: bucketKey,
+      p_max_requests: MAX_REQUESTS,
+      p_window_seconds: WINDOW_SECONDS
+    })
+  });
+  if (!response.ok) {
+    console.error("Persistent rate-limit check failed", response.status, (await response.text()).slice(0, 300));
+    return false;
   }
-  if (entry.count >= MAX_REQUESTS) return false;
-  entry.count += 1;
-  return true;
+  return await response.json() === true;
 }
 
 async function getOptionalUserId(req: Request): Promise<string | null> {
@@ -99,7 +109,7 @@ Deno.serve(async (req: Request) => {
 
   const declaredLength = Number(req.headers.get("content-length") || 0);
   if (declaredLength > 16_384) return json({ error: "Payload too large" }, 413, origin);
-  if (!rateLimit(req)) return json({ error: "Too many requests. Try again later." }, 429, origin);
+  if (!(await rateLimit(req))) return json({ error: "Too many requests or temporary protection failure. Try again later." }, 429, origin);
 
   let body: Record<string, unknown>;
   try {
