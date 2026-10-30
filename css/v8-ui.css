@@ -130,3 +130,8 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
   #v5DealTrack .v8-photo-more-label{bottom:11px!important;font-size:13px!important}
   #v5DealTrack .v8-photo-more-label .v8-photo-more-arrow{font-size:22px!important}
 }
+
+
+/* V8: align the carousel container with the shared homepage card system. */
+#v7DealsHost.v5-deals-card.v8-deals-experience{border:1px solid var(--border,#e3e8f0)!important;border-radius:var(--radius,18px)!important;box-shadow:var(--shadow,0 8px 25px rgba(16,28,53,.08))!important;}
+body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{border-color:var(--dy-border,#35455d)!important;box-shadow:var(--shadow,0 8px 25px rgba(0,0,0,.22))!important;}
