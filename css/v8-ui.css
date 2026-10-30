@@ -53,3 +53,11 @@ body.v6-dark .v8-other-stores-page h2,body.v6-dark .v8-other-stores-page h3,body
 body:not(.v6-dark) #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-color:#8297b5!important;box-shadow:0 0 0 1px rgba(48,72,110,.22),0 5px 15px rgba(33,57,94,.2)!important}
 body.v6-dark #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-color:#526783!important;box-shadow:0 0 0 1px rgba(160,185,220,.15),0 5px 16px rgba(0,0,0,.34)!important}
 body.v6-dark #v5DealTrack .v8-photo-head,body.v6-dark #v5DealTrack .v8-photo-cta{background:rgba(17,29,47,.48)!important;border-color:rgba(220,232,250,.5)!important;color:#f2f6ff!important}
+
+
+/* Store identity remains visible directly over the slide: no badge/pill container */
+#v5DealTrack .v8-photo-head{position:absolute!important;top:7px!important;right:8px!important;z-index:2!important;display:flex!important;align-items:center!important;gap:5px!important;max-width:calc(100% - 16px)!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;font-size:12px!important;line-height:1.2!important;text-shadow:0 1px 4px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9)!important}
+#v5DealTrack .v8-photo-head img{display:block!important;width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;object-fit:contain!important;background:transparent!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.65))!important}
+#v5DealTrack .v8-photo-head strong{font-size:12px!important;font-weight:800!important;white-space:nowrap!important;color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95)!important}
+body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
+@media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
