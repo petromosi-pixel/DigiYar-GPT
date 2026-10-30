@@ -573,3 +573,15 @@ body.v8-other-stores-open{overflow:hidden!important}
  .v8-deals-experience .v8-concept-slide{flex:0 0 78vw!important;width:78vw!important;max-width:330px!important;height:auto!important;min-height:0!important;aspect-ratio:9/16!important}
  .v8-deals-experience .v8-concept-slide.is-active{height:auto!important;aspect-ratio:9/16!important}
 }
+
+
+/* V8.16 — landscape 4:3 carousel cards */
+.v8-deals-experience .v8-deal-viewport{height:340px!important;min-height:340px!important;padding:10px 0!important;box-sizing:border-box!important}
+.v8-deals-experience .v8-concept-slide{flex:0 0 clamp(240px,24vw,360px)!important;width:clamp(240px,24vw,360px)!important;height:auto!important;min-height:0!important;aspect-ratio:4/3!important;align-self:center!important;box-sizing:border-box!important}
+.v8-deals-experience .v8-concept-slide.is-active{height:auto!important;aspect-ratio:4/3!important;transform:scale(1.015)!important}
+.v8-deals-experience .v8-concept-art{min-height:0!important;flex:1 1 auto!important}
+@media(max-width:700px){
+ .v8-deals-experience .v8-deal-viewport{height: min(82vw,340px)!important;min-height:250px!important;padding:10px 0!important}
+ .v8-deals-experience .v8-concept-slide{flex:0 0 88vw!important;width:88vw!important;max-width:380px!important;height:auto!important;min-height:0!important;aspect-ratio:4/3!important}
+ .v8-deals-experience .v8-concept-slide.is-active{height:auto!important;aspect-ratio:4/3!important}
+}
