@@ -13,8 +13,8 @@ function initDeals(){
  const path=function(folder,file){return 'assets/'+folder+'/'+encodeURIComponent(file).replace(/%2F/g,'/');};
  const imagePath=function(file){return path('slider-photos',file);};
  const logoPath=function(file){return path('store-logos',file);};
- slides.forEach(function(item,i){const warm=new Image();warm.decoding='async';warm.fetchPriority=i<3?'high':'auto';warm.src=imagePath(item[1]);});
- const moreWarm=new Image();moreWarm.decoding='async';moreWarm.src=imagePath('فروشگاه های بیشتر.webp');
+ slides.forEach(function(item){[imagePath(item[1]),logoPath(item[2])].forEach(function(src){const warm=new Image();warm.decoding='async';warm.fetchPriority='high';warm.src=src;});});
+ const moreWarm=new Image();moreWarm.decoding='async';moreWarm.fetchPriority='high';moreWarm.src=imagePath('فروشگاه های بیشتر.webp');
  const html=slides.map(function(item,i){
   const id=item[0],file=item[1],logo=item[2],st=catalog[id]||{},name=st.name||id;
   let url='';try{const u=new URL(st.homepage||'');if(u.protocol==='https:')url=u.href;}catch(e){}
@@ -24,6 +24,7 @@ function initDeals(){
  });
  html.push('<button type="button" class="v8-concept-slide v8-photo-slide v8-photo-more" data-open-other-stores><img class="v8-photo-background" src="'+imagePath('فروشگاه های بیشتر.webp')+'" alt="فروشگاه‌های بیشتر" loading="eager" decoding="async"><span class="v8-photo-shade"></span><span class="v8-photo-head"><strong>فروشگاه‌های بیشتر</strong></span><span class="v8-photo-cta">مشاهده همه فروشگاه‌ها</span></button>');
  track.innerHTML=html.join('');
+ track.querySelectorAll('img').forEach(function(img){img.addEventListener('load',function(){img.classList.add('v8-image-ready');},{once:true});img.addEventListener('error',function(){img.classList.add('v8-image-failed');img.removeAttribute('src');},{once:true});if(img.complete){if(img.naturalWidth)img.classList.add('v8-image-ready');else if(img.src){img.classList.add('v8-image-failed');img.removeAttribute('src');}}});
  const all=[...track.children];let active=0,timer=null,paused=0;
  const dotsRender=function(){dots.innerHTML='';all.forEach(function(el,i){let b=document.createElement('button');b.type='button';b.className=i===active?'active':'';b.setAttribute('aria-label','اسلاید '+(i+1));b.addEventListener('click',function(){go(i,true);});dots.appendChild(b);});};
  const go=function(i,manual){active=(i+all.length)%all.length;all.forEach(function(el,j){el.classList.toggle('is-active',j===active);});let el=all[active];viewport.scrollTo({left:Math.max(0,el.offsetLeft-(viewport.clientWidth-el.offsetWidth)/2),behavior:'smooth'});if(manual)paused=Date.now()+7000;dotsRender();};
