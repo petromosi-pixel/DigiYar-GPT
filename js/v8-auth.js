@@ -60,13 +60,18 @@
   }
 
   function localProfile() {
-    for (const key of ['digiyar-account-profile-v1', 'digiyar-v5-profile']) {
+    const merged = {};
+    ['digiyar-v5-profile', 'digiyar-account-profile-v1'].forEach(function (key) {
       try {
         const value = JSON.parse(localStorage.getItem(key) || 'null');
-        if (value && typeof value === 'object') return value;
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          Object.keys(value).forEach(function (field) {
+            if (value[field] !== null && value[field] !== undefined && value[field] !== '') merged[field] = value[field];
+          });
+        }
       } catch (_) {}
-    }
-    return {};
+    });
+    return merged;
   }
 
   function toDb(profile) {
