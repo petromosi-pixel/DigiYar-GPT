@@ -79,7 +79,7 @@
     if (profile.name) data.display_name = String(profile.name).trim().slice(0, 120);
     if (profile.city) data.city = String(profile.city).trim().slice(0, 120);
     if (profile.phone) data.phone = String(profile.phone).trim().slice(0, 40);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(String(profile.birthDate || ''))) data.birth_date = profile.birthDate;
+    if (profile.birthDate) { data.birth_date_label = String(profile.birthDate).trim().slice(0, 32); if (/^\d{4}-\d{2}-\d{2}$/.test(String(profile.birthDate))) data.birth_date = profile.birthDate; }
     const gender = String(profile.gender || '').trim();
     if (gender === 'زن' || gender === 'female') data.gender = 'female';
     else if (gender === 'مرد' || gender === 'male') data.gender = 'male';
@@ -107,7 +107,7 @@
     await init();
     if (!currentUser) throw new Error('ابتدا وارد حساب کاربری شو.');
     const c = getClient();
-    const { data: remote, error } = await c.from('profiles').select('id,display_name,city,birth_date,gender,phone').eq('id', currentUser.id).maybeSingle();
+    const { data: remote, error } = await c.from('profiles').select('id,display_name,city,birth_date,birth_date_label,gender,phone').eq('id', currentUser.id).maybeSingle();
     if (error) throw error;
     const local = toDb(localProfile());
     const merged = {};
@@ -179,7 +179,7 @@
       const button = this; button.disabled = true; result.textContent = 'در حال بررسی و انتقال اطلاعات…';
       try {
         const stats = await migrateLocalProfile();
-        result.textContent = 'انتقال انجام شد؛ ' + stats.copied + ' مورد منتقل شد و ' + stats.keptRemote + ' مورد موجود در حساب بدون تغییر باقی ماند. عکس پروفایل و تاریخ تولد شمسی فقط در همین دستگاه نگه داشته شده‌اند.';
+        result.textContent = 'انتقال انجام شد؛ ' + stats.copied + ' مورد منتقل شد و ' + stats.keptRemote + ' مورد موجود در حساب بدون تغییر باقی ماند. عکس پروفایل فعلاً فقط در همین دستگاه نگه داشته شده است.';
       } catch (error) { result.textContent = error.message || 'انتقال اطلاعات انجام نشد؛ اطلاعات محلی حفظ شده‌اند.'; }
       finally { button.disabled = false; }
     });
