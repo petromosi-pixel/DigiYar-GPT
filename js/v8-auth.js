@@ -6,6 +6,7 @@
   const REDIRECT = 'https://digi-yar-core.vercel.app/';
   let client = null;
   let currentUser = null;
+  let currentSession = null;
   let ready = null;
 
   function getClient() {
@@ -17,6 +18,7 @@
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' }
     });
     client.auth.onAuthStateChange(function (event, session) {
+      currentSession = session || null;
       currentUser = session && session.user ? session.user : null;
       try { window.dispatchEvent(new CustomEvent('digiyar:auth-change', { detail: { event: event, user: currentUser } })); } catch (_) {}
     });
@@ -28,20 +30,15 @@
       const c = getClient();
       const result = await c.auth.getSession();
       if (result.error) throw result.error;
-      currentUser = result.data.session ? result.data.session.user : null;
+      currentSession = result.data.session || null;
+      currentUser = currentSession ? currentSession.user : null;
       return currentUser;
     })();
     return ready;
   }
 
   function getUser() { return currentUser; }
-  function getAccessToken() {
-    try {
-      const raw = localStorage.getItem('sb-qeuljjvjndqbwiqseqvl-auth-token');
-      const parsed = raw ? JSON.parse(raw) : null;
-      return parsed && parsed.access_token ? parsed.access_token : null;
-    } catch (_) { return null; }
-  }
+  function getAccessToken() { return currentSession && currentSession.access_token ? currentSession.access_token : null; }
 
   async function requestEmailLink(email) {
     const clean = String(email || '').trim().toLowerCase();
