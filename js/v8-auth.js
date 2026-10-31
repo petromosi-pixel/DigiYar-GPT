@@ -3,7 +3,7 @@
   'use strict';
   const URL = 'https://qeuljjvjndqbwiqseqvl.supabase.co';
   const KEY = 'sb_publishable_bqx_jIKEbJnKOSOGO7u1jA_r88Pe3NY';
-  const REDIRECT = 'https://digi-yar-core.vercel.app/';
+  const REDIRECT = 'https://digi-yar-core-git-main-digi-yar.vercel.app/';
   let client = null;
   let currentUser = null;
   let currentSession = null;
