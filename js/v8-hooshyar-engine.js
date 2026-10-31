@@ -1,536 +1,340 @@
-/* DigiYar — Popular Stores discovery module */
+/* DigiYar V8 — Hooshyar discovery engine (simplified & stable) */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.1';
-var DOMAIN_META={
- digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
- accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
- furniture:{title:'مبلمان و دکوراسیون',icon:'🛋️',subtitle:'برای چیدمان خانه، مبلمان و انتخاب وسایل کاربردی',sub:['مبل و راحتی','میز و صندلی','دکور و چوب']},
- fashion:{title:'پوشاک، کیف و کفش',icon:'👕',subtitle:'از استایل روزمره تا انتخاب پوشاک و کفش',sub:['پوشاک روزمره','کیف و کفش','استایل و برند']},
- beauty:{title:'زیبایی و آرایشی',icon:'💄',subtitle:'برای مراقبت پوست و مو و انتخاب محصولات آرایشی',sub:['مراقبت پوست','آرایش و عطر','مراقبت مو']},
- health:{title:'سلامت و محصولات بهداشتی',icon:'🌿',subtitle:'محصولات بهداشتی و سلامت را از منابع مرتبط بررسی کن',sub:['مکمل و ویتامین','بهداشت فردی','مراقبت تخصصی']},
- medicine:{title:'دارو و تجهیزات سلامت',icon:'🩺',subtitle:'داروخانه‌ها و فروشگاه‌های تخصصی سلامت',sub:['داروخانه آنلاین','تجهیزات پزشکی','مراقبت درمانی']},
- supermarket:{title:'سوپرمارکت و مواد غذایی',icon:'🛒',subtitle:'خرید روزمره و کالاهای مصرفی خانه',sub:['خرید روزانه','مواد غذایی','سوپرمارکت آنلاین']},
- home:{title:'خانه، آشپزخانه و ساختمان',icon:'🏠',subtitle:'وسایل خانه، آشپزخانه و نیازهای ساختمان',sub:['آشپزخانه و خانه','ابزار و ساختمان','لوازم کاربردی']},
- sports:{title:'ورزش و تجهیزات ورزشی',icon:'⚽',subtitle:'برای تمرین، ورزش و تجهیزات مورد نیازت',sub:['پوشاک ورزشی','تجهیزات تمرین','لوازم ورزشی']},
- kids:{title:'کودک و نوزاد',icon:'🧸',subtitle:'محصولات کودک، نوزاد و نیازهای خانواده',sub:['نوزاد و سیسمونی','بازی و سرگرمی','نیازهای والدین']},
- books:{title:'کتاب و محصولات فرهنگی',icon:'📚',subtitle:'کتاب چاپی و دیجیتال و محتوای خواندنی',sub:['کتاب چاپی','کتاب الکترونیکی','کتاب صوتی']},
- auto:{title:'خودرو و قطعات یدکی',icon:'🚗',subtitle:'قطعات، لوازم و ابزارهای مرتبط با خودرو',sub:['قطعات یدکی','لوازم خودرو','خرید و فروش خودرو']},
- auto_service:{title:'خدمات خودرو',icon:'🔧',subtitle:'برای خدمات، کارشناسی و رسیدگی به خودرو',sub:['کارشناسی خودرو','خدمات و نگهداری','خدمات آنلاین']},
- travel_ticket:{title:'بلیط و حمل‌ونقل',icon:'🎫',subtitle:'مقایسه و تهیهٔ بلیط سفر',sub:['بلیط هواپیما','بلیط قطار','بلیط و تور']},
- lodging:{title:'اقامت و هتل',icon:'🛏️',subtitle:'برای برنامه‌ریزی اقامت و پیدا کردن محل مناسب سفر',sub:['رزرو اقامتگاه','هتل','سفر و اقامت']},
- education:{title:'آموزش و یادگیری',icon:'🎓',subtitle:'یادگیری مهارت‌های تازه و دوره‌های آنلاین',sub:['برنامه‌نویسی','مهارت شغلی','دوره‌های آموزشی']},
- affiliate_network:{title:'شبکه‌های همکاری در فروش',icon:'🤝',subtitle:'ابزارها و خدمات مرتبط با همکاری در فروش',sub:['شبکه افیلیت','بازاریابی دیجیتال']}
-};
-var DOMAIN_ORDER=Object.keys(DOMAIN_META);
-var FEATURED={
- digital:[['digikala','انتخاب‌های متنوع در یک مقصد'],['torob','برای مقایسهٔ قیمت پیش از خرید'],['technolife','تمرکز بر کالاهای دیجیتال و فناوری'],['digiland','برای بررسی گزینه‌های موبایل و دیجیتال'],['kalatik','گزینه‌ای برای جست‌وجوی کالای دیجیتال'],['emalls','برای شروع مقایسهٔ فروشندگان']],
- accessories:[['janebi','برای لوازم جانبی و تجهیزات دیجیتال'],['digido','برای بررسی لوازم جانبی موبایل'],['gooshishop','برای محصولات موبایل و جانبی']],
- fashion:[['digistyle','برای گشت‌وگذار در پوشاک و استایل'],['banimode','انتخاب پوشاک و سبک زندگی'],['modiseh','برای جست‌وجوی پوشاک و محصولات متنوع'],['shixon','برای بررسی انتخاب‌های مد و پوشاک']],
- health:[['mosbatesabz','برای محصولات سلامت و مکمل'],['darukade','تمرکز بر محصولات داروخانه‌ای'],['darmankala','برای کالاهای مرتبط با سلامت']],
- medicine:[['darukade','برای جست‌وجوی محصولات داروخانه‌ای'],['darmankala','برای کالاهای سلامت و تجهیزات']],
- supermarket:[['okala','برای خرید آنلاین کالاهای روزمره'],['ofoghkoroosh','برای بررسی محصولات مصرفی'],['shahrvand','برای خرید اقلام روزانه'],['hyperme','گزینه‌ای برای خرید سوپرمارکتی']],
- books:[['fidibo','برای کتاب الکترونیکی و صوتی'],['taaghche','برای کتاب‌خوانی دیجیتال'],['book30','برای جست‌وجوی کتاب چاپی']],
- auto_service:[['hamrahmechanic','برای خدمات و کارشناسی خودرو'],['khodro45','برای خدمات خرید و فروش خودرو'],['aytol','برای بررسی خدمات آنلاین خودرو']],
- travel_ticket:[['alibaba','برای برنامه‌ریزی و خرید بلیط سفر'],['mrbilit','برای جست‌وجوی بلیط سفر'],['raja','برای سفر ریلی'],['safarmarket','برای بررسی گزینه‌های سفر']],
- education:[['faradars','برای یادگیری مهارت‌های تخصصی'],['maktabkhooneh','برای دوره‌های آموزشی آنلاین'],['quera','برای یادگیری و تمرین برنامه‌نویسی'],['sabzlearn','برای آموزش مهارت‌های دیجیتال']],
- affiliate_network:[]
-};
-var state={type:'general',domain:'digital',query:'',queryActive:false,queryStoreIds:null,categoriesByStore:{},openCategories:{}};
-function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function normalize(s){return String(s||'').toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim();}
-function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.catalog?kb.catalog:{};}
-/* The KB owns canonical business-domain labels. UI metadata adds presentation only. */
-function getDomainTitle(domain){var kb=window.DigiYarStoreBusinessDomains,labels=kb&&kb.domainTitles||{};return labels[domain]||(DOMAIN_META[domain]||{}).title||domain;}
-function getDomainMeta(domain){var meta=DOMAIN_META[domain]||{title:domain,icon:'🏬',subtitle:'فروشگاه‌ها و خدمات این حوزه'};return Object.assign({},meta,{title:getDomainTitle(domain)});}
-function detectIntent(raw){
- if((/کیف\s*اداری/.test(raw))||(/کیف/.test(raw)&&/محل کار/.test(raw)))return 'office_bag';
- if(/(?:بلیط|بلیت|رزرو).{0,12}(?:قطار|ریل)|(?:قطار|ریل).{0,12}(?:بلیط|بلیت)|سفر ریلی/.test(raw))return 'train_ticket';
- if(/ضد\s*آفتاب|ضدآفتاب/.test(raw))return 'sunscreen';
- if(/ترازو/.test(raw)&&/آشپزخانه|آشپزخونه|هوشمند/.test(raw))return 'kitchen_scale';
- if(/(?:لوازم|تجهیزات)\s*جانبی/.test(raw)&&/گوشی|موبایل/.test(raw))return 'mobile_accessory';
- if(/تصفیه\s*هوا|دستگاه تصفیه هوا|پاکسازی هوا/.test(raw))return 'air_purifier';
- if(/مبل|روکش مبلمان/.test(raw)&&/تمیز|تمیزکردن|شستن|شستشو|نظافت|لکه|پاک کردن/.test(raw))return 'upholstery_cleaning';
- if(/گوشی|موبایل/.test(raw)&&/قاب|گلس|شارژر|کابل|پاوربانک|هندزفری|هدفون/.test(raw))return 'mobile_accessory';
- if(/لوازم جانبی دیجیتال|لوازم جانبی کامپیوتر|تجهیزات جانبی کامپیوتر|قطعات کامپیوتر|قطعات سخت.?افزار/.test(raw))return 'digital_accessory';
- if(/کالای دیجیتال|تجهیزات دیجیتال/.test(raw))return 'digital_product';
- if(/موبایل|گوشی|لپ\s*تاپ|لپتاپ|کامپیوتر|مانیتور|پرینتر|کارت گرافیک|مادربرد|حافظه ssd|هارد اکسترنال|تبلت/.test(raw))return 'digital_product';
- return 'general_product';
-}
-function wordTokens(text){
- return normalize(text).split(/[^\u0600-\u06FFa-z0-9]+/i).filter(function(t){return t.length>1;});
-}
-/* V8 local semantic vocabulary. Extend this table instead of adding store-specific branches. */
-var SEMANTIC_ALIASES=[
- {re:/(?:هواپز|ایر.?فرایر|air\s*fryer|سرخ.?کن.?بدون.?روغن)/i,terms:'سرخ کن هواپز سرخ کن بدون روغن لوازم آشپزخانه'},
- {re:/(?:جارو.?رباتیک|ربات.?جارو|جاروبرقی.?ربات|robot.?vacuum)/i,terms:'جاروبرقی رباتیک جارو شارژی نظافت خانه'},
- {re:/(?:جارو.?شارژی|جارو.?دستی|جارو.?ماشین)/i,terms:'جارو شارژی جاروبرقی نظافت خانه لوازم خودرو'},
- {re:/(?:بخور.?سرد|دستگاه.?بخور|رطوبت.?ساز|humidifier)/i,terms:'رطوبت ساز دستگاه بخور سلامت خانه لوازم خانگی'},
- {re:/(?:رطوبت.?گیر|رطوبت.?زدا|dehumidifier)/i,terms:'رطوبت گیر رطوبت زدا لوازم خانگی'},
- {re:/(?:تصفیه.?آب|فیلتر.?آب|آب.?تصفیه.?کن)/i,terms:'تصفیه آب فیلتر آب دستگاه تصفیه لوازم خانگی'},
- {re:/(?:قهوه.?ساز|اسپرسو.?ساز|موکاپات|coffee.?maker)/i,terms:'قهوه ساز اسپرسوساز لوازم آشپزخانه'},
- {re:/(?:مخلوط.?کن|بلندر|اسموتی.?ساز|blender)/i,terms:'مخلوط کن بلندر اسموتی ساز لوازم آشپزخانه'},
- {re:/(?:ترازو).*(?:آشپزخانه|غذا|مواد)|(?:آشپزخانه|غذا|مواد).*(?:ترازو)/i,terms:'ترازو آشپزخانه ترازو دیجیتال وزن کشی مواد غذایی'},
- {re:/(?:ترازو).*(?:هوشمند|بلوتوث|بدن|وزن)|(?:هوشمند|بلوتوث).*(?:ترازو)/i,terms:'ترازو هوشمند ترازو دیجیتال سلامت وزن'},
- {re:/(?:پایه.?مانیتور|استند.?مانیتور|بازوی.?مانیتور|monitor.?arm)/i,terms:'پایه مانیتور استند مانیتور لوازم جانبی کامپیوتر'},
- {re:/(?:صندلی.?ارگونومیک|صندلی.?گیمینگ|صندلی.?اداری)/i,terms:'صندلی اداری صندلی گیمینگ صندلی کامپیوتر مبلمان اداری'},
- {re:/(?:ماوس|موس).*(?:ارگونومیک|بی.?سیم|گیمینگ)|(?:ماوس|موس)/i,terms:'ماوس موس کیبورد لوازم جانبی کامپیوتر تجهیزات گیمینگ'},
- {re:/(?:کیبورد|صفحه.?کلید)/i,terms:'کیبورد صفحه کلید لوازم جانبی کامپیوتر تجهیزات گیمینگ'},
- {re:/(?:هاب.?usb|هاب.?یو.?اس.?بی|مبدل.?usb|دانگل)/i,terms:'هاب USB مبدل کابل دانگل لوازم جانبی کامپیوتر'},
- {re:/(?:پروژکتور|ویدئو.?پروژکتور|ویدیو.?پروژکتور)/i,terms:'پروژکتور ویدئو پروژکتور تجهیزات دیجیتال صوتی تصویری'},
- {re:/(?:ساعت.?هوشمند|اسمارت.?واچ|smart.?watch)/i,terms:'ساعت هوشمند مچ بند هوشمند گجت دیجیتال'},
- {re:/(?:پاور.?استیشن|نیروگاه.?قابل.?حمل|portable.?power)/i,terms:'پاور استیشن برق اضطراری تجهیزات سفر کمپینگ'},
- {re:/(?:پنل.?خورشیدی|صفحه.?خورشیدی|solar.?panel)/i,terms:'پنل خورشیدی تجهیزات خورشیدی برق صنعتی ابزار'},
- {re:/(?:چادر.?مسافرتی|چادر.?کمپ|کمپینگ|کوهنوردی)/i,terms:'چادر مسافرتی کمپینگ کوهنوردی تجهیزات سفر لوازم ورزشی'},
- {re:/(?:غذای.?گربه|غذای.?سگ|پت.?شاپ|حیوان.?خانگی)/i,terms:'غذای حیوانات خانگی غذای گربه غذای سگ ملزومات حیوانات'},
- {re:/(?:کالسکه|صندلی.?ماشین.?کودک|سیسمونی|نوزاد)/i,terms:'کالسکه سیسمونی کودک نوزاد خواب و گردش کودک'},
- {re:/(?:کیف.?لپ.?تاپ|کوله.?لپ.?تاپ|کاور.?لپ.?تاپ)/i,terms:'کیف لپ تاپ کوله پشتی لوازم جانبی لپ تاپ کیف'},
- {re:/(?:کوله.?پشتی|کیف.?سفر|چمدان|ساک.?مسافرتی)/i,terms:'کوله پشتی چمدان ساک سفر لوازم سفر کیف'},
- {re:/(?:روغن.?موتور|روغن.?ماشین|فیلتر.?روغن|باتری.?خودرو|لاستیک.?خودرو)/i,terms:'روغن موتور فیلتر روغن باتری خودرو لاستیک خودرو قطعات خودرو لوازم خودرو'},
- {re:/(?:دریل|پیچ.?گوشتی.?برقی|فرز|اره.?برقی|ابزار.?شارژی)/i,terms:'دریل پیچ گوشتی برقی فرز اره ابزار صنعتی ابزار دستی'},
- {re:/(?:ضد.?آفتاب|کرم.?ضد.?آفتاب|spf)/i,terms:'ضد آفتاب مراقبت پوست کرم پوست محصولات داروخانه ای زیبایی'},
- {re:/(?:مکمل|ویتامین|پروتئین.?وی|کراتین)/i,terms:'مکمل ویتامین محصولات سلامت داروخانه تغذیه ورزشی'},
- {re:/(?:پرینتر|چاپگر|تونر|کارتریج)/i,terms:'پرینتر چاپگر تونر کارتریج ماشین های اداری کامپیوتر'},
- {re:/(?:مانیتور|نمایشگر|صفحه.?نمایش)/i,terms:'مانیتور نمایشگر کامپیوتر لوازم جانبی کامپیوتر کالای دیجیتال'},
- {re:/(?:ssd|هارد.?اکسترنال|فلش.?مموری|حافظه.?جانبی)/i,terms:'SSD هارد اکسترنال فلش مموری حافظه لوازم جانبی کامپیوتر'},
- {re:/(?:قاب|گلس|محافظ.?صفحه|شارژر|کابل|هندزفری|هدفون|پاوربانک)/i,terms:'لوازم جانبی موبایل قاب گلس شارژر کابل هندزفری هدفون پاوربانک'},
- {re:/(?:مبل|کاناپه|روکش.?مبل).*(?:تمیز|لکه|شستشو|شستن|پاک)|(?:تمیز|لکه|شستشو|شستن|پاک).*(?:مبل|کاناپه|روکش.?مبل)/i,terms:'تمیزکننده مبل پارچه ای دستگاه مبل شوی فرش شوی بخارشوی نظافت خانه'},
- {re:/(?:بلیط|بلیت|رزرو).*(?:قطار|ریل)|(?:قطار|ریل).*(?:بلیط|بلیت|رزرو)/i,terms:'بلیط قطار سفر ریلی حمل و نقل سفر'},
- {re:/(?:کیف.?اداری|کیف.?کار|کیف.?مدیریتی)/i,terms:'کیف اداری کیف کار کیف دستی اداری کیف لپ تاپ پوشاک کیف'}
-];
-function semanticQuery(raw){var additions=[];SEMANTIC_ALIASES.forEach(function(entry){if(entry.re.test(raw))additions.push(entry.terms);});return additions.length?raw+' '+additions.join(' '):raw;}
-function resolveSearchContext(query){
- /* The product/category KB is the sole source of merchant eligibility.
-    Intent rules prevent generic word overlap from masquerading as relevance. */
- var catalog=getCatalog(),raw=normalize(query),intent=detectIntent(raw);
- var stop='برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق'.split(' ');
- var semanticRaw=semanticQuery(raw),tokens=wordTokens(semanticRaw).filter(function(t){return stop.indexOf(t)<0;});
- var out=[],seen={},unavailableRoutes=[];
- /* Exact merchant-name/domain lookups are directory requests, not product
-    searches. Keep them KB-backed and open the merchant's known homepage. */
- var exactStores=Object.keys(catalog).filter(function(id){
-  var st=catalog[id]||{},name=normalize(st.name||''),key=normalize(id);
-  var host='';try{host=normalize(new URL(st.homepage||'').hostname.replace(/^www\./i,''));}catch(e){}
-  return raw===name||raw===key||(host&&raw===host);
- });
- if(exactStores.length){
-  var exactCategories={};
-  exactStores.forEach(function(id){var st=catalog[id]||{};exactCategories[id]=(st.domains||[]).map(function(d){return getDomainTitle(d);});});
-  return {query:String(query||''),storeIds:exactStores,categoriesByStore:exactCategories,source:'product-category-catalog',intent:'store_lookup'};
- }
- if(!tokens.length)return {query:String(query||''),storeIds:[],eligibleStoreIds:[],routeUnavailableStoreIds:[],categoriesByStore:{},source:'product-category-catalog',intent:intent};
- Object.keys(catalog).forEach(function(id){
-  var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
-  var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
-  var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0&&!(intent==='mobile_accessory'&&key==='janebi'&&x==='موبایل');});
-  if(Array.isArray(store.hooshyarExcludeConcepts)&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
-  var score=0,matchedPhrase=false;
-  fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
-  tokens.forEach(function(t){var matched=fieldTokens.some(function(ft){return ft===t||(t.length>=4&&ft.length>=4&&(ft.indexOf(t)===0||t.indexOf(ft)===0));});if(matched)score+=t.length>=5?2:1;});
-  if(intent==='office_bag'){
-   var generalAllowed=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0&&/کیف/.test(hay);
-   var specialistExact=store.storeType!=='general'&&(domains.indexOf('fashion')>=0||key==='janebi')&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
-   if(!generalAllowed&&!specialistExact)return;
-   score=generalAllowed?10:25;
-  }else if(intent==='air_purifier'){
-   if(!/تصفیه\s*هوا/.test(hay))return;
-   score=matchedPhrase?25:12;
-  }else if(intent==='upholstery_cleaning'){
-   if(store.storeType!=='general'||!/(تمیزکننده مبل پارچه‌ای|دستگاه مبل شوی|فرش شوی|بخارشوی)/.test(hay))return;
-   score=matchedPhrase?25:12;
-  }else if(intent==='mobile_accessory'||intent==='digital_accessory'){
-   if(store.hooshyarExcludeConcepts&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
-   var accessoryTerms=/لوازم جانبی|تجهیزات جانبی|قطعات کامپیوتر|کیبورد|ماوس|کابل|شارژر|قاب|گلس|پاوربانک|هندزفری|هدفون|ssd|هارد|رم کامپیوتر|کارت گرافیک|مادربرد/;
-   var accessoryMatch=accessoryTerms.test(hay);
-   if(!matchedPhrase&&score<4&&!accessoryMatch)return;
-   var generalMarketplace=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
-   /* Eligibility is catalog-driven: every specialist is evaluated, not a hard-coded store whitelist. */
-   if(!generalMarketplace&&store.storeType==='general')return;
-   if(!generalMarketplace&&domains.indexOf('accessories')<0&&domains.indexOf('digital')<0)return;
-   if(!generalMarketplace&&!accessoryMatch&&score<4&&!matchedPhrase)return;
-   if(intent==='mobile_accessory'&&/سامسونگ/.test(raw)&&key==='janebi')return;
-   if(intent==='digital_accessory'&&!accessoryMatch)return;
-  }else if(intent==='digital_product'){
-   var broadDigitalQuery=/کالای دیجیتال|تجهیزات دیجیتال/.test(raw);
-   var productTerms=/موبایل|گوشی|لپ\s*تاپ|کامپیوتر|مانیتور|پرینتر|کارت گرافیک|مادربرد|حافظه ssd|هارد|تبلت/;
-   if(store.storeType!=='general'&&domains.indexOf('digital')<0)return;
-   if(broadDigitalQuery){
-    if(domains.indexOf('digital')<0)return;
-    score=Math.max(score,10);
-   }else{
-    if(!productTerms.test(hay))return;
-    if(!matchedPhrase&&score<2&&tokens.filter(function(t){return fieldTokens.indexOf(t)>=0;}).length===0)return;
-   }
-  }else if(intent==='train_ticket'){
-   var travelTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
-   if(domains.indexOf('travel_ticket')<0||!/(بلیط\s*قطار|بلیت\s*قطار|سفر ریلی)/.test(travelTerms))return;
-   score=25;
-  }else if(intent==='sunscreen'){
-   var sunscreenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
-   var directStoreTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
-   var sunscreenSpecialist=domains.some(function(d){return ['beauty','health','medicine'].indexOf(d)>=0;})&&!domains.some(function(d){return ['digital','furniture','fashion','supermarket','auto','sports','kids','books'].indexOf(d)>=0;})&&/(ضد\s*آفتاب|ضدآفتاب|sunscreen)/.test(directStoreTerms);
-   if(!sunscreenGeneral&&!sunscreenSpecialist)return;
-   score=sunscreenGeneral?15:25;
-  }else if(intent==='kitchen_scale'){
-   var kitchenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
-   var kitchenTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
-   var kitchenSpecialist=/(ترازو\s*(?:هوشمند\s*)?آشپزخانه|ترازو دیجیتال آشپزخانه)/.test(kitchenTerms);
-   if(!kitchenGeneral&&!kitchenSpecialist)return;
-   score=kitchenGeneral?15:25;
-  }else{
-   var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
-   var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
-   if(excluded||(!phraseInQuery&&!strongToken))return;
-   if(score<3&&!phraseInQuery)return;
-  }
-  if(excluded)return;
-  var urlResolver=window.DigiYarStoreSearchUrl;
-  var categories=domains.map(function(d){return getDomainTitle(d);});
-  if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw)){unavailableRoutes.push({id:key,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories)),routeUnavailable:true});}return;}
-  if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
-  if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories))});}
- });
- out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});
- var categoriesByStore={};out.forEach(function(x){categoriesByStore[x.id]=x.categories;});
- return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})),routeUnavailableStoreIds:unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent};
-}
-function isGeneral(id,s){return !!(s&&s.storeType==='general');}
-function isPortal(id,s){return !!(s&&s.storeType==='portal');}
-function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&!isPortal(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
-function featuredFor(domain,catalog){
- var seen={},out=[],featured=FEATURED[domain]||[];
- function add(id,tagline){
-  var s=catalog[id];if(!s||isGeneral(id,s)||isPortal(id,s)||seen[id]||!Array.isArray(s.domains)||s.domains.indexOf(domain)<0)return;
-  seen[id]=true;out.push({id:id,name:s.name||id,homepage:s.homepage||'',tagline:tagline||((s.specialties||[]).slice(0,2).join('، '))||((s.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain});
- }
- featured.forEach(function(entry){add(entry[0],entry[1]);});
- /* Featured entries are only a visual priority, never a whitelist.
-    Append every remaining merchant in this domain from the canonical KB. */
- Object.keys(catalog).forEach(function(id){var s=catalog[id]||{};if((s.domains||[]).indexOf(domain)>=0)add(id,'');});
- return out;
-}
-function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return !isGeneral(id,catalog[id])&&!isPortal(id,catalog[id])&&(catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'};});}
-function render(){
- var root=document.getElementById('v7PopularDiscovery');if(!root)return;
- var catalog=getCatalog(),domains=availableDomains(catalog);
- if(!domains.length){root.innerHTML='<div class="popular-discovery-empty">فهرست فروشگاه‌ها هنوز آماده نیست.</div>';return;}
- if(domains.indexOf(state.domain)<0)state.domain=domains[0];
- var q=normalize(state.query),generalIds=Object.keys(catalog).filter(function(id){return isGeneral(id,catalog[id]);});
- function makeStore(id,domain){var c=catalog[id]||{};return {id:id,name:c.name||id,homepage:c.homepage||'',tagline:((c.specialties||[]).slice(0,2).join('، '))||((c.products||[]).slice(0,3).join('، '))||'برای بررسی گزینه‌های مرتبط',domain:domain||((c.domains||[])[0]||'')};}
- function matches(s){var c=catalog[s.id]||{};if(state.queryActive&&Array.isArray(state.queryStoreIds))return state.queryStoreIds.indexOf(String(s.id||'').toLowerCase())>=0;return !q||normalize([s.name,s.tagline,(c.products||[]).join(' '),(c.aliases||[]).join(' '),(c.specialties||[]).join(' '),(c.productFamilies||[]).join(' '),(c.querySignals||[]).join(' ')].join(' ')).indexOf(q)>=0;}
- var STORE_LOGOS_RAW={
- 'اسنپ شاپ':'اسنپ شاپ.webp',
- 'ایسام':'ایسام.webp',
- 'ایسمینار':'ایسمینار.webp',
- 'ایمالز':'ایمالز.webp',
- 'باسلام':'باسلام.webp',
-  'علی بابا':'علی بابا.webp',
-  'علی‌بابا':'علی بابا.webp',
- 'بانی مد':'بانی مد.webp',
- 'بروز کالا':'بروز کالا.webp',
- 'به روز کالا':'به روز کالا.webp',
- 'تخفیفان':'تخفیفان.webp',
- 'ترب':'ترب.webp',
- 'تکنولایف':'تکنولایف.webp',
- 'جانبی':'جانبی.webp',
- 'جین وست':'جین وست.webp',
- 'دیما افیلیت':'دیما افیلیت.webp',
- 'افیلیو':'افیلیو.webp',
- 'اسکای روم':'اسکای روم.webp',
- 'افق کوروش':'افق کوروش.webp',
- 'الوکام':'الوکام.webp',
- 'باما':'باما.webp',
- 'تریپ':'تریپ.webp',
- 'جاباما':'جاباما.webp',
- 'دانشجویار':'دانشجویار.webp',
- 'رجا':'رجا.webp',
- 'سفر مارکت':'سفر مارکت.webp',
- 'شهروند':'شهروند.webp',
- 'طاقچه':'طاقچه.webp',
- 'فلای تودی':'فلای تودی.webp',
- 'فیدیبو':'فیدیبو.webp',
- 'قاصدک ۲۴':'قاصدک ۲۴.webp',
- 'مستر بلیط':'مستر بلیط.webp',
- 'همیار آی تی':'همیار آی تی.webp',
- 'کلاسینو':'کلاسینو.webp',
- '۳۰بوک':'۳۰ بوک.webp',
- 'یدک مارکت':'یدک مارکت.webp',
- 'یدک یار':'یدک یار.webp',
- 'خانومی':'خانومی.webp',
- 'داروخانه آنلاین':'داروخانه آنلاین.webp',
- 'داروکده':'داروکده.webp',
- 'دایان شاپ':'دایان شاپ.webp',
- 'درمان کالا':'درمان کالا.webp',
- 'دیجی دو':'دیجی دو.png',
- 'دیجی لند':'دیجی لند.webp',
- 'دیجی کالا':'دیجی کالا.webp',
- 'دیوار':'دیوار.webp',
- 'سفر می':'سفر می.webp',
- 'سفری می':'سفر می.webp',
- 'سولو کالا':'سولو کالا.webp',
- 'سولوکالا':'سولو کالا.webp',
- 'شاواز':'شاواز.webp',
- 'شب':'شب.webp',
- 'شیپور':'شیپور.webp',
- 'مثبت سبز':'مثبت سبز.webp',
- 'مدیسه':'مدیسه.webp',
- 'مقداد آی تی':'مقداد آی تی.webp',
- 'موبایل آی آر':'موبایل آی آر.webp',
- 'موبایل‌آی‌آر':'موبایل آی آر.webp',
- 'موبایل ۱۴۰':'موبایل ۱۴۰.webp',
- 'مکتب خونه':'مکتب خونه.webp',
- 'می مارکت':'می مارکت.webp',
- 'نشاط رخ':'نشاط رخ.webp',
- 'پینکت':'پینکت.webp',
- 'کارنامه':'کارنامه.webp',
- 'کالا ۳۶۰':'کالا ۳۶۰.webp',
- 'کالا۳۶۰':'کالا ۳۶۰.webp',
- 'کالاتیک':'کالاتیک.webp',
- 'گوشی شاپ':'گوشی شاپ.webp',
- '۱۹ کالا':'۱۹ کالا.webp',
- '۱۹کالا':'۱۹ کالا.webp',
- 'اسنپ‌شاپ':'اسنپ شاپ.webp',
- 'به‌روزکالا':'به روز کالا.webp',
- 'دیجی‌دو':'دیجی دو.png',
- 'ایران ستکور':'ایران ستکور.webp',
- 'پرتو چوب':'پرتو چوب.webp',
- 'تیدا چوب':'تیدا چوب..webp',
- 'چوبینه':'چوبینه.webp',
- 'چیدا هوم':'چیدا هوم.webp',
- 'مبل ایران':'مبل ایران.webp',
- 'اسپرت لند':'اسپرت لند.webp',
- 'آیسو کالکشن':'آیسو کالکشن.webp',
- 'بانی استایل':'بانی استایل.webp',
- 'دیجی استایل':'دیجی استایل.webp',
- 'شیکستون':'شیکستون..webp',
- 'دیجی‌لند':'دیجی لند.webp',
- 'دیجی‌کالا':'دیجی کالا.webp',
- 'مقداد آی‌تی':'مقداد آی تی.webp',
- 'مکتب‌خونه':'مکتب خونه.webp',
- 'می‌مارکت':'می مارکت.webp',
- 'گوشی‌شاپ':'گوشی شاپ.webp',
- 'ازکی':'ازکی.webp',
- 'ایران میز':'ایران میز.webp',
- 'بتادنت':'بتا دنت.webp',
- 'بیمه بازار':'بیمه بازار.webp',
- 'بیمه دات کام':'بیمه دات کام.webp',
- 'داروخانه صبا':'داروخانه صبا.webp',
- 'روژا شاپ':'روژا شاپ.webp',
- 'زیبامون':'زیبامون.webp',
- 'مو تن رو':'مو تن رو.webp',
- 'نی نی سایت':'نی نی سایت.webp',
- 'آیتول':'آیتول.webp',
- 'اسکای روم':'اسکای روم.webp',
- 'اکالا':'اُکالا.webp',
- 'اُکالا':'اُکالا.webp',
- 'تاپ لرن':'تاپ لرن.webp',
- 'تاپ‌لرن':'تاپ لرن.webp',
- 'جانبو':'جانبو.webp',
- 'خودرو۴۵':'خودرو ۴۵.webp',
- 'خودرو ۴۵':'خودرو ۴۵.webp',
- 'راکت':'راکت.webp',
- 'سبزلرن':'سبز لرن.webp',
- 'سبز لرن':'سبز لرن.webp',
- 'فرادرس':'فرادرس.webp',
- 'فلای سپهران':'فلای سپهران.webp',
- 'کلید':'کلید.webp',
- 'کوئرا':'کوئرا.webp',
- 'هایپرمی':'هایپرمی.webp',
- 'همراه مکانیک':'همراه مکانیک.webp',
- 'اقامت ۲۴':'اقامت ۲۴.webp',
- 'اقامت24':'اقامت ۲۴.webp',
- 'سبز گستر':'سبز گستر.webp'
- };
- var STORE_LOGOS={};
- Object.keys(STORE_LOGOS_RAW).forEach(function(name){STORE_LOGOS[normalize(name)]=STORE_LOGOS_RAW[name];});
- var STORE_LOGOS_BY_ID={
-  divar:'دیوار.webp',
-  sheypoor:'شیپور.webp',
-  mobileir:'موبایل آی آر.webp',
-  mobile140:'موبایل ۱۴۰.webp',
-  kala360:'کالا ۳۶۰.webp',
-  '19kala':'۱۹ کالا.webp',
-  emalls:'ایمالز.webp',
-  berozkala:'بروز کالا.webp',
-  kalatik:'کالاتیک.webp',
-  solokala:'سولو کالا.webp',
-  safarme:'سفر می.webp',
-  iranmiz:'ایران میز.webp',
-  iransetkor:'ایران ستکور.webp',
-  partochoob:'پرتو چوب.webp',
-  tidawood:'تیدا چوب..webp',
-  choobineh:'چوبینه.webp',
-  chidahome:'چیدا هوم.webp',
-  mobliran:'مبل ایران.webp',
-  sportland:'اسپرت لند.webp',
-  aysoocollection:'آیسو کالکشن.webp',
-  banistyle:'بانی استایل.webp',
-  digistyle:'دیجی استایل.webp',
-  shixon:'شیکستون..webp',
-  azki:'ازکی.webp',
-  betadent:'بتا دنت.webp',
-  bimebazar:'بیمه بازار.webp',
-  bimeh:'بیمه دات کام.webp',
-  dimaaffiliate:'دیما افیلیت.webp',
-  affilio:'افیلیو.webp',
-  saba:'داروخانه صبا.webp',
-  rojashop:'روژا شاپ.webp',
-  zibamoon:'زیبامون.webp',
-  mootanroo:'مو تن رو.webp',
-  ninisite:'نی نی سایت.webp',
-  skyroom:'اسکای روم.webp',
-  ofoghkoroosh:'افق کوروش.webp',
-  alocom:'الوکام.webp',
-  bama:'باما.webp',
-  trip:'تریپ.webp',
-  jobama:'جاباما.webp',
-  daneshjooyar:'دانشجویار.webp',
-  raja:'رجا.webp',
-  safarmarket:'سفر مارکت.webp',
-  shahrvand:'شهروند.webp',
-  taaghche:'طاقچه.webp',
-  flytoday:'فلای تودی.webp',
-  fidibo:'فیدیبو.webp',
-  ghasedak24:'قاصدک ۲۴.webp',
-  mrbilit:'مستر بلیط.webp',
-  hamyarit:'همیار آی تی.webp',
-  classino:'کلاسینو.webp',
-  book30:'۳۰ بوک.webp',
-  yadakmarket:'یدک مارکت.webp',
-  yadakyar:'یدک یار.webp',
-  snappshop:'اسنپ شاپ.webp',
-  esam:'ایسام.webp',
-  eseminar:'ایسمینار.webp',
-  basalam:'باسلام.webp',
-  banimode:'بانی مد.webp',
-  takhfifan:'تخفیفان.webp',
-  torob:'ترب.webp',
-  technolife:'تکنولایف.webp',
-  janebi:'جانبی.webp',
-  jeanswest:'جین وست.webp',
-  khanoumi:'خانومی.webp',
-  darukade:'داروکده.webp',
-   alibaba:'علی بابا.webp',
-  dayan:'دایان شاپ.webp',
-  darmankala:'درمان کالا.webp',
-  digido:'دیجی دو.png',
-  digiland:'دیجی لند.webp',
-  digikala:'دیجی کالا.webp',
-  shavaz:'شاواز.webp',
-  shab:'شب.webp',
-  mosbatesabz:'مثبت سبز.webp',
-  modiseh:'مدیسه.webp',
-  meghdadit:'مقداد آی تی.webp',
-  maktabkhooneh:'مکتب خونه.webp',
-  memarket:'می مارکت.webp',
-  neshatrokh:'نشاط رخ.webp',
-  pinket:'پینکت.webp',
-  karnameh:'کارنامه.webp',
-  gooshishop:'گوشی شاپ.webp',
-  aytol:'آیتول.webp',
-  skyroom:'اسکای روم.webp',
-  okala:'اُکالا.webp',
-  toplearn:'تاپ لرن.webp',
-  janbo:'جانبو.webp',
-  khodro45:'خودرو ۴۵.webp',
-  roocket:'راکت.webp',
-  sabzlearn:'سبز لرن.webp',
-  faradars:'فرادرس.webp',
-  flysepehran:'فلای سپهران.webp',
-  kilid:'کلید.webp',
-  quera:'کوئرا.webp',
-  hyperme:'هایپرمی.webp',
-  hamrahmechanic:'همراه مکانیک.webp',
-  eghamat24:'اقامت ۲۴.webp',
-  sabzgostar:'سبز گستر.webp'
- };
- function card(s,domainTitle){
-  var c=catalog[s.id]||{},route=state.queryActive&&window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolveRoute==='function'?window.DigiYarStoreSearchUrl.resolveRoute(s.id,state.query):null,
-   url=state.queryActive?(route&&route.url||(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(s.id,state.query):'')||(c.homepage||s.homepage||'')):(s.homepage||c.homepage||''),
-   fallback=!!(state.queryActive&&url&&(!route||route.kind==='homepage_fallback')),
-   homepage=!!route&&route.kind==='homepage',
-   logo=STORE_LOGOS_BY_ID[String(s.id||'').toLowerCase()]||STORE_LOGOS[normalize(s.name)],
-   initials=String(s.id||s.name||'ST').replace(/[^a-z0-9]/gi,'').slice(0,2).toUpperCase()||'ST',
-   brand=logo?'<img class="popular-discovery-store-logo" src="assets/store-logos/'+esc(logo)+'" alt="'+esc(s.name||'لوگوی فروشگاه')+'" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="popular-discovery-store-monogram" hidden aria-hidden="true">'+esc(initials)+'</span>':'<span class="popular-discovery-store-monogram" aria-hidden="true">'+esc(initials)+'</span>',
-   accessibleLabel=fallback?'ورود به صفحهٔ اصلی '+s.name+'؛ جست‌وجوی مستقیم تأیید نشده':(homepage?'ورود به صفحهٔ اصلی '+s.name:'مشاهدهٔ نتایج جست‌وجو در '+s.name),
-   content=brand+'<span class="popular-discovery-store-name">'+esc(s.name)+'</span>';
-  return url?'<a class="popular-discovery-store" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(accessibleLabel)+'" title="'+esc(accessibleLabel)+'">'+content+'</a>':'<span class="popular-discovery-store popular-discovery-store-unavailable" aria-label="'+esc(s.name)+'؛ نشانی در حال تکمیل">'+content+'</span>';
- }
- function accordion(key,title,icon,description,items){
-  var open=!!state.openCategories[key],cards=items.map(function(s){return card(s,title);}).join('');
-  if(q&&!items.length)return '';
-  return '<section class="popular-discovery-accordion'+(open?' is-open':'')+'"'+(key==='search-results'?' data-search-results="true"':'')+'><button type="button" class="popular-discovery-accordion-trigger" data-accordion-key="'+esc(key)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'">'+(icon?'<span class="popular-discovery-accordion-icon" aria-hidden="true">'+esc(icon)+'</span>':'')+'<span class="popular-discovery-accordion-title-wrap"><strong>'+esc(title)+'</strong>'+(key==='search-results'&&description?'<span class="popular-discovery-query-text">'+esc(description)+'</span>':(description?'<small>'+esc(description)+'</small>':''))+'</span></button><button type="button" class="popular-discovery-accordion-chevron" data-accordion-key="'+esc(key)+'" aria-label="'+(open?'بستن':'باز کردن')+' '+esc(title)+'" aria-expanded="'+(open?'true':'false')+'" aria-controls="popularDiscoveryPanel-'+esc(key)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="popular-discovery-accordion-panel" id="popularDiscoveryPanel-'+esc(key)+'"'+(open?'':' hidden')+'><div class="popular-discovery-store-grid">'+(cards||'<div class="popular-discovery-empty">فروشگاهی در این دسته پیدا نشد.</div>')+'</div></div></section>';
- }
- var general=generalIds.map(function(id){return makeStore(id,'');}).filter(matches);
- var portalIds=Object.keys(catalog).filter(function(id){return isPortal(id,catalog[id]);});
- var portals=portalIds.map(function(id){return makeStore(id,'portal');}).filter(matches);
- var html='';
- if(state.queryActive){
-  var uniqueItems=[],seenSearchIds={};
-  (state.queryStoreIds||[]).forEach(function(id){
-   id=String(id||'').toLowerCase();if(!id||seenSearchIds[id]||!catalog[id])return;
-   var route=window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolveRoute==='function'?window.DigiYarStoreSearchUrl.resolveRoute(id,state.query):null;
-   var searchUrl=(route&&route.url)||(window.DigiYarStoreSearchUrl&&typeof window.DigiYarStoreSearchUrl.resolve==='function'?window.DigiYarStoreSearchUrl.resolve(id,state.query):'')||(catalog[id]&&catalog[id].homepage)||'';
-   if(!searchUrl)return;
-   seenSearchIds[id]=true;
-   var store=catalog[id]||{},cats=state.categoriesByStore[id]||((store.domains||[]).map(function(d){return getDomainTitle(d);}));
-   if(!cats.length)cats=[isGeneral(id,store)?'فروشگاه عمومی':(isPortal(id,store)?'درگاه خرید و فروش':'فروشگاه تخصصی')];
-   uniqueItems.push({id:id,name:store.name||id,homepage:store.homepage||'',tagline:'دسته‌بندی: '+Array.from(new Set(cats)).join('، '),domain:(store.domains||[])[0]||''});
-  });
-  html=accordion('search-results','فروشگاه‌های مرتبط با جست‌وجوی هوش‌یار:', '',state.query,uniqueItems);
- }else if(state.type==='general'){
-  html=accordion('general','فروشگاه‌های عمومی','🏬','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general);
- }else if(state.type==='portal'){
-  html=accordion('portal','درگاه‌های خرید و فروش','⇄','کالاهای نو و دست دوم در همه حوزه‌ها',portals);
- }else{
-  html=domains.map(function(domain){
-   var meta=getDomainMeta(domain);
-   var items=featuredFor(domain,catalog).filter(matches);
-   return accordion(domain,meta.title,meta.icon,meta.subtitle,items);
-  }).join('');
- }
- var typeTabs='<div class="popular-discovery-type-tabs" role="group" aria-label="نوع فروشگاه"><button type="button" data-store-type="general" aria-pressed="'+(state.type==='general'?'true':'false')+'">فروشگاه‌های عمومی</button><button type="button" data-store-type="portal" aria-pressed="'+(state.type==='portal'?'true':'false')+'">درگاه‌های خرید و فروش</button><button type="button" data-store-type="specialist" aria-pressed="'+(state.type==='specialist'?'true':'false')+'">فروشگاه‌های تخصصی</button></div>';
- var tabsRoot=document.getElementById('v7PopularDiscoveryTabs');if(tabsRoot)tabsRoot.innerHTML=typeTabs;
- root.innerHTML='<div class="popular-discovery-accordion-list" aria-live="polite">'+(html||'<div class="popular-discovery-empty">برای این عبارت فروشگاهی در این دسته پیدا نشد.</div>')+'</div>';
- if(state.queryActive&&!html){
-  var emptyNotice=root.querySelector('.popular-discovery-empty');
-  if(emptyNotice){
-   if(!document.getElementById('v8-hooshyar-negative-highlight-style')){
-    var negativeStyle=document.createElement('style');
-    negativeStyle.id='v8-hooshyar-negative-highlight-style';
-    negativeStyle.textContent='.popular-discovery-empty.v8-hooshyar-negative-highlight{outline:2px solid rgba(220,53,69,.82)!important;outline-offset:4px!important;box-shadow:0 0 0 5px rgba(220,53,69,.10)!important;border-radius:12px;animation:v8HooshyarNegativePulse 1.2s ease 2}@keyframes v8HooshyarNegativePulse{0%,100%{outline-color:rgba(220,53,69,.28);box-shadow:0 0 0 2px rgba(220,53,69,.04)}50%{outline-color:rgba(220,53,69,.95);box-shadow:0 0 0 6px rgba(220,53,69,.16)}}@media(prefers-reduced-motion:reduce){.popular-discovery-empty.v8-hooshyar-negative-highlight{animation:none!important}}';
-    document.head.appendChild(negativeStyle);
-   }
-   emptyNotice.classList.add('v8-hooshyar-negative-highlight');
-   /* Inline styling makes the temporary red highlight reliable even if theme CSS overrides component styles. */
-   emptyNotice.style.setProperty('outline','2px solid rgba(220,53,69,.92)','important');
-   emptyNotice.style.setProperty('outline-offset','5px','important');
-   emptyNotice.style.setProperty('box-shadow','0 0 0 6px rgba(220,53,69,.16)','important');
-   emptyNotice.style.setProperty('border-radius','12px','important');
-   emptyNotice.style.setProperty('transition','outline-color .25s ease, box-shadow .25s ease','important');
-   emptyNotice.scrollIntoView({behavior:'smooth',block:'center'});
-   var pulseCount=0,negativePulse=setInterval(function(){
-    pulseCount++;
-    var strong=pulseCount%2===1;
-    emptyNotice.style.setProperty('outline-color',strong?'rgba(220,53,69,.98)':'rgba(220,53,69,.3)','important');
-    emptyNotice.style.setProperty('box-shadow',strong?'0 0 0 7px rgba(220,53,69,.2)':'0 0 0 2px rgba(220,53,69,.05)','important');
-    if(pulseCount>=6){clearInterval(negativePulse);emptyNotice.classList.remove('v8-hooshyar-negative-highlight');emptyNotice.style.removeProperty('outline');emptyNotice.style.removeProperty('outline-offset');emptyNotice.style.removeProperty('box-shadow');emptyNotice.style.removeProperty('border-radius');emptyNotice.style.removeProperty('transition');emptyNotice.style.removeProperty('outline-color');}
-   },400);
-  }
- }
- root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
- (tabsRoot||root).querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type');if(state.queryActive){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};}var same=state.type===next,anyOpen=next==='general'?!!state.openCategories.general:(next==='portal'?!!state.openCategories.portal:domains.some(function(d){return !!state.openCategories[d];}));if(same&&anyOpen){state.openCategories={};}else{state.type=next;state.openCategories={};if(next==='general'){state.openCategories.general=true;}else if(next==='portal'){state.openCategories.portal=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}}render();});});
 
+var VERSION = '8.0.1-hooshyar-engine.1';
+
+/* ---------- Domain presentation metadata ---------- */
+var DOMAIN_META = {
+  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپتاپ تا مقایسهٔ قیمت',sub:['موبایل','لپتاپ','مقایسهٔ قیمت','لوازم جانبی']},
+  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی',sub:['قاب و محافظ','شارژر','صوتی و گجت']},
+  furniture:{title:'مبلمان و دکوراسیون',icon:'🛋️',subtitle:'برای چیدمان خانه',sub:['مبل','میز و صندلی','دکور']},
+  fashion:{title:'پوشاک، کیف و کفش',icon:'👕',subtitle:'از استایل روزمره تا برند',sub:['پوشاک','کیف و کفش','برند']},
+  beauty:{title:'زیبایی و آرایشی',icon:'💄',subtitle:'مراقبت پوست و مو',sub:['مراقبت پوست','آرایش','عطر']},
+  health:{title:'سلامت و بهداشتی',icon:'🌿',subtitle:'محصولات سلامت',sub:['مکمل','بهداشت','مراقبت']},
+  medicine:{title:'دارو و تجهیزات',icon:'🩺',subtitle:'داروخانه‌ها و تجهیزات',sub:['داروخانه','تجهیزات پزشکی']},
+  supermarket:{title:'سوپرمارکت',icon:'🛒',subtitle:'خرید روزمره',sub:['مواد غذایی','سوپرمارکت']},
+  home:{title:'خانه و آشپزخانه',icon:'🏠',subtitle:'وسایل خانه',sub:['آشپزخانه','ابزار','لوازم']},
+  sports:{title:'ورزش',icon:'⚽',subtitle:'تجهیزات ورزشی',sub:['پوشاک ورزشی','تجهیزات','لوازم']},
+  kids:{title:'کودک و نوزاد',icon:'🧸',subtitle:'محصولات کودک',sub:['نوزاد','بازی','نیازها']},
+  books:{title:'کتاب و فرهنگی',icon:'📚',subtitle:'کتاب چاپی و دیجیتال',sub:['کتاب چاپی','الکترونیکی','صوتی']},
+  auto:{title:'خودرو و قطعات',icon:'🚗',subtitle:'قطعات و لوازم',sub:['قطعات','لوازم','خودرو']},
+  auto_service:{title:'خدمات خودرو',icon:'🔧',subtitle:'خدمات و کارشناسی',sub:['کارشناسی','نگهداری','آنلاین']},
+  travel_ticket:{title:'بلیط و حمل‌ونقل',icon:'🎫',subtitle:'مقایسه بلیط',sub:['هواپیما','قطار','تور']},
+  lodging:{title:'اقامت و هتل',icon:'🛏️',subtitle:'رزرو اقامتگاه',sub:['اقامتگاه','هتل','سفر']},
+  education:{title:'آموزش',icon:'🎓',subtitle:'دوره‌های آنلاین',sub:['برنامه‌نویسی','مهارت','دوره']},
+  affiliate_network:{title:'شبکه افیلیت',icon:'🤝',subtitle:'همکاری در فروش',sub:['افیلیت','بازاریابی']}
+};
+
+var DOMAIN_ORDER = Object.keys(DOMAIN_META);
+
+/* ---------- Featured (priority only, never whitelist) ---------- */
+var FEATURED = {
+  digital:[['digikala','انتخاب‌های متنوع'],['torob','مقایسه قیمت'],['technolife','کالای دیجیتال'],['digiland','موبایل و دیجیتال'],['emalls','مقایسه']],
+  accessories:[['janebi','لوازم جانبی'],['digido','لوازم موبایل'],['gooshishop','موبایل و جانبی']],
+  fashion:[['digistyle','پوشاک'],['banimode','استایل'],['modiseh','پوشاک'],['shixon','مد']],
+  health:[['mosbatesabz','سلامت'],['darukade','داروخانه'],['darmankala','سلامت']],
+  medicine:[['darukade','داروخانه'],['darmankala','تجهیزات']],
+  supermarket:[['okala','خرید روزمره'],['ofoghkoroosh','مصرفی'],['shahrvand','روزانه'],['hyperme','سوپرمارکت']],
+  books:[['fidibo','کتاب الکترونیکی'],['taaghche','کتاب دیجیتال'],['book30','کتاب چاپی']],
+  auto_service:[['hamrahmechanic','خدمات خودرو'],['khodro45','خدمات'],['aytol','آنلاین']],
+  travel_ticket:[['alibaba','بلیط سفر'],['mrbilit','بلیط'],['raja','قطار'],['safarmarket','سفر']],
+  education:[['faradars','مهارت'],['maktabkhooneh','دوره'],['quera','برنامه‌نویسی'],['sabzlearn','دیجیتال']],
+  affiliate_network:[]
+};
+
+/* ---------- State ---------- */
+var state = {
+  type: 'general',
+  domain: 'digital',
+  query: '',
+  queryActive: false,
+  queryStoreIds: null,
+  categoriesByStore: {},
+  openCategories: {}
+};
+
+/* ---------- Utilities ---------- */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
 }
-function init(){
- var toggle=document.getElementById('popularDiscoveryToggle'),panel=document.getElementById('popularDiscoveryPanel');
- if(!toggle||!panel)return;
- toggle.setAttribute('aria-expanded','false');panel.hidden=true;
- var bottomToggle=document.getElementById('popularDiscoveryBottomToggle');
- if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
- toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
- window.addEventListener('digiyar:v7-hooshyar-cleared',function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};state.type='general';render();var p=document.getElementById('popularDiscoveryPanel'),t=document.getElementById('popularDiscoveryToggle'),b=document.getElementById('popularDiscoveryBottomToggle');if(p)p.hidden=true;if(t)t.setAttribute('aria-expanded','false');if(b)b.setAttribute('aria-expanded','false');if(p)delete p.dataset.rendered;});
- window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,auditCatalogRoutes:function(){var kb=window.DigiYarStoreBusinessDomains,catalog=getCatalog(),resolver=window.DigiYarStoreSearchUrl,byDomain={},configured=[],fallback=[],missing=[];Object.keys(catalog).forEach(function(id){var s=catalog[id]||{},domains=s.domains||['uncategorized'],direct=!!(resolver&&typeof resolver.hasSearchHandler==='function'&&resolver.hasSearchHandler(id)),hasRoute=!!(resolver&&typeof resolver.hasHandler==='function'&&resolver.hasHandler(id));if(direct)configured.push(id);else if(hasRoute)fallback.push(id);else missing.push(id);domains.forEach(function(domain){if(!byDomain[domain])byDomain[domain]={title:getDomainTitle(domain),total:0,configured:0,homepageFallback:0,missing:0,missingIds:[],fallbackIds:[]};byDomain[domain].total++;var field=direct?'configured':hasRoute?'homepageFallback':'missing';byDomain[domain][field]++;if(!direct&&hasRoute)byDomain[domain].fallbackIds.push(id);if(!hasRoute)byDomain[domain].missingIds.push(id);});});return {catalogCount:Object.keys(catalog).length,configuredHandlerCount:configured.length,homepageFallbackCount:fallback.length,missingHandlerCount:missing.length,configuredIds:configured.sort(),homepageFallbackIds:fallback.sort(),missingIds:missing.sort(),byDomain:byDomain};},setSearchContext:function(query){var resolved=resolveSearchContext(query);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds;state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.openCategories['search-results']=true;state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),eligibleStoreIds:(resolved.eligibleStoreIds||resolved.storeIds).slice(),routeUnavailableStoreIds:(resolved.routeUnavailableStoreIds||[]).slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source,intent:resolved.intent};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
+
+function normalize(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[يى]/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/\u200c/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){init();render();});else{init();render();}
+
+function getCatalog() {
+  var kb = window.DigiYarStoreBusinessDomains;
+  return kb && kb.catalog ? kb.catalog : {};
+}
+
+function getDomainTitle(domain) {
+  var kb = window.DigiYarStoreBusinessDomains;
+  var labels = kb && kb.domainTitles || {};
+  return labels[domain] || (DOMAIN_META[domain] || {}).title || domain;
+}
+
+function getDomainMeta(domain) {
+  var meta = DOMAIN_META[domain] || {title: domain, icon: '🏬', subtitle: 'فروشگاه‌ها'};
+  return Object.assign({}, meta, {title: getDomainTitle(domain)});
+}
+
+/* ---------- Tokenizer ---------- */
+function wordTokens(text) {
+  return normalize(text)
+    .split(/[^\u0600-\u06FFa-z0-9]+/i)
+    .filter(function(t) { return t.length > 1; });
+}
+
+/* ---------- Simple intent detection (only for special routing, not exclusion) ---------- */
+function detectIntent(raw) {
+  if (/(?:بلیط|بلیت|رزرو).{0,12}(?:قطار|ریل)|(?:قطار|ریل).{0,12}(?:بلیط|بلیت)/.test(raw)) return 'train_ticket';
+  if (/ضد\s*آفتاب|ضدآفتاب/.test(raw)) return 'sunscreen';
+  if (/(?:لوازم|تجهیزات)\s*جانبی/.test(raw)) return 'accessory';
+  if (/موبایل|گوشی|لپ\s*تاپ|لپتاپ|کامپیوتر|تبلت|مانیتور|پرینتر/.test(raw)) return 'digital_product';
+  return 'general_product';
+}
+
+/* ---------- Light semantic enrichment ---------- */
+var SEMANTIC_HINTS = [
+  {re: /(?:هواپز|ایر.?فرایر)/i, terms: 'هواپز سرخ کن لوازم آشپزخانه'},
+  {re: /(?:جارو.?رباتیک|ربات.?جارو)/i, terms: 'جاروبرقی رباتیک نظافت'},
+  {re: /(?:ساعت.?هوشمند|اسمارت.?واچ)/i, terms: 'ساعت هوشمند گجت'},
+  {re: /(?:هدفون|هندزفری)/i, terms: 'هدفون هندزفری لوازم جانبی'},
+  {re: /(?:پاوربانک)/i, terms: 'پاوربانک شارژر لوازم جانبی'},
+  {re: /(?:قاب|گلس|محافظ)/i, terms: 'قاب گلس محافظ لوازم جانبی'},
+  {re: /(?:کیف.?اداری|کیف.?کار)/i, terms: 'کیف اداری کیف کار'},
+  {re: /(?:مبل|کاناپه)/i, terms: 'مبل مبلمان خانه'},
+  {re: /(?:کتاب|رمان)/i, terms: 'کتاب رمان فرهنگی'},
+  {re: /(?:بلیط|بلیت)/i, terms: 'بلیط سفر حمل و نقل'}
+];
+
+function semanticQuery(raw) {
+  var additions = [];
+  SEMANTIC_HINTS.forEach(function(h) {
+    if (h.re.test(raw)) additions.push(h.terms);
+  });
+  return additions.length ? raw + ' ' + additions.join(' ') : raw;
+}
+
+/* ---------- Core search function (SIMPLIFIED) ---------- */
+function resolveSearchContext(query) {
+  var catalog = getCatalog();
+  var raw = normalize(query);
+
+  // Empty query → return empty
+  if (!raw) {
+    return {
+      query: String(query || ''),
+      storeIds: [],
+      eligibleStoreIds: [],
+      routeUnavailableStoreIds: [],
+      categoriesByStore: {},
+      source: 'product-category-catalog',
+      intent: 'empty'
+    };
+  }
+
+  // Exact store name lookup (directory request)
+  var exactStores = Object.keys(catalog).filter(function(id) {
+    var st = catalog[id] || {};
+    var name = normalize(st.name || '');
+    var key = normalize(id);
+    return raw === name || raw === key;
+  });
+
+  if (exactStores.length) {
+    var exactCats = {};
+    exactStores.forEach(function(id) {
+      var st = catalog[id] || {};
+      exactCats[id] = (st.domains || []).map(getDomainTitle);
+    });
+    return {
+      query: String(query || ''),
+      storeIds: exactStores,
+      eligibleStoreIds: exactStores,
+      routeUnavailableStoreIds: [],
+      categoriesByStore: exactCats,
+      source: 'product-category-catalog',
+      intent: 'store_lookup'
+    };
+  }
+
+  // Token-based search (permissive)
+  var enriched = semanticQuery(raw);
+  var tokens = wordTokens(enriched);
+
+  // Stop words
+  var stop = 'برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم'.split(' ');
+
+  tokens = tokens.filter(function(t) { return stop.indexOf(t) < 0; });
+
+  if (!tokens.length) {
+    return {
+      query: String(query || ''),
+      storeIds: [],
+      eligibleStoreIds: [],
+      routeUnavailableStoreIds: [],
+      categoriesByStore: {},
+      source: 'product-category-catalog',
+      intent: 'empty'
+    };
+  }
+
+  // Score every store
+  var scored = [];
+
+  Object.keys(catalog).forEach(function(id) {
+    var store = catalog[id] || {};
+    var fields = [].concat(
+      store.products || [],
+      store.aliases || [],
+      store.specialties || [],
+      store.productFamilies || [],
+      store.querySignals || []
+    );
+    var hay = normalize(fields.join(' '));
+    var fieldTokens = wordTokens(hay);
+    var domains = Array.isArray(store.domains) ? store.domains : [];
+
+    // Exclusion check
+    var excluded = (store.exclude || []).some(function(term) {
+      var x = normalize(term);
+      return x.length > 1 && raw.indexOf(x) >= 0;
+    });
+    if (excluded) return;
+
+    // Scoring
+    var score = 0;
+
+    // Phrase match bonus
+    fields.forEach(function(field) {
+      var f = normalize(field);
+      if (f.length >= 3 && raw.indexOf(f) >= 0) {
+        score = Math.max(score, 10 + Math.min(f.length, 12));
+      }
+    });
+
+    // Token matches
+    tokens.forEach(function(t) {
+      var matched = fieldTokens.some(function(ft) {
+        return ft === t || (t.length >= 4 && ft.length >= 4 && (ft.indexOf(t) === 0 || t.indexOf(ft) === 0));
+      });
+      if (matched) score += t.length >= 5 ? 3 : 1;
+    });
+
+    if (score > 0) {
+      scored.push({
+        id: id,
+        score: score,
+        categories: domains.map(getDomainTitle),
+        domains: domains
+      });
+    }
+  });
+
+  // Sort by score
+  scored.sort(function(a, b) {
+    return b.score - a.score || a.id.localeCompare(b.id);
+  });
+
+  // Check route availability per store (but DO NOT remove them)
+  var out = [];
+  var routeUnavailable = [];
+  var categoriesByStore = {};
+
+  scored.forEach(function(item) {
+    var key = item.id;
+    var urlResolver = window.DigiYarStoreSearchUrl;
+    var hasRoute = urlResolver &&
+                   typeof urlResolver.resolve === 'function' &&
+                   urlResolver.resolve(key, raw);
+
+    var entry = {
+      id: key,
+      score: item.score,
+      categories: item.categories.length ? item.categories : [
+        catalog[key] && catalog[key].storeType === 'general' ? 'فروشگاه عمومی' : 'فروشگاه تخصصی'
+      ],
+      routeUnavailable: !hasRoute
+    };
+
+    out.push(entry);
+    categoriesByStore[key] = entry.categories;
+
+    if (!hasRoute) {
+      routeUnavailable.push(entry);
+    }
+  });
+
+  return {
+    query: String(query || ''),
+    storeIds: out.map(function(x) { return x.id; }),
+    eligibleStoreIds: out.map(function(x) { return x.id; }),
+    routeUnavailableStoreIds: routeUnavailable.map(function(x) { return x.id; }),
+    categoriesByStore: categoriesByStore,
+    source: 'product-category-catalog',
+    intent: detectIntent(raw)
+  };
+}
+
+/* ---------- Helpers ---------- */
+function isGeneral(id, s) { return !!(s && s.storeType === 'general'); }
+function isPortal(id, s) { return !!(s && s.storeType === 'portal'); }
+
+function availableDomains(catalog) {
+  return DOMAIN_ORDER.filter(function(domain) {
+    return Object.keys(catalog).some(function(id) {
+      var s = catalog[id] || {};
+      return !isGeneral(id, s) && !isPortal(id, s) &&
+             Array.isArray(s.domains) && s.domains.indexOf(domain) >= 0;
+    });
+  });
+}
+
+function featuredFor(domain, catalog) {
+  var seen = {}, out = [], featured = FEATURED[domain] || [];
+  function add(id, tagline) {
+    var s = catalog[id];
+    if (!s || isGeneral(id, s) || isPortal(id, s) || seen[id]) return;
+    if (!Array.isArray(s.domains) || s.domains.indexOf(domain) < 0) return;
+    seen[id] = true;
+    out.push({
+      id: id,
+      name: s.name || id,
+      homepage: s.homepage || '',
+      tagline: tagline || ((s.specialties || []).slice(0, 2).join('، ')) ||
+               ((s.products || []).slice(0, 3).join('، ')) ||
+               'برای بررسی گزینه‌های مرتبط',
+      domain: domain
+    });
+  }
+  featured.forEach(function(entry) { add(entry[0], entry[1]); });
+  Object.keys(catalog).forEach(function(id) {
+    var s = catalog[id] || {};
+    if ((s.domains || []).indexOf(domain) >= 0) add(id, '');
+  });
+  return out;
+}
+
+/* ---------- Public API ---------- */
+window.DigiYarHooshyarEngine = {
+  version: VERSION,
+  resolveSearchContext: resolveSearchContext,
+  detectIntent: detectIntent,
+  getDomainTitle: getDomainTitle,
+  getDomainMeta: getDomainMeta,
+  availableDomains: function() { return availableDomains(getCatalog()); },
+  featuredFor: featuredFor,
+  getState: function() { return Object.assign({}, state); }
+};
+
 })();
