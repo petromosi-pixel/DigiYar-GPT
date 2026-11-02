@@ -199,7 +199,10 @@ function ensureSubField(){
  var parent=cat.closest('.form-grid')||cat.parentElement;
  var field=document.createElement('label');field.id='v6SubcategoryField';field.className='v5-field full';
  field.innerHTML='<span>زیر دسته</span><select id="v5Subcategory" disabled><option value="">ابتدا دسته‌بندی را انتخاب کنید</option></select>';
- if(dyn&&dyn.parentNode)dyn.parentNode.insertBefore(field,dyn);else if(parent)parent.appendChild(field);
+ var categoryField=cat.closest('.v5-field');
+ if(categoryField&&categoryField.parentNode)categoryField.insertAdjacentElement('afterend',field);
+ else if(dyn&&dyn.parentNode)dyn.parentNode.insertBefore(field,dyn);
+ else if(parent)parent.appendChild(field);
  return $('v5Subcategory');
 }
 function renderBrand(sub){
