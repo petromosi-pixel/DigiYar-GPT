@@ -4,7 +4,7 @@
 var STORES=['digikala','snappshop','torob','basalam','banimode','modiseh','technolife','meghdadit','janebi','digiland','khanoumi','esam','pinket','darukade','darmankala','digido','takhfifan','shab','neshatrokh','mosbatesabz','shavaz','jeanswest','eseminar','safarme','berozkala','maktabkhooneh','daroo-online','gooshishop','karnameh','solokala'];
 var LEGACY=['موبایل و کالای دیجیتال','گوشی موبایل','اندروید','iOS'];
 var DIGITAL='کالای دیجیتال';
-var TAX_VERSION='6.0.43';
+var TAX_VERSION='6.0.44';
 var STORE_21_30=[['shavaz','شاواز'],['jeanswest','جین وست'],['eseminar','ایسمینار'],['safarme','سفرمی'],['berozkala','بروز کالا'],['maktabkhooneh','مکتب‌خونه'],['daroo-online','داروخانه آنلاین'],['gooshishop','گوشی شاپ'],['karnameh','کارنامه'],['solokala','سولوکالا']];
 var MEGHDAD={id:'meghdadit',name:'مقداد آی‌تی',tagline:'فروشگاه تخصصی کالای دیجیتال و قطعات',logo:'assets/store-logos/مقداد آی تی.webp',mark:'MI',url:'https://meghdadit.com/',accent:'#1f3b68',dealLabel:'خرید کالای دیجیتال',dealText:'لپ‌تاپ، کامپیوتر، قطعات و تجهیزات دیجیتال',dealIcon:'⌁'};
 var DIGILAND={id:'digiland',name:'دیجی‌لند',tagline:'فروشگاه تخصصی کالای دیجیتال و گیمینگ',logo:'assets/store-logos/دیجی لند.webp',mark:'DL',url:'https://dgland.com/',accent:'#2563eb',dealLabel:'کالای دیجیتال و گیمینگ',dealText:'لپ‌تاپ، مانیتور، کامپیوتر، کنسول و تجهیزات گیمینگ',dealIcon:'⌁'};
@@ -30,7 +30,7 @@ function loadScript(path){
 }
 function loadTaxonomies(){
  if(taxonomyLoadPromise)return taxonomyLoadPromise;
- var paths=['js/v6-store-taxonomy-overrides.js','js/v7-dayan-taxonomy.js','js/v7-memarket-taxonomy.js','js/v6-technolife-taxonomy.js','js/v6-meghdadit-taxonomy.js','js/v6-janebi-taxonomy.js','js/v6-digiland-taxonomy.js','js/v6-khanoumi-taxonomy.js','js/v6-esam-taxonomy.js','js/v6-pinket-taxonomy.js','js/v6-darukade-taxonomy.js','js/v6-darmankala-taxonomy.js','js/v6-digido-taxonomy.js','js/v6-takhfifan-taxonomy.js','js/v6-shab-taxonomy.js','js/v6-neshatrokh-taxonomy.js','js/v6-mosbatesab-taxonomy.js','js/v6-stores-21-25-taxonomy.js','js/v6-stores-26-30-taxonomy.js','js/v6-site-taxonomy-overrides.js'];
+ var paths=['js/v6-store-taxonomy-overrides.js','js/v7-dayan-taxonomy.js','js/v7-memarket-taxonomy.js','js/v6-technolife-taxonomy.js','js/v6-meghdadit-taxonomy.js','js/v6-janebi-taxonomy.js','js/v6-digiland-taxonomy.js','js/v6-khanoumi-taxonomy.js','js/v6-esam-taxonomy.js','js/v6-pinket-taxonomy.js','js/v6-darukade-taxonomy.js','js/v6-darmankala-taxonomy.js','js/v6-digido-taxonomy.js','js/v6-takhfifan-taxonomy.js','js/v6-shab-taxonomy.js','js/v6-neshatrokh-taxonomy.js','js/v6-mosbatesabz-taxonomy.js','js/v6-stores-21-25-taxonomy.js','js/v6-stores-26-30-taxonomy.js','js/v6-site-taxonomy-overrides.js'];
  taxonomyLoadPromise=paths.reduce(function(chain,path){return chain.then(function(){return loadScript(path)})},Promise.resolve()).then(function(){
   function signalReady(){
    var store=$('storeSelect');
