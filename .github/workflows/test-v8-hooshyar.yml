@@ -19,6 +19,8 @@ on:
       - 'js/v8-footer.js'
       - 'js/v8-taxonomy-controller.js'
       - 'js/v8-store-select-sync.js'
+      - 'js/v8-multi-store-picker.js'
+      - 'tests/v8-multi-store-selection.test.mjs'
       - 'css/v8-base.css'
       - 'css/v8-splash.css'
       - 'css/v8-step2-header.css'
