@@ -125,9 +125,32 @@
     refreshStoreCategoryMap();
   }
 
+  function getSelectableStoreEntries() {
+    const kb = getBusinessDomainKB();
+    const resolver = window.DigiYarStoreSearchUrl;
+    const stores = window.DigiYarPopularAffiliateStores;
+    const result = [];
+    const seen = new Set();
+    function add(store) {
+      if (!store || !store.id || !store.name) return;
+      const id = String(store.id);
+      if (seen.has(id)) return;
+      if (resolver && typeof resolver.hasHandler === "function" && !resolver.hasHandler(id)) return;
+      seen.add(id);
+      result.push({ id: id, name: String(store.name) });
+    }
+    (Array.isArray(stores) ? stores : []).forEach(add);
+    if (kb) Object.keys(kb.catalog).forEach(function(id) {
+      const store = kb.catalog[id];
+      if (store && store.name) add({ id: id, name: store.name });
+    });
+    return result;
+  }
+  window.DigiYarGetSelectableStores = getSelectableStoreEntries;
+
   function syncStoreSelectWithPopularStores() {
     const storeSelect = document.getElementById("storeSelect");
-    const stores = window.DigiYarPopularAffiliateStores;
+    const stores = getSelectableStoreEntries();
     if (!storeSelect || !Array.isArray(stores) || !stores.length) return false;
 
     const current = storeSelect.value || "all";
@@ -136,7 +159,7 @@
 
     const all = document.createElement("option");
     all.value = "all";
-    all.textContent = "همه فروشگاه‌های منتخب";
+    all.textContent = "همه فروشگاه‌های متصل";
     storeSelect.appendChild(all);
 
     stores.forEach(function(store){

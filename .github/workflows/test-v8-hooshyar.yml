@@ -33,6 +33,8 @@ on:
       - 'tests/v8-hooshyar-relevance.test.mjs'
       - 'tests/v8-store-taxonomy-audit.test.mjs'
       - 'tests/v8-store-search-routes.test.mjs'
+      - 'tests/v8-hamburger-directory.test.mjs'
+      - 'js/user-profile.js'
       - 'tests/v8-hooshyar-theme-contract.test.mjs'
       - 'tests/v8-product-result-source.test.mjs'
       - 'tests/v8-comparison-engine.test.mjs'

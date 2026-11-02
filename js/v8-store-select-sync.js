@@ -19,12 +19,12 @@
 
   function syncStores(){
     var select=el('storeSelect');
-    var stores=window.DigiYarPopularAffiliateStores;
+    var stores=typeof window.DigiYarGetSelectableStores==='function' ? window.DigiYarGetSelectableStores() : window.DigiYarPopularAffiliateStores;
     if(!select || !Array.isArray(stores) || !stores.length) return false;
     var profileHost=el('v7ProfileSearchHost');
     if(profileHost) profileHost.dataset.activeStore=String(select.value||'');
     var current=select.value || 'all';
-    var desired=[{id:'all',name:'همه فروشگاه‌های منتخب'}];
+    var desired=[{id:'all',name:'همه فروشگاه‌های متصل'}];
     var seen={};
     stores.forEach(function(store){
       if(!store || !store.id || !store.name || seen[store.id]) return;
