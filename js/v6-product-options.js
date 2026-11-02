@@ -175,6 +175,19 @@ function unique(list){var seen={};return (list||[]).filter(function(x){var k=x[0
 
 function setRoots(cat,store){
  var roots=ROOTS[store]||ROOTS.digikala;
+ /* Digikala is a general marketplace: derive its visible roots from the same
+    canonical business-domain KB used by Hooshyar and the profile selector. */
+ if(store==='digikala'){
+  var kb=window.DigiYarStoreBusinessDomains;
+  var entry=kb&&kb.catalog&&kb.catalog.digikala;
+  if(entry&&Array.isArray(entry.domains)&&kb.domainTitles){
+   var canonical=entry.domains.map(function(domain){
+    var title=kb.domainTitles[domain]||(kb.byDomain&&kb.byDomain[domain]&&kb.byDomain[domain].title);
+    return title&&Object.prototype.hasOwnProperty.call(SUBS,domain)?[domain,title]:null;
+   }).filter(Boolean);
+   if(canonical.length)roots=canonical;
+  }
+ }
  cat.innerHTML=roots.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join('');
  cat.insertAdjacentHTML('afterbegin','<option value="">انتخاب دسته‌بندی</option>');
  cat.value='';cat.disabled=false;
