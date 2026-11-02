@@ -74,7 +74,7 @@ const tax21 = fs.readFileSync(new URL('../js/v6-stores-21-25-taxonomy.js', impor
 assert.match(tax21, /eseminar:/, 'eSeminar taxonomy must match its canonical ID');
 assert.match(tax21, /berozkala:/, 'BerozKala taxonomy must match its canonical ID');
 const tax26 = fs.readFileSync(new URL('../js/v6-stores-26-30-taxonomy.js', import.meta.url), 'utf8');
-assert.match(tax26, /daroo-online:/, 'Daroo Online taxonomy must match its canonical ID');
+assert.match(tax26, /['\"]?daroo-online['\"]?:/, 'Daroo Online taxonomy must match its canonical ID');
 const slider = fs.readFileSync(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
 assert.match(slider, /v8-photo-head"><strong>.*?logoPath\(logo\)/, 'Slider store name must precede the logo in RTL markup');
 
