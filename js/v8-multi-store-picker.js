@@ -1,4 +1,4 @@
-/* DigiYar V8 — multi-store, deduplicated four-column accordion picker */
+/* DigiYar V8 — multi-store, deduplicated three-column accordion picker */
 (function(){
 'use strict';
 function byId(id){return document.getElementById(id);}
@@ -116,6 +116,7 @@ function start(){
  });
  document.addEventListener('click',function(event){if(!root.contains(event.target)){panel.hidden=true;trigger.setAttribute('aria-expanded','false');}});
  refresh();
+ window.addEventListener('digiyar:taxonomy-ready',function(){if(!selected.size)return;var primary=Array.from(selected)[0];if(select.value!==primary)select.value=primary;select.dispatchEvent(new Event('change',{bubbles:true}));});
  window.DigiYarStoreSelection={version:'8.0.0.2',getFilters:function(){return {active:active,selectedStoreIds:Array.from(selected),selectedCategoryIds:Array.from(selectedCategories),selectedTypeIds:Array.from(selectedTypes)};},getSelectedStoreIds:function(){return Array.from(selected);},clear:function(){selected.clear();selectedCategories.clear();selectedTypes.clear();active=false;refresh();}};
  return true;
 }
