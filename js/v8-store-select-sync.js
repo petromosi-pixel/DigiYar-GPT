@@ -133,7 +133,7 @@
     var refinements=['v5Category','v5Subcategory','v6Brand'].map(optionText).filter(function(part){
       return part&&!/^انتخاب/.test(part)&&!/^ابتدا/.test(part)&&part!=='دسته‌بندی';
     });
-    var query=[typed].concat(refinements).join(' ').replace(/\\s+/g,' ').trim();
+    var query=[typed].concat(refinements).join(' ').replace(/\s+/g,' ').trim();
     var discovery=window.DigiYarPopularStoreDiscovery;
     if(!discovery||typeof discovery.setSearchContext!=='function'){
       setProfileSearchStatus('موتور نتایج هنوز آماده نشده است؛ یک‌بار صفحه را تازه‌سازی کن و دوباره تلاش کن.',true);
