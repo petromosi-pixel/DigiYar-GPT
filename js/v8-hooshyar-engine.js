@@ -139,6 +139,8 @@ function resolveSearchContext(query){
    if(store.storeType!=='general'||!/(تمیزکننده مبل پارچه‌ای|دستگاه مبل شوی|فرش شوی|بخارشوی)/.test(hay))return;
    score=matchedPhrase?25:12;
   }else if(intent==='mobile_accessory'||intent==='digital_accessory'){
+   /* Classified buy/sell portals are directory destinations, not product-specialist merchants. */
+   if(store.storeType==='portal')return;
    if(store.hooshyarExcludeConcepts&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
    var accessoryTerms=/لوازم جانبی|تجهیزات جانبی|قطعات کامپیوتر|کیبورد|ماوس|کابل|شارژر|قاب|گلس|پاوربانک|هندزفری|هدفون|ssd|هارد|رم کامپیوتر|کارت گرافیک|مادربرد/;
    var accessoryMatch=accessoryTerms.test(hay);
