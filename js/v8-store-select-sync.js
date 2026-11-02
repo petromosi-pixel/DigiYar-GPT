@@ -102,29 +102,21 @@
 
   function launchHooshyar(){
     var smartInput=el('v5SmartSearchInput');
-    var query=profileQuery();
-    if(!profileComplete()){
-      var missing=[];
-      [['v5Subcategory','زیر دسته'],['v6Brand','برند'],['v6BudgetRange','بودجه'],['v6Usage','نوع استفاده']].forEach(function(pair){
-        if(!value(pair[0])) missing.push(pair[1]);
-      });
+    var query=(smartInput && String(smartInput.value||'').trim()) || profileQuery();
+    if(!query || !smartInput){
       if(smartInput){
-        smartInput.value='';
-        smartInput.placeholder='ابتدا '+missing.join('، ')+' را کامل کن';
-        syncHooshyarHint();
+        smartInput.placeholder='ابتدا عبارت مورد نظرت را در کادر هوش‌یار وارد کن';
         setTimeout(function(){smartInput.placeholder='';},2600);
       }
       return false;
     }
-    if(!query || !smartInput) return false;
-
     var oldResults=el('v5SmartSearchResults');
     if(oldResults) oldResults.remove();
     var oldSimulator=el('v6StoreSimulatorResults');
     if(oldSimulator) oldSimulator.remove();
     smartInput.value=query;
     syncHooshyarHint();
-    /* Keep the original bridge: the profile card submits through the Hooshyar search form. */
+    /* The typed Hooshyar phrase is preserved; picker constraints are applied by the search engine. */
     if(smartInput.form){
       if(typeof smartInput.form.requestSubmit==='function') smartInput.form.requestSubmit();
       else smartInput.form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
