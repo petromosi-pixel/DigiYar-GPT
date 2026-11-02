@@ -125,15 +125,21 @@
   function launchHooshyar(){
     var smartInput=el('v5SmartSearchInput');
     var typed=smartInput?String(smartInput.value||'').trim():'';
-    if(!typed){
-      setProfileSearchStatus('ابتدا عبارت کالا یا خدمت موردنظرت را در کادر هوش‌یار وارد کن؛ سپس «نمایش نتایج» را بزن.',true);
+    var fromProfile=!typed;
+    var query=typed||profileQuery();
+    if(!query||!smartInput){
+      setProfileSearchStatus('ابتدا اطلاعات خرید را کامل کن تا عبارت جست‌وجو در کادر هوش‌یار ساخته شود.',true);
       if(smartInput){smartInput.focus();smartInput.scrollIntoView({behavior:'smooth',block:'center'});}
       return false;
     }
-    var refinements=['v5Category','v5Subcategory','v6Brand'].map(optionText).filter(function(part){
+    if(fromProfile){
+      smartInput.value=query;
+      syncHooshyarHint();
+    }
+    var refinements=(fromProfile?[]:['v5Category','v5Subcategory','v6Brand']).map(optionText).filter(function(part){
       return part&&!/^انتخاب/.test(part)&&!/^ابتدا/.test(part)&&part!=='دسته‌بندی';
     });
-    var query=[typed].concat(refinements).join(' ').replace(/\s+/g,' ').trim();
+    query=[query].concat(refinements).join(' ').replace(/\s+/g,' ').trim();
     var discovery=window.DigiYarPopularStoreDiscovery;
     if(!discovery||typeof discovery.setSearchContext!=='function'){
       setProfileSearchStatus('موتور نتایج هنوز آماده نشده است؛ یک‌بار صفحه را تازه‌سازی کن و دوباره تلاش کن.',true);
