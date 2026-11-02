@@ -116,23 +116,4 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}body{background:linear-gra
 #v5DealTrack .v8-photo-head strong{font-size:12px!important;font-weight:800!important;white-space:nowrap!important;color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95)!important}
 @media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
 
-/* V8 slider header — explicit RTL grid: store name right, logo left */
-#v5DealTrack .v8-photo-head{
-  direction:rtl!important;
-  display:grid!important;
-  grid-template-columns:max-content max-content!important;
-  grid-auto-flow:column!important;
-  align-items:center!important;
-  justify-content:start!important;
-  column-gap:5px!important;
-}
-#v5DealTrack .v8-photo-head strong{
-  grid-column:1!important;
-  grid-row:1!important;
-  justify-self:start!important;
-}
-#v5DealTrack .v8-photo-head img{
-  grid-column:2!important;
-  grid-row:1!important;
-  justify-self:start!important;
-}
+/* Original slider identity order restored: logo first, store name second (RTL). */
