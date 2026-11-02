@@ -1,4 +1,4 @@
-/* DigiYar V6 — synchronize selected stores and purchase-profile search with Hooshyar */
+/* DigiYar V8 — synchronize selected stores and directly run Hooshyar profile search */
 (function(){
   'use strict';
 
@@ -100,30 +100,6 @@
     input.dispatchEvent(new Event('input',{bubbles:true}));
   }
 
-  function launchHooshyar(){
-    var smartInput=el('v5SmartSearchInput');
-    var query=(smartInput && String(smartInput.value||'').trim()) || profileQuery();
-    if(!query || !smartInput){
-      if(smartInput){
-        smartInput.placeholder='ابتدا عبارت مورد نظرت را در کادر هوش‌یار وارد کن';
-        setTimeout(function(){smartInput.placeholder='';},2600);
-      }
-      return false;
-    }
-    var oldResults=el('v5SmartSearchResults');
-    if(oldResults) oldResults.remove();
-    var oldSimulator=el('v6StoreSimulatorResults');
-    if(oldSimulator) oldSimulator.remove();
-    smartInput.value=query;
-    syncHooshyarHint();
-    /* The typed Hooshyar phrase is preserved; picker constraints are applied by the search engine. */
-    if(smartInput.form){
-      if(typeof smartInput.form.requestSubmit==='function') smartInput.form.requestSubmit();
-      else smartInput.form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
-    }
-    return true;
-  }
-
   function clearResultsAndQuery(){
     var input=el('v5SmartSearchInput');
     if(input){
@@ -148,22 +124,36 @@
 
   function launchHooshyar(){
     var smartInput=el('v5SmartSearchInput');
-    var query=smartInput?String(smartInput.value||'').trim():'';
-    if(!query||!smartInput){
+    var typed=smartInput?String(smartInput.value||'').trim():'';
+    if(!typed){
       setProfileSearchStatus('ابتدا عبارت کالا یا خدمت موردنظرت را در کادر هوش‌یار وارد کن؛ سپس «نمایش نتایج» را بزن.',true);
       if(smartInput){smartInput.focus();smartInput.scrollIntoView({behavior:'smooth',block:'center'});}
       return false;
     }
+    var refinements=['v5Category','v5Subcategory','v6Brand'].map(optionText).filter(function(part){
+      return part&&!/^انتخاب/.test(part)&&!/^ابتدا/.test(part)&&part!=='دسته‌بندی';
+    });
+    var query=[typed].concat(refinements).join(' ').replace(/\\s+/g,' ').trim();
+    var discovery=window.DigiYarPopularStoreDiscovery;
+    if(!discovery||typeof discovery.setSearchContext!=='function'){
+      setProfileSearchStatus('موتور نتایج هنوز آماده نشده است؛ یک‌بار صفحه را تازه‌سازی کن و دوباره تلاش کن.',true);
+      return false;
+    }
     var oldResults=el('v5SmartSearchResults');if(oldResults)oldResults.remove();
     var oldSimulator=el('v6StoreSimulatorResults');if(oldSimulator)oldSimulator.remove();
-    setProfileSearchStatus('درخواست جست‌وجو ثبت شد؛ هوش‌یار در فروشگاه‌های انتخاب‌شده جست‌وجو می‌کند.',false);
-    if(smartInput.form){
-      if(typeof smartInput.form.requestSubmit==='function')smartInput.form.requestSubmit();
-      else smartInput.form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    var filters=window.DigiYarStoreSelection&&typeof window.DigiYarStoreSelection.getFilters==='function'?window.DigiYarStoreSelection.getFilters():null;
+    try{
+      var result=discovery.setSearchContext(query,filters);
+      var count=result&&Array.isArray(result.storeIds)?result.storeIds.length:0;
+      setProfileSearchStatus(count?'جست‌وجو انجام شد؛ '+count+' فروشگاه مرتبط از میان فروشگاه‌های انتخابی پیدا شد.':'جست‌وجو انجام شد؛ در فروشگاه‌های انتخابی نتیجهٔ مرتبطی پیدا نشد. عبارت یا انتخاب فروشگاه‌ها را تغییر بده.',!count);
+      var panel=el('popularDiscoveryPanel');
+      if(panel){panel.hidden=false;setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'start'});},80);}
       return true;
+    }catch(error){
+      console.error('DigiYar profile search failed:',error);
+      setProfileSearchStatus('اجرای جست‌وجو با خطا روبه‌رو شد؛ دوباره تلاش کن.',true);
+      return false;
     }
-    setProfileSearchStatus('فرم جست‌وجوی هوش‌یار در صفحه پیدا نشد. صفحه را تازه‌سازی کن.',true);
-    return false;
   }
 
   function handleProfileSubmit(event){
@@ -188,6 +178,11 @@
     if(form&&form.dataset.v8HooshyarSubmitBound!=='1'){
       form.dataset.v8HooshyarSubmitBound='1';
       form.addEventListener('submit',handleProfileSubmit);
+    }
+    var showButton=form&&form.querySelector('.form-actions button[type="submit"]');
+    if(showButton&&showButton.dataset.v8HooshyarClickBound!=='1'){
+      showButton.dataset.v8HooshyarClickBound='1';
+      showButton.addEventListener('click',function(event){event.preventDefault();launchHooshyar();});
     }
     if(document.documentElement.dataset.v6HooshyarResetDelegated!=='1'){
       document.documentElement.dataset.v6HooshyarResetDelegated='1';
