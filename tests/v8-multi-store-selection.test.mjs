@@ -67,8 +67,8 @@ assert.match(productOptions, /v6BrandField/, 'The brand selector must remain par
 const controller = fs.readFileSync(new URL('../js/v8-taxonomy-controller.js', import.meta.url), 'utf8');
 assert.match(controller, /berozkala/, 'Taxonomy controller must use the canonical BerozKala ID');
 assert.match(controller, /digiyar:taxonomy-ready/, 'Taxonomy loader must notify the picker after all store scripts are ready');
-assert.match(controller, /v6-mosbatesabz-taxonomy\\.js/, 'Mosbatesabz taxonomy loader path must match the real file name');
-assert.doesNotMatch(controller, /v6-mosbatesab-taxonomy\\.js/, 'Misspelled Mosbatesabz taxonomy path must not remain');
+assert.match(controller, /v6-mosbatesabz-taxonomy\.js/, 'Mosbatesabz taxonomy loader path must match the real file name');
+assert.doesNotMatch(controller, /v6-mosbatesab-taxonomy\.js/, 'Misspelled Mosbatesabz taxonomy path must not remain');
 assert.doesNotMatch(controller, /beruzkala/, 'The misspelled BerozKala ID must not remain');
 const tax21 = fs.readFileSync(new URL('../js/v6-stores-21-25-taxonomy.js', import.meta.url), 'utf8');
 assert.match(tax21, /eseminar:/, 'eSeminar taxonomy must match its canonical ID');
