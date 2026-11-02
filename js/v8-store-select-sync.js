@@ -128,7 +128,7 @@
     var fromProfile=!typed;
     var query=typed||profileQuery();
     if(!query||!smartInput){
-      setProfileSearchStatus('ابتدا اطلاعات خرید را کامل کن تا عبارت جست‌وجو در کادر هوش‌یار ساخته شود.',true);
+      setProfileSearchStatus('ابتدا عبارت کالا یا خدمت موردنظرت را در کادر هوش‌یار وارد کن؛ سپس «نمایش نتایج» را بزن.',true);
       if(smartInput){smartInput.focus();smartInput.scrollIntoView({behavior:'smooth',block:'center'});}
       return false;
     }
