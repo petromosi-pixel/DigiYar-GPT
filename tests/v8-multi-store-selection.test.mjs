@@ -58,7 +58,22 @@ assert.match(bridge, /requestSubmit\(\)/, 'Profile submit must trigger the Hoosh
 
 const productOptions = fs.readFileSync(new URL('../js/v6-product-options.js', import.meta.url), 'utf8');
 assert.match(productOptions, /categoryField\.insertAdjacentElement\('afterend',field\)/, 'Subcategory must appear immediately after the selected category');
+assert.match(productOptions, /DOMAIN_ROOTS/, 'Generic stores must derive taxonomy from canonical business domains');
+assert.match(productOptions, /ROOTS\\.other/, 'Unknown stores must use an explicit fallback rather than Digikala taxonomy');
+assert.match(productOptions, /education:\[\\[/, 'Education stores must have a generic subcategory path');
+assert.match(productOptions, /travel:\[\\[/, 'Travel stores must have a generic subcategory path');
 assert.match(productOptions, /v6BrandField/, 'The brand selector must remain part of the category cascade');
+
+const controller = fs.readFileSync(new URL('../js/v8-taxonomy-controller.js', import.meta.url), 'utf8');
+assert.match(controller, /berozkala/, 'Taxonomy controller must use the canonical BerozKala ID');
+assert.doesNotMatch(controller, /beruzkala/, 'The misspelled BerozKala ID must not remain');
+const tax21 = fs.readFileSync(new URL('../js/v6-stores-21-25-taxonomy.js', import.meta.url), 'utf8');
+assert.match(tax21, /eseminar:/, 'eSeminar taxonomy must match its canonical ID');
+assert.match(tax21, /berozkala:/, 'BerozKala taxonomy must match its canonical ID');
+const tax26 = fs.readFileSync(new URL('../js/v6-stores-26-30-taxonomy.js', import.meta.url), 'utf8');
+assert.match(tax26, /daroo-online:/, 'Daroo Online taxonomy must match its canonical ID');
+const slider = fs.readFileSync(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
+assert.match(slider, /v8-photo-head"><strong>.*?logoPath\\(logo\\)/, 'Slider store name must precede the logo in RTL markup');
 
 const input = fs.readFileSync(new URL('../js/v8-hooshyar-input.js', import.meta.url), 'utf8');
 assert.match(input, /DigiYarProfileSearchStatus/, 'Hooshyar must report completion or an empty constrained result');
