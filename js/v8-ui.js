@@ -174,67 +174,11 @@ const grid=card.querySelector('#platforms');if(grid){grid.hidden=false;grid.remo
 body.innerHTML='';body.appendChild(card);sheet.classList.add('is-open');backdrop.classList.add('is-open');
 };
 window.__v7OpenDeals=()=>{if(!deals)return false;close();deals.hidden=false;deals.removeAttribute('aria-hidden');deals.scrollIntoView({behavior:'smooth',block:'start'});return true;};
-const directoryEsc=value=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-function directoryStoreUrl(id,store){
- const popular=(window.DigiYarPopularAffiliateStores||[]).find(item=>item&&item.id===id)||{};
- const platform=(window.DigiYarPlatforms||[]).find(item=>item&&item.id===id)||{};
- const candidates=[store.homepage,popular.url,platform.url].filter(Boolean);
- for(const candidate of candidates){try{const parsed=new URL(candidate,location.href),path=parsed.pathname.toLowerCase();if(parsed.protocol!=='https:'||parsed.hostname.toLowerCase().endsWith('affdn.ir')||path==='/dashboard'||path==='/dashboard/')continue;return parsed.href;}catch(e){}}
- return '';
-}
-function directoryStoreCard(entry){
- const id=String(entry.id||''),store=(window.DigiYarStoreBusinessDomains.catalog||{})[id]||{},name=store.name||entry.name||id;
- const popular=(window.DigiYarPopularAffiliateStores||[]).find(item=>item&&item.id===id)||{};
- const platform=(window.DigiYarPlatforms||[]).find(item=>item&&item.id===id)||{};
- const logo=popular.logo||platform.logo||'';
- const description=(store.specialties||store.products||[]).slice(0,2).join('، ');
- const mark=name.replaceAll(' ','').slice(0,2);
- const visual=logo?'<img src="'+directoryEsc(logo)+'" alt="" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="v6-directory-mark" hidden>'+directoryEsc(mark)+'</span>':'<span class="v6-directory-mark">'+directoryEsc(mark)+'</span>';
- const content='<span class="v6-directory-store-visual">'+visual+'</span><span class="v6-directory-store-copy"><strong>'+directoryEsc(name)+'</strong>'+(description?'<small>'+directoryEsc(description)+'</small>':'')+'</span><span class="v6-directory-store-arrow" aria-hidden="true">↗</span>';
- const url=directoryStoreUrl(id,store);
- return url?'<a class="v6-directory-store" href="'+directoryEsc(url)+'" target="_blank" rel="noopener noreferrer">'+content+'</a>':'<div class="v6-directory-store is-unavailable" aria-label="'+directoryEsc(name)+'؛ نشانی مستقیم ثبت نشده">'+content.replace('<span class="v6-directory-store-arrow" aria-hidden="true">↗</span>','<span class="v6-directory-store-arrow" aria-hidden="true">•</span>')+'</div>';
-}
-function directoryAccordion(key,title,subtitle,count,content,depth){
- const panelId='v6DirectoryPanel-'+String(key).replace(/[^a-z0-9_-]/gi,'-');
- return '<section class="v6-directory-accordion'+(depth?' is-nested':'')+'"><button type="button" class="v6-directory-toggle" data-v6-directory-toggle="'+panelId+'" aria-expanded="false" aria-controls="'+panelId+'"><span class="v6-directory-toggle-copy"><strong>'+directoryEsc(title)+'</strong>'+(subtitle?'<small>'+directoryEsc(subtitle)+'</small>':'')+'</span><span class="v6-directory-count">'+count+'</span><span class="v6-directory-chevron" aria-hidden="true">⌄</span></button><div class="v6-directory-panel" id="'+panelId+'" hidden>'+content+'</div></section>';
-}
-function renderStoreDirectory(){
- const kb=window.DigiYarStoreBusinessDomains;
- if(!kb||!kb.catalog||!kb.byType){body.innerHTML='<p class="v6-directory-empty">دانش‌نامهٔ فروشگاه‌ها هنوز بارگذاری نشده است.</p>';sheet.classList.add('is-open');backdrop.classList.add('is-open');return;}
- const general=kb.byType.general&&kb.byType.general.stores||[];
- const portals=kb.byType.portal&&kb.byType.portal.stores||[];
- const specialists=kb.byType.specialist&&kb.byType.specialist.stores||[];
- const domainGroups=kb.specialistByDomain||{};
- const domainKeys=Object.keys(kb.domainTitles||{}).filter(key=>domainGroups[key]&&Array.isArray(domainGroups[key].stores)&&domainGroups[key].stores.length);
- const cards=items=>'<div class="v6-directory-store-grid">'+items.map(directoryStoreCard).join('')+'</div>';
- const specialistContent=domainKeys.map(key=>{
-  const group=domainGroups[key],items=group.stores||[];
-  return directoryAccordion('domain-'+key,kb.domainTitles[key]||group.title,items.length+' فروشگاه تخصصی',items.length,cards(items),true);
- }).join('');
- const content=[
-  directoryAccordion('general','فروشگاه‌های عمومی','بازارگاه‌ها و فروشگاه‌های چنددسته‌ای',general.length,cards(general),false),
-  directoryAccordion('portal','درگاه‌های خرید و فروش','کالاهای نو و دست دوم در حوزه‌های مختلف',portals.length,cards(portals),false),
-  directoryAccordion('specialist','فروشگاه‌های تخصصی','بر اساس حوزهٔ فعالیت و دسته‌بندی کالا یا خدمت',specialists.length,specialistContent,false)
- ].join('');
- if(!document.getElementById('v6-store-directory-style')){
-  const style=document.createElement('style');style.id='v6-store-directory-style';
-  style.textContent='.v6-store-directory{direction:rtl;color:#24334c}.v6-directory-head{display:flex;align-items:center;gap:9px;margin:0 0 10px}.v6-directory-back{border:0;border-radius:9px;padding:7px 10px;background:#edf2f8;color:#2a4169;font:inherit;font-size:11px;font-weight:800}.v6-directory-heading{flex:1;min-width:0}.v6-directory-heading strong{display:block;font-size:15px}.v6-directory-heading small{display:block;color:#69778d;font-size:10px}.v6-directory-accordion{margin:0 0 7px;border:1px solid #e1e8f1;border-radius:12px;overflow:hidden;background:#fff}.v6-directory-accordion.is-nested{margin:0 0 6px;border-color:#e8edf4;background:#fbfcfe}.v6-directory-toggle{display:flex;align-items:center;gap:9px;width:100%;min-height:48px;padding:8px 11px;border:0;background:transparent;color:inherit;text-align:right;font:inherit;cursor:pointer}.v6-directory-toggle-copy{display:grid;gap:1px;flex:1;min-width:0}.v6-directory-toggle-copy strong{font-size:12px;font-weight:800}.v6-directory-toggle-copy small{font-size:9px;color:#718096}.v6-directory-count{min-width:25px;padding:2px 6px;border-radius:20px;background:#eef3f9;color:#53647d;text-align:center;font-size:10px;font-weight:800}.v6-directory-chevron{font-size:17px;transition:transform .18s}.v6-directory-toggle[aria-expanded=true] .v6-directory-chevron{transform:rotate(180deg)}.v6-directory-panel{padding:0 8px 8px}.v6-directory-panel[hidden]{display:none!important}.v6-directory-panel>.v6-directory-accordion{margin-top:5px}.v6-directory-store-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.v6-directory-store{display:flex;align-items:center;gap:7px;min-width:0;min-height:54px;padding:6px;border:1px solid #e5ebf3;border-radius:10px;background:#fff;color:#263750;text-decoration:none}.v6-directory-store.is-unavailable{opacity:.68}.v6-directory-store-visual{display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border:1px solid #edf1f6;border-radius:8px;background:#fff;overflow:hidden}.v6-directory-store-visual img{width:100%;height:100%;object-fit:contain}.v6-directory-mark{font-size:11px;font-weight:900;color:#2a4169}.v6-directory-store-copy{display:grid;gap:1px;min-width:0;flex:1}.v6-directory-store-copy strong{font-size:10px;line-height:1.5;overflow-wrap:anywhere}.v6-directory-store-copy small{font-size:8px;line-height:1.45;color:#78869a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.v6-directory-store-arrow{font-size:12px;color:#8190a4}.v6-directory-empty{padding:12px;text-align:center;color:#718096;font-size:11px}body.v6-dark .v6-store-directory{color:#e7edf7}body.v6-dark .v6-directory-accordion{background:#172235;border-color:#39475c}body.v6-dark .v6-directory-accordion.is-nested{background:#1b293e}body.v6-dark .v6-directory-store{background:#111b2b;border-color:#39475c;color:#e7edf7}body.v6-dark .v6-directory-count{background:#26364d;color:#d7e0ed}body.v6-dark .v6-directory-back{background:#26364d;color:#e7edf7}@media(max-width:380px){.v6-directory-store-grid{grid-template-columns:1fr}}';
-  document.head.appendChild(style);
- }
- body.innerHTML='<section class="v6-store-directory"><div class="v6-directory-head"><button type="button" class="v6-directory-back" data-v6-directory-back>بازگشت</button><div class="v6-directory-heading"><strong>فروشگاه‌ها بر اساس نوع فعالیت</strong><small>'+Object.keys(kb.catalog).length+' فروشگاه و خدمت در دانش‌نامه</small></div></div>'+content+'</section>';
- sheet.classList.add('is-open');backdrop.classList.add('is-open');
-}
-const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-profile>دنبال چی می‌گردی؟</button><button class="v6-sheet-action" type="button" data-v6-directory>دسته‌بندی فروشگاه‌ها بر اساس نوع فعالیت</button><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
+const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-profile>دنبال چی می‌گردی؟</button><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
 backdrop.addEventListener('click',close);
 sheet.addEventListener('click',e=>{
-const directoryToggle=e.target.closest('[data-v6-directory-toggle]');
-if(directoryToggle){const panel=document.getElementById(directoryToggle.dataset.v6DirectoryToggle);if(panel){const opening=panel.hidden;panel.hidden=!opening;directoryToggle.setAttribute('aria-expanded',String(opening));}return;}
-const directoryBack=e.target.closest('[data-v6-directory-back]');
-if(directoryBack){close();openRoot();return;}
-const directoryBtn=e.target.closest('[data-v6-directory]');
 const profile=e.target.closest('[data-v6-profile]'),popularBtn=e.target.closest('[data-v6-popular]'),dealsBtn=e.target.closest('[data-v6-deals]'),scrollBtn=e.target.closest('[data-scroll]');
-if(directoryBtn)renderStoreDirectory();
-else if(profile)showCard(profileCard,'دنبال چی می‌گردی؟','v6-menu-profile-card');
+if(profile)showCard(profileCard,'دنبال چی می‌گردی؟','v6-menu-profile-card');
 else if(popularBtn)showCard(popular,'فروشگاه‌های محبوب','v6-menu-popular-card');
 else if(dealsBtn)showCard(deals,'پیشنهادات','v6-menu-deals-card');
 else if(scrollBtn){const target=$(scrollBtn.dataset.scroll);close();if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}
