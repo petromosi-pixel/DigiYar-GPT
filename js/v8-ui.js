@@ -20,7 +20,7 @@ function initDeals(){
   let url='';try{const u=new URL(st.homepage||'');if(u.protocol==='https:')url=u.href;}catch(e){}
   const href=url?' href="'+esc(url)+'" target="_blank" rel="noopener noreferrer"':'';
   const priority=i===0?'high':'low';
-  return '<a class="v8-concept-slide v8-photo-slide" data-store="'+esc(id)+'"'+href+' aria-label="'+esc(name)+'"><img class="v8-photo-background" src="'+imagePath(file)+'" alt="" fetchpriority="'+priority+'" loading="eager" decoding="async"><span class="v8-photo-shade"></span><span class="v8-photo-head"><strong>'+esc(name)+'</strong><img src="'+logoPath(logo)+'" alt="" fetchpriority="'+priority+'" loading="eager" decoding="async"></span></a>';
+  return '<a class="v8-concept-slide v8-photo-slide" data-store="'+esc(id)+'"'+href+' aria-label="'+esc(name)+'"><img class="v8-photo-background" src="'+imagePath(file)+'" alt="" fetchpriority="'+priority+'" loading="eager" decoding="async"><span class="v8-photo-shade"></span><span class="v8-photo-head"><img src="'+logoPath(logo)+'" alt="" fetchpriority="'+priority+'" loading="eager" decoding="async"><strong>'+esc(name)+'</strong></span></a>';
  });
  html.push('<button type="button" class="v8-concept-slide v8-photo-slide v8-photo-more" data-open-other-stores aria-label="فروشگاه‌های بیشتر"><img class="v8-photo-background" src="'+imagePath('فروشگاه های بیشتر.webp')+'" alt="" loading="eager" fetchpriority="low" decoding="async"><span class="v8-photo-shade"></span><span class="v8-photo-more-label"><strong>فروشگاه های بیشتر</strong><span class="v8-photo-more-arrow" aria-hidden="true">→</span></span></button>');
  track.innerHTML=html.join('');
