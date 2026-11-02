@@ -144,3 +144,9 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{border-color:var(--d
 #v5DealTrack .v8-photo-head strong{font-size:12px!important;font-weight:800!important;white-space:nowrap!important;color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95)!important}
 body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
 @media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
+
+
+/* V8 slider header: store name on the right, logo on the left (RTL) */
+#v5DealTrack .v8-photo-head{direction:rtl!important;flex-direction:row!important;justify-content:flex-start!important;}
+#v5DealTrack .v8-photo-head strong{order:0!important;}
+#v5DealTrack .v8-photo-head img{order:1!important;}
