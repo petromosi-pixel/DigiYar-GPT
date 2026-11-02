@@ -19,13 +19,19 @@ const indexNames = [
   'TOOLS_INDUSTRIAL_PRODUCTS'
 ];
 
+let indexFetch = 0;
 const context = {
   console,
-  fetch: async () => ({
-    ok: true,
-    status: 200,
-    text: async () => `const ${indexNames[0]} = ${JSON.stringify(fixture)};`
-  }),
+  fetch: async () => {
+    const exportName = indexNames[indexFetch] || indexNames[0];
+    const data = indexFetch === 0 ? fixture : [];
+    indexFetch += 1;
+    return {
+      ok: true,
+      status: 200,
+      text: async () => `const ${exportName} = ${JSON.stringify(data)};`
+    };
+  },
   URL,
   document: { baseURI: 'https://digiyar.test/' },
   CustomEvent,
