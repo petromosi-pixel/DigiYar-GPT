@@ -138,22 +138,36 @@
     if(simulator) simulator.remove();
   }
 
-  function handlePurchaseAction(event){
-    var target=event.target;
-    if(!target) return;
-    var form=target.closest ? target.closest('#profileForm') : null;
-    if(!form) return;
-    var button=target.closest ? target.closest('button[type="submit"],input[type="submit"]') : null;
-    if(!button) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    persistProfile();
-    launchHooshyar();
+  function setProfileSearchStatus(message,isError){
+    var form=el('profileForm');if(!form)return;
+    var status=el('v8ProfileSearchStatus');
+    if(!status){status=document.createElement('div');status.id='v8ProfileSearchStatus';status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.style.cssText='grid-column:1/-1;margin-top:8px;font-size:12px;line-height:1.7;font-weight:700;color:#2a4169';var actions=form.querySelector('.form-actions');if(actions)actions.insertAdjacentElement('afterend',status);else form.appendChild(status);}
+    status.textContent=message||'';status.style.color=isError?'#c0392b':'';
+  }
+  window.DigiYarProfileSearchStatus=setProfileSearchStatus;
+
+  function launchHooshyar(){
+    var smartInput=el('v5SmartSearchInput');
+    var query=smartInput?String(smartInput.value||'').trim():'';
+    if(!query||!smartInput){
+      setProfileSearchStatus('ابتدا عبارت کالا یا خدمت موردنظرت را در کادر هوش‌یار وارد کن؛ سپس «نمایش نتایج» را بزن.',true);
+      if(smartInput){smartInput.focus();smartInput.scrollIntoView({behavior:'smooth',block:'center'});}
+      return false;
+    }
+    var oldResults=el('v5SmartSearchResults');if(oldResults)oldResults.remove();
+    var oldSimulator=el('v6StoreSimulatorResults');if(oldSimulator)oldSimulator.remove();
+    setProfileSearchStatus('درخواست جست‌وجو ثبت شد؛ هوش‌یار در فروشگاه‌های انتخاب‌شده جست‌وجو می‌کند.',false);
+    if(smartInput.form){
+      if(typeof smartInput.form.requestSubmit==='function')smartInput.form.requestSubmit();
+      else smartInput.form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+      return true;
+    }
+    setProfileSearchStatus('فرم جست‌وجوی هوش‌یار در صفحه پیدا نشد. صفحه را تازه‌سازی کن.',true);
+    return false;
   }
 
   function handleProfileSubmit(event){
-    var form=event.target;
-    if(!form || form.id!=='profileForm') return;
+    if(!event.target||event.target.id!=='profileForm')return;
     event.preventDefault();
     event.stopImmediatePropagation();
     persistProfile();
@@ -170,12 +184,16 @@
   }
 
   function connectProfileToHooshyar(){
-    if(document.documentElement.dataset.v6HooshyarDelegated==='1') return true;
-    document.documentElement.dataset.v6HooshyarDelegated='1';
-    document.addEventListener('click',handlePurchaseAction,true);
-    document.addEventListener('submit',handleProfileSubmit,true);
-    document.addEventListener('click',handleResetClick,true);
-    return true;
+    var form=el('profileForm');
+    if(form&&form.dataset.v8HooshyarSubmitBound!=='1'){
+      form.dataset.v8HooshyarSubmitBound='1';
+      form.addEventListener('submit',handleProfileSubmit);
+    }
+    if(document.documentElement.dataset.v6HooshyarResetDelegated!=='1'){
+      document.documentElement.dataset.v6HooshyarResetDelegated='1';
+      document.addEventListener('click',handleResetClick,true);
+    }
+    return !!form;
   }
 
   function boot(){
