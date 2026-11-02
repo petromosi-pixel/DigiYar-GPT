@@ -65,7 +65,9 @@ var BRANDS={
  projector:['اپسون','بنکیو','شیائومی','ووسون','ایسر'],
  mother:['چیکو','فیلیپس اونت','بیبی‌لند','مای بیبی'],
  general:['سامسونگ','شیائومی','فیلیپس','بوش','پارس‌خزر'],
- other:['سامسونگ','شیائومی','فیلیپس','بوش','پارس‌خزر']
+ travel:['علی‌بابا','فلای‌تودی','سفرمی','اقامت ۲۴'],
+ education:['فرادرس','مکتب‌خونه','کوئرا'],
+ other:['سایر']
 };
 
 /* Every visible main category has a real subcategory path ending in a brand field. */
@@ -91,10 +93,13 @@ var SUBS={
  handmade:[['craft','صنایع دستی'],['home','محصولات دست‌ساز خانه'],['gift','هدیه']],
  culture:[['book','کتاب'],['art','هنر'],['gift','محصولات فرهنگی']],
  'mother-kid':[['baby','نوزاد'],['mother','مادر'],['toy','اسباب‌بازی']],
- other:[['general','کالاهای عمومی'],['gift','هدیه'],['other','سایر']]
+ travel:[['flight','بلیط هواپیما'],['bus','بلیط اتوبوس'],['train','بلیط قطار'],['hotel','هتل و اقامت'],['tour','تور و سفر'],['car-rental','اجاره خودرو']],
+ education:[['course','دوره آموزشی'],['programming','برنامه‌نویسی'],['language','زبان و آزمون'],['business','مدیریت و کسب‌وکار'],['skill','مهارت‌های تخصصی']],
+ other:[['general','کالاها و خدمات عمومی'],['gift','هدیه'],['other','سایر']]
 };
 
 /* Curated root categories: health and furniture are restored as real categories; duplicate/empty paths are not shown. */
+var DOMAIN_ROOTS={digital:'digital',accessories:'digital',furniture:'furniture',fashion:'fashion',beauty:'beauty',health:'health',medicine:'health',supermarket:'supermarket',home:'home',sports:'sports',kids:'kids',books:'books',auto:'tools-auto',auto_service:'auto',lodging:'travel',travel_ticket:'travel',education:'education',affiliate_network:'other'};
 var ROOTS={
  digikala:[['digital','کالای دیجیتال'],['home','خانه و آشپزخانه'],['furniture','مبلمان'],['fashion','مد و پوشاک'],['supermarket','کالاهای خوراکی و اساسی'],['beauty','زیبایی و سلامت'],['health','سلامت و پزشکی'],['books','کتاب، لوازم تحریر و هنر'],['kids','اسباب‌بازی، کودک و نوزاد'],['sports','ورزش و سفر'],['tools-auto','ابزار، خودرو و موتورسیکلت'],['local','محصولات بومی و محلی'],['other','سایر']],
  snappshop:[['digital','کالای دیجیتال'],['home','خانه و آشپزخانه'],['furniture','مبلمان'],['fashion','مد و پوشاک'],['beauty','زیبایی و سلامت'],['health','سلامت و پزشکی'],['culture','فرهنگ و هنر'],['mother-kid','مادر و کودک'],['sports','ورزش و سفر'],['auto-tools','ابزار و لوازم خودرو'],['supermarket','کالاهای روزمره و سوپرمارکتی'],['other','سایر']],
@@ -174,19 +179,29 @@ function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){retur
 function unique(list){var seen={};return (list||[]).filter(function(x){var k=x[0]+'|'+x[1];if(seen[k])return false;seen[k]=1;return true})}
 
 function setRoots(cat,store){
- var roots=ROOTS[store]||ROOTS.digikala;
- /* Digikala is a general marketplace: derive its visible roots from the same
-    canonical business-domain KB used by Hooshyar and the profile selector. */
- if(store==='digikala'){
-  var kb=window.DigiYarStoreBusinessDomains;
-  var entry=kb&&kb.catalog&&kb.catalog.digikala;
-  if(entry&&Array.isArray(entry.domains)&&kb.domainTitles){
-   var canonical=entry.domains.map(function(domain){
-    var title=kb.domainTitles[domain]||(kb.byDomain&&kb.byDomain[domain]&&kb.byDomain[domain].title);
-    return title&&Object.prototype.hasOwnProperty.call(SUBS,domain)?[domain,title]:null;
-   }).filter(Boolean);
-   if(canonical.length)roots=canonical;
-  }
+ var roots=ROOTS[store]||null;
+ var kb=window.DigiYarStoreBusinessDomains;
+ var entry=kb&&kb.catalog&&kb.catalog[store];
+ /* Stores without a dedicated taxonomy inherit only their own canonical
+    business domains; they must never receive Digikala's unrelated categories. */
+ if(!roots&&entry&&Array.isArray(entry.domains)){
+  var seen={};
+  roots=entry.domains.map(function(domain){
+   var key=DOMAIN_ROOTS[domain]||domain;
+   if(seen[key]||!Object.prototype.hasOwnProperty.call(SUBS,key))return null;
+   seen[key]=true;
+   var title=(kb.domainTitles&&kb.domainTitles[domain])||(kb.byDomain&&kb.byDomain[domain]&&kb.byDomain[domain].title)||(kb.domainTitles&&kb.domainTitles[key])||key;
+   return [key,title];
+  }).filter(Boolean);
+ }
+ if(!roots||!roots.length)roots=ROOTS.other;
+ if(store==='digikala'&&entry&&Array.isArray(entry.domains)&&kb.domainTitles){
+  var canonical=entry.domains.map(function(domain){
+   var key=DOMAIN_ROOTS[domain]||domain;
+   var title=kb.domainTitles[domain]||(kb.byDomain&&kb.byDomain[domain]&&kb.byDomain[domain].title);
+   return title&&Object.prototype.hasOwnProperty.call(SUBS,key)?[key,title]:null;
+  }).filter(Boolean);
+  if(canonical.length)roots=canonical.filter(function(x,i,a){return a.findIndex(function(y){return y[0]===x[0]})===i;});
  }
  cat.innerHTML=roots.map(function(x){return '<option value="'+esc(x[0])+'">'+esc(x[1])+'</option>'}).join('');
  cat.insertAdjacentHTML('afterbegin','<option value="">انتخاب دسته‌بندی</option>');
