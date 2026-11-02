@@ -542,3 +542,49 @@ body.v6-dark .popular-discovery-type-tabs button span{
   -webkit-text-fill-color:#a70f2b!important;
 }
 
+/* V8 component-specific light/dark refinements moved out of legacy UI CSS. */
+
+
+/* V8 dark theme: carousel-linked directory and its expanded content */
+body.v6-dark .v8-other-stores-page,body.v6-dark #v8OtherStoresPage,body.v6-dark .v8-store-directory-page{background:#101a2b!important;color:#edf3fc!important;border-color:#34445c!important}
+
+body.v6-dark .v8-other-stores-page .v8-other-stores-header,body.v6-dark #v8OtherStoresPage .v8-other-stores-header,body.v6-dark .v8-store-directory-page .v8-other-stores-header{background:#17243a!important;border-color:#34445c!important;color:#edf3fc!important}
+
+body.v6-dark .v8-other-stores-page .v8-other-store-card,body.v6-dark #v8OtherStoresPage .v8-other-store-card,body.v6-dark .v8-store-directory-page .v8-other-store-card{background:linear-gradient(145deg,#1a2940,#152238)!important;border-color:#34465f!important;color:#edf3fc!important;box-shadow:0 5px 18px rgba(0,0,0,.2)!important}
+
+body.v6-dark .v8-other-stores-page .v8-other-store-card small,body.v6-dark #v8OtherStoresPage .v8-other-store-card small,body.v6-dark .v8-store-directory-page .v8-other-store-card small,body.v6-dark .v8-other-stores-page p,body.v6-dark #v8OtherStoresPage p,body.v6-dark .v8-store-directory-page p{color:#aebbd0!important}
+
+body.v6-dark .v8-other-stores-page .v8-other-store-logo,body.v6-dark #v8OtherStoresPage .v8-other-store-logo,body.v6-dark .v8-store-directory-page .v8-other-store-logo{background:#fff!important;border-color:#52627a!important}
+
+body.v6-dark .v8-other-stores-page h2,body.v6-dark .v8-other-stores-page h3,body.v6-dark #v8OtherStoresPage h2,body.v6-dark #v8OtherStoresPage h3,body.v6-dark .v8-store-directory-page h2,body.v6-dark .v8-store-directory-page h3{color:#edf3fc!important}
+
+body:not(.v6-dark) #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-color:#8297b5!important;box-shadow:0 0 0 1px rgba(48,72,110,.22),0 5px 15px rgba(33,57,94,.2)!important}
+
+body.v6-dark #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-color:#526783!important;box-shadow:0 0 0 1px rgba(160,185,220,.15),0 5px 16px rgba(0,0,0,.34)!important}
+
+body.v6-dark #v5DealTrack .v8-photo-head,body.v6-dark #v5DealTrack .v8-photo-cta{background:rgba(17,29,47,.48)!important;border-color:rgba(220,232,250,.5)!important;color:#f2f6ff!important}
+
+body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
+
+body:not(.v6-dark) #v7DealsHost.v5-deals-card.v8-deals-experience{
+  border:1.5px solid #8297b5!important;
+  box-shadow:0 0 0 1px rgba(48,72,110,.20),0 5px 15px rgba(33,57,94,.18)!important;
+}
+
+body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
+  border:1.5px solid #526783!important;
+  box-shadow:0 0 0 1px rgba(160,185,220,.15),0 5px 16px rgba(0,0,0,.34)!important;
+}
+
+body.v6-dark #v5DealTrack>.v8-concept-slide.v8-photo-slide{
+  border-color:#8295b2!important;box-shadow:none!important;
+}
+
+body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
+  border-color:#34445c!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
+}
+
+body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{border-color:var(--dy-border,#35455d)!important;box-shadow:var(--shadow,0 8px 25px rgba(0,0,0,.22))!important;}
+
+body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
