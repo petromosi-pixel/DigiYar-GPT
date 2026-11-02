@@ -33,8 +33,6 @@ function loadTaxonomies(){
  var paths=['js/v6-store-taxonomy-overrides.js','js/v7-dayan-taxonomy.js','js/v7-memarket-taxonomy.js','js/v6-technolife-taxonomy.js','js/v6-meghdadit-taxonomy.js','js/v6-janebi-taxonomy.js','js/v6-digiland-taxonomy.js','js/v6-khanoumi-taxonomy.js','js/v6-esam-taxonomy.js','js/v6-pinket-taxonomy.js','js/v6-darukade-taxonomy.js','js/v6-darmankala-taxonomy.js','js/v6-digido-taxonomy.js','js/v6-takhfifan-taxonomy.js','js/v6-shab-taxonomy.js','js/v6-neshatrokh-taxonomy.js','js/v6-mosbatesabz-taxonomy.js','js/v6-stores-21-25-taxonomy.js','js/v6-stores-26-30-taxonomy.js','js/v6-site-taxonomy-overrides.js'];
  taxonomyLoadPromise=paths.reduce(function(chain,path){return chain.then(function(){return loadScript(path)})},Promise.resolve()).then(function(){
   function signalReady(){
-   var store=$('storeSelect');
-   if(store&&store.value&&store.value!=='all')store.dispatchEvent(new Event('change',{bubbles:true}));
    window.dispatchEvent(new CustomEvent('digiyar:taxonomy-ready'));
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(signalReady,60)},{once:true});
