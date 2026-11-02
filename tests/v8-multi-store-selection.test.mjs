@@ -42,7 +42,19 @@ assert.deepEqual(unrestricted.storeIds, base.storeIds, 'No explicit selection mu
 
 const picker = fs.readFileSync(new URL('../js/v8-multi-store-picker.js', import.meta.url), 'utf8');
 assert.match(picker, /kb\.byType/, 'Top-level activity groups must come from the canonical KB');
-assert.match(picker, /kb\.byDomain/, 'Nested business categories must come from the canonical KB');
+assert.match(picker, /kb\.specialistByDomain/, 'Specialist categories must use specialist-only taxonomy');
+assert.match(picker, /primary===domain/, 'A specialist store must be assigned to only one primary category');
+assert.match(picker, /seenNames\.has\(key\)/, 'Repeated display names must be suppressed across categories');
+assert.match(picker, /repeat\(4,minmax\(0,1fr\)\)/, 'Store list must use a four-column grid');
+assert.match(picker, /selectedCategoryIds/, 'Category selections must be retained alongside store selections');
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
+
+const bridge = fs.readFileSync(new URL('../js/v8-store-select-sync.js', import.meta.url), 'utf8');
+assert.match(bridge, /form\.addEventListener\('submit',handleProfileSubmit\)/, 'Show-results must use the profile form submit event directly');
+assert.match(bridge, /ابتدا عبارت کالا یا خدمت/, 'Missing search phrase must produce visible guidance');
+assert.match(bridge, /requestSubmit\(\)/, 'Profile submit must trigger the Hooshyar search form');
+
+const input = fs.readFileSync(new URL('../js/v8-hooshyar-input.js', import.meta.url), 'utf8');
+assert.match(input, /DigiYarProfileSearchStatus/, 'Hooshyar must report completion or an empty constrained result');
 
 console.log('V8 multi-store selection and Hooshyar filtering: PASS');
