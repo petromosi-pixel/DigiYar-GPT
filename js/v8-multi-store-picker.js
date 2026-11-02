@@ -25,7 +25,7 @@ function start(){
  #v8msPanel .v8msDomain{margin:5px 8px}
  #v8msPanel .v8msTools{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;color:#69778d;margin-bottom:8px}
  #v8msPanel .v8msTools button{border:0;background:none;color:#2a4169;font-weight:800}
- #v8msPanel .v8msStoreGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px 5px;padding:2px 7px 8px}
+ #v8msPanel .v8msStoreGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 5px;padding:2px 7px 8px}
  #v8msPanel label{direction:rtl;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:5px;min-width:0;padding:5px 3px;font-size:11px;line-height:1.45;cursor:pointer;overflow-wrap:anywhere}
  #v8msPanel label span{min-width:0}
  #v8msPanel input{width:15px;height:15px;min-width:15px;min-height:15px;accent-color:#2a4169;margin:0;flex:0 0 15px}
@@ -89,7 +89,6 @@ function start(){
   panel.appendChild(details);
  });
  root.append(trigger,panel);select.insertAdjacentElement('afterend',root);select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
- ['v5Category','v5Subcategory'].forEach(function(id){var n=byId(id),field=n&&n.closest('.v5-field');if(field)field.style.display='none';});
  function refresh(){
   panel.querySelectorAll('input[type=checkbox]').forEach(function(c){
    var kind=c.dataset.kind,id=c.dataset.id,ids=(c.dataset.ids||'').split(',').filter(Boolean);
@@ -98,7 +97,8 @@ function start(){
   });
   triggerLabel.textContent=active?'فروشگاه‌های انتخاب‌شده':'فروشگاهتو انتخاب کن';
   triggerCount.textContent=active?selected.size+' فروشگاه':'انتخاب چندگانه';
-  select.value=selected.size?Array.from(selected)[0]:'all';
+  var nextStore=selected.size?Array.from(selected)[0]:'all';
+  if(select.value!==nextStore){select.value=nextStore;select.dispatchEvent(new Event('change',{bubbles:true}));}
   root.dataset.selectedStoreIds=Array.from(selected).join(',');
  }
  trigger.addEventListener('click',function(){panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));});
