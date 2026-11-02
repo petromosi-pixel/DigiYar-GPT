@@ -45,7 +45,9 @@ assert.match(picker, /kb\.byType/, 'Top-level activity groups must come from the
 assert.match(picker, /kb\.specialistByDomain/, 'Specialist categories must use specialist-only taxonomy');
 assert.match(picker, /primary===domain/, 'A specialist store must be assigned to only one primary category');
 assert.match(picker, /seenNames\.has\(key\)/, 'Repeated display names must be suppressed across categories');
-assert.match(picker, /repeat\(4,minmax\(0,1fr\)\)/, 'Store list must use a four-column grid');
+assert.match(picker, /repeat\(3,minmax\(0,1fr\)\)/, 'Store list must use a three-column grid');
+assert.doesNotMatch(picker, /v5Category','v5Subcategory'/, 'The category and subcategory fields must remain visible');
+assert.match(picker, /dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, 'Changing the selected store must refresh the taxonomy cascade');
 assert.match(picker, /selectedCategoryIds/, 'Category selections must be retained alongside store selections');
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
 
@@ -53,6 +55,10 @@ const bridge = fs.readFileSync(new URL('../js/v8-store-select-sync.js', import.m
 assert.match(bridge, /form\.addEventListener\('submit',handleProfileSubmit\)/, 'Show-results must use the profile form submit event directly');
 assert.match(bridge, /ابتدا عبارت کالا یا خدمت/, 'Missing search phrase must produce visible guidance');
 assert.match(bridge, /requestSubmit\(\)/, 'Profile submit must trigger the Hooshyar search form');
+
+const productOptions = fs.readFileSync(new URL('../js/v6-product-options.js', import.meta.url), 'utf8');
+assert.match(productOptions, /categoryField\.insertAdjacentElement\('afterend',field\)/, 'Subcategory must appear immediately after the selected category');
+assert.match(productOptions, /v6BrandField/, 'The brand selector must remain part of the category cascade');
 
 const input = fs.readFileSync(new URL('../js/v8-hooshyar-input.js', import.meta.url), 'utf8');
 assert.match(input, /DigiYarProfileSearchStatus/, 'Hooshyar must report completion or an empty constrained result');
