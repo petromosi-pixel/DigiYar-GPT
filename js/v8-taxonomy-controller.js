@@ -16,9 +16,33 @@ function ensureStore(item,afterId){var stores=window.DigiYarPopularAffiliateStor
 function ensureMeghdadStore(){ensureStore(MEGHDAD,'technolife')}
 function ensureDigilandStore(){ensureStore(DIGILAND,'janebi')}
 function ensureStores21_30(){var select=$('storeSelect');if(!select)return;STORE_21_30.forEach(function(item){if(Array.from(select.options).some(function(o){return o.value===item[0]}))return;var option=document.createElement('option');option.value=item[0];option.textContent=item[1];var after=Array.from(select.options).find(function(o){return o.value==='mosbatesabz'});if(after)select.insertBefore(option,after.nextSibling);else select.appendChild(option)});dedupeStoreOptions()}
-function loadScript(path){var clean=path.split('?')[0];if(document.querySelector('script[data-v6-taxonomy="'+clean+'"]'))return;var s=document.createElement('script');s.src=new URL(path+(path.indexOf('?')>=0?'&':'?')+'v='+TAX_VERSION,document.baseURI).href;s.async=false;s.dataset.v6Taxonomy=clean;document.head.appendChild(s)}
-
-function loadTaxonomies(){loadScript('js/v6-store-taxonomy-overrides.js');loadScript('js/v7-dayan-taxonomy.js');loadScript('js/v7-memarket-taxonomy.js');loadScript('js/v6-technolife-taxonomy.js');loadScript('js/v6-meghdadit-taxonomy.js');loadScript('js/v6-janebi-taxonomy.js');loadScript('js/v6-digiland-taxonomy.js');loadScript('js/v6-khanoumi-taxonomy.js');loadScript('js/v6-esam-taxonomy.js');loadScript('js/v6-pinket-taxonomy.js');loadScript('js/v6-darukade-taxonomy.js');loadScript('js/v6-darmankala-taxonomy.js');loadScript('js/v6-digido-taxonomy.js');loadScript('js/v6-takhfifan-taxonomy.js');loadScript('js/v6-shab-taxonomy.js');loadScript('js/v6-neshatrokh-taxonomy.js');loadScript('js/v6-mosbatesabz-taxonomy.js');loadScript('js/v6-stores-21-25-taxonomy.js');loadScript('js/v6-stores-26-30-taxonomy.js');loadScript('js/v6-site-taxonomy-overrides.js')}
+var taxonomyLoadPromise=null;
+function loadScript(path){
+ var clean=path.split('?')[0],existing=document.querySelector('script[data-v6-taxonomy="'+clean+'"]');
+ if(existing)return Promise.resolve();
+ return new Promise(function(resolve){
+  var s=document.createElement('script');
+  s.src=new URL(path+(path.indexOf('?')>=0?'&':'?')+'v='+TAX_VERSION,document.baseURI).href;
+  s.async=false;s.dataset.v6Taxonomy=clean;
+  s.onload=function(){resolve(true)};s.onerror=function(){console.warn('DigiYar taxonomy failed to load:',clean);resolve(false)};
+  document.head.appendChild(s);
+ });
+}
+function loadTaxonomies(){
+ if(taxonomyLoadPromise)return taxonomyLoadPromise;
+ var paths=['js/v6-store-taxonomy-overrides.js','js/v7-dayan-taxonomy.js','js/v7-memarket-taxonomy.js','js/v6-technolife-taxonomy.js','js/v6-meghdadit-taxonomy.js','js/v6-janebi-taxonomy.js','js/v6-digiland-taxonomy.js','js/v6-khanoumi-taxonomy.js','js/v6-esam-taxonomy.js','js/v6-pinket-taxonomy.js','js/v6-darukade-taxonomy.js','js/v6-darmankala-taxonomy.js','js/v6-digido-taxonomy.js','js/v6-takhfifan-taxonomy.js','js/v6-shab-taxonomy.js','js/v6-neshatrokh-taxonomy.js','js/v6-mosbatesab-taxonomy.js','js/v6-stores-21-25-taxonomy.js','js/v6-stores-26-30-taxonomy.js','js/v6-site-taxonomy-overrides.js'];
+ taxonomyLoadPromise=paths.reduce(function(chain,path){return chain.then(function(){return loadScript(path)})},Promise.resolve()).then(function(){
+  function signalReady(){
+   var store=$('storeSelect');
+   if(store&&store.value&&store.value!=='all')store.dispatchEvent(new Event('change',{bubbles:true}));
+   window.dispatchEvent(new CustomEvent('digiyar:taxonomy-ready'));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(signalReady,60)},{once:true});
+  else setTimeout(signalReady,60);
+  return true;
+ });
+ return taxonomyLoadPromise;
+}
 function normalizeCategory(){var store=$('storeSelect'),cat=$('v5Category');if(!store||!cat||!store.value||STORES.indexOf(store.value)<0)return;cleanSelect(cat);if(['technolife','meghdadit','janebi','digiland','khanoumi','esam','pinket','darukade','darmankala','digido','takhfifan','shab','neshatrokh','mosbatesabz','shavaz','jeanswest','eseminar','safarme','berozkala','maktabkhooneh','daroo-online','gooshishop','karnameh','solokala'].indexOf(store.value)>=0)return;var digital=Array.from(cat.options).find(function(o){return o.value==='digital'});if(digital){digital.textContent=DIGITAL;return}digital=document.createElement('option');digital.value='digital';digital.textContent=DIGITAL;cat.insertBefore(digital,cat.options[1]||null)}
 function loadProductOptions(){if(window.DigiYarV6ProductOptionsReady||document.querySelector('script[src*="/js/v6-product-options.js"]')){loadTaxonomies();return}var s=document.createElement('script');s.src=new URL('js/v6-product-options.js?v='+TAX_VERSION,document.baseURI).href;s.async=false;s.onload=function(){window.DigiYarV6ProductOptionsReady=true;loadTaxonomies();loadScript('js/v6-category-budget-brand-fix.js')};s.onerror=function(){loadTaxonomies();loadScript('js/v6-category-budget-brand-fix.js')};document.head.appendChild(s)}
 function bind(){var store=$('storeSelect'),cat=$('v5Category');if(!store||!cat)return false;ensureMeghdadStore();ensureDigilandStore();ensureStores21_30();dedupeStoreOptions();if(!store.dataset.v6UnifiedBound){store.dataset.v6UnifiedBound='1';store.addEventListener('change',function(){setTimeout(function(){dedupeStoreOptions();normalizeCategory()},0)})}if(!cat.dataset.v6UnifiedBound){cat.dataset.v6UnifiedBound='1';cat.addEventListener('change',function(){setTimeout(normalizeCategory,0)})}cleanSelect(cat);normalizeCategory();loadProductOptions();if(window.DigiYarV6ProductOptionsReady){loadTaxonomies();loadScript('js/v6-category-budget-brand-fix.js')}return true}
