@@ -19,14 +19,6 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}body{background:linear-gra
 @media(prefers-reduced-motion:reduce){.v6-affilio-widget-card [class*="campaign"],.v6-affilio-widget-card [class*="Campaign"],.v6-affilio-widget-card [class*="heading"],.v6-affilio-widget-card [class*="Heading"]{animation:none!important}}
 @media(max-width:760px){.v6-affilio-widget-card{padding-left:4px!important;padding-right:4px!important}.v6-affilio-widget-card [class*="product-card"]{width:150px!important;min-width:150px!important;height:254px!important;max-height:254px!important}.v6-affilio-widget-card [class*="product-card"] img,.v6-affilio-widget-card [class*="product-card"] [class*="image"],.v6-affilio-widget-card [class*="product-card"] [class*="Image"]{height:132px!important;min-height:132px!important;max-height:132px!important;flex-basis:132px!important}}
 
-/* V8 dark theme: carousel-linked directory and its expanded content */
-body.v6-dark .v8-other-stores-page,body.v6-dark #v8OtherStoresPage,body.v6-dark .v8-store-directory-page{background:#101a2b!important;color:#edf3fc!important;border-color:#34445c!important}
-body.v6-dark .v8-other-stores-page .v8-other-stores-header,body.v6-dark #v8OtherStoresPage .v8-other-stores-header,body.v6-dark .v8-store-directory-page .v8-other-stores-header{background:#17243a!important;border-color:#34445c!important;color:#edf3fc!important}
-body.v6-dark .v8-other-stores-page .v8-other-store-card,body.v6-dark #v8OtherStoresPage .v8-other-store-card,body.v6-dark .v8-store-directory-page .v8-other-store-card{background:linear-gradient(145deg,#1a2940,#152238)!important;border-color:#34465f!important;color:#edf3fc!important;box-shadow:0 5px 18px rgba(0,0,0,.2)!important}
-body.v6-dark .v8-other-stores-page .v8-other-store-card small,body.v6-dark #v8OtherStoresPage .v8-other-store-card small,body.v6-dark .v8-store-directory-page .v8-other-store-card small,body.v6-dark .v8-other-stores-page p,body.v6-dark #v8OtherStoresPage p,body.v6-dark .v8-store-directory-page p{color:#aebbd0!important}
-body.v6-dark .v8-other-stores-page .v8-other-store-logo,body.v6-dark #v8OtherStoresPage .v8-other-store-logo,body.v6-dark .v8-store-directory-page .v8-other-store-logo{background:#fff!important;border-color:#52627a!important}
-body.v6-dark .v8-other-stores-page h2,body.v6-dark .v8-other-stores-page h3,body.v6-dark #v8OtherStoresPage h2,body.v6-dark #v8OtherStoresPage h3,body.v6-dark .v8-store-directory-page h2,body.v6-dark .v8-store-directory-page h3{color:#edf3fc!important}
-
 
 /* V8 carousel: uniform compact 4:3 slides, resilient images, day/night contrast */
 #v5DealViewport.v8-deal-viewport{height:clamp(190px,60vw,245px)!important;min-height:0!important;max-height:245px!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;scroll-behavior:smooth!important;overscroll-behavior-x:contain!important}
@@ -50,16 +42,12 @@ body.v6-dark .v8-other-stores-page h2,body.v6-dark .v8-other-stores-page h3,body
 #v5DealDots button{width:5px!important;height:5px!important;min-width:5px!important;min-height:5px!important;padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;background:#899ab2!important;box-shadow:none!important;transform:none!important}
 #v5DealDots button.active{width:7px!important;height:7px!important;min-width:7px!important;min-height:7px!important;background:#e84f70!important;box-shadow:0 0 0 2px rgba(232,79,112,.18)!important}
 @media(max-width:700px){#v5DealViewport.v8-deal-viewport{height:clamp(190px,60vw,235px)!important;max-height:235px!important}#v5DealTrack>.v8-concept-slide.v8-photo-slide{flex-basis:80vw!important;width:80vw!important;max-width:none!important;border-radius:12px!important}#v5DealTrack .v8-photo-head{top:5px!important;right:5px!important;padding:3px 6px!important}#v5DealTrack .v8-photo-head img{width:17px!important;height:17px!important;max-width:17px!important;max-height:17px!important}#v5DealTrack .v8-photo-cta{bottom:5px!important;right:5px!important;padding:4px 8px!important}}
-body:not(.v6-dark) #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-color:#8297b5!important;box-shadow:0 0 0 1px rgba(48,72,110,.22),0 5px 15px rgba(33,57,94,.2)!important}
-body.v6-dark #v5DealTrack>.v8-concept-slide.v8-photo-slide{border-color:#526783!important;box-shadow:0 0 0 1px rgba(160,185,220,.15),0 5px 16px rgba(0,0,0,.34)!important}
-body.v6-dark #v5DealTrack .v8-photo-head,body.v6-dark #v5DealTrack .v8-photo-cta{background:rgba(17,29,47,.48)!important;border-color:rgba(220,232,250,.5)!important;color:#f2f6ff!important}
 
 
 /* Store identity remains visible directly over the slide: no badge/pill container */
 #v5DealTrack .v8-photo-head{position:absolute!important;top:7px!important;right:8px!important;z-index:2!important;display:flex!important;align-items:center!important;gap:5px!important;max-width:calc(100% - 16px)!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#fff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;font-size:12px!important;line-height:1.2!important;text-shadow:0 1px 4px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9)!important}
 #v5DealTrack .v8-photo-head img{display:block!important;width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;object-fit:contain!important;background:transparent!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.65))!important}
 #v5DealTrack .v8-photo-head strong{font-size:12px!important;font-weight:800!important;white-space:nowrap!important;color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95)!important}
-body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
 @media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
 
 
@@ -81,14 +69,6 @@ body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border
 #v5DealTrack.v8-deal-track{padding-top:0!important;padding-bottom:0!important}
 #v5DealDots{margin:3px auto 0!important;min-height:8px!important;height:8px!important}
 #v7DealsHost .v8-deals-bottom{margin-top:3px!important;padding-top:0!important}
-body:not(.v6-dark) #v7DealsHost.v5-deals-card.v8-deals-experience{
-  border:1.5px solid #8297b5!important;
-  box-shadow:0 0 0 1px rgba(48,72,110,.20),0 5px 15px rgba(33,57,94,.18)!important;
-}
-body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
-  border:1.5px solid #526783!important;
-  box-shadow:0 0 0 1px rgba(160,185,220,.15),0 5px 16px rgba(0,0,0,.34)!important;
-}
 @media(max-width:700px){
   #v7DealsHost.v5-deals-card.v8-deals-experience{padding:6px 8px 5px!important}
   #v5DealViewport.v8-deal-viewport{height:clamp(160px,56vw,210px)!important;max-height:210px!important}
@@ -101,19 +81,12 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
   box-shadow:none!important;
 }
 #v5DealTrack>.v8-concept-slide.v8-photo-slide.is-active{box-shadow:none!important}
-body.v6-dark #v5DealTrack>.v8-concept-slide.v8-photo-slide{
-  border-color:#8295b2!important;box-shadow:none!important;
-}
 #v7DealsHost.v5-deals-card.v8-deals-experience{
   margin-left:0!important;margin-right:0!important;
   padding-left:0!important;padding-right:0!important;
   border:1px solid #dfe7f2!important;
   box-shadow:0 10px 30px rgba(42,65,105,.09)!important;
   border-radius:14px!important;
-}
-body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
-  border-color:#34445c!important;
-  box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
 }
 #v7DealsHost .v5-section-heading{padding-left:10px!important;padding-right:10px!important}
 #v5DealTrack.v8-deal-track{padding-left:10vw!important;padding-right:10vw!important}
@@ -134,7 +107,6 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
 
 /* V8: align the carousel container with the shared homepage card system. */
 #v7DealsHost.v5-deals-card.v8-deals-experience{border:1px solid var(--border,#e3e8f0)!important;border-radius:var(--radius,18px)!important;box-shadow:var(--shadow,0 8px 25px rgba(16,28,53,.08))!important;}
-body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{border-color:var(--dy-border,#35455d)!important;box-shadow:var(--shadow,0 8px 25px rgba(0,0,0,.22))!important;}
 
 
 /* Restored V8 slider identity layout: logo at the corner, store name directly in front */
@@ -142,7 +114,6 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{border-color:var(--d
 #v5DealTrack .v8-photo-head img{display:block!important;width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;object-fit:contain!important;background:transparent!important;filter:drop-shadow(0 1px 3px rgba(0,0,0,.65))!important;opacity:1!important}
 #v5DealTrack .v8-photo-head img.v8-image-failed{display:none!important}
 #v5DealTrack .v8-photo-head strong{font-size:12px!important;font-weight:800!important;white-space:nowrap!important;color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95)!important}
-body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
 @media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
 
 /* V8 slider header — explicit RTL grid: store name right, logo left */
