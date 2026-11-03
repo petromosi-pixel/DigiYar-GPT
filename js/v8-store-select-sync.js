@@ -125,6 +125,14 @@
   }
   window.DigiYarProfileSearchStatus=setProfileSearchStatus;
 
+  var closeProfileAfterResults=false;
+  window.addEventListener('digiyar:hooshyar-results-ready',function(){
+    if(!closeProfileAfterResults)return;
+    closeProfileAfterResults=false;
+    var toggle=el('v5Step4Toggle');
+    if(toggle&&toggle.getAttribute('aria-expanded')==='true')toggle.click();
+  });
+
   var launchInProgress=false;
   function launchHooshyar(){
     if(launchInProgress)return false;
@@ -144,10 +152,12 @@
       syncHooshyarHint();
       setProfileSearchStatus('',false);
       smartInput.scrollIntoView({behavior:'smooth',block:'center'});
+      closeProfileAfterResults=true;
+      setTimeout(function(){closeProfileAfterResults=false;},20000);
       if(typeof searchForm.requestSubmit==='function') searchForm.requestSubmit();
       else searchForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
 
-      // Keep the profile-search card visible for the next search.
+      // Keep the card visible; close only its detail form after results render.
       return true;
     }finally{launchInProgress=false;}
   }
