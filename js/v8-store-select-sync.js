@@ -52,19 +52,19 @@
   }
 
   function selectedOptionText(id){
-    var node=el(id);
-    if(!node || node.tagName!=='SELECT' || !String(node.value||'').trim()) return '';
+    var form=el('profileForm'),node=el(id);
+    if(!form||!node||!form.contains(node)||node.tagName!=='SELECT'||!String(node.value||'').trim())return '';
     var option=node.options[node.selectedIndex];
-    var selected=option?String(option.textContent||'').trim():'';
-    return /^(انتخاب|ابتدا|چقدر)/.test(selected)?'':selected;
+    var selected=option?String(option.textContent||'').replace(/\\s+/g,' ').trim():'';
+    if(!selected||/^(انتخاب|ابتدا|چقدر)/.test(selected))return '';
+    return selected;
   }
 
   function profileParts(){
-    // Only the four user-facing purchase selectors belong in Hooshyar's query.
-    // Do not include the root category or unrelated priority/requirement fields.
+    // These four controls alone define the requested Hooshyar search phrase.
     return ['v5Subcategory','v6Brand','v6BudgetRange','v6Usage']
       .map(selectedOptionText)
-      .filter(function(part,index,parts){return !!part && parts.indexOf(part)===index;});
+      .filter(function(part,index,parts){return !!part&&parts.indexOf(part)===index;});
   }
 
   function profileQuery(){
