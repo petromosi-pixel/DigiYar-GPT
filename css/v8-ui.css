@@ -120,6 +120,6 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}body{background:linear-gra
 
 
 /* V8 slider identity order: logo on the right, store name on the left. */
-#v5DealTrack .v8-photo-head{direction:rtl!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;}
+#v5DealTrack .v8-photo-head{direction:ltr!important;display:flex!important;flex-direction:row-reverse!important;align-items:center!important;justify-content:flex-start!important;}
 #v5DealTrack .v8-photo-head img{order:0!important;}
 #v5DealTrack .v8-photo-head strong{order:1!important;}
