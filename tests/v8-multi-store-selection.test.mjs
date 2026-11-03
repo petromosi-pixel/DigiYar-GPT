@@ -51,6 +51,16 @@ assert.match(picker, /dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, 
 assert.match(picker, /selectedCategoryIds/, 'Category selections must be retained alongside store selections');
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
 
+const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
+assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
+  'The canonical store selector must not hide merchants whose search route is not configured');
+assert.ok(picker.includes('new Set(Object.keys(kb.catalog||{}).map(String))'),
+  'The picker must expose the full canonical catalog, including stores with unavailable routes');
+assert.ok(engine.includes('selectedCandidatesAdded'),
+  'Selected stores must be re-evaluated against canonical product-family evidence before filtering');
+assert.ok(engine.includes('routeUnavailableCount'),
+  'The resolver must expose unavailable-route diagnostics instead of silently dropping merchants');
+
 const bridge = fs.readFileSync(new URL('../js/v8-store-select-sync.js', import.meta.url), 'utf8');
 assert.match(bridge, /\['v5Subcategory','v6Brand','v6BudgetRange','v6Usage'\]/, 'Hooshyar query must use only subcategory, brand, budget range, and usage');
 assert.doesNotMatch(bridge, /querySelectorAll\('select'\)/, 'Unrelated dynamic priority and requirement selectors must not enter the query');

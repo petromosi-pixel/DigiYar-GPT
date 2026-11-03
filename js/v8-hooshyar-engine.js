@@ -99,7 +99,7 @@ var SEMANTIC_ALIASES=[
  {re:/(?:کیف.?اداری|کیف.?کار|کیف.?مدیریتی)/i,terms:'کیف اداری کیف کار کیف دستی اداری کیف لپ تاپ پوشاک کیف'}
 ];
 function semanticQuery(raw){var additions=[];SEMANTIC_ALIASES.forEach(function(entry){if(entry.re.test(raw))additions.push(entry.terms);});return additions.length?raw+' '+additions.join(' '):raw;}
-function resolveSearchContext(query){
+function resolveSearchContext(query,filters){
  /* The product/category KB is the sole source of merchant eligibility.
     Intent rules prevent generic word overlap from masquerading as relevance. */
  var catalog=getCatalog(),raw=normalize(query),intent=detectIntent(raw);
@@ -192,9 +192,54 @@ function resolveSearchContext(query){
   if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
   if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories))});}
  });
+
+ /* Selection is applied after relevance. Re-evaluate selected catalog merchants
+    against canonical product-family evidence so legacy intent branches cannot
+    silently suppress genuinely relevant user-selected stores. */
+ var selectedCandidatesAdded=0;
+ if(filters&&filters.active){
+  var selectedIds=Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();})));
+  var conceptRules={
+   office_bag:/کیف\s*اداری|کیف\s*کار|کیف\s*دستی\s*اداری/,
+   air_purifier:/تصفیه\s*هوا|هوا\s*تصفیه/,
+   upholstery_cleaning:/تمیزکننده\s*مبل|دستگاه\s*مبل\s*شوی|فرش\s*شوی|بخارشوی/,
+   mobile_accessory:/لوازم\s*جانبی|تجهیزات\s*جانبی|قاب|گلس|شارژر|کابل|پاوربانک|هندزفری|هدفون/,
+   digital_accessory:/لوازم\s*جانبی|تجهیزات\s*جانبی|قطعات\s*کامپیوتر|کیبورد|ماوس|ssd|هارد|رم\s*کامپیوتر|کارت\s*گرافیک|مادربرد/,
+   train_ticket:/بلیط\s*قطار|بلیت\s*قطار|سفر\s*ریلی/,
+   sunscreen:/ضد\s*آفتاب|ضدآفتاب|sunscreen/,
+   kitchen_scale:/ترازو\s*(?:هوشمند\s*)?آشپزخانه|ترازو\s*دیجیتال\s*آشپزخانه/
+  };
+  selectedIds.forEach(function(id){
+   if(seen[id]||!catalog[id])return;
+   var store=catalog[id],fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
+   var hay=normalize(fields.join(' ')),rule=conceptRules[intent];
+   /* Preserve the established general-marketplace boundary for office bags; broad catalog mentions alone are not enough to promote a general aggregator. */
+   if(intent==='office_bag'&&store.storeType==='general')return;
+   if((store.hooshyarExcludeConcepts||[]).indexOf(intent)>=0)return;
+   if((store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0;}))return;
+   if((intent==='mobile_accessory'||intent==='digital_accessory'||intent==='upholstery_cleaning')&&store.storeType==='portal')return;
+   if(intent==='mobile_accessory'&&/سامسونگ/.test(raw)&&id==='janebi')return;
+   var direct=!!(rule&&rule.test(hay));
+   if(rule&&!direct)return;
+   var fieldTokens=wordTokens(hay);
+   var overlap=Array.from(new Set(tokens.filter(function(token){return token.length>=3&&fieldTokens.indexOf(token)>=0;})));
+   var phrase=fields.some(function(field){var f=normalize(field);return f.length>=4&&(raw.indexOf(f)>=0||f.indexOf(raw)>=0);});
+   if(!direct&&!phrase&&overlap.length<2)return;
+   var score=direct?24:(phrase?18:Math.min(12,overlap.length*3));
+   var domains=Array.isArray(store.domains)?store.domains:[];
+   var categories=domains.map(function(domain){return getDomainTitle(domain);});
+   if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
+   var resolver=window.DigiYarStoreSearchUrl;
+   var route=resolver&&typeof resolver.resolveRoute==='function'?resolver.resolveRoute(id,raw):null;
+   seen[id]=true;
+   out.push({id:id,score:score,categories:Array.from(new Set(categories)),routeUnavailable:!route});
+   if(!route)unavailableRoutes.push({id:id,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});
+   selectedCandidatesAdded++;
+  });
+ }
  out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});
  var categoriesByStore={};out.forEach(function(x){categoriesByStore[x.id]=x.categories;});
- return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})),routeUnavailableStoreIds:unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent};
+ return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:Array.from(new Set(out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})))),routeUnavailableStoreIds:Array.from(new Set(unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}))),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent,diagnostics:{catalogCandidateCount:Object.keys(catalog).length,matchedCount:out.length,selectedCandidatesAdded:selectedCandidatesAdded,routeUnavailableCount:unavailableRoutes.length}};
 }
 function applyStoreSelection(resolved,filters){if(!filters||!filters.active)return resolved;var selected=Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();})));var eligible=resolved.eligibleStoreIds||resolved.storeIds||[];resolved.storeIds=(resolved.storeIds||[]).filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});resolved.eligibleStoreIds=eligible.filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});resolved.routeUnavailableStoreIds=(resolved.routeUnavailableStoreIds||[]).filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});var filteredCategories={};resolved.storeIds.forEach(function(id){if(resolved.categoriesByStore&&resolved.categoriesByStore[id])filteredCategories[id]=resolved.categoriesByStore[id];});resolved.categoriesByStore=filteredCategories;return resolved;}
 function isGeneral(id,s){return !!(s&&s.storeType==='general');}
@@ -533,7 +578,7 @@ function init(){
  if(bottomToggle)bottomToggle.addEventListener('click',function(){toggle.click();});
  toggle.addEventListener('click',function(){var open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));panel.hidden=!open;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded',String(open));if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}});
  window.addEventListener('digiyar:v7-hooshyar-cleared',function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};state.type='general';render();var p=document.getElementById('popularDiscoveryPanel'),t=document.getElementById('popularDiscoveryToggle'),b=document.getElementById('popularDiscoveryBottomToggle');if(p)p.hidden=true;if(t)t.setAttribute('aria-expanded','false');if(b)b.setAttribute('aria-expanded','false');if(p)delete p.dataset.rendered;});
- window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,auditCatalogRoutes:function(){var kb=window.DigiYarStoreBusinessDomains,catalog=getCatalog(),resolver=window.DigiYarStoreSearchUrl,byDomain={},configured=[],fallback=[],missing=[];Object.keys(catalog).forEach(function(id){var s=catalog[id]||{},domains=s.domains||['uncategorized'],direct=!!(resolver&&typeof resolver.hasSearchHandler==='function'&&resolver.hasSearchHandler(id)),hasRoute=!!(resolver&&typeof resolver.hasHandler==='function'&&resolver.hasHandler(id));if(direct)configured.push(id);else if(hasRoute)fallback.push(id);else missing.push(id);domains.forEach(function(domain){if(!byDomain[domain])byDomain[domain]={title:getDomainTitle(domain),total:0,configured:0,homepageFallback:0,missing:0,missingIds:[],fallbackIds:[]};byDomain[domain].total++;var field=direct?'configured':hasRoute?'homepageFallback':'missing';byDomain[domain][field]++;if(!direct&&hasRoute)byDomain[domain].fallbackIds.push(id);if(!hasRoute)byDomain[domain].missingIds.push(id);});});return {catalogCount:Object.keys(catalog).length,configuredHandlerCount:configured.length,homepageFallbackCount:fallback.length,missingHandlerCount:missing.length,configuredIds:configured.sort(),homepageFallbackIds:fallback.sort(),missingIds:missing.sort(),byDomain:byDomain};},setSearchContext:function(query,filters){var resolved=applyStoreSelection(resolveSearchContext(query),filters);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds||[];state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.openCategories['search-results']=true;state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),eligibleStoreIds:(resolved.eligibleStoreIds||resolved.storeIds||[]).slice(),routeUnavailableStoreIds:(resolved.routeUnavailableStoreIds||[]).slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source,intent:resolved.intent,selectionActive:!!(filters&&filters.active),selectedStoreIds:filters&&filters.active?Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();}))):[]};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
+ window.DigiYarPopularStoreDiscovery={version:VERSION,render:render,resolveSearchContext:resolveSearchContext,auditCatalogRoutes:function(){var kb=window.DigiYarStoreBusinessDomains,catalog=getCatalog(),resolver=window.DigiYarStoreSearchUrl,byDomain={},configured=[],fallback=[],missing=[];Object.keys(catalog).forEach(function(id){var s=catalog[id]||{},domains=s.domains||['uncategorized'],direct=!!(resolver&&typeof resolver.hasSearchHandler==='function'&&resolver.hasSearchHandler(id)),hasRoute=!!(resolver&&typeof resolver.hasHandler==='function'&&resolver.hasHandler(id));if(direct)configured.push(id);else if(hasRoute)fallback.push(id);else missing.push(id);domains.forEach(function(domain){if(!byDomain[domain])byDomain[domain]={title:getDomainTitle(domain),total:0,configured:0,homepageFallback:0,missing:0,missingIds:[],fallbackIds:[]};byDomain[domain].total++;var field=direct?'configured':hasRoute?'homepageFallback':'missing';byDomain[domain][field]++;if(!direct&&hasRoute)byDomain[domain].fallbackIds.push(id);if(!hasRoute)byDomain[domain].missingIds.push(id);});});return {catalogCount:Object.keys(catalog).length,configuredHandlerCount:configured.length,homepageFallbackCount:fallback.length,missingHandlerCount:missing.length,configuredIds:configured.sort(),homepageFallbackIds:fallback.sort(),missingIds:missing.sort(),byDomain:byDomain};},setSearchContext:function(query,filters){var resolved=applyStoreSelection(resolveSearchContext(query,filters),filters);state.query=String(query||'').trim();state.queryActive=!!state.query;state.queryStoreIds=resolved.storeIds||[];state.categoriesByStore=resolved.categoriesByStore||{};state.openCategories={};if(state.queryActive){state.openCategories['search-results']=true;state.type='specialist';toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');panel.dataset.rendered='true';}render();return {query:state.query,storeIds:state.queryStoreIds.slice(),eligibleStoreIds:(resolved.eligibleStoreIds||resolved.storeIds||[]).slice(),routeUnavailableStoreIds:(resolved.routeUnavailableStoreIds||[]).slice(),categoriesByStore:resolved.categoriesByStore,source:resolved.source,intent:resolved.intent,selectionActive:!!(filters&&filters.active),selectedStoreIds:filters&&filters.active?Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();}))):[],diagnostics:resolved.diagnostics||{catalogCandidateCount:Object.keys(getCatalog()).length,matchedCount:resolved.storeIds.length,routeUnavailableCount:(resolved.routeUnavailableStoreIds||[]).length}};},clearSearchContext:function(){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};state.openCategories={};render();},open:function(){toggle.setAttribute('aria-expanded','true');panel.hidden=false;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');if(!panel.dataset.rendered){render();panel.dataset.rendered='true';}},close:function(){toggle.setAttribute('aria-expanded','false');panel.hidden=true;var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','false');}};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){init();render();});else{init();render();}
 })();

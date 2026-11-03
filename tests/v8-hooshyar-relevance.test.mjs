@@ -39,14 +39,14 @@ exact('یه چیزی می‌خوام برای تمیز کردن مبل پارچ�
 includes('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit','shab','safarme','raja','trip','safarmarket']);
 includes('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
 includes('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
-exact('کیف اداری برای محل کارم می‌خوام', [...general,'dayan','janebi','modiseh']);
+exact('کیف اداری برای محل کارم می‌خوام', [...general,'dayan','janebi','memarket','modiseh']);
 includes('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala','daroo-online','shavaz','neshatrokh','mootanroo']);
 exact('ترازو هوشمند آشپزخانه', [...general,'technolife']);
 
 excludes('بلیط قطار تهران مشهد', ['eghamat24','jobama','flytoday','flysepehran']);
 excludes('لوازم جانبی موبایل', ['divar','sheypoor','esam','takhfifan','memarket']);
 excludes('لوازم جانبی گوشی سامسونگ', ['janebi','divar','sheypoor','esam','takhfifan','memarket']);
-excludes('کیف اداری برای محل کارم می‌خوام', ['divar','sheypoor','esam','memarket','takhfifan']);
+excludes('کیف اداری برای محل کارم می‌خوام', ['divar','sheypoor','esam','takhfifan']);
 excludes('یه ضد آفتاب برای پوست خشک می‌خوام', ['janebi','pinket','memarket','takhfifan']);
 excludes('ترازو هوشمند آشپزخانه', ['iranmiz','partochoob','chidahome','tidawood','janebi','memarket','divar','sheypoor']);
 

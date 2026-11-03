@@ -7,8 +7,8 @@ function start(){
  var select=byId('storeSelect'),kb=window.DigiYarStoreBusinessDomains,resolver=window.DigiYarStoreSearchUrl;
  if(!select||!kb||!kb.byType||!resolver)return false;
  var existing=byId('v8MultiStorePicker');if(existing)return true;
- var source=typeof window.DigiYarGetSelectableStores==='function'?window.DigiYarGetSelectableStores():[];
- var available=new Set(source.map(function(s){return String(s.id);}));
+ /* Keep the picker catalog-complete; missing routes are reported by Hooshyar, not hidden from selection. */
+ var available=new Set(Object.keys(kb.catalog||{}).map(String));
  var selected=new Set(),selectedCategories=new Set(),selectedTypes=new Set(),active=false;
  var style=document.createElement('style');style.id='v8MultiStorePickerStyle';style.textContent=`
  #v8MultiStorePicker{direction:rtl;text-align:right;width:100%;margin-top:8px}

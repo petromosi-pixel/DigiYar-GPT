@@ -127,7 +127,6 @@
 
   function getSelectableStoreEntries() {
     const kb = getBusinessDomainKB();
-    const resolver = window.DigiYarStoreSearchUrl;
     const stores = window.DigiYarPopularAffiliateStores;
     const result = [];
     const seen = new Set();
@@ -135,7 +134,6 @@
       if (!store || !store.id || !store.name) return;
       const id = String(store.id);
       if (seen.has(id)) return;
-      if (resolver && typeof resolver.hasHandler === "function" && !resolver.hasHandler(id)) return;
       seen.add(id);
       result.push({ id: id, name: String(store.name) });
     }
