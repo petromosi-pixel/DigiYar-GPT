@@ -57,7 +57,6 @@ assert.doesNotMatch(bridge, /querySelectorAll\('select'\)/, 'Unrelated dynamic p
 assert.doesNotMatch(bridge, /optionText\('v5Category'\)/, 'Root category must not be inserted into the Hooshyar query');
 assert.match(bridge, /searchForm\.requestSubmit\(\)/, 'The profile form must submit through Hooshyar itself');
 assert.match(bridge, /document\.addEventListener\('submit',handleProfileSubmit,true\)/, 'Keyboard submission must be intercepted before the legacy profile-results handler');
-assert.match(bridge, /DigiYarStoreSelection.*getFilters/, 'Hooshyar must retain the user's explicit store-picker filters');
 
 const productOptions = fs.readFileSync(new URL('../js/v6-product-options.js', import.meta.url), 'utf8');
 assert.match(productOptions, /categoryField\.insertAdjacentElement\('afterend',field\)/, 'Subcategory must appear immediately after the selected category');
@@ -85,5 +84,6 @@ assert.match(sliderCss, /direction:ltr!important;display:flex!important;flex-dir
 
 const input = fs.readFileSync(new URL('../js/v8-hooshyar-input.js', import.meta.url), 'utf8');
 assert.match(input, /DigiYarProfileSearchStatus/, 'Hooshyar must report completion or an empty constrained result');
+assert.match(input, /DigiYarStoreSelection&&typeof window\.DigiYarStoreSelection\.getFilters/, 'Hooshyar must receive the exact explicit store-picker filters');
 
 console.log('V8 multi-store selection and Hooshyar filtering: PASS');
