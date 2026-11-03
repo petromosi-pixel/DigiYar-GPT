@@ -125,7 +125,9 @@
   }
   window.DigiYarProfileSearchStatus=setProfileSearchStatus;
 
+  var launchInProgress=false;
   function launchHooshyar(){
+    if(launchInProgress)return false;
     var smartInput=el('v5SmartSearchInput');
     var searchForm=el('v5SmartSearchForm');
     var query=profileQuery();
@@ -136,21 +138,24 @@
 
     // The profile form hands the selected criteria to Hooshyar itself.
     // Its own submit handler performs the search and applies the exact store-picker filters.
-    smartInput.value=query;
-    syncHooshyarHint();
-    setProfileSearchStatus('',false);
-    smartInput.scrollIntoView({behavior:'smooth',block:'center'});
-    if(typeof searchForm.requestSubmit==='function') searchForm.requestSubmit();
-    else searchForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    launchInProgress=true;
+    try{
+      smartInput.value=query;
+      syncHooshyarHint();
+      setProfileSearchStatus('',false);
+      smartInput.scrollIntoView({behavior:'smooth',block:'center'});
+      if(typeof searchForm.requestSubmit==='function') searchForm.requestSubmit();
+      else searchForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
 
-    // Collapse the profile card only after the query has been handed to Hooshyar.
-    var profileHost=el('v7ProfileSearchHost');
-    if(profileHost){
-      profileHost.hidden=true;
-      profileHost.setAttribute('aria-hidden','true');
-      profileHost.style.display='none';
-    }
-    return true;
+      // Collapse the profile card only after the query has been handed to Hooshyar.
+      var profileHost=el('v7ProfileSearchHost');
+      if(profileHost){
+        profileHost.hidden=true;
+        profileHost.setAttribute('aria-hidden','true');
+        profileHost.style.display='none';
+      }
+      return true;
+    }finally{launchInProgress=false;}
   }
 
   function handleProfileSubmit(event){
