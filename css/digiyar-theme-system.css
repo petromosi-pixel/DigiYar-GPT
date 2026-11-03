@@ -588,3 +588,13 @@ body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{
 body.v6-dark #v7DealsHost.v5-deals-card.v8-deals-experience{border-color:var(--dy-border,#35455d)!important;box-shadow:var(--shadow,0 8px 25px rgba(0,0,0,.22))!important;}
 
 body.v6-dark #v5DealTrack .v8-photo-head{background:transparent!important;border:0!important;color:#fff!important}
+
+
+/* Profile-search card: consume the same global dark-surface tokens as the homepage. */
+body.v6-dark #v7ProfileSearchHost{background:var(--dy-bg)!important;background-image:none!important;color:var(--dy-text)!important;border:1px solid var(--dy-border)!important;box-shadow:none!important}
+body.v6-dark #v7ProfileSearchHost .section-title{background:transparent!important;color:var(--dy-text)!important}
+body.v6-dark #v7ProfileSearchHost .section-title h2{color:var(--dy-text)!important}
+body.v6-dark #v7ProfileSearchHost .section-title p,body.v6-dark #v7ProfileSearchHost .v5-storage-note{color:var(--dy-muted)!important}
+body.v6-dark #v7ProfileSearchHost .v5-field{color:var(--dy-text)!important}
+body.v6-dark #v7ProfileSearchHost .v5-field select,body.v6-dark #v7ProfileSearchHost .v5-field input,body.v6-dark #v7ProfileSearchHost .v5-field textarea{background:var(--dy-control)!important;color:var(--dy-text)!important;border-color:var(--dy-border)!important;box-shadow:none}
+body.v6-dark #v7ProfileSearchHost .v5-field select:focus,body.v6-dark #v7ProfileSearchHost .v5-field input:focus{border-color:var(--dy-focus)!important;box-shadow:0 0 0 3px rgba(142,188,255,.18)!important}
