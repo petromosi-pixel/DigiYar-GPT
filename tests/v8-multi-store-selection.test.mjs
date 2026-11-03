@@ -52,9 +52,12 @@ assert.match(picker, /selectedCategoryIds/, 'Category selections must be retaine
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
 
 const bridge = fs.readFileSync(new URL('../js/v8-store-select-sync.js', import.meta.url), 'utf8');
-assert.match(bridge, /form\.addEventListener\('submit',handleProfileSubmit\)/, 'Show-results must use the profile form submit event directly');
-assert.match(bridge, /ابتدا عبارت کالا یا خدمت/, 'Missing search phrase must produce visible guidance');
-assert.match(bridge, /discovery\.setSearchContext\(query,filters\)/, 'Show-results must invoke Hooshyar discovery directly');
+assert.match(bridge, /\['v5Subcategory','v6Brand','v6BudgetRange','v6Usage'\]/, 'Hooshyar query must use only subcategory, brand, budget range, and usage');
+assert.doesNotMatch(bridge, /querySelectorAll\('select'\)/, 'Unrelated dynamic priority and requirement selectors must not enter the query');
+assert.doesNotMatch(bridge, /optionText\('v5Category'\)/, 'Root category must not be inserted into the Hooshyar query');
+assert.match(bridge, /searchForm\.requestSubmit\(\)/, 'The profile form must submit through Hooshyar itself');
+assert.match(bridge, /document\.addEventListener\('submit',handleProfileSubmit,true\)/, 'Keyboard submission must be intercepted before the legacy profile-results handler');
+assert.match(bridge, /DigiYarStoreSelection.*getFilters/, 'Hooshyar must retain the user's explicit store-picker filters');
 
 const productOptions = fs.readFileSync(new URL('../js/v6-product-options.js', import.meta.url), 'utf8');
 assert.match(productOptions, /categoryField\.insertAdjacentElement\('afterend',field\)/, 'Subcategory must appear immediately after the selected category');
@@ -76,7 +79,9 @@ assert.match(tax21, /berozkala:/, 'BerozKala taxonomy must match its canonical I
 const tax26 = fs.readFileSync(new URL('../js/v6-stores-26-30-taxonomy.js', import.meta.url), 'utf8');
 assert.match(tax26, /['\"]?daroo-online['\"]?:/, 'Daroo Online taxonomy must match its canonical ID');
 const slider = fs.readFileSync(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
-assert.match(slider, /v8-photo-head"><strong>.*?logoPath\(logo\)/, 'Slider store name must precede the logo in RTL markup');
+assert.match(slider, /v8-photo-head"><img src=.*?logoPath\(logo\).*?<strong>/, 'Slider logo must precede the store name in the right-to-left visual order');
+const sliderCss = fs.readFileSync(new URL('../css/v8-ui.css', import.meta.url), 'utf8');
+assert.match(sliderCss, /direction:ltr!important;display:flex!important;flex-direction:row-reverse!important;/, 'Slider identity order must be explicitly fixed, not inherited from page direction');
 
 const input = fs.readFileSync(new URL('../js/v8-hooshyar-input.js', import.meta.url), 'utf8');
 assert.match(input, /DigiYarProfileSearchStatus/, 'Hooshyar must report completion or an empty constrained result');
