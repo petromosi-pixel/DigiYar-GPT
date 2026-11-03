@@ -125,6 +125,48 @@
   }
   window.DigiYarProfileSearchStatus=setProfileSearchStatus;
 
+  function collapseProfileCard(){
+    var host=el('v7ProfileSearchHost');
+    if(!host||host.hidden||host.dataset.v8Collapsing==='1')return;
+    host.dataset.v8Collapsing='1';
+    host.hidden=false;
+    host.setAttribute('aria-hidden','false');
+    host.style.display='';
+    host.style.overflow='hidden';
+    host.style.boxSizing='border-box';
+    host.style.height=host.getBoundingClientRect().height+'px';
+    host.style.opacity='1';
+    host.style.transform='translateY(0)';
+    host.style.transition='height 420ms cubic-bezier(.22,.8,.25,1), opacity 300ms ease, transform 420ms cubic-bezier(.22,.8,.25,1), margin-bottom 420ms ease, padding 420ms ease, border-width 420ms ease';
+    void host.offsetHeight;
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        host.style.height='0px';
+        host.style.opacity='0';
+        host.style.transform='translateY(14px)';
+        host.style.marginBottom='0px';
+        host.style.paddingTop='0px';
+        host.style.paddingBottom='0px';
+        host.style.borderTopWidth='0px';
+        host.style.borderBottomWidth='0px';
+      });
+    });
+    var finished=false;
+    function finish(){
+      if(finished)return;finished=true;
+      host.hidden=true;
+      host.setAttribute('aria-hidden','true');
+      host.dataset.v8Collapsing='0';
+      ['display','overflow','boxSizing','height','opacity','transform','transition','marginBottom','paddingTop','paddingBottom','borderTopWidth','borderBottomWidth'].forEach(function(key){host.style[key]='';});
+    }
+    host.addEventListener('transitionend',function onEnd(event){
+      if(event.target!==host||event.propertyName!=='height')return;
+      host.removeEventListener('transitionend',onEnd);
+      finish();
+    });
+    setTimeout(finish,520);
+  }
+
   var launchInProgress=false;
   function launchHooshyar(){
     if(launchInProgress)return false;
@@ -147,13 +189,8 @@
       if(typeof searchForm.requestSubmit==='function') searchForm.requestSubmit();
       else searchForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
 
-      // Collapse the profile card only after the query has been handed to Hooshyar.
-      var profileHost=el('v7ProfileSearchHost');
-      if(profileHost){
-        profileHost.hidden=true;
-        profileHost.setAttribute('aria-hidden','true');
-        profileHost.style.display='none';
-      }
+      // Animate the profile card away after Hooshyar receives the query.
+      collapseProfileCard();
       return true;
     }finally{launchInProgress=false;}
   }
