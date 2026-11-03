@@ -53,19 +53,34 @@
 
   function profileParts(){
     var parts=[];
+    var category=optionText('v5Category');
     var sub=optionText('v5Subcategory');
-    var brand=optionText('v6Brand');
-    var budget=optionText('v6BudgetRange');
-    var usage=optionText('v6Usage');
-    if(sub && !/^انتخاب/.test(sub)) parts.push(sub);
-    if(brand && !/^انتخاب/.test(brand)) parts.push(brand);
-    if(budget && !/^چقدر/.test(budget)) parts.push(budget);
-    if(usage && !/^انتخاب/.test(usage)) parts.push(usage);
+    if(category && !/^(انتخاب|ابتدا)/.test(category)) parts.push(category);
+    if(sub && !/^(انتخاب|ابتدا)/.test(sub)) parts.push(sub);
+
+    // V8 purchase details are generated dynamically; they do not have
+    // the legacy v6Brand/v6Usage IDs. Read the actual selected controls.
+    var dynamic=el('v5DynamicFields');
+    if(dynamic){
+      Array.from(dynamic.querySelectorAll('select')).forEach(function(select){
+        var option=select.options[select.selectedIndex];
+        var selected=option?String(option.textContent||'').trim():'';
+        if(select.value && selected && !/^(انتخاب|ابتدا)/.test(selected)) parts.push(selected);
+      });
+      Array.from(dynamic.querySelectorAll('input')).forEach(function(input){
+        var entered=String(input.value||'').trim();
+        if(entered) parts.push(entered);
+      });
+    }
+
+    // Keep the entered budget meaningful in the generated natural-language query.
+    var budget= value('budgetMax');
+    if(budget && Number(budget)>0) parts.push('تا '+Number(budget).toLocaleString('en-US')+' تومان');
     return parts;
   }
 
   function profileQuery(){
-    return profileParts().join(' ').replace(/\s+/g,' ').trim();
+    return profileParts().filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
   }
 
   function profileComplete(){
