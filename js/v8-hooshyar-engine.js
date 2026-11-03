@@ -44,7 +44,7 @@ function getCatalog(){var kb=window.DigiYarStoreBusinessDomains;return kb&&kb.ca
 function getDomainTitle(domain){var kb=window.DigiYarStoreBusinessDomains,labels=kb&&kb.domainTitles||{};return labels[domain]||(DOMAIN_META[domain]||{}).title||domain;}
 function getDomainMeta(domain){var meta=DOMAIN_META[domain]||{title:domain,icon:'🏬',subtitle:'فروشگاه‌ها و خدمات این حوزه'};return Object.assign({},meta,{title:getDomainTitle(domain)});}
 function detectIntent(raw){
- if((/کیف\s*اداری/.test(raw))||(/کیف/.test(raw)&&/محل کار/.test(raw)))return 'office_bag';
+ if((/کیف.{0,12}اداری|اداری.{0,12}کیف/.test(raw))||(/کیف/.test(raw)&&/محل کار/.test(raw)))return 'office_bag';
  if(/(?:بلیط|بلیت|رزرو).{0,12}(?:قطار|ریل)|(?:قطار|ریل).{0,12}(?:بلیط|بلیت)|سفر ریلی/.test(raw))return 'train_ticket';
  if(/ضد\s*آفتاب|ضدآفتاب/.test(raw))return 'sunscreen';
  if(/ترازو/.test(raw)&&/آشپزخانه|آشپزخونه|هوشمند/.test(raw))return 'kitchen_scale';
@@ -129,7 +129,7 @@ function resolveSearchContext(query){
   tokens.forEach(function(t){var matched=fieldTokens.some(function(ft){return ft===t||(t.length>=4&&ft.length>=4&&(ft.indexOf(t)===0||t.indexOf(ft)===0));});if(matched)score+=t.length>=5?2:1;});
   if(intent==='office_bag'){
    var generalAllowed=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0&&/کیف/.test(hay);
-   var specialistExact=store.storeType!=='general'&&(domains.indexOf('fashion')>=0||key==='janebi')&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
+   var specialistExact=store.storeType!=='general'&&store.storeType!=='portal'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
    if(!generalAllowed&&!specialistExact)return;
    score=generalAllowed?10:25;
   }else if(intent==='air_purifier'){
@@ -183,6 +183,7 @@ function resolveSearchContext(query){
    var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
    var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
    if(excluded||(!phraseInQuery&&!strongToken))return;
+   if(score<2&&!phraseInQuery)return;
   }
   if(excluded)return;
   var urlResolver=window.DigiYarStoreSearchUrl;
