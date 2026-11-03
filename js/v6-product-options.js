@@ -72,6 +72,7 @@ var BRANDS={
 
 /* Every visible main category has a real subcategory path ending in a brand field. */
 var SUBS={
+ mobile:[['phones','گوشی موبایل'],['tablet','تبلت'],['mobile-accessories','لوازم جانبی موبایل']],
  digital:[['mobile','موبایل'],['laptop','لپ‌تاپ'],['tablet','تبلت'],['headphones','هدفون و هندزفری'],['tv','تلویزیون'],['camera','دوربین'],['accessories','لوازم جانبی'],['gaming','کنسول و گیم'],['smart-home','خانه هوشمند']],
  home:[['appliance','لوازم خانگی'],['kitchen','لوازم آشپزخانه'],['decoration','دکوراسیون'],['cleaning','نظافت و شست‌وشو']],
  furniture:[['furniture','مبلمان منزل'],['office','مبلمان اداری'],['decoration','دکور و اکسسوری'],['sleep','تخت و خواب']],
@@ -108,6 +109,8 @@ var ROOTS={
 };
 
 var USAGE={
+ phones:[['daily','برای استفاده روزمره'],['photo-video','برای عکاسی و فیلمبرداری'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['work','برای کار و برنامه‌نویسی'],['study','برای درس و مطالعه'],['travel','برای سفر']],
+ 'mobile-accessories':[['daily','برای استفاده روزمره'],['work','برای کار و مطالعه'],['travel','برای سفر'],['gaming','برای بازی و گیمینگ'],['charging','برای شارژ و اتصال'],['protection','برای محافظت از گوشی']],
  mobile:[['daily','برای استفاده روزمره'],['photo-video','برای عکاسی و فیلمبرداری'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['work','برای کار و برنامه‌نویسی'],['study','برای درس و مطالعه'],['travel','برای سفر'],['communication','برای تماس و ارتباط'],['outdoor','برای استفاده در فضای باز']],
  laptop:[['work','برای کار و برنامه‌نویسی'],['study','برای درس و مطالعه'],['gaming','برای بازی و گیمینگ'],['content','برای تولید محتوا و طراحی'],['office','برای کار اداری'],['daily','برای استفاده روزمره'],['travel','برای سفر'],['education','برای آموزش']],
  tablet:[['study','برای درس و مطالعه'],['work','برای کار و مطالعه'],['content','برای طراحی و یادداشت‌برداری'],['entertainment','برای فیلم و سرگرمی'],['daily','برای استفاده روزمره'],['travel','برای سفر'],['reading','برای مطالعه و کتاب‌خوانی']],
