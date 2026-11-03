@@ -183,7 +183,6 @@ function resolveSearchContext(query){
    var phraseInQuery=fields.some(function(field){var f=normalize(field);return f.length>=4&&raw.indexOf(f)>=0;});
    var strongToken=tokens.some(function(t){return t.length>=4&&fieldTokens.indexOf(t)>=0;});
    if(excluded||(!phraseInQuery&&!strongToken))return;
-   if(score<3&&!phraseInQuery)return;
   }
   if(excluded)return;
   var urlResolver=window.DigiYarStoreSearchUrl;
