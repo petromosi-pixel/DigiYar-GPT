@@ -128,7 +128,7 @@ function resolveSearchContext(query){
   fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
   tokens.forEach(function(t){var matched=fieldTokens.some(function(ft){return ft===t||(t.length>=4&&ft.length>=4&&(ft.indexOf(t)===0||t.indexOf(ft)===0));});if(matched)score+=t.length>=5?2:1;});
   if(intent==='office_bag'){
-   var generalAllowed=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0&&/کیف/.test(hay);
+   var generalAllowed=store.storeType==='general'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
    var specialistExact=store.storeType!=='general'&&store.storeType!=='portal'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
    if(!generalAllowed&&!specialistExact)return;
    score=generalAllowed?10:25;
