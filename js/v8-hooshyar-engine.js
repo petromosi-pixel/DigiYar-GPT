@@ -196,27 +196,7 @@ function resolveSearchContext(query){
  var categoriesByStore={};out.forEach(function(x){categoriesByStore[x.id]=x.categories;});
  return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})),routeUnavailableStoreIds:unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent};
 }
-function applyStoreSelection(resolved,filters){
- if(!filters||!filters.active)return resolved;
- var selected=Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id||'').toLowerCase();}).filter(Boolean)));
- var catalog=getCatalog(),urlResolver=window.DigiYarStoreSearchUrl;
- var candidates=[],unavailable=[],categories={};
- selected.forEach(function(id){
-  var store=catalog[id];if(!store)return;
-  var domains=Array.isArray(store.domains)?store.domains:[];
-  categories[id]=domains.map(function(domain){return getDomainTitle(domain);});
-  var route='';
-  try{if(urlResolver&&typeof urlResolver.resolve==='function')route=urlResolver.resolve(id,resolved.query)||'';}catch(error){route='';}
-  if(route)candidates.push(id);else unavailable.push(id);
- });
- resolved.storeIds=candidates;
- resolved.eligibleStoreIds=selected.filter(function(id){return !!catalog[id];});
- resolved.routeUnavailableStoreIds=unavailable;
- resolved.categoriesByStore={};
- candidates.forEach(function(id){resolved.categoriesByStore[id]=categories[id]&&categories[id].length?categories[id]:[catalog[id].storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];});
- resolved.source='explicit-user-store-selection';
- return resolved;
-}
+function applyStoreSelection(resolved,filters){if(!filters||!filters.active)return resolved;var selected=Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();})));var eligible=resolved.eligibleStoreIds||resolved.storeIds||[];resolved.storeIds=(resolved.storeIds||[]).filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});resolved.eligibleStoreIds=eligible.filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});resolved.routeUnavailableStoreIds=(resolved.routeUnavailableStoreIds||[]).filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});var filteredCategories={};resolved.storeIds.forEach(function(id){if(resolved.categoriesByStore&&resolved.categoriesByStore[id])filteredCategories[id]=resolved.categoriesByStore[id];});resolved.categoriesByStore=filteredCategories;return resolved;}
 function isGeneral(id,s){return !!(s&&s.storeType==='general');}
 function isPortal(id,s){return !!(s&&s.storeType==='portal');}
 function availableDomains(catalog){return DOMAIN_ORDER.filter(function(domain){return Object.keys(catalog).some(function(id){var s=catalog[id]||{};return !isGeneral(id,s)&&!isPortal(id,s)&&Array.isArray(s.domains)&&s.domains.indexOf(domain)>=0;});});}
