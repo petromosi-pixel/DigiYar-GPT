@@ -142,6 +142,14 @@
     smartInput.scrollIntoView({behavior:'smooth',block:'center'});
     if(typeof searchForm.requestSubmit==='function') searchForm.requestSubmit();
     else searchForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+
+    // Collapse the profile card only after the query has been handed to Hooshyar.
+    var profileHost=el('v7ProfileSearchHost');
+    if(profileHost){
+      profileHost.hidden=true;
+      profileHost.setAttribute('aria-hidden','true');
+      profileHost.style.display='none';
+    }
     return true;
   }
 
