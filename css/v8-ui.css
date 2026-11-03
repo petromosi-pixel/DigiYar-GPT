@@ -117,3 +117,9 @@ html,body{width:100%;max-width:100%;overflow-x:hidden}body{background:linear-gra
 @media(max-width:700px){#v5DealTrack .v8-photo-head{top:6px!important;right:7px!important}#v5DealTrack .v8-photo-head img{width:18px!important;height:18px!important;max-width:18px!important;max-height:18px!important}}
 
 /* Original slider identity order restored: logo first, store name second (RTL). */
+
+
+/* V8 slider identity order: logo on the right, store name on the left. */
+#v5DealTrack .v8-photo-head{direction:ltr!important;display:flex!important;flex-direction:row-reverse!important;align-items:center!important;justify-content:flex-start!important;}
+#v5DealTrack .v8-photo-head img{order:0!important;}
+#v5DealTrack .v8-photo-head strong{order:1!important;}
