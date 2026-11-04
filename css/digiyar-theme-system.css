@@ -682,3 +682,9 @@ body.v6-dark #v7ProfileSearchHost .form-actions .v5-primary{
 body.v6-dark #v7ProfileSearchHost #v8ProfileSearchStatus[style*="color"]{
   -webkit-text-fill-color:currentColor!important;
 }
+
+/* Required profile markers stay red in both light and dark themes. */
+body.v6-dark #v7ProfileSearchHost .v8-required-star{
+  color:#e53935!important;
+  -webkit-text-fill-color:#e53935!important;
+}
