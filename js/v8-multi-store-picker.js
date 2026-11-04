@@ -1,86 +1,78 @@
-/* DigiYar V8 — logo-only multi-store picker; taxonomy remains in the canonical KB for search. */
+/* DigiYar V8 — restore the original grouped merchant directory.
+   Short tap opens the merchant page; a long press selects it for Hooshyar. */
 (function(){
 'use strict';
-var LOGO_FILES=["آیتول.webp","آیسو کالکشن.webp","ازکی.webp","اسنپ شاپ.webp","اسپرت لند.webp","اسکای روم.webp","افق کوروش.webp","افیلیو.webp","اقامت ۲۴.webp","الوکام.webp","اُکالا.webp","ایران ستکور.webp","ایران میز.webp","ایسام.webp","ایسمینار.webp","ایمالز.webp","باسلام.webp","باما.webp","بانی استایل.webp","بانی مد.webp","بتا دنت.webp","بروز کالا.webp","به روز کالا.webp","بیمه بازار.webp","بیمه دات کام.webp","تاپ لرن.webp","تخفیفان.webp","ترب.webp","تریپ.webp","تکنولایف.webp","تیدا چوب..webp","جاباما.webp","جانبو.webp","جانبی.webp","جین وست.webp","خانومی.webp","خودرو ۴۵.webp","داروخانه آنلاین.webp","داروخانه صبا.webp","داروکده.webp","دانشجویار.webp","دایان شاپ.webp","درمان کالا.webp","دیجی استایل.webp","دیجی دو.png","دیجی لند.webp","دیجی کالا.webp","دیما افیلیت.webp","دیوار.webp","راکت.webp","رجا.webp","روژا شاپ.webp","زیبامون.webp","سبز لرن.webp","سبز گستر.webp","سفر مارکت.webp","سفر می.webp","سولو کالا.webp","شاواز.webp","شب.webp","شهروند.webp","شیپور.webp","شیکستون..webp","طاقچه.webp","علی بابا.webp","فرادرس.webp","فلای تودی.webp","فلای سپهران.webp","فیدیبو.webp","قاصدک ۲۴.webp","مبل ایران.webp","مثبت سبز.webp","مدیسه.webp","مستر بلیط.webp","مقداد آی تی.webp","مو تن رو.webp","موبایل آی آر.webp","موبایل ۱۴۰.webp","مکتب خونه.webp","می مارکت.webp","نشاط رخ.webp","نی نی سایت.webp","هایپرمی.webp","همراه مکانیک.webp","همیار آی تی.webp","پرتو چوب.webp","پینکت.webp","چوبینه.webp","چیدا هوم.webp","کارنامه.webp","کالا ۳۶۰.webp","کالاتیک.webp","کلاسینو.webp","کلید.webp","کوئرا.webp","گوشی شاپ.webp","یدک مارکت.webp","یدک یار.webp","۱۹ کالا.webp","۳۰ بوک.webp"];
-var LOGO_ID_OVERRIDES={
- 'به روز کالا':'berozkala',
- '۱۹ کالا':'19kala',
- '۳۰ بوک':'book30',
- 'بانی استایل':'banistyle'
-};
 function byId(id){return document.getElementById(id);}
-function norm(value){return String(value||'').normalize('NFC').replace(/[\u200c\s._-]+/g,'').replace(/[.]+$/g,'').toLowerCase();}
 function start(){
- var select=byId('storeSelect'),tabs=byId('v7PopularDiscoveryTabs'),categoryTree=byId('v7PopularDiscovery');
- var kb=window.DigiYarStoreBusinessDomains;
- if(!select||!tabs||!kb||!kb.catalog)return false;
- if(byId('v8MultiStorePicker'))return true;
- /* Category/type store directories are intentionally removed from this card.
-    Product taxonomy and merchant relevance stay available to the form and Hooshyar. */
- tabs.hidden=true;tabs.setAttribute('aria-hidden','true');
- if(categoryTree){categoryTree.hidden=true;categoryTree.setAttribute('aria-hidden','true');}
- var logoById={},catalog=kb.catalog;
- LOGO_FILES.forEach(function(file){
-  var stem=file.replace(/\.(?:webp|png|jpe?g)$/i,'').replace(/[.]+$/,'');
-  var id=LOGO_ID_OVERRIDES[stem]||Object.keys(catalog).find(function(key){
-   return norm(catalog[key]&&catalog[key].name)===norm(stem);
-  });
-  if(id&&catalog[id]&&!logoById[id])logoById[id]=file;
- });
- var stores=Object.keys(logoById).map(function(id){
-  return {id:id,name:String(catalog[id].name||id),logo:logoById[id]};
- }).sort(function(a,b){return a.name.localeCompare(b.name,'fa');});
- var selected=new Set(),active=false;
- var style=document.createElement('style');style.id='v8MultiStorePickerStyle';style.textContent=
- '#v8MultiStorePicker{direction:rtl;width:100%;margin:8px 0 14px;text-align:right}'+
- '#v8msHint{margin:0 0 10px;text-align:center;font-size:12px;font-weight:700;color:var(--dy-muted,#68778d)}'+
- '#v8msGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}'+
- '#v8msGrid .v8msStore{min-width:0;min-height:88px;padding:8px 5px;border:1px solid var(--dy-border,#dfe6f0);border-radius:12px;background:var(--dy-surface,#fff);color:var(--dy-text,#26354a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font:inherit;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}'+
- '#v8msGrid .v8msStore img{display:block;width:48px;height:42px;object-fit:contain;max-width:100%}'+
- '#v8msGrid .v8msStore span{font-size:10px;font-weight:700;line-height:1.45;text-align:center;overflow-wrap:anywhere}'+
- '#v8msGrid .v8msStore[aria-pressed="true"]{border:2px solid var(--dy-primary,#2a4169);background:var(--dy-selected-bg,#edf3fc);box-shadow:0 0 0 2px color-mix(in srgb,var(--dy-primary,#2a4169) 12%,transparent)}'+
- 'body.v6-dark #v8msGrid .v8msStore{background:#1b2940;color:#edf3fc;border-color:#34445e}'+
- 'body.v6-dark #v8msGrid .v8msStore[aria-pressed="true"]{background:#263b5d;border-color:#8ba9df}'+
- '@media(max-width:390px){#v8msGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#v8msGrid .v8msStore{min-height:82px}#v8msGrid .v8msStore img{width:42px;height:38px}}';
- document.head.appendChild(style);
- var root=document.createElement('section');root.id='v8MultiStorePicker';root.setAttribute('aria-label','انتخاب فروشگاه‌ها');
- var hint=document.createElement('p');hint.id='v8msHint';hint.textContent='فروشگاه‌های دلخواهت رو از بین لوگوها انتخاب کن';
- var grid=document.createElement('div');grid.id='v8msGrid';
- stores.forEach(function(store){
-  var button=document.createElement('button');button.type='button';button.className='v8msStore';
-  button.dataset.storeId=store.id;button.setAttribute('aria-pressed','false');
-  var img=document.createElement('img');img.src='assets/store-logos/'+encodeURIComponent(store.logo).replace(/%2F/g,'/');img.alt='';
-  img.loading='lazy';img.decoding='async';
-  var label=document.createElement('span');label.textContent=store.name;
-  button.append(img,label);
-  button.addEventListener('click',function(){
-   if(selected.has(store.id))selected.delete(store.id);else selected.add(store.id);
-   active=selected.size>0;refresh();
-  });
-  grid.appendChild(button);
- });
- root.append(hint,grid);
- var panel=byId('popularDiscoveryPanel');
- if(panel)panel.insertBefore(root,panel.firstChild);else tabs.insertAdjacentElement('afterend',root);
- select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
- function refresh(){
-  grid.querySelectorAll('.v8msStore').forEach(function(button){
-   button.setAttribute('aria-pressed',String(selected.has(button.dataset.storeId)));
-  });
-  var nextStore=selected.size?Array.from(selected)[0]:'all';
-  if(select.value!==nextStore){select.value=nextStore;select.dispatchEvent(new Event('change',{bubbles:true}));}
-  root.dataset.selectedStoreIds=Array.from(selected).join(',');
-  hint.textContent=active?'فروشگاه‌های انتخاب‌شده: '+selected.size:'فروشگاه‌های دلخواهت رو از بین لوگوها انتخاب کن';
+ var select=byId('storeSelect'),tabs=byId('v7PopularDiscoveryTabs'),directory=byId('v7PopularDiscovery'),panel=byId('popularDiscoveryPanel');
+ if(!select||!tabs||!directory||!panel)return false;
+ if(window.DigiYarStoreSelection&&window.DigiYarStoreSelection.version==='8.2.0-grouped-longpress')return true;
+ tabs.hidden=false;tabs.removeAttribute('aria-hidden');
+ directory.hidden=false;directory.removeAttribute('aria-hidden');
+ var selected=new Set(),pressTimer=null,pressedAnchor=null,longPressed=false,suppressClick=null;
+ var hintStyle=document.getElementById('v8StoreGestureStyle');
+ if(!hintStyle){
+  hintStyle=document.createElement('style');hintStyle.id='v8StoreGestureStyle';
+  hintStyle.textContent=
+  '#v7PopularDiscoveryTabs:before{content:"لمس کوتاه لوگو یا نام: ورود به فروشگاه  •  لمس طولانی: انتخاب برای هوش‌یار";display:block;margin:0 0 10px;padding:8px 10px;border-radius:9px;background:var(--pd-card,#f7f9fc);color:var(--pd-muted,#68778d);font-size:11px;font-weight:700;line-height:1.7;text-align:center}'+
+  '#v7PopularDiscovery .popular-discovery-store{position:relative;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none}'+
+  '#v7PopularDiscovery .popular-discovery-store.is-selected{border-color:#315b98!important;background:rgba(63,112,181,.11)!important;box-shadow:0 0 0 2px rgba(63,112,181,.2),0 7px 18px rgba(35,73,127,.1)!important}'+
+  '#v7PopularDiscovery .popular-discovery-store.is-selected:after{content:"✓ انتخاب شد";position:absolute;left:8px;top:8px;padding:3px 7px;border-radius:7px;background:#315b98;color:#fff;font-size:9px;font-weight:800}'+
+  '#v7PopularDiscovery .popular-discovery-store[aria-pressed="true"]{outline:0}'+
+  'body.v6-dark #v7PopularDiscovery .popular-discovery-store.is-selected{background:rgba(77,121,187,.22)!important;border-color:#8eaddd!important}'+
+  'body.v6-dark #v7PopularDiscoveryTabs:before{background:#1b2940;color:#d9e4f5}';
+  document.head.appendChild(hintStyle);
  }
- refresh();
+ select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
+ function syncCards(){
+  directory.querySelectorAll('.popular-discovery-store[data-store-id]').forEach(function(anchor){
+   var on=selected.has(anchor.dataset.storeId);
+   anchor.classList.toggle('is-selected',on);
+   anchor.setAttribute('aria-pressed',String(on));
+  });
+ }
+ function refresh(){
+  var ids=Array.from(selected),next=ids.length?ids[0]:'all';
+  if(select.value!==next){select.value=next;select.dispatchEvent(new Event('change',{bubbles:true}));}
+  syncCards();
+ }
+ function stopPress(){if(pressTimer){clearTimeout(pressTimer);pressTimer=null;}}
+ directory.addEventListener('pointerdown',function(event){
+  var anchor=event.target.closest&&event.target.closest('.popular-discovery-store[data-store-id]');
+  if(!anchor||event.button!==undefined&&event.button!==0)return;
+  stopPress();pressedAnchor=anchor;longPressed=false;
+  pressTimer=setTimeout(function(){
+   var id=pressedAnchor&&pressedAnchor.dataset.storeId;if(!id)return;
+   if(selected.has(id))selected.delete(id);else selected.add(id);
+   longPressed=true;suppressClick=pressedAnchor;refresh();
+   if(navigator.vibrate)try{navigator.vibrate(25);}catch(e){}
+  },560);
+ });
+ ['pointerup','pointercancel','pointerleave'].forEach(function(type){
+  directory.addEventListener(type,function(){stopPress();},true);
+ });
+ directory.addEventListener('click',function(event){
+  var anchor=event.target.closest&&event.target.closest('.popular-discovery-store[data-store-id]');
+  if(suppressClick&&anchor===suppressClick){
+   event.preventDefault();event.stopPropagation();suppressClick=null;pressedAnchor=null;return;
+  }
+  if(anchor&&selected.has(anchor.dataset.storeId)){
+   /* A normal short tap always follows the merchant link, even when selected. */
+  }
+ },true);
+ if(window.MutationObserver){
+  var observer=new MutationObserver(function(){syncCards();});
+  observer.observe(directory,{childList:true,subtree:true});
+ }
  window.DigiYarStoreSelection={
-  version:'8.1.0-logo-only',
-  getFilters:function(){return {active:active,selectedStoreIds:Array.from(selected),selectedCategoryIds:[],selectedTypeIds:[]};},
+  version:'8.2.0-grouped-longpress',
+  getFilters:function(){var ids=Array.from(selected);return {active:ids.length>0,selectedStoreIds:ids,selectedCategoryIds:[],selectedTypeIds:[]};},
   getSelectedStoreIds:function(){return Array.from(selected);},
-  clear:function(){selected.clear();active=false;refresh();}
+  clear:function(){selected.clear();refresh();}
  };
+ refresh();
  return true;
 }
-function boot(){if(start())return;var n=0,t=setInterval(function(){if(start()||++n>40)clearInterval(t);},150);}
+function boot(){if(start())return;var n=0,t=setInterval(function(){if(start()||++n>50)clearInterval(t);},150);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
