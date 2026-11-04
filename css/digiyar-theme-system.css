@@ -598,3 +598,87 @@ body.v6-dark #v7ProfileSearchHost .section-title p,body.v6-dark #v7ProfileSearch
 body.v6-dark #v7ProfileSearchHost .v5-field{color:var(--dy-text)!important}
 body.v6-dark #v7ProfileSearchHost .v5-field select,body.v6-dark #v7ProfileSearchHost .v5-field input,body.v6-dark #v7ProfileSearchHost .v5-field textarea{background:var(--dy-control)!important;color:var(--dy-text)!important;border-color:var(--dy-border)!important;box-shadow:none}
 body.v6-dark #v7ProfileSearchHost .v5-field select:focus,body.v6-dark #v7ProfileSearchHost .v5-field input:focus{border-color:var(--dy-focus)!important;box-shadow:0 0 0 3px rgba(142,188,255,.18)!important}
+
+
+/* Complete dark-mode coverage for the entire "دنبال چی می‌گردی؟" profile card. */
+body.v6-dark #v7ProfileSearchHost,
+body.v6-dark #v7ProfileSearchHost *{
+  color:var(--dy-text,#edf3fc);
+}
+body.v6-dark #v7ProfileSearchHost{
+  background:var(--dy-bg,#101a2b)!important;
+  background-color:var(--dy-bg,#101a2b)!important;
+  border-color:var(--dy-border,#34445c)!important;
+}
+body.v6-dark #v7ProfileSearchHost .section-title,
+body.v6-dark #v7ProfileSearchHost .section-title h2,
+body.v6-dark #v7ProfileSearchHost .section-title p,
+body.v6-dark #v7ProfileSearchHost .v5-field,
+body.v6-dark #v7ProfileSearchHost .v5-field>span,
+body.v6-dark #v7ProfileSearchHost .v5-field label,
+body.v6-dark #v7ProfileSearchHost .v5-field small,
+body.v6-dark #v7ProfileSearchHost .v5-storage-note,
+body.v6-dark #v7ProfileSearchHost .input-hint,
+body.v6-dark #v7ProfileSearchHost #v8ProfileSearchStatus{
+  color:var(--dy-text,#edf3fc)!important;
+  -webkit-text-fill-color:var(--dy-text,#edf3fc)!important;
+}
+body.v6-dark #v7ProfileSearchHost .section-title p,
+body.v6-dark #v7ProfileSearchHost .v5-storage-note,
+body.v6-dark #v7ProfileSearchHost .input-hint{
+  color:var(--dy-muted,#b8c2d1)!important;
+  -webkit-text-fill-color:var(--dy-muted,#b8c2d1)!important;
+}
+body.v6-dark #v7ProfileSearchHost input,
+body.v6-dark #v7ProfileSearchHost select,
+body.v6-dark #v7ProfileSearchHost textarea,
+body.v6-dark #v7ProfileSearchHost .v5-field select,
+body.v6-dark #v7ProfileSearchHost .v5-field input,
+body.v6-dark #v7ProfileSearchHost .v5-field textarea{
+  color:#edf3fc!important;
+  -webkit-text-fill-color:#edf3fc!important;
+  caret-color:#edf3fc!important;
+  background:#17243a!important;
+  background-color:#17243a!important;
+  border:1px solid #40516b!important;
+  box-shadow:none!important;
+}
+body.v6-dark #v7ProfileSearchHost input::placeholder,
+body.v6-dark #v7ProfileSearchHost textarea::placeholder{
+  color:#aebbd0!important;
+  -webkit-text-fill-color:#aebbd0!important;
+  opacity:1!important;
+}
+body.v6-dark #v7ProfileSearchHost select option{
+  color:#edf3fc!important;
+  background:#17243a!important;
+}
+body.v6-dark #v7ProfileSearchHost input:focus,
+body.v6-dark #v7ProfileSearchHost select:focus,
+body.v6-dark #v7ProfileSearchHost textarea:focus{
+  border-color:#8ebcff!important;
+  outline:0!important;
+  box-shadow:0 0 0 3px rgba(142,188,255,.18)!important;
+}
+body.v6-dark #v7ProfileSearchHost .v5-step4-toggle{
+  color:#edf3fc!important;
+  background:transparent!important;
+  border-color:transparent!important;
+}
+body.v6-dark #v7ProfileSearchHost .form-actions button{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+body.v6-dark #v7ProfileSearchHost .form-actions .v5-danger{
+  color:#ffd8de!important;
+  -webkit-text-fill-color:#ffd8de!important;
+  background:#542633!important;
+  border-color:#80404e!important;
+}
+body.v6-dark #v7ProfileSearchHost .form-actions .v5-primary{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+body.v6-dark #v7ProfileSearchHost #v8ProfileSearchStatus[style*="color"]{
+  -webkit-text-fill-color:currentColor!important;
+}
