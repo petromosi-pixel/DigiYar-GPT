@@ -45,9 +45,37 @@ function clearProfileResults(){
  var summary=$('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}
  var hint=$('resultHint');if(hint)hint.textContent='بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن';
 }
+function showRequiredMessage(message){
+ var node=$('v8ProfileRequiredMessage');
+ if(!node){
+  node=document.createElement('div');node.id='v8ProfileRequiredMessage';node.setAttribute('role','alert');node.setAttribute('aria-live','assertive');
+  node.style.cssText='display:none;margin:9px 0 0;padding:9px 12px;border:1px solid rgba(220,38,38,.28);border-radius:10px;background:rgba(220,38,38,.07);color:#d32f2f;text-align:center;font-size:12px;font-weight:800;line-height:1.8';
+  var anchor=sub&&sub.closest('.v5-field')||cat&&cat.closest('.v5-field');
+  if(anchor&&anchor.parentNode)anchor.insertAdjacentElement('afterend',node);else form.appendChild(node);
+ }
+ node.textContent=message;node.style.display='block';
+}
+function hideRequiredMessage(){var node=$('v8ProfileRequiredMessage');if(node)node.style.display='none';}
+function validateRequiredProfileFields(){
+ if(!cat||!sub)return true;
+ var missingCategory=!String(cat.value||'').trim();
+ var missingSubcategory=!missingCategory&&!String(sub.value||'').trim();
+ if(!missingCategory&&!missingSubcategory){hideRequiredMessage();return true;}
+ setOpen(true);
+ if(missingCategory){
+  showRequiredMessage('برای نمایش نتایج، ابتدا دسته‌بندی را انتخاب کن و سپس زیر دسته را تکمیل کن.');
+  cat.focus();cat.scrollIntoView({behavior:'smooth',block:'center'});
+ }else{
+  sub.disabled=false;var field=sub.closest('.v5-field');if(field)field.hidden=false;
+  showRequiredMessage('برای نمایش نتایج، انتخاب زیر دسته هم الزامی است.');
+  sub.focus();sub.scrollIntoView({behavior:'smooth',block:'center'});
+ }
+ return false;
+}
+window.DigiYarValidateRequiredProfileFields=validateRequiredProfileFields;
 function markRequiredField(field){
  if(!field)return;
- field.required=true;field.setAttribute('aria-required','true');
+ field.removeAttribute('required');field.setAttribute('aria-required','true');
  var wrap=field.closest('.v5-field');if(!wrap)return;
  wrap.style.position='relative';
  if(!wrap.querySelector('.v8-required-star')){
@@ -114,11 +142,11 @@ function bind(){
  }
  if(!cat.dataset.dyRecoveryBound){
   cat.dataset.dyRecoveryBound='1';
-  cat.addEventListener('change',function(){setTimeout(function(){ensureSubcategory();if(sub)sub.disabled=false;setOpen(true);},120);});
+  cat.addEventListener('change',function(){hideRequiredMessage();setTimeout(function(){ensureSubcategory();if(sub)sub.disabled=false;setOpen(true);},120);});
  }
  if(sub&&!sub.dataset.dyRecoveryBound){
   sub.dataset.dyRecoveryBound='1';
-  sub.addEventListener('change',function(){setTimeout(function(){ensureDynamicFields();setOpen(true);},120);});
+  sub.addEventListener('change',function(){hideRequiredMessage();setTimeout(function(){ensureDynamicFields();setOpen(true);},120);});
  }
  if(!form.dataset.dyRecoverySubmitBound){
   form.dataset.dyRecoverySubmitBound='1';
