@@ -53,9 +53,11 @@ const unrestricted = apply(structuredClone(base), { active: false, selectedStore
 assert.deepEqual(unrestricted.storeIds, base.storeIds, 'No explicit selection must preserve the existing automatic relevance behavior');
 
 const picker = fs.readFileSync(new URL('../js/v8-multi-store-picker.js', import.meta.url), 'utf8');
-assert.ok(picker.includes('pointerdown') && picker.includes('560'), 'A long press must toggle a merchant selection');
-assert.ok(picker.includes('pointerup') && picker.includes('suppressClick'), 'Long-press selection must not trigger merchant navigation');
-assert.ok(picker.includes('version:\'8.2.0-grouped-longpress\''), 'The picker must expose the long-press selection bridge');
+assert.ok(picker.includes('v8-store-selection-toggle') && picker.includes('selectionMode'), 'An explicit selection-mode control must govern store selection');
+assert.ok(picker.includes('event.preventDefault()') && picker.includes('toggleStore(anchor)'), 'Store taps in selection mode must select without opening a new browser tab');
+assert.ok(!picker.includes('pointerdown') && !picker.includes('560') && !picker.includes('suppressClick'), 'The conflicting long-press gesture must be fully removed');
+assert.ok(picker.includes('version:\'8.3.0-explicit-selection-mode\''), 'The picker must expose the explicit selection-mode bridge');
+assert.ok(picker.includes('انتخاب فروشگاه‌ها برای هوش‌یار'), 'The selection control must be labeled for Hooshyar');
 assert.ok(picker.includes('tabs.hidden=false') && picker.includes('directory.hidden=false'), 'The original grouped category directory must be restored');
 assert.ok(picker.includes('selectedStoreIds'), 'Long-press selections must be available to Hooshyar');
 assert.ok(picker.includes('getFilters'), 'Picker selection must be exposed to the Hooshyar bridge');
