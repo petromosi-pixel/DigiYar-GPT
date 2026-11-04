@@ -153,6 +153,7 @@
       setProfileSearchStatus('',false);
       smartInput.scrollIntoView({behavior:'smooth',block:'center'});
       closeProfileAfterResults=true;
+      window.dispatchEvent(new CustomEvent('digiyar:profile-search-started'));
       setTimeout(function(){closeProfileAfterResults=false;},20000);
       if(typeof searchForm.requestSubmit==='function') searchForm.requestSubmit();
       else searchForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
