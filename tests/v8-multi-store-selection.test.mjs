@@ -66,8 +66,8 @@ assert.match(picker, /selectedCategoryIds:\\[\\],selectedTypeIds:\\[\\]/, 'Legac
 const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
 assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
   'The canonical store selector must not hide merchants whose search route is not configured');
-assert.ok(picker.includes('new Set(Object.keys(kb.catalog||{}).map(String))'),
-  'The picker must expose the full canonical catalog, including stores with unavailable routes');
+assert.ok(picker.includes('Object.keys(catalog).find') && picker.includes('logoById[id]=file'),
+  'The picker must include only catalog merchants with a matching local logo asset');
 assert.ok(engine.includes('selectedCandidatesAdded'),
   'Selected stores must be re-evaluated against canonical product-family evidence before filtering');
 assert.ok(engine.includes('routeUnavailableCount'),
