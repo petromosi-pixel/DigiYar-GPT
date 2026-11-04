@@ -53,16 +53,16 @@ const unrestricted = apply(structuredClone(base), { active: false, selectedStore
 assert.deepEqual(unrestricted.storeIds, base.storeIds, 'No explicit selection must preserve the existing automatic relevance behavior');
 
 const picker = fs.readFileSync(new URL('../js/v8-multi-store-picker.js', import.meta.url), 'utf8');
-assert.ok(picker.includes('LOGO_FILES'), 'Store selection must be sourced from the available logo assets');
-assert.ok(picker.includes('assets/store-logos/'), 'Every selectable store must render its local logo asset');
-assert.ok(picker.includes('aria-pressed'), 'The logo itself must act as the accessible selection control');
-assert.ok(!picker.includes('kb.byType') && !picker.includes('kb.specialistByDomain'), 'The card must not render store activity groups or specialist category trees');
-assert.ok(!picker.includes('type="checkbox"') && !picker.includes('addCheck') && !picker.includes('v8msDomain'), 'The old checkbox and no-logo category picker must be removed');
-assert.ok(picker.includes('selectedStoreIds'), 'Picker selection must be exposed to the Hooshyar bridge');
-assert.ok(picker.includes('panel.insertBefore(root,panel.firstChild)'), 'The logo picker must render at the top of the renamed discovery card');
-assert.ok(!picker.includes("select.insertAdjacentElement('afterend',root)"), 'Multi-store picker must not remain attached to the separate profile form');
-assert.ok(picker.includes('LOGO_ID_OVERRIDES'), 'Known logo/catalog naming differences must be mapped explicitly');
-assert.ok(picker.includes('selectedCategoryIds:[],selectedTypeIds:[]'), 'Legacy bridge keys must remain backward-compatible without exposing store categories');
+assert.ok(picker.includes('pointerdown') && picker.includes('560'), 'A long press must toggle a merchant selection');
+assert.ok(picker.includes('pointerup') && picker.includes('suppressClick'), 'Long-press selection must not trigger merchant navigation');
+assert.ok(picker.includes('version:\'8.2.0-grouped-longpress\''), 'The picker must expose the long-press selection bridge');
+assert.ok(picker.includes('tabs.hidden=false') && picker.includes('directory.hidden=false'), 'The original grouped category directory must be restored');
+assert.ok(picker.includes('selectedStoreIds'), 'Long-press selections must be available to Hooshyar');
+assert.ok(picker.includes('getFilters'), 'Picker selection must be exposed to the Hooshyar bridge');
+assert.ok(engine.includes('if(!logo)return'), 'Merchants without a local logo must not render a substitute card');
+assert.ok(engine.includes('data-store-id') && engine.includes('href="'), 'Short taps must retain the merchant destination link');
+assert.ok(picker.includes('MutationObserver'), 'Selected state must persist when category lists re-render');
+assert.ok(picker.includes('selectedCategoryIds:[],selectedTypeIds:[]'), 'Legacy bridge keys must remain backward-compatible');
 const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
 assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
   'The canonical store selector must not hide merchants whose search route is not configured');
