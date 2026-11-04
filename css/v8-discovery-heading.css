@@ -1,4 +1,4 @@
-/* Discovery card heading and subtitle: centered hierarchy and explicit visibility. */
+/* Discovery card heading and subtitle: centered hierarchy and theme-aware contrast. */
 #popularStoresDiscovery .popular-discovery-toggle .popular-discovery-toggle-main{
   display:flex!important;
   flex-direction:column!important;
@@ -21,11 +21,16 @@
   width:100%!important;
   margin:0!important;
   padding:0!important;
-  color:rgba(255,255,255,.58)!important;
-  font-size:11px!important;
+  color:#64748b!important;
+  -webkit-text-fill-color:#64748b!important;
+  font-size:12px!important;
   font-weight:400!important;
   line-height:1.6!important;
   text-align:center!important;
   visibility:visible!important;
   opacity:1!important;
+}
+body.v6-dark #popularStoresDiscovery .popular-discovery-toggle .popular-discovery-subtitle{
+  color:#b8c2d1!important;
+  -webkit-text-fill-color:#b8c2d1!important;
 }
