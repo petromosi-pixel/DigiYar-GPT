@@ -7,7 +7,7 @@ function setOpen(open){
  if(!card||!form)return;
  card.classList.toggle('is-open',!!open);
  form.hidden=false;form.setAttribute('aria-hidden',String(!open));form.style.display='block';
- if(toggle){toggle.setAttribute('aria-expanded',String(!!open));toggle.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید');}
+ if(toggle){toggle.setAttribute('aria-expanded',String(!!open));toggle.setAttribute('aria-label',open?'بستن جزئیات خرید':'باز کردن جزئیات خرید');var h=card.querySelector('.section-title h2');if(h)h.setAttribute('aria-expanded',String(!!open));}
  var catField=cat&&cat.closest('.v5-field'),subField=sub&&sub.closest('.v5-field');
  var budget=$('budgetMax'),budgetField=budget&&budget.closest('.v5-field'),dyn=$('v5DynamicFields');
  if(catField)catField.hidden=!open;
@@ -48,6 +48,8 @@ function ensureDynamicFields(){
   if(budgetField&&budgetField.parentNode)budgetField.parentNode.insertBefore(brand,budgetField);
   else if(dyn)dyn.appendChild(brand);
  }
+ var existingBrand=$('v6Brand');
+ if(existingBrand&&!Array.from(existingBrand.options).some(function(o){return o.value==='any';})){var any=document.createElement('option');any.value='any';any.textContent='فرقی نمی‌کند';existingBrand.appendChild(any);}
  if(!$('v6UsageField')){
   var usage=document.createElement('label');usage.id='v6UsageField';usage.className='v5-field full';
   usage.innerHTML='<span>نوع استفاده</span><select id="v6Usage"><option value="">نوع استفاده</option><option value="daily">استفاده روزمره</option><option value="work">کار و استفاده تخصصی</option><option value="family">استفاده خانوادگی</option><option value="gift">هدیه</option><option value="other">سایر موارد</option></select>';
