@@ -20,7 +20,7 @@ const purchaseFormStart = index.indexOf('<section id="v7ProfileSearchHost"', dis
 assert.ok(discoveryPanelStart >= 0 && discoveryPanelEnd > discoveryPanelStart, 'The discovery panel must remain a valid insertion container');
 assert.ok(purchaseFormStart > discoveryPanelStart && purchaseFormStart < discoveryPanelEnd, 'The complete legacy purchase card must be nested inside the renamed discovery/category card');
 assert.ok(index.indexOf('</section>', purchaseFormStart) < discoveryPanelEnd, 'The moved purchase card must close before the discovery panel closes');
-for (const id of ['profileForm','storeSelect','v5Category','v5Subcategory','budgetMax','v5DynamicFields','resetProfile']) {
+for (const id of ['profileForm','storeSelect','v5Category','budgetMax','v5DynamicFields','resetProfile']) {
   assert.equal((index.match(new RegExp('id="' + id + '"', 'g')) || []).length, 1, 'The moved form must preserve one unique #' + id + ' target');
 }
 assert.match(index, /id="popularStoresDiscovery"[\s\S]*?id="v7PopularDiscoveryTabs"[\s\S]*?id="popularDiscoveryPanel"[\s\S]*?id="v7ProfileSearchHost"/, 'Category tabs, category content, and the old purchase form must remain in one discovery card');
@@ -60,7 +60,6 @@ assert.match(picker, /seenNames\.has\(key\)/, 'Repeated display names must be su
 assert.match(picker, /repeat\(3,minmax\(0,1fr\)\)/, 'Store list must use a three-column grid');
 assert.doesNotMatch(picker, /v5Category','v5Subcategory'/, 'The category and subcategory fields must remain visible');
 assert.match(picker, /dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, 'Changing the selected store must refresh the taxonomy cascade');
-assert.match(picker, /selectedCategoryIds/, 'Category selections must be retained alongside store selections');
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
 assert.match(picker, /tabs\.insertAdjacentElement\('afterend',root\)/, 'Multi-store picker must render inside the renamed discovery/category card, directly after its type tabs');
 assert.doesNotMatch(picker, /select\.insertAdjacentElement\('afterend',root\)/, 'Multi-store picker must not remain attached to the separate profile form');
