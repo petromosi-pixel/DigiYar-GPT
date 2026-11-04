@@ -29,6 +29,7 @@ on:
       - 'css/v8-splash.css'
       - 'css/v8-step2-header.css'
       - 'css/v8-ui.css'
+      - 'css/v8-discovery-heading.css'
       - 'css/v8-step4.css'
       - 'css/v8-step4-toggle-direction.css'
       - 'css/v8-smart-search.css'
