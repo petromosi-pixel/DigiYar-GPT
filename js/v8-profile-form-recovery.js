@@ -63,11 +63,11 @@ function validateRequiredProfileFields(){
  if(!missingCategory&&!missingSubcategory){hideRequiredMessage();return true;}
  setOpen(true);
  if(missingCategory){
-  showRequiredMessage('برای نمایش نتایج، ابتدا دسته‌بندی را انتخاب کن و سپس زیر دسته را تکمیل کن.');
+  showRequiredMessage('برای نمایش نتایج، تکمیل فیلدهای ستاره دار الزامیست.');
   cat.focus();cat.scrollIntoView({behavior:'smooth',block:'center'});
  }else{
   sub.disabled=false;var field=sub.closest('.v5-field');if(field)field.hidden=false;
-  showRequiredMessage('برای نمایش نتایج، انتخاب زیر دسته هم الزامی است.');
+  showRequiredMessage('برای نمایش نتایج، تکمیل فیلدهای ستاره دار الزامیست.');
   sub.focus();sub.scrollIntoView({behavior:'smooth',block:'center'});
  }
  return false;
@@ -81,7 +81,7 @@ function markRequiredField(field){
  if(!wrap.querySelector('.v8-required-star')){
   var star=document.createElement('small');star.className='v8-required-star';star.textContent='*';
   star.setAttribute('aria-hidden','true');star.title='تکمیل این کادر الزامی است';
-  star.style.cssText='position:absolute;top:1px;right:5px;z-index:2;color:#e53935;font-size:12px;font-weight:900;line-height:1;pointer-events:none';
+  star.style.cssText='position:absolute;top:-8px;right:-8px;z-index:3;color:#e53935;font-size:19px;font-weight:900;line-height:1;pointer-events:none;text-shadow:0 0 1px rgba(255,255,255,.75)';
   wrap.appendChild(star);
  }
 }
