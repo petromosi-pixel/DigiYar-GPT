@@ -42,8 +42,3 @@ body.v6-dark #popularStoresDiscovery .popular-discovery-toggle .popular-discover
 #popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form .section-title p{margin:3px 0 0!important;}
 #popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form .v5-storage-note{margin:10px 0 0!important;}
 body.v6-dark #popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form{border-top-color:var(--dy-border,#34445e)!important;}
-
-/* Logo-only store selection replaces the old grouped/category directory in this card. */
-#popularStoresDiscovery #v7PopularDiscoveryTabs[hidden],
-#popularStoresDiscovery #v7PopularDiscovery[hidden]{display:none!important;}
-#popularDiscoveryPanel #v8MultiStorePicker{display:block!important;}
