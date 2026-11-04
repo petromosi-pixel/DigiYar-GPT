@@ -76,6 +76,7 @@ function bind(){
   window.__dyProfileRecoveryEvents=true;
   window.addEventListener('digiyar:v7-hooshyar-cleared',resetProfile);
   window.addEventListener('digiyar:hooshyar-results-ready',function(){setOpen(false);});
+  window.addEventListener('digiyar:profile-search-started',function(){setOpen(false);});
   document.addEventListener('click',function(e){
    var reset=e.target&&e.target.closest&&e.target.closest('#resetProfile');
    if(reset){e.preventDefault();e.stopImmediatePropagation();resetProfile();return;}
