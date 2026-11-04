@@ -53,17 +53,16 @@ const unrestricted = apply(structuredClone(base), { active: false, selectedStore
 assert.deepEqual(unrestricted.storeIds, base.storeIds, 'No explicit selection must preserve the existing automatic relevance behavior');
 
 const picker = fs.readFileSync(new URL('../js/v8-multi-store-picker.js', import.meta.url), 'utf8');
-assert.match(picker, /kb\.byType/, 'Top-level activity groups must come from the canonical KB');
-assert.match(picker, /kb\.specialistByDomain/, 'Specialist categories must use specialist-only taxonomy');
-assert.match(picker, /primary===domain/, 'A specialist store must be assigned to only one primary category');
-assert.match(picker, /seenNames\.has\(key\)/, 'Repeated display names must be suppressed across categories');
-assert.match(picker, /repeat\(3,minmax\(0,1fr\)\)/, 'Store list must use a three-column grid');
-assert.doesNotMatch(picker, /v5Category','v5Subcategory'/, 'The category and subcategory fields must remain visible');
-assert.match(picker, /dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, 'Changing the selected store must refresh the taxonomy cascade');
+assert.match(picker, /LOGO_FILES/, 'Store selection must be sourced from the available logo assets');
+assert.match(picker, /assets\\/store-logos\\//, 'Every selectable store must render its local logo asset');
+assert.match(picker, /aria-pressed/, 'The logo itself must act as the accessible selection control');
+assert.doesNotMatch(picker, /kb\\.byType|kb\\.specialistByDomain/, 'The card must not render store activity groups or specialist category trees');
+assert.doesNotMatch(picker, /type=.?checkbox|addCheck|v8msDomain/, 'The old checkbox and no-logo category picker must be removed');
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
-assert.match(picker, /tabs\.insertAdjacentElement\('afterend',root\)/, 'Multi-store picker must render inside the renamed discovery/category card, directly after its type tabs');
-assert.doesNotMatch(picker, /select\.insertAdjacentElement\('afterend',root\)/, 'Multi-store picker must not remain attached to the separate profile form');
-
+assert.match(picker, /panel\\.insertBefore\\(root,panel\\.firstChild\\)/, 'The logo picker must render at the top of the renamed discovery card');
+assert.doesNotMatch(picker, /select\\.insertAdjacentElement\\('afterend',root\\)/, 'Multi-store picker must not remain attached to the separate profile form');
+assert.match(picker, /LOGO_ID_OVERRIDES/, 'Known logo/catalog naming differences must be mapped explicitly');
+assert.match(picker, /selectedCategoryIds:\\[\\],selectedTypeIds:\\[\\]/, 'Legacy bridge keys must remain backward-compatible without exposing store categories');
 const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
 assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
   'The canonical store selector must not hide merchants whose search route is not configured');
