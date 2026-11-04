@@ -13,6 +13,18 @@ globalThis.document = {
 await import('../js/v8-store-catalog.js');
 await import('../js/v8-store-search-url.js');
 
+const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const discoveryPanelStart = index.indexOf('<div class="popular-discovery-panel" id="popularDiscoveryPanel" hidden>');
+const discoveryPanelEnd = index.indexOf('</div>\\n <button class="popular-discovery-bottom-toggle"', discoveryPanelStart);
+const purchaseFormStart = index.indexOf('<section id="v7ProfileSearchHost"', discoveryPanelStart);
+assert.ok(discoveryPanelStart >= 0 && discoveryPanelEnd > discoveryPanelStart, 'The discovery panel must remain a valid insertion container');
+assert.ok(purchaseFormStart > discoveryPanelStart && purchaseFormStart < discoveryPanelEnd, 'The complete legacy purchase card must be nested inside the renamed discovery/category card');
+assert.ok(index.indexOf('</section>', purchaseFormStart) < discoveryPanelEnd, 'The moved purchase card must close before the discovery panel closes');
+for (const id of ['profileForm','storeSelect','v5Category','v5Subcategory','budgetMax','v5DynamicFields','resetProfile']) {
+  assert.equal((index.match(new RegExp('id="' + id + '"', 'g')) || []).length, 1, 'The moved form must preserve one unique #' + id + ' target');
+}
+assert.match(index, /id="popularStoresDiscovery"[\\s\\S]*?id="v7PopularDiscoveryTabs"[\\s\\S]*?id="popularDiscoveryPanel"[\\s\\S]*?id="v7ProfileSearchHost"/, 'Category tabs, category content, and the old purchase form must remain in one discovery card');
+
 const engine = fs.readFileSync(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
 vm.runInThisContext(engine.replace(
   'function init(){',
