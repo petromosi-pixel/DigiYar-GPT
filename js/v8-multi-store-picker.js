@@ -41,7 +41,7 @@ function start(){
  var trigger=document.createElement('button');trigger.id='v8msTrigger';trigger.type='button';trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls','v8msPanel');
  var triggerLabel=document.createElement('span'),triggerCount=document.createElement('small');trigger.append(triggerLabel,triggerCount);
  var panel=document.createElement('div');panel.id='v8msPanel';panel.hidden=true;
- var tools=document.createElement('div');tools.className='v8msTools';var hint=document.createElement('span');hint.textContent='گروه و دسته‌بندی را باز کن و فروشگاه‌های دلخواهت را انتخاب کن';var clear=document.createElement('button');clear.type='button';clear.textContent='پاک کردن انتخاب‌ها';tools.append(hint,clear);panel.appendChild(tools);
+ var tools=document.createElement('div');tools.className='v8msTools';var hint=document.createElement('span');hint.textContent='گروه و دسته‌بندی رو باز کن و فروشگاه‌های دلخواهت رو انتخاب کن';hint.style.cssText='display:block;width:100%;text-align:center';tools.style.justifyContent='center';tools.append(hint);panel.appendChild(tools);
  function addCheck(parent,title,kind,id,ids,extraClass){
   var label=document.createElement('label');if(extraClass)label.className=extraClass;
   var input=document.createElement('input');input.type='checkbox';input.dataset.kind=kind;input.dataset.id=id;if(ids)input.dataset.ids=ids.join(',');
@@ -102,7 +102,7 @@ function start(){
   root.dataset.selectedStoreIds=Array.from(selected).join(',');
  }
  trigger.addEventListener('click',function(){panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));});
- clear.addEventListener('click',function(){selected.clear();selectedCategories.clear();selectedTypes.clear();active=false;refresh();});
+
  panel.addEventListener('change',function(event){
   var c=event.target;if(!c||c.type!=='checkbox')return;active=true;
   var kind=c.dataset.kind,id=c.dataset.id,ids=(c.dataset.ids||'').split(',').filter(Boolean);
