@@ -15,7 +15,7 @@ await import('../js/v8-store-search-url.js');
 
 const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const discoveryPanelStart = index.indexOf('<div class="popular-discovery-panel" id="popularDiscoveryPanel" hidden>');
-const discoveryPanelEnd = index.indexOf('</div>\\n <button class="popular-discovery-bottom-toggle"', discoveryPanelStart);
+const discoveryPanelEnd = index.indexOf('\\n </div>\\n <button class="popular-discovery-bottom-toggle"', discoveryPanelStart);
 const purchaseFormStart = index.indexOf('<section id="v7ProfileSearchHost"', discoveryPanelStart);
 assert.ok(discoveryPanelStart >= 0 && discoveryPanelEnd > discoveryPanelStart, 'The discovery panel must remain a valid insertion container');
 assert.ok(purchaseFormStart > discoveryPanelStart && purchaseFormStart < discoveryPanelEnd, 'The complete legacy purchase card must be nested inside the renamed discovery/category card');
