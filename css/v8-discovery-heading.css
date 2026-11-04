@@ -21,16 +21,16 @@
   width:100%!important;
   margin:0!important;
   padding:0!important;
-  color:#64748b!important;
-  -webkit-text-fill-color:#64748b!important;
-  font-size:12px!important;
-  font-weight:400!important;
+  color:#46566f!important;
+  -webkit-text-fill-color:#46566f!important;
+  font-size:13px!important;
+  font-weight:600!important;
   line-height:1.6!important;
   text-align:center!important;
   visibility:visible!important;
   opacity:1!important;
 }
 body.v6-dark #popularStoresDiscovery .popular-discovery-toggle .popular-discovery-subtitle{
-  color:#b8c2d1!important;
-  -webkit-text-fill-color:#b8c2d1!important;
+  color:#e0e8f4!important;
+  -webkit-text-fill-color:#e0e8f4!important;
 }
