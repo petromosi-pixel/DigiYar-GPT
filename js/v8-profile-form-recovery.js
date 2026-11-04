@@ -79,6 +79,8 @@ function bind(){
   document.addEventListener('click',function(e){
    var reset=e.target&&e.target.closest&&e.target.closest('#resetProfile');
    if(reset){e.preventDefault();e.stopImmediatePropagation();resetProfile();return;}
+   var icon=e.target&&e.target.closest&&e.target.closest('#v5Step4Toggle');
+   if(icon)setTimeout(function(){setOpen(toggle.getAttribute('aria-expanded')==='true');},0);
   },true);
  }
  var heading=card.querySelector('.section-title h2');
