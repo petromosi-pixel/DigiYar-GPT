@@ -14,29 +14,28 @@ function setOpen(open){
  if(subField)subField.hidden=!open||!cat.value;
  if(budgetField)budgetField.hidden=!open||!cat.value;
  if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none';}
- if(!open){if(cat)cat.disabled=true;if(sub)sub.disabled=true;}
- else if(cat)cat.disabled=!store.value;
-}
-function clearSearch(){
- var input=$('v5SmartSearchInput');
- if(input){input.value='';input.disabled=false;input.placeholder='';input.dispatchEvent(new Event('input',{bubbles:true}));}
- ['v5SmartSearchResults','v6StoreSimulatorResults'].forEach(function(id){var n=$(id);if(n)n.remove();});
+ if(open){
+  if(cat)cat.disabled=false;
+  if(sub)sub.disabled=!cat||!cat.value||sub.options.length<=1;
+  form.querySelectorAll('input,select,textarea,button').forEach(function(field){
+   if(field.id==='resetProfile'||field.type==='submit')return;
+   if(field!==sub||cat&&cat.value)field.disabled=false;
+  });
+ }
 }
 function resetProfile(){
  if(!card||!form)return false;
- if(store)store.value='';
- if(cat){cat.value='';cat.disabled=true;cat.innerHTML='<option value="">ابتدا فروشگاه را انتخاب کنید</option>';}
- if(sub){sub.value='';sub.disabled=true;sub.innerHTML='<option value="">ابتدا دسته‌بندی را انتخاب کنید</option>';}
- ['v6BrandField','v6UsageField'].forEach(function(id){var n=$(id);if(n)n.remove();});
- ['budgetMax','budgetMin','v6BudgetRange'].forEach(function(id){var n=$(id);if(n){n.value='';if(n.tagName==='SELECT')n.selectedIndex=0;}});
- var dyn=$('v5DynamicFields');if(dyn){dyn.innerHTML='';dyn.hidden=true;dyn.style.display='none';}
- var result=$('resultSection');if(result){result.hidden=true;result.classList.remove('is-open');}
- ['digiyar-products','recommendations','v6ResultRecommendations'].forEach(function(id){var n=$(id);if(n)n.innerHTML='';});
- var summary=$('needSummary');if(summary){summary.innerHTML='';summary.hidden=true;summary.classList.add('empty');}
- var status=$('v8ProfileSearchStatus');if(status)status.textContent='';
- clearSearch();
- if(window.DigiYarStoreSelection&&typeof window.DigiYarStoreSelection.clear==='function')window.DigiYarStoreSelection.clear();
- setOpen(true);
+ // Reset only controls owned by the profile form; do not touch Hooshyar search or results.
+ if(store){store.value='all';store.dispatchEvent(new Event('change',{bubbles:true}));}
+ if(cat){cat.value='';cat.disabled=false;}
+ if(sub){sub.value='';sub.disabled=true;}
+ form.querySelectorAll('input,select,textarea').forEach(function(field){
+  if(field.id==='storeSelect'||field.id==='v5Category'||field.id==='v5Subcategory')return;
+  if(field.tagName==='SELECT')field.selectedIndex=0;
+  else field.value='';
+ });
+ var status=$('v8ProfileSearchStatus');if(status&&form.contains(status))status.textContent='';
+ setOpen(false);
  return true;
 }
 function ensureDynamicFields(){
@@ -93,7 +92,7 @@ function bind(){
  }
  if(!cat.dataset.dyRecoveryBound){
   cat.dataset.dyRecoveryBound='1';
-  cat.addEventListener('change',function(){setTimeout(function(){ensureSubcategory();setOpen(true);},120);});
+  cat.addEventListener('change',function(){setTimeout(function(){ensureSubcategory();if(sub)sub.disabled=false;setOpen(true);},120);});
  }
  if(sub&&!sub.dataset.dyRecoveryBound){
   sub.dataset.dyRecoveryBound='1';
