@@ -50,6 +50,8 @@ assert.doesNotMatch(picker, /v5Category','v5Subcategory'/, 'The category and sub
 assert.match(picker, /dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, 'Changing the selected store must refresh the taxonomy cascade');
 assert.match(picker, /selectedCategoryIds/, 'Category selections must be retained alongside store selections');
 assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
+assert.match(picker, /tabs\.insertAdjacentElement\('afterend',root\)/, 'Multi-store picker must render inside the renamed discovery/category card, directly after its type tabs');
+assert.doesNotMatch(picker, /select\.insertAdjacentElement\('afterend',root\)/, 'Multi-store picker must not remain attached to the separate profile form');
 
 const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
 assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
