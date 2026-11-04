@@ -26,6 +26,7 @@ function setOpen(open){
 function resetProfile(){
  if(!card||!form)return false;
  // Reset only controls owned by the profile form; do not touch Hooshyar search or results.
+ if(window.DigiYarStoreSelection&&typeof window.DigiYarStoreSelection.clear==='function')window.DigiYarStoreSelection.clear();
  if(store){store.value='all';store.dispatchEvent(new Event('change',{bubbles:true}));}
  if(cat){cat.value='';cat.disabled=false;}
  if(sub){sub.value='';sub.disabled=true;}
@@ -37,6 +38,24 @@ function resetProfile(){
  var status=$('v8ProfileSearchStatus');if(status&&form.contains(status))status.textContent='';
  setOpen(false);
  return true;
+}
+function clearProfileResults(){
+ var result=$('resultSection');if(result){result.hidden=true;result.classList.remove('is-open');}
+ var box=$('v6ResultRecommendations');if(box)box.innerHTML='';
+ var summary=$('needSummary');if(summary){summary.innerHTML='';summary.classList.add('empty');summary.hidden=true;}
+ var hint=$('resultHint');if(hint)hint.textContent='بر اساس اولویت‌های انتخابی تو به ترتیب زیر پیشنهاد میشن';
+}
+function markRequiredField(field){
+ if(!field)return;
+ field.required=true;field.setAttribute('aria-required','true');
+ var wrap=field.closest('.v5-field');if(!wrap)return;
+ wrap.style.position='relative';
+ if(!wrap.querySelector('.v8-required-star')){
+  var star=document.createElement('small');star.className='v8-required-star';star.textContent='*';
+  star.setAttribute('aria-hidden','true');star.title='تکمیل این کادر الزامی است';
+  star.style.cssText='position:absolute;top:1px;right:5px;z-index:2;color:#e53935;font-size:12px;font-weight:900;line-height:1;pointer-events:none';
+  wrap.appendChild(star);
+ }
 }
 function ensureDynamicFields(){
  if(!sub||!sub.value)return;
@@ -70,10 +89,11 @@ function ensureSubcategory(){
 function bind(){
  card=$('v7ProfileSearchHost');form=$('profileForm');store=$('storeSelect');cat=$('v5Category');sub=$('v5Subcategory');toggle=$('v5Step4Toggle');
  if(!card||!form||!store||!cat||!toggle)return false;
+ markRequiredField(cat);markRequiredField(sub);
  window.DigiYarResetProfileForm=resetProfile;
  if(!window.__dyProfileRecoveryEvents){
   window.__dyProfileRecoveryEvents=true;
-  window.addEventListener('digiyar:v7-hooshyar-cleared',resetProfile);
+  window.addEventListener('digiyar:v7-hooshyar-cleared',clearProfileResults);
   window.addEventListener('digiyar:hooshyar-results-ready',function(){setOpen(false);});
   window.addEventListener('digiyar:profile-search-started',function(){setOpen(false);});
   document.addEventListener('click',function(e){
