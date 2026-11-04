@@ -1,26 +1,31 @@
-/* Discovery card heading and subtitle: explicit visibility and hierarchy. */
+/* Discovery card heading and subtitle: centered hierarchy and explicit visibility. */
 #popularStoresDiscovery .popular-discovery-toggle .popular-discovery-toggle-main{
   display:flex!important;
   flex-direction:column!important;
-  align-items:flex-start!important;
+  align-items:center!important;
   justify-content:center!important;
   gap:4px!important;
   width:100%!important;
+  text-align:center!important;
 }
 #popularStoresDiscovery .popular-discovery-toggle h2{
   display:block!important;
+  width:100%!important;
   margin:0!important;
   font-size:18px!important;
   line-height:1.5!important;
+  text-align:center!important;
 }
 #popularStoresDiscovery .popular-discovery-toggle .popular-discovery-subtitle{
   display:block!important;
+  width:100%!important;
   margin:0!important;
   padding:0!important;
-  color:rgba(255,255,255,.88)!important;
-  font-size:12px!important;
-  font-weight:500!important;
+  color:rgba(255,255,255,.58)!important;
+  font-size:11px!important;
+  font-weight:400!important;
   line-height:1.6!important;
+  text-align:center!important;
   visibility:visible!important;
   opacity:1!important;
 }
