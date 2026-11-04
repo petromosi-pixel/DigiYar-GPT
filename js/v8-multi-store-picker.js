@@ -4,8 +4,8 @@
 function byId(id){return document.getElementById(id);}
 function normName(value){return String(value||'').replace(/[\u200c\s]+/g,'').toLowerCase();}
 function start(){
- var select=byId('storeSelect'),kb=window.DigiYarStoreBusinessDomains,resolver=window.DigiYarStoreSearchUrl;
- if(!select||!kb||!kb.byType||!resolver)return false;
+ var select=byId('storeSelect'),tabs=byId('v7PopularDiscoveryTabs'),kb=window.DigiYarStoreBusinessDomains,resolver=window.DigiYarStoreSearchUrl;
+ if(!select||!tabs||!kb||!kb.byType||!resolver)return false;
  var existing=byId('v8MultiStorePicker');if(existing)return true;
  /* Keep the picker catalog-complete; missing routes are reported by Hooshyar, not hidden from selection. */
  var available=new Set(Object.keys(kb.catalog||{}).map(String));
@@ -88,7 +88,7 @@ function start(){
   }
   panel.appendChild(details);
  });
- root.append(trigger,panel);select.insertAdjacentElement('afterend',root);select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
+ root.append(trigger,panel);tabs.insertAdjacentElement('afterend',root);select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
  function refresh(){
   panel.querySelectorAll('input[type=checkbox]').forEach(function(c){
    var kind=c.dataset.kind,id=c.dataset.id,ids=(c.dataset.ids||'').split(',').filter(Boolean);
