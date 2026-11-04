@@ -68,8 +68,8 @@ assert.ok(picker.includes('selectedCategoryIds:[],selectedTypeIds:[]'), 'Legacy 
 const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
 assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
   'The canonical store selector must not hide merchants whose search route is not configured');
-assert.ok(picker.includes('Object.keys(catalog).find') && picker.includes('logoById[id]=file'),
-  'The picker must include only catalog merchants with a matching local logo asset');
+assert.ok(engine.includes('STORE_LOGOS_BY_ID') && engine.includes('if(!logo)return'),
+  'The grouped directory must include only catalog merchants with a matching local logo asset');
 assert.ok(engine.includes('selectedCandidatesAdded'),
   'Selected stores must be re-evaluated against canonical product-family evidence before filtering');
 assert.ok(engine.includes('routeUnavailableCount'),
