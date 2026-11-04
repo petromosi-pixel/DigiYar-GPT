@@ -192,10 +192,8 @@
       showButton.dataset.v8HooshyarClickBound='1';
       showButton.addEventListener('click',function(event){event.preventDefault();launchHooshyar();});
     }
-    if(document.documentElement.dataset.v6HooshyarResetDelegated!=='1'){
-      document.documentElement.dataset.v6HooshyarResetDelegated='1';
-      document.addEventListener('click',handleResetClick,true);
-    }
+    // Profile reset is owned by the profile-form controller. Hooshyar's clear icon
+    // alone clears the search query and its results.
     return !!form;
   }
 
