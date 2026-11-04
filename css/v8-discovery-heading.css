@@ -34,3 +34,11 @@ body.v6-dark #popularStoresDiscovery .popular-discovery-toggle .popular-discover
   color:#e0e8f4!important;
   -webkit-text-fill-color:#e0e8f4!important;
 }
+
+/* The legacy purchase form now lives inside the renamed discovery/category card. Keep its original IDs and behavior while visually flattening its former card shell. */
+#popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form{display:block!important;width:100%!important;margin:14px 0 0!important;padding:14px 0 0!important;border:0!important;border-top:1px solid var(--dy-border,#dfe6f0)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+#popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form .section-title{margin:0 0 12px!important;padding:0!important;}
+#popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form .section-title h2{font-size:16px!important;}
+#popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form .section-title p{margin:3px 0 0!important;}
+#popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form .v5-storage-note{margin:10px 0 0!important;}
+body.v6-dark #popularDiscoveryPanel > #v7ProfileSearchHost.popular-discovery-profile-form{border-top-color:var(--dy-border,#34445e)!important;}
