@@ -12,7 +12,7 @@ function setOpen(open){
  var budget=$('budgetMax'),budgetField=budget&&budget.closest('.v5-field'),dyn=$('v5DynamicFields');
  if(catField)catField.hidden=!open;
  if(subField)subField.hidden=!open||!cat.value;
- if(budgetField)budgetField.hidden=!open||cat.value!=='digital';
+ if(budgetField)budgetField.hidden=!open||!cat.value;
  if(dyn){dyn.hidden=!open||!dyn.children.length;dyn.style.display=open&&dyn.children.length?'grid':'none';}
  if(!open){if(cat)cat.disabled=true;if(sub)sub.disabled=true;}
  else if(cat)cat.disabled=!store.value;
