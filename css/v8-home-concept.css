@@ -52,31 +52,3 @@ body.v6-dark .v8-bottom-nav button{color:#b7c7e2}
 body.v6-dark .v8-bottom-nav button[aria-current="page"]{background:#1d3559;color:#91c6ff}
 @media(max-width:540px){.app-shell{padding-left:12px!important;padding-right:12px!important}#digiyarConversation.digiyar-conversation-card{padding:17px!important;border-radius:21px!important;margin-top:7px!important}#digiyarConversation .v5-chat-avatar{flex-basis:62px;width:62px;height:62px;border-radius:18px}#digiyarConversation .v5-chat-avatar img{width:54px;height:60px}#digiyarConversation .v5-chat-head{gap:11px;margin-bottom:14px!important}#digiyarConversation .section-title h2{font-size:20px!important}#digiyarConversation .section-title p{font-size:11px!important}#v8HomeShortcuts{gap:8px}.v8-home-shortcut{padding:9px;gap:8px;min-height:58px}.v8-home-shortcut .v8-shortcut-icon{flex-basis:32px;width:32px;height:32px;font-size:18px}.v8-home-shortcut strong{font-size:11px}.v8-home-shortcut small{font-size:9px}.card{padding:15px}#popularStoresDiscovery .popular-discovery-toggle{padding:13px!important}}
 @media(prefers-reduced-motion:reduce){.v8-home-shortcut{transition:none}}
-
-
-/* Discovery card heading and subtitle: keep both visible inside the toggle. */
-#popularStoresDiscovery .popular-discovery-toggle .popular-discovery-toggle-main{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  justify-content:center!important;
-  gap:4px!important;
-  width:100%!important;
-}
-#popularStoresDiscovery .popular-discovery-toggle h2{
-  display:block!important;
-  margin:0!important;
-  font-size:18px!important;
-  line-height:1.5!important;
-}
-#popularStoresDiscovery .popular-discovery-toggle .popular-discovery-subtitle{
-  display:block!important;
-  margin:0!important;
-  padding:0!important;
-  color:rgba(255,255,255,.88)!important;
-  font-size:12px!important;
-  font-weight:500!important;
-  line-height:1.6!important;
-  visibility:visible!important;
-  opacity:1!important;
-}

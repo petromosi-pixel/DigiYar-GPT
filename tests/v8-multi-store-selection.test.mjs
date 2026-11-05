@@ -13,18 +13,6 @@ globalThis.document = {
 await import('../js/v8-store-catalog.js');
 await import('../js/v8-store-search-url.js');
 
-const index = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const discoveryPanelStart = index.indexOf('<div class="popular-discovery-panel" id="popularDiscoveryPanel" hidden>');
-const discoveryPanelEnd = index.indexOf('\n </div>\n <button class="popular-discovery-bottom-toggle"', discoveryPanelStart);
-const purchaseFormStart = index.indexOf('<section id="v7ProfileSearchHost"', discoveryPanelStart);
-assert.ok(discoveryPanelStart >= 0 && discoveryPanelEnd > discoveryPanelStart, 'The discovery panel must remain a valid insertion container');
-assert.ok(purchaseFormStart > discoveryPanelStart && purchaseFormStart < discoveryPanelEnd, 'The complete legacy purchase card must be nested inside the renamed discovery/category card');
-assert.ok(index.indexOf('</section>', purchaseFormStart) < discoveryPanelEnd, 'The moved purchase card must close before the discovery panel closes');
-for (const id of ['profileForm','storeSelect','v5Category','budgetMax','v5DynamicFields','resetProfile']) {
-  assert.equal((index.match(new RegExp('id="' + id + '"', 'g')) || []).length, 1, 'The moved form must preserve one unique #' + id + ' target');
-}
-assert.match(index, /id="popularStoresDiscovery"[\s\S]*?id="v7PopularDiscoveryTabs"[\s\S]*?id="popularDiscoveryPanel"[\s\S]*?id="v7ProfileSearchHost"/, 'Category tabs, category content, and the old purchase form must remain in one discovery card');
-
 const engine = fs.readFileSync(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
 vm.runInThisContext(engine.replace(
   'function init(){',
@@ -53,23 +41,21 @@ const unrestricted = apply(structuredClone(base), { active: false, selectedStore
 assert.deepEqual(unrestricted.storeIds, base.storeIds, 'No explicit selection must preserve the existing automatic relevance behavior');
 
 const picker = fs.readFileSync(new URL('../js/v8-multi-store-picker.js', import.meta.url), 'utf8');
-assert.ok(picker.includes('v8-store-selection-toggle') && picker.includes('selectionMode'), 'An explicit selection-mode control must govern store selection');
-assert.ok(picker.includes('event.preventDefault()') && picker.includes('toggleStore(anchor)'), 'Store taps in selection mode must select without opening a new browser tab');
-assert.ok(!picker.includes('pointerdown') && !picker.includes('560') && !picker.includes('suppressClick'), 'The conflicting long-press gesture must be fully removed');
-assert.ok(picker.includes('version:\'8.3.0-explicit-selection-mode\''), 'The picker must expose the explicit selection-mode bridge');
-assert.ok(picker.includes('انتخاب فروشگاه‌ها برای هوش‌یار'), 'The selection control must be labeled for Hooshyar');
-assert.ok(picker.includes('tabs.hidden=false') && picker.includes('directory.hidden=false'), 'The original grouped category directory must be restored');
-assert.ok(picker.includes('selectedStoreIds'), 'Long-press selections must be available to Hooshyar');
-assert.ok(picker.includes('getFilters'), 'Picker selection must be exposed to the Hooshyar bridge');
-assert.ok(engine.includes('if(!logo)return'), 'Merchants without a local logo must not render a substitute card');
-assert.ok(engine.includes('data-store-id') && engine.includes('href="'), 'Short taps must retain the merchant destination link');
-assert.ok(picker.includes('MutationObserver'), 'Selected state must persist when category lists re-render');
-assert.ok(picker.includes('selectedCategoryIds:[],selectedTypeIds:[]'), 'Legacy bridge keys must remain backward-compatible');
+assert.match(picker, /kb\.byType/, 'Top-level activity groups must come from the canonical KB');
+assert.match(picker, /kb\.specialistByDomain/, 'Specialist categories must use specialist-only taxonomy');
+assert.match(picker, /primary===domain/, 'A specialist store must be assigned to only one primary category');
+assert.match(picker, /seenNames\.has\(key\)/, 'Repeated display names must be suppressed across categories');
+assert.match(picker, /repeat\(3,minmax\(0,1fr\)\)/, 'Store list must use a three-column grid');
+assert.doesNotMatch(picker, /v5Category','v5Subcategory'/, 'The category and subcategory fields must remain visible');
+assert.match(picker, /dispatchEvent\(new Event\('change',\{bubbles:true\}\)\)/, 'Changing the selected store must refresh the taxonomy cascade');
+assert.match(picker, /selectedCategoryIds/, 'Category selections must be retained alongside store selections');
+assert.match(picker, /selectedStoreIds/, 'Picker selection must be exposed to the Hooshyar bridge');
+
 const profileSource = fs.readFileSync(new URL('../js/user-profile.js', import.meta.url), 'utf8');
 assert.ok(!profileSource.includes('resolver.hasHandler(id)'),
   'The canonical store selector must not hide merchants whose search route is not configured');
-assert.ok(engine.includes('STORE_LOGOS_BY_ID') && engine.includes('if(!logo)return'),
-  'The grouped directory must include only catalog merchants with a matching local logo asset');
+assert.ok(picker.includes('new Set(Object.keys(kb.catalog||{}).map(String))'),
+  'The picker must expose the full canonical catalog, including stores with unavailable routes');
 assert.ok(engine.includes('selectedCandidatesAdded'),
   'Selected stores must be re-evaluated against canonical product-family evidence before filtering');
 assert.ok(engine.includes('routeUnavailableCount'),

@@ -1,89 +1,125 @@
-/* DigiYar V8 — grouped merchant directory with an explicit selection mode. */
+/* DigiYar V8 — multi-store, deduplicated three-column accordion picker */
 (function(){
 'use strict';
 function byId(id){return document.getElementById(id);}
+function normName(value){return String(value||'').replace(/[\u200c\s]+/g,'').toLowerCase();}
 function start(){
- var select=byId('storeSelect'),tabs=byId('v7PopularDiscoveryTabs'),directory=byId('v7PopularDiscovery'),panel=byId('popularDiscoveryPanel');
- if(!select||!tabs||!directory||!panel)return false;
- if(window.DigiYarStoreSelection&&window.DigiYarStoreSelection.version==='8.3.0-explicit-selection-mode')return true;
- tabs.hidden=false;tabs.removeAttribute('aria-hidden');
- directory.hidden=false;directory.removeAttribute('aria-hidden');
- var selected=new Set(),selectionMode=false;
- var style=document.getElementById('v8StoreSelectionModeStyle');
- if(!style){
-  style=document.createElement('style');style.id='v8StoreSelectionModeStyle';
-  style.textContent=
-  '#v7PopularDiscovery .v8-store-selection-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:10px 12px;border:1px solid var(--pd-border,#dce3ed);border-radius:12px;background:var(--pd-card,#f7f9fc);color:var(--pd-text,inherit)}'+
-  '#v7PopularDiscovery .v8-store-selection-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:7px 12px;border:1px solid var(--pd-border,#cbd5e1);border-radius:9px;background:transparent;color:inherit;font:inherit;font-size:12px;font-weight:800;cursor:pointer}'+
-  '#v7PopularDiscovery .v8-store-selection-toggle[aria-pressed="true"]{background:#315b98;border-color:#315b98;color:#fff}'+
-  '#v7PopularDiscovery .v8-store-selection-status{font-size:11px;color:var(--pd-muted,#68778d);line-height:1.6}'+
-  '#v7PopularDiscovery .popular-discovery-store{position:relative;cursor:pointer}'+
-  '#v7PopularDiscovery.is-selection-mode .popular-discovery-store{outline:1px dashed rgba(49,91,152,.35);outline-offset:2px}'+
-  '#v7PopularDiscovery .popular-discovery-store.is-selected{border-color:#315b98!important;background:rgba(63,112,181,.11)!important;box-shadow:0 0 0 2px rgba(63,112,181,.2),0 7px 18px rgba(35,73,127,.1)!important}'+
-  '#v7PopularDiscovery .popular-discovery-store.is-selected:after{content:"✓ انتخاب شد";position:absolute;left:8px;top:8px;padding:3px 7px;border-radius:7px;background:#315b98;color:#fff;font-size:9px;font-weight:800}'+
-  'body.v6-dark #v7PopularDiscovery .v8-store-selection-toolbar{background:#1b2940;border-color:#34445d;color:#e5edf8}'+
-  'body.v6-dark #v7PopularDiscovery .v8-store-selection-status{color:#b9c8dc}'+
-  'body.v6-dark #v7PopularDiscovery .popular-discovery-store.is-selected{background:rgba(77,121,187,.22)!important;border-color:#8eaddd!important}';
-  document.head.appendChild(style);
+ var select=byId('storeSelect'),kb=window.DigiYarStoreBusinessDomains,resolver=window.DigiYarStoreSearchUrl;
+ if(!select||!kb||!kb.byType||!resolver)return false;
+ var existing=byId('v8MultiStorePicker');if(existing)return true;
+ /* Keep the picker catalog-complete; missing routes are reported by Hooshyar, not hidden from selection. */
+ var available=new Set(Object.keys(kb.catalog||{}).map(String));
+ var selected=new Set(),selectedCategories=new Set(),selectedTypes=new Set(),active=false;
+ var style=document.createElement('style');style.id='v8MultiStorePickerStyle';style.textContent=`
+ #v8MultiStorePicker{direction:rtl;text-align:right;width:100%;margin-top:8px}
+ #v8MultiStorePicker button{font:inherit;cursor:pointer}
+ #v8msTrigger{width:100%;min-height:48px;padding:10px 13px;border:1px solid #dfe6f0;border-radius:12px;background:#f8fafd;color:#182235;display:flex;justify-content:space-between;align-items:center;text-align:right;gap:8px}
+ #v8msTrigger small{font-size:11px;color:#748197;white-space:nowrap}
+ #v8msPanel{margin-top:8px;padding:9px;border:1px solid #dfe6f0;border-radius:12px;background:#fff;max-height:62vh;overflow:auto;box-shadow:0 8px 24px #19304a18}
+ #v8msPanel[hidden]{display:none}
+ #v8msPanel details{border:1px solid #e6ebf2;border-radius:9px;margin:6px 0}
+ #v8msPanel details>summary{padding:9px;cursor:pointer;font-size:13px;font-weight:800;color:#2a4169;list-style:none}
+ #v8msPanel details>summary::-webkit-details-marker{display:none}
+ #v8msPanel details>summary:after{content:'⌄';float:left;transition:transform .15s}
+ #v8msPanel details[open]>summary:after{transform:rotate(180deg)}
+ #v8msPanel .v8msDomain{margin:5px 8px}
+ #v8msPanel .v8msTools{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;color:#69778d;margin-bottom:8px}
+ #v8msPanel .v8msTools button{border:0;background:none;color:#2a4169;font-weight:800}
+ #v8msPanel .v8msStoreGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px 5px;padding:2px 7px 8px}
+ #v8msPanel label{direction:rtl;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:5px;min-width:0;padding:5px 3px;font-size:11px;line-height:1.45;cursor:pointer;overflow-wrap:anywhere}
+ #v8msPanel label span{min-width:0}
+ #v8msPanel input{width:15px;height:15px;min-width:15px;min-height:15px;accent-color:#2a4169;margin:0;flex:0 0 15px}
+ #v8msPanel .v8msGroupCheck{padding:7px 10px;font-weight:700;background:rgba(125,145,175,.045);border-radius:7px}
+ #v8msPanel .v8msDomain>summary{font-size:12px}
+ body.v6-dark #v8msPanel{background:#172338;border-color:#34445e}
+ body.v6-dark #v8msPanel details{border-color:#34445e}
+ body.v6-dark #v8msPanel label{color:#e4ebf6}
+ body.v6-dark #v8msTrigger{background:#1b2940;color:#edf3fc;border-color:#34445e}
+ @media(max-width:390px){#v8msPanel .v8msStoreGrid{gap:1px 3px}#v8msPanel label{font-size:10px;padding:5px 1px;gap:3px}#v8msPanel input{width:14px;height:14px;min-width:14px;min-height:14px;flex-basis:14px}}
+ `;document.head.appendChild(style);
+ var root=document.createElement('div');root.id='v8MultiStorePicker';
+ var trigger=document.createElement('button');trigger.id='v8msTrigger';trigger.type='button';trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls','v8msPanel');
+ var triggerLabel=document.createElement('span'),triggerCount=document.createElement('small');trigger.append(triggerLabel,triggerCount);
+ var panel=document.createElement('div');panel.id='v8msPanel';panel.hidden=true;
+ var tools=document.createElement('div');tools.className='v8msTools';var hint=document.createElement('span');hint.textContent='گروه و دسته‌بندی رو باز کن و فروشگاه‌های دلخواهت رو انتخاب کن';hint.style.cssText='display:block;width:100%;text-align:center';tools.style.justifyContent='center';tools.append(hint);panel.appendChild(tools);
+ function addCheck(parent,title,kind,id,ids,extraClass){
+  var label=document.createElement('label');if(extraClass)label.className=extraClass;
+  var input=document.createElement('input');input.type='checkbox';input.dataset.kind=kind;input.dataset.id=id;if(ids)input.dataset.ids=ids.join(',');
+  var text=document.createElement('span');text.textContent=title;label.append(input,text);parent.appendChild(label);return input;
  }
- select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
- function ensureToolbar(){
-  if(!directory.querySelector('.v8-store-selection-toolbar')){
-   var toolbar=document.createElement('div');
-   toolbar.className='v8-store-selection-toolbar';
-   toolbar.innerHTML='<button type="button" class="v8-store-selection-toggle" aria-pressed="false"><span aria-hidden="true">☑</span><span>انتخاب فروشگاه‌ها برای هوش‌یار</span></button><span class="v8-store-selection-status" aria-live="polite">برای انتخاب چند فروشگاه، این حالت را فعال کن</span>';
-   var list=directory.querySelector('.popular-discovery-accordion-list');
-   directory.insertBefore(toolbar,list||directory.firstChild);
-  }
-  syncToolbar();
- }
- function syncToolbar(){
-  var button=directory.querySelector('.v8-store-selection-toggle'),status=directory.querySelector('.v8-store-selection-status');
-  if(button){button.setAttribute('aria-pressed',String(selectionMode));button.querySelector('span:last-child').textContent=selectionMode?'پایان انتخاب فروشگاه‌ها':'انتخاب فروشگاه‌ها برای هوش‌یار';}
-  if(status)status.textContent=selectionMode?'حالت انتخاب فعاله؛ لوگوی فروشگاه‌های همین فهرست رو لمس کن · '+selected.size+' انتخاب':'انتخاب‌شده‌ها: '+selected.size+' فروشگاه';
-  directory.classList.toggle('is-selection-mode',selectionMode);
- }
- function syncCards(){
-  directory.querySelectorAll('.popular-discovery-store[data-store-id]').forEach(function(anchor){
-   var on=selected.has(anchor.dataset.storeId);
-   anchor.classList.toggle('is-selected',on);
-   anchor.setAttribute('aria-pressed',String(on));
-   if(selectionMode)anchor.setAttribute('aria-label','انتخاب یا لغو انتخاب '+(anchor.querySelector('.popular-discovery-store-name')||{}).textContent);
+ function addStoreGrid(parent,ids,seenIds,seenNames){
+  var grid=document.createElement('div');grid.className='v8msStoreGrid';
+  ids.forEach(function(id){
+   id=String(id);if(seenIds.has(id)||!available.has(id))return;
+   var store=kb.catalog[id];if(!store)return;
+   var name=String(store.name||id),key=normName(name);if(seenNames.has(key))return;
+   seenIds.add(id);seenNames.add(key);addCheck(grid,name,'store',id);
   });
-  syncToolbar();
+  if(grid.children.length)parent.appendChild(grid);
  }
+ ['general','portal','specialist'].forEach(function(type){
+  var group=kb.byType[type];if(!group)return;
+  var groupIds=(group.storeIds||[]).map(String).filter(function(id){return available.has(id);});
+  if(!groupIds.length)return;
+  var details=document.createElement('details');details.className='v8msType';
+  var summary=document.createElement('summary');summary.textContent=group.title||type;details.appendChild(summary);
+  addCheck(details,'انتخاب همهٔ '+(group.title||'این گروه'), 'type',type,groupIds,'v8msGroupCheck');
+  var seenIds=new Set(),seenNames=new Set();
+  if(type==='specialist'){
+   var taxonomy=kb.specialistByDomain||{};
+   Object.keys(taxonomy).forEach(function(domain){
+    var data=taxonomy[domain]||{};
+    var ids=(data.storeIds||[]).map(String).filter(function(id){
+     if(groupIds.indexOf(id)<0)return false;
+     var store=kb.catalog[id]||{},primary=(store.domains||[]).map(String)[0];
+     return primary===domain;
+    });
+    if(!ids.length)return;
+    var category=document.createElement('details');category.className='v8msDomain';
+    var categoryTitle=document.createElement('summary');categoryTitle.textContent=data.title||kb.domainTitles[domain]||domain;category.appendChild(categoryTitle);
+    addCheck(category,'انتخاب همهٔ این دسته','domain',domain,ids,'v8msGroupCheck');
+    addStoreGrid(category,ids,seenIds,seenNames);details.appendChild(category);
+   });
+   /* Keep any specialist whose first domain is not present in the taxonomy visible exactly once. */
+   var leftovers=groupIds.filter(function(id){return !seenIds.has(id);});
+   if(leftovers.length){var other=document.createElement('details');other.className='v8msDomain';var title=document.createElement('summary');title.textContent='سایر فروشگاه‌های تخصصی';other.appendChild(title);addCheck(other,'انتخاب همهٔ این دسته','domain','specialist_other',leftovers,'v8msGroupCheck');addStoreGrid(other,leftovers,seenIds,seenNames);details.appendChild(other);}
+  }else{
+   addStoreGrid(details,groupIds,seenIds,seenNames);
+  }
+  panel.appendChild(details);
+ });
+ root.append(trigger,panel);select.insertAdjacentElement('afterend',root);select.style.display='none';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
  function refresh(){
-  var ids=Array.from(selected),next=ids.length?ids[0]:'all';
-  if(select.value!==next){select.value=next;select.dispatchEvent(new Event('change',{bubbles:true}));}
-  syncCards();
+  panel.querySelectorAll('input[type=checkbox]').forEach(function(c){
+   var kind=c.dataset.kind,id=c.dataset.id,ids=(c.dataset.ids||'').split(',').filter(Boolean);
+   if(kind==='store')c.checked=selected.has(id);
+   else{var n=ids.filter(function(x){return selected.has(x);}).length;c.checked=ids.length>0&&n===ids.length;c.indeterminate=n>0&&n<ids.length;}
+  });
+  triggerLabel.textContent=active?'فروشگاه‌های انتخاب‌شده':'فروشگاهتو انتخاب کن';
+  triggerCount.textContent=active?selected.size+' فروشگاه':'انتخاب چندگانه';
+  var nextStore=selected.size?Array.from(selected)[0]:'all';
+  if(select.value!==nextStore){select.value=nextStore;select.dispatchEvent(new Event('change',{bubbles:true}));}
+  root.dataset.selectedStoreIds=Array.from(selected).join(',');
  }
- function toggleStore(anchor){
-  var id=anchor&&anchor.dataset.storeId;if(!id)return;
-  if(selected.has(id))selected.delete(id);else selected.add(id);
+ trigger.addEventListener('click',function(){panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));});
+
+ panel.addEventListener('change',function(event){
+  var c=event.target;if(!c||c.type!=='checkbox')return;active=true;
+  var kind=c.dataset.kind,id=c.dataset.id,ids=(c.dataset.ids||'').split(',').filter(Boolean);
+  if(kind==='store'){if(c.checked)selected.add(id);else selected.delete(id);}
+  else{
+   if(kind==='domain'){if(c.checked)selectedCategories.add(id);else selectedCategories.delete(id);}
+   if(kind==='type'){if(c.checked)selectedTypes.add(id);else selectedTypes.delete(id);}
+   ids.forEach(function(storeId){if(c.checked)selected.add(storeId);else selected.delete(storeId);});
+  }
   refresh();
-  if(navigator.vibrate)try{navigator.vibrate(18);}catch(e){}
- }
- directory.addEventListener('click',function(event){
-  var toggle=event.target.closest&&event.target.closest('.v8-store-selection-toggle');
-  if(toggle){selectionMode=!selectionMode;syncToolbar();return;}
-  var anchor=event.target.closest&&event.target.closest('.popular-discovery-store[data-store-id]');
-  if(anchor&&selectionMode){event.preventDefault();event.stopPropagation();if(event.stopImmediatePropagation)event.stopImmediatePropagation();toggleStore(anchor);}
- },true);
- if(window.MutationObserver){
-  var observer=new MutationObserver(function(){ensureToolbar();syncCards();});
-  observer.observe(directory,{childList:true,subtree:true});
- }
- window.DigiYarStoreSelection={
-  version:'8.3.0-explicit-selection-mode',
-  isSelectionMode:function(){return selectionMode;},
-  setSelectionMode:function(value){selectionMode=!!value;syncToolbar();},
-  getFilters:function(){var ids=Array.from(selected);return {active:ids.length>0,selectedStoreIds:ids,selectedCategoryIds:[],selectedTypeIds:[]};},
-  getSelectedStoreIds:function(){return Array.from(selected);},
-  clear:function(){selected.clear();refresh();}
- };
- ensureToolbar();refresh();
+ });
+ document.addEventListener('click',function(event){if(!root.contains(event.target)){panel.hidden=true;trigger.setAttribute('aria-expanded','false');}});
+ refresh();
+ window.addEventListener('digiyar:taxonomy-ready',function(){if(!selected.size)return;var primary=Array.from(selected)[0];if(select.value!==primary)select.value=primary;select.dispatchEvent(new Event('change',{bubbles:true}));});
+ window.DigiYarStoreSelection={version:'8.0.0.2',getFilters:function(){return {active:active,selectedStoreIds:Array.from(selected),selectedCategoryIds:Array.from(selectedCategories),selectedTypeIds:Array.from(selectedTypes)};},getSelectedStoreIds:function(){return Array.from(selected);},clear:function(){selected.clear();selectedCategories.clear();selectedTypes.clear();active=false;refresh();}};
  return true;
 }
-function boot(){if(start())return;var n=0,t=setInterval(function(){if(start()||++n>50)clearInterval(t);},150);}
+function boot(){if(start())return;var n=0,t=setInterval(function(){if(start()||++n>40)clearInterval(t);},150);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
