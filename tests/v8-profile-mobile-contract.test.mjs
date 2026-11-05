@@ -7,10 +7,10 @@ const options = fs.readFileSync(new URL('../js/v6-product-options.js', import.me
 
 assert.ok(sync.includes('var launchInProgress=false'));
 assert.ok(sync.includes('if(launchInProgress)return false'));
-assert.ok(sync.includes("host.style.setProperty('height',height+'px','important')"));
-assert.ok(sync.includes("host.style.setProperty('height','0px','important')"));
-assert.ok(sync.includes("host.addEventListener('transitionend',onEnd)"));
-assert.ok(sync.includes("host.setAttribute('aria-hidden','true')"));
+assert.ok(sync.includes('var closeProfileAfterResults=false'));
+assert.ok(sync.includes("window.addEventListener('digiyar:hooshyar-results-ready'"));
+assert.ok(sync.includes("if(toggle&&toggle.getAttribute('aria-expanded')==='true')toggle.click()"));
+assert.ok(sync.includes('closeProfileAfterResults=true'));
 
 assert.ok(step4.includes("const S={mobile:[['phones','گوشی موبایل']"));
 assert.ok(step4.includes("phones:['نوع استفاده'"));
