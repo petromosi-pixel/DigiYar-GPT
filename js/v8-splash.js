@@ -90,49 +90,11 @@
   function init() {
     var splash = document.getElementById('splashScreen');
     if (!splash) return;
+
     splash.setAttribute('aria-hidden', 'false');
     splash.setAttribute('data-dismissed', 'false');
-    // Splash theme is explicit: app dark hooks win; otherwise splash stays light.
-    var darkTheme = document.documentElement.classList.contains('v6-dark') ||
-      document.body.classList.contains('v6-dark') ||
-      document.documentElement.classList.contains('dark') ||
-      document.body.classList.contains('dark') ||
-      document.documentElement.getAttribute('data-theme') === 'dark' ||
-      document.body.getAttribute('data-theme') === 'dark';
-    splash.setAttribute('data-splash-theme', darkTheme ? 'dark' : 'light');
-
-
-    installPromptAnimationFix();
-
-    var installIcon = document.querySelector('#installPrompt .install-prompt-icon img');
-    if (installIcon) {
-      installIcon.src = INSTALL_LOGO;
-      installIcon.removeAttribute('srcset');
-      installIcon.decoding = 'async';
-    }
-
-    var logo = splash.querySelector('.v5-splash-logo');
-    if (logo) {
-      logo.removeAttribute('srcset');
-      logo.decoding = 'async';
-      logo.loading = 'eager';
-    }
-
-    var legacyLogo = splash.querySelector('.legacy-splash-logo');
-    if (legacyLogo) legacyLogo.remove();
-
-    installStoreLogoObserver();
-    var offlineNotice = splash.querySelector('.v8-splash-offline');
-    function updateConnectionState() {
-      var offline = navigator.onLine === false;
-      if (offlineNotice) offlineNotice.hidden = !offline;
-    }
-    updateConnectionState();
-    window.addEventListener('offline', updateConnectionState);
-    window.addEventListener('online', updateConnectionState);
 
     // Register the startup guard before any optional DOM work.
-    // This keeps the splash recoverable even if a later initialization step throws.
     var offlineNotice = splash.querySelector('.v8-splash-offline');
     var appReady = false;
     var splashFinished = false;
@@ -159,7 +121,6 @@
 
     // Non-critical splash enhancements must never prevent the guard above.
     try {
-      // Splash theme is explicit: app dark hooks win; otherwise splash stays light.
       var darkTheme = document.documentElement.classList.contains('v6-dark') ||
         document.body.classList.contains('v6-dark') ||
         document.documentElement.classList.contains('dark') ||
