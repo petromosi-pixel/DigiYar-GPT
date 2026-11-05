@@ -74,14 +74,30 @@
     document.head.appendChild(style);
   }
 
+  var MIN_SPLASH_DURATION = 3000;
+  var splashStartedAt = Date.now();
+  var dismissTimer = null;
+
+  function scheduleSplashDismissal() {
+    if (dismissTimer !== null) window.clearTimeout(dismissTimer);
+    var remaining = Math.max(0, MIN_SPLASH_DURATION - (Date.now() - splashStartedAt));
+    dismissTimer = window.setTimeout(dismissSplash, remaining);
+  }
+
   function dismissSplash() {
     var splash = document.getElementById('splashScreen');
-    if (!splash) return;
+    if (!splash || navigator.onLine === false) return;
+    var remaining = MIN_SPLASH_DURATION - (Date.now() - splashStartedAt);
+    if (remaining > 0) {
+      scheduleSplashDismissal();
+      return;
+    }
+    if (splash.getAttribute('data-dismissed') === 'true') return;
+    splash.setAttribute('data-dismissed', 'true');
     splash.classList.add('splash-hidden');
     splash.setAttribute('aria-hidden', 'true');
     window.setTimeout(function () {
-      if (splash && splash.parentNode) {
-        splash.setAttribute('data-dismissed', 'true');
+      if (splash && splash.parentNode && splash.getAttribute('data-dismissed') === 'true') {
         splash.style.display = 'none';
       }
     }, 450);
@@ -100,7 +116,6 @@
       document.documentElement.getAttribute('data-theme') === 'dark' ||
       document.body.getAttribute('data-theme') === 'dark';
     splash.setAttribute('data-splash-theme', darkTheme ? 'dark' : 'light');
-
 
     installPromptAnimationFix();
 
@@ -127,17 +142,21 @@
       var offline = navigator.onLine === false;
       if (offlineNotice) offlineNotice.hidden = !offline;
       if (offline) {
+        if (dismissTimer !== null) {
+          window.clearTimeout(dismissTimer);
+          dismissTimer = null;
+        }
         splash.classList.remove('splash-hidden');
         splash.style.display = 'flex';
         splash.setAttribute('aria-hidden', 'false');
+        splash.setAttribute('data-dismissed', 'false');
       } else {
-        window.setTimeout(dismissSplash, 1200);
+        scheduleSplashDismissal();
       }
     }
     updateConnectionState();
     window.addEventListener('offline', updateConnectionState);
     window.addEventListener('online', updateConnectionState);
-    if (navigator.onLine !== false) window.setTimeout(dismissSplash, 3000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
