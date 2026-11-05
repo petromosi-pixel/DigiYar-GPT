@@ -126,20 +126,29 @@
     function updateConnectionState() {
       var offline = navigator.onLine === false;
       if (offlineNotice) offlineNotice.hidden = !offline;
-      if (offline) {
-        splash.classList.remove('splash-hidden');
-        splash.style.display = 'flex';
-        splash.setAttribute('aria-hidden', 'false');
-      } else {
-        window.setTimeout(dismissSplash, 1200);
-      }
     }
     updateConnectionState();
     window.addEventListener('offline', updateConnectionState);
     window.addEventListener('online', updateConnectionState);
-    if (navigator.onLine !== false) window.setTimeout(dismissSplash, 3000);
+
+    // Keep the splash visible until the application script chain is ready.
+    var appReady = false;
+    var watchdog = window.setTimeout(function () {
+      if (appReady) return;
+      if (offlineNotice) {
+        offlineNotice.hidden = false;
+        offlineNotice.innerHTML = '<strong>بارگذاری دیجی‌یار طول کشید</strong>در حال نمایش صفحه؛ لطفاً چند لحظه صبر کن';
+      }
+      dismissSplash();
+    }, 12000);
+    window.addEventListener('digiyar:app-ready', function () {
+      if (appReady) return;
+      appReady = true;
+      window.clearTimeout(watchdog);
+      updateConnectionState();
+      window.setTimeout(dismissSplash, navigator.onLine === false ? 1800 : 350);
+    }, { once: true });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
+  init();
 })();
