@@ -42,7 +42,7 @@ assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity gr
 
 const platforms = await readFile(new URL('../js/platforms.js', import.meta.url), 'utf8');
 const popularList = platforms.slice(platforms.indexOf('const popularStores=['), platforms.indexOf('const moreStores='));
-assert.equal((popularList.match(/^\\['/gm) || []).length, 35, 'The popular stores card must contain exactly the 35 requested stores');
+assert.equal(popularList.split('\n').filter(line => line.startsWith("['")).length, 35, 'The popular stores card must contain exactly the 35 requested stores');
 assert.ok(platforms.includes('grid.innerHTML=popularStores.map(store=>'), 'The homepage popular stores card must render its dedicated curated list');
 assert.ok(platforms.includes('popularAffiliateStores.forEach(store=>track.appendChild(dealCard(store)))'), 'Changing the popular stores card must not alter the discount carousel catalog');
 for (const id of ['digikala','snappshop','torob','basalam','technolife','gooshishop','janebi','dayan','iranmiz','chidahome','iransetkor','choobineh','banimode','jeanswest','modiseh','shixon','khanoumi','solokala','mootanroo','rojashop','darukade','neshatrokh','sportland','ninisite','taaghche','fidibo','hamrahmechanic','karnameh','yadakmarket','jobama','flytoday','safarmarket','faradars','daneshjooyar','sabzlearn']) {
