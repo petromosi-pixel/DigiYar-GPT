@@ -48,7 +48,7 @@ const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.40'), 'The relocated homepage card must ship with a fresh app-shell cache version');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.42'), 'The relocated homepage card must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
@@ -56,6 +56,11 @@ assert.ok(html.includes('popular-discovery-bottom-toggle v5-step4-toggle v5-step
 const categoryInit = ui.slice(ui.indexOf('function initCategoryCardToggle(){'), ui.indexOf('function initPopularStores(){'));
 const popularInit = ui.slice(ui.indexOf('function initPopularStores(){'), ui.indexOf('function initPageHarmony(){'));
 assert.ok(!categoryInit.includes('head.addEventListener'), 'Category heading must not toggle; only its bottom icon does');
+const engine = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
+assert.ok(engine.includes("state.type=next;state.openCategories={};"), 'Selecting an activity button must replace the active top-level category');
+assert.ok(engine.includes("toggle.setAttribute('aria-expanded','true');panel.hidden=false;panel.setAttribute('aria-hidden','false');"), 'Selecting any activity button must open the category card');
+assert.ok(engine.includes("if(next==='general'){state.openCategories.general=true;}else if(next==='portal'){state.openCategories.portal=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}"), 'Each activity button must reveal only its matching category group');
+assert.ok(engine.includes("if(bottom)bottom.setAttribute('aria-expanded','true');render();"), 'The bottom toggle state must stay synchronized after selecting an activity');
 assert.ok(!popularInit.includes('title.addEventListener'), 'Popular-store heading must not toggle; only its bottom icon does');
 assert.ok(ui.includes("title.addEventListener('click',flip)") && ui.includes("title.addEventListener('keydown'"), 'Purchase-profile card behavior must remain unchanged');
 assert.ok(ui.includes('v5-popular-toggle v5-step4-toggle v5-step4-final-toggle'), 'Popular stores must use the same toggle control style as the purchase-profile card');
@@ -74,7 +79,7 @@ assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'N
 assert.ok(index.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
 assert.ok(index.includes('sw.js?v=8.0.0-offline-shell.41'), 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.41'), 'Legacy toggle icon removal must ship with a fresh service-worker cache');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.42'), 'Legacy toggle icon removal must ship with a fresh service-worker cache');
 
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
