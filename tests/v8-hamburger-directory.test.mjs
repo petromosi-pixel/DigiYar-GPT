@@ -48,7 +48,7 @@ const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.37'), 'The relocated homepage card must ship with a fresh app-shell cache version');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.38'), 'The relocated homepage card must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
