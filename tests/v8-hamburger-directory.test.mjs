@@ -58,8 +58,12 @@ const popularInit = ui.slice(ui.indexOf('function initPopularStores(){'), ui.ind
 assert.ok(!categoryInit.includes('head.addEventListener'), 'Category heading must not toggle; only its bottom icon does');
 const engine = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
 assert.ok(engine.includes("state.type=next;state.openCategories={};"), 'Selecting an activity button must replace the active top-level category');
-assert.ok(engine.includes("if(isOpen&&state.type===next){toggle.setAttribute('aria-expanded','false');panel.hidden=true;"), 'Tapping the currently selected category button must close the card');
+assert.ok(engine.includes("function setStoreType(next){"), 'Activity tabs must use one shared category-state controller');
+assert.ok(engine.includes("var toggle=document.getElementById('popularDiscoveryToggle');") && engine.includes("var panel=document.getElementById('popularDiscoveryPanel');"), 'The category controller must resolve its own DOM references in its scope');
+assert.ok(engine.includes("if(isOpen&&state.type===next){"), 'Tapping the currently selected category button must close the card');
 assert.ok(engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;"), 'Category button toggle state must follow the actual card state');
+assert.ok(engine.includes("setStoreType(btn.getAttribute('data-store-type'));"), 'Category buttons must call the shared controller');
+assert.ok(!engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;if(isOpen&&state.type===next)"), 'Category button listeners must not reference init-local DOM variables');
 assert.ok(engine.includes("toggle.setAttribute('aria-expanded','true');panel.hidden=false;panel.setAttribute('aria-hidden','false');"), 'Selecting any activity button must open the category card');
 assert.ok(engine.includes("if(next==='general'){state.openCategories.general=true;}else if(next==='portal'){state.openCategories.portal=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}"), 'Each activity button must reveal only its matching category group');
 assert.ok(engine.includes("if(bottom)bottom.setAttribute('aria-expanded','true');render();"), 'The bottom toggle state must stay synchronized after selecting an activity');
@@ -81,7 +85,7 @@ assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'N
 assert.ok(index.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
 assert.ok(index.includes('sw.js?v=8.0.0-offline-shell.41'), 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.42'), 'Legacy toggle icon removal must ship with a fresh service-worker cache');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.44'), 'Corrected category controller must ship with a fresh service-worker cache');
 
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
