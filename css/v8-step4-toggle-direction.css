@@ -61,15 +61,26 @@
 }
 #v7PopularStoresHost #platforms .platform-logo{
   display:flex!important;
-  flex:0 0 46px!important;
-  width:46px!important;
-  height:46px!important;
+  flex:0 0 42px!important;
+  width:42px!important;
+  height:42px!important;
   padding:0!important;
   margin:0 auto!important;
   border:0!important;
-  border-radius:9px!important;
+  border-radius:8px!important;
   background:#fff!important;
   box-sizing:border-box!important;
+  overflow:visible!important;
+}
+#v7PopularStoresHost #platforms .platform-logo img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  overflow:visible!important;
 }
 #v7PopularStoresHost #platforms .platform-name{
   display:block!important;
@@ -89,6 +100,9 @@
 #v7PopularStoresHost #platforms .platform-btn{display:none!important}
 #v7PopularStoresHost .v5-popular-toggle.v5-step4-toggle.v5-step4-final-toggle{
   display:flex!important;
+  position:relative!important;
+  z-index:50!important;
+  pointer-events:auto!important;
   align-items:center!important;
   justify-content:center!important;
   width:58px!important;
@@ -127,11 +141,11 @@
 @media(max-width:420px){
   #v7PopularStoresHost #platforms{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
   #v7PopularStoresHost #platforms .platform{padding:4px 1px!important}
-  #v7PopularStoresHost #platforms .platform-logo{flex-basis:40px!important;width:40px!important;height:40px!important}
+  #v7PopularStoresHost #platforms .platform-logo{flex-basis:36px!important;width:36px!important;height:36px!important}
   #v7PopularStoresHost #platforms .platform-name{font-size:.62rem!important;letter-spacing:-.1px!important}
 }
 @media(max-width:350px){
   #v7PopularStoresHost #platforms{gap:3px!important}
-  #v7PopularStoresHost #platforms .platform-logo{flex-basis:36px!important;width:36px!important;height:36px!important}
+  #v7PopularStoresHost #platforms .platform-logo{flex-basis:32px!important;width:32px!important;height:32px!important}
   #v7PopularStoresHost #platforms .platform-name{font-size:.57rem!important}
 }
