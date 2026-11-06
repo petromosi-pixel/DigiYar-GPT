@@ -51,4 +51,13 @@ assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be ope
 assert.ok(sw.includes('digiyar-v8-8.0.0-shell.35'), 'The relocated homepage card must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
+const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
+assert.ok(html.includes('popular-discovery-bottom-toggle v5-step4-toggle v5-step4-final-toggle'), 'Activity category must use the shared three-chevron toggle');
+assert.ok(ui.includes('title.addEventListener(\'click\',flip)') && ui.includes('title.addEventListener(\'keydown\''), 'Popular stores and purchase-profile titles must toggle by click and keyboard');
+assert.ok(ui.includes('v5-popular-toggle v5-step4-toggle v5-step4-final-toggle'), 'Popular stores must use the same toggle control style as the purchase-profile card');
+assert.ok(hooshyar.includes('toggle.addEventListener(\'click\''), 'Activity-category title must remain an active toggle');
+assert.ok(ui.includes('setState(false)}') && ui.includes('setState(false)}'), 'Expandable cards must initialize closed');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.36'), 'Shared card-toggle UI must ship with a fresh service-worker cache');
+
+
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
