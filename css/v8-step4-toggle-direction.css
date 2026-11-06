@@ -20,3 +20,6 @@
 .v5-result-card .need-summary{margin-top:10px}
 .v5-result-card .recommendation-loading{text-align:center;padding:14px;color:#69778d}
 .v5-profile-completion .v5-step4-toggle-icon,.v5-popular-card .v5-popular-toggle-icon{color:var(--v5-navy)!important}
+
+/* Category card: reverse the open-state chevron direction without affecting the other cards. */
+#popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}
