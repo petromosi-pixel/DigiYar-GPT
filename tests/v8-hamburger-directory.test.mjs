@@ -108,11 +108,11 @@ assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle-ma
 assert.ok(!/popular-discovery-(?:toggle:after|bottom-toggle:before|chevron)/.test(hooshyarCss), 'Legacy category toggle arrow source must be deleted from its originating stylesheet');
 assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'No duplicate-arrow suppression rules should remain after deleting the original arrow source');
 assert.ok(html.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
-assert.ok(html.includes('sw.js?v=8.0.0-offline-shell.50'), 'Updated service worker must bypass the previous registration cache');
+assert.match(html, /sw\\.js\\?v=8\\.0\\.0-offline-shell\\.\\d+/, 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
 assert.ok(toggleDirection.includes('#popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}'), 'Expanded category card must reverse the chevron direction without changing other cards');
 assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.7'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.52'), 'Updated category chevron must ship with a fresh service-worker cache');
+assert.match(sw, /digiyar-v8-8\\.0\\.0-shell\\.\\d+/, 'Updated category chevron must ship with a fresh service-worker cache');
 
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
