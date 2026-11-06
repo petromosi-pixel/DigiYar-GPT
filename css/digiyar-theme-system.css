@@ -720,8 +720,8 @@ body.v6-dark #v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon{
   color:#f8fafc!important;background:transparent!important;border-color:transparent!important;
 }
 body.v6-dark #v7PopularStoresHost #platforms .platform{
-  color:var(--dy-text)!important;background:var(--dy-surface-raised)!important;
-  border:1px solid var(--dy-border)!important;box-shadow:none!important;
+  color:var(--dy-text)!important;background:transparent!important;
+  border:0!important;box-shadow:none!important;
 }
 body.v6-dark #v7PopularStoresHost #platforms .platform-name{color:var(--dy-text)!important}
 body.v6-dark #v7PopularStoresHost #platforms .platform-tag,
