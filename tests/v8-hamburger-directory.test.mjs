@@ -78,7 +78,6 @@ assert.ok(toggleDirection.includes('#v7PopularStoresHost #platforms{') && toggle
 assert.ok(toggleDirection.includes('flex:0 0 42px!important') && toggleDirection.includes('width:36px!important') && toggleDirection.includes('width:32px!important'), 'Popular-store logos must use the larger responsive size scale');
 assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-logo'), 'High-specificity rules must override legacy popular-store logo sizing');
 assert.ok(toggleDirection.includes('transform:none!important'), 'Legacy logo zoom must be disabled to prevent clipping and false size perception');
-assert.ok(toggleDirection.includes('flex:0 0 38px!important') && toggleDirection.includes('flex-basis:32px!important') && toggleDirection.includes('flex-basis:28px!important'), 'Popular-store logos must remain exactly one size step larger than category logos at desktop and mobile breakpoints');
 assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-main') && toggleDirection.includes('flex-direction:column!important'), 'Popular-store names must be laid out directly beneath their logos');
 assert.ok(toggleDirection.includes('#v7PopularStoresHost #platforms .platform-tagline,') && toggleDirection.includes('#v7PopularStoresHost #platforms .platform-btn{display:none!important}'), 'Popular-store listing must show only each logo and its name like the category directory');
 assert.ok(ui.includes("title.addEventListener('click',flip)") && ui.includes("title.addEventListener('keydown'"), 'Purchase-profile card behavior must remain unchanged');
@@ -90,6 +89,7 @@ assert.ok(ui.includes("panel.hidden=!open") && ui.includes("grid.hidden=!open"),
 const theme = await readFile(new URL('../css/digiyar-theme-system.css', import.meta.url), 'utf8');
 const harmony = await readFile(new URL('../css/v5-page-harmony.css', import.meta.url), 'utf8');
 const hooshyarCss = await readFile(new URL('../css/v8-hooshyar.css', import.meta.url), 'utf8');
+assert.ok(hooshyarCss.includes('flex:0 0 38px!important') && hooshyarCss.includes('flex-basis:32px!important') && hooshyarCss.includes('flex-basis:28px!important'), 'Category-card logo sizes must remain the reference scale below popular-store logos');
 assert.ok(harmony.includes('Shared home-card heading and bottom-chevron system'), 'All three homepage cards must share typography and chevron styling');
 assert.ok(harmony.includes('#v7PopularStoresHost .section-title .v5-card-subtitle') && harmony.includes('border:0!important'), 'Popular-store subtitle frame must be removed');
 assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle-main h2{') && harmony.includes('font-size:18px!important'), 'Category heading must be one size smaller');
