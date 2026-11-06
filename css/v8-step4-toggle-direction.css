@@ -135,6 +135,3 @@
   #v7PopularStoresHost #platforms .platform-logo{flex-basis:36px!important;width:36px!important;height:36px!important}
   #v7PopularStoresHost #platforms .platform-name{font-size:.57rem!important}
 }
-body.v6-dark #v7PopularStoresHost #platforms .platform{background:transparent!important;border:0!important;box-shadow:none!important}
-body.v6-dark #v7PopularStoresHost #platforms .platform-name{color:#f8fafc!important}
-body.v6-dark #v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon{color:#f8fafc!important}
