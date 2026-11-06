@@ -112,3 +112,77 @@ body.v6-dark .v5-result-card .section-title{border-radius:12px!important;overflo
 .v5-profile-card .section-title[role="button"]:focus-visible,.v5-popular-card .section-title[role="button"]:focus-visible{outline:2px solid var(--v5-navy);outline-offset:4px;border-radius:8px}
 .v5-popular-card .v5-popular-toggle.v5-step4-toggle.v5-step4-final-toggle{margin:1px auto 0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
 .popular-discovery .popular-discovery-bottom-toggle.v5-step4-toggle.v5-step4-final-toggle{font:inherit;background:transparent;border:0;box-shadow:none}
+
+
+/* Shared home-card heading and bottom-chevron system.
+   The profile card's existing interaction is intentionally preserved. */
+#popularStoresDiscovery .popular-discovery-toggle{
+  cursor:default!important;user-select:text!important;
+}
+#popularStoresDiscovery .popular-discovery-toggle-main,
+#v7PopularStoresHost .section-title,
+#v7ProfileSearchHost .section-title{
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:0!important;text-align:center!important;
+  margin:0!important;padding:0!important;
+}
+#popularStoresDiscovery .popular-discovery-toggle-main h2,
+#v7PopularStoresHost .section-title h2,
+#v7ProfileSearchHost .section-title h2{
+  margin:0!important;font-size:19px!important;font-weight:800!important;
+  line-height:1.25!important;text-align:center!important;
+}
+#v7PopularStoresHost .section-title,
+#v7PopularStoresHost .section-title h2,
+#v7PopularStoresHost .section-title p,
+#v7PopularStoresHost .section-title .v5-card-subtitle{
+  border:0!important;outline:0!important;box-shadow:none!important;
+  background:transparent!important;background-image:none!important;
+  border-radius:0!important;
+}
+#v7PopularStoresHost .section-title p,
+#v7PopularStoresHost .section-title .v5-card-subtitle,
+#v7ProfileSearchHost .section-title p{
+  margin:3px 0 0!important;padding:0!important;font-size:11px!important;
+  font-weight:500!important;line-height:1.35!important;text-align:center!important;
+  border:0!important;box-shadow:none!important;background:transparent!important;
+}
+#popularStoresDiscovery .popular-discovery-bottom-toggle,
+#v7PopularStoresHost .v5-popular-toggle,
+#v7ProfileSearchHost .v5-profile-completion-toggle{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:58px!important;height:28px!important;min-width:58px!important;
+  margin:1px auto 0!important;padding:0!important;border:0!important;
+  border-radius:0!important;background:transparent!important;box-shadow:none!important;
+  cursor:pointer!important;opacity:1!important;
+}
+#popularStoresDiscovery .popular-discovery-bottom-toggle .v5-step4-toggle-icon,
+#v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon,
+#v7ProfileSearchHost .v5-profile-completion-toggle .v5-step4-toggle-icon{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-direction:row!important;gap:0!important;width:38px!important;height:24px!important;
+  margin:0!important;font-size:16px!important;line-height:1!important;
+  transform-origin:center!important;transition:transform .25s ease!important;
+}
+#popularStoresDiscovery .popular-discovery-bottom-toggle .v5-step4-toggle-icon i,
+#v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon i,
+#v7ProfileSearchHost .v5-profile-completion-toggle .v5-step4-toggle-icon i{
+  display:block!important;margin:0 -1px!important;font-size:16px!important;
+  font-style:normal!important;font-weight:400!important;line-height:1!important;
+  background:none!important;border:0!important;
+}
+body.v6-dark #v7PopularStoresHost .section-title,
+body.v6-dark #v7PopularStoresHost .section-title h2,
+body.v6-dark #v7PopularStoresHost .section-title p,
+body.v6-dark #v7PopularStoresHost .section-title .v5-card-subtitle{
+  color:var(--dy-text)!important;border:0!important;outline:0!important;
+  box-shadow:none!important;background:transparent!important;
+}
+body.v6-dark #popularStoresDiscovery .popular-discovery-bottom-toggle,
+body.v6-dark #v7PopularStoresHost .v5-popular-toggle,
+body.v6-dark #v7ProfileSearchHost .v5-profile-completion-toggle,
+body.v6-dark #popularStoresDiscovery .popular-discovery-bottom-toggle .v5-step4-toggle-icon,
+body.v6-dark #v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon,
+body.v6-dark #v7ProfileSearchHost .v5-profile-completion-toggle .v5-step4-toggle-icon{
+  color:#f8fafc!important;text-shadow:none!important;
+}
