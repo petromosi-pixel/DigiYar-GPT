@@ -48,7 +48,7 @@ const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.36'), 'The relocated homepage card must ship with a fresh app-shell cache version');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.37'), 'The relocated homepage card must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
@@ -57,6 +57,11 @@ assert.ok(ui.includes('title.addEventListener(\'click\',flip)') && ui.includes('
 assert.ok(ui.includes('v5-popular-toggle v5-step4-toggle v5-step4-final-toggle'), 'Popular stores must use the same toggle control style as the purchase-profile card');
 assert.ok(hooshyar.includes('toggle.addEventListener(\'click\''), 'Activity-category title must remain an active toggle');
 assert.ok(ui.includes('setState(false)}'), 'Expandable cards must initialize closed');
+assert.ok(ui.includes('initCategoryCardToggle();initPopularStores();'), 'Category and popular-store accordions must both initialize on page startup');
+assert.ok(ui.includes("panel.hidden=!open") && ui.includes("grid.hidden=!open"), 'Both accordion panels must be explicitly hidden when collapsed');
+const theme = await readFile(new URL('../css/digiyar-theme-system.css', import.meta.url), 'utf8');
+assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
+assert.ok(theme.includes('.popular-discovery-toggle::after{content:none!important'), 'The duplicate legacy category arrow must be suppressed');
 assert.ok(sw.includes('digiyar-v8-8.0.0-shell.36'), 'Shared card-toggle UI must ship with a fresh service-worker cache');
 
 
