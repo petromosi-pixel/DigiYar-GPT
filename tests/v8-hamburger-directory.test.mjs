@@ -65,14 +65,16 @@ assert.ok(ui.includes('initCategoryCardToggle();initPopularStores();'), 'Categor
 assert.ok(ui.includes("panel.hidden=!open") && ui.includes("grid.hidden=!open"), 'Both accordion panels must be explicitly hidden when collapsed');
 const theme = await readFile(new URL('../css/digiyar-theme-system.css', import.meta.url), 'utf8');
 const harmony = await readFile(new URL('../css/v5-page-harmony.css', import.meta.url), 'utf8');
+const hooshyarCss = await readFile(new URL('../css/v8-hooshyar.css', import.meta.url), 'utf8');
 assert.ok(harmony.includes('Shared home-card heading and bottom-chevron system'), 'All three homepage cards must share typography and chevron styling');
 assert.ok(harmony.includes('#v7PopularStoresHost .section-title .v5-card-subtitle') && harmony.includes('border:0!important'), 'Popular-store subtitle frame must be removed');
 assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle-main h2{') && harmony.includes('font-size:18px!important'), 'Category heading must be one size smaller');
-assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle::after') && harmony.includes('content:none!important;display:none!important'), 'Legacy category heading arrow must be forcibly removed');
-assert.ok(ui.includes("head.querySelectorAll('.v5-step4-toggle-icon,.popular-discovery-toggle-icon,.accordion-arrow,.accordion-chevron,.chevron,.toggle-icon,svg').forEach(el=>el.remove())"), 'Legacy icon elements inside the category heading must be removed at initialization');
+assert.ok(!/popular-discovery-(?:toggle:after|bottom-toggle:before|chevron)/.test(hooshyarCss), 'Legacy category toggle arrow source must be deleted from its originating stylesheet');
+assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'No duplicate-arrow suppression rules should remain after deleting the original arrow source');
+assert.ok(index.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
+assert.ok(index.includes('sw.js?v=8.0.0-offline-shell.41'), 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
-assert.ok(theme.includes('.popular-discovery-toggle::after{content:none!important'), 'The duplicate legacy category arrow must be suppressed');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.39'), 'Shared card-toggle UI must ship with a fresh service-worker cache');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.41'), 'Legacy toggle icon removal must ship with a fresh service-worker cache');
 
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
