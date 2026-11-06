@@ -58,6 +58,8 @@ const popularInit = ui.slice(ui.indexOf('function initPopularStores(){'), ui.ind
 assert.ok(!categoryInit.includes('head.addEventListener'), 'Category heading must not toggle; only its bottom icon does');
 const engine = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
 assert.ok(engine.includes("state.type=next;state.openCategories={};"), 'Selecting an activity button must replace the active top-level category');
+assert.ok(engine.includes("if(isOpen&&state.type===next){toggle.setAttribute('aria-expanded','false');panel.hidden=true;"), 'Tapping the currently selected category button must close the card');
+assert.ok(engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;"), 'Category button toggle state must follow the actual card state');
 assert.ok(engine.includes("toggle.setAttribute('aria-expanded','true');panel.hidden=false;panel.setAttribute('aria-hidden','false');"), 'Selecting any activity button must open the category card');
 assert.ok(engine.includes("if(next==='general'){state.openCategories.general=true;}else if(next==='portal'){state.openCategories.portal=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}"), 'Each activity button must reveal only its matching category group');
 assert.ok(engine.includes("if(bottom)bottom.setAttribute('aria-expanded','true');render();"), 'The bottom toggle state must stay synchronized after selecting an activity');
