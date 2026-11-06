@@ -64,9 +64,9 @@ assert.ok(engine.includes("if(isOpen&&state.type===next){"), 'Tapping the curren
 assert.ok(engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;"), 'Category button toggle state must follow the actual card state');
 assert.ok(engine.includes("setStoreType(btn.getAttribute('data-store-type'));"), 'Category buttons must call the shared controller');
 assert.ok(!engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;if(isOpen&&state.type===next)"), 'Category button listeners must not reference init-local DOM variables');
-assert.ok(engine.includes("toggle.setAttribute('aria-expanded','true');panel.hidden=false;panel.setAttribute('aria-hidden','false');"), 'Selecting any activity button must open the category card');
+assert.ok(engine.includes("toggle.setAttribute('aria-expanded','true');") && engine.includes("panel.hidden=false;") && engine.includes("panel.setAttribute('aria-hidden','false');"), 'Selecting any activity button must open the category card');
 assert.ok(engine.includes("if(next==='general')state.openCategories.general=true;") && engine.includes("else if(next==='portal')state.openCategories.portal=true;") && engine.includes("domainsForSelection().forEach(function(domain){state.openCategories[domain]=true;});"), 'Each activity button must reveal only its matching category group');
-assert.ok(engine.includes("if(bottom)bottom.setAttribute('aria-expanded','true');render();"), 'The bottom toggle state must stay synchronized after selecting an activity');
+assert.ok(engine.includes("if(bottom)bottom.setAttribute('aria-expanded','true');") && engine.includes("render();\n}"), 'The bottom toggle state must stay synchronized after selecting an activity');
 assert.ok(!popularInit.includes('title.addEventListener'), 'Popular-store heading must not toggle; only its bottom icon does');
 assert.ok(ui.includes("title.addEventListener('click',flip)") && ui.includes("title.addEventListener('keydown'"), 'Purchase-profile card behavior must remain unchanged');
 assert.ok(ui.includes('v5-popular-toggle v5-step4-toggle v5-step4-final-toggle'), 'Popular stores must use the same toggle control style as the purchase-profile card');
