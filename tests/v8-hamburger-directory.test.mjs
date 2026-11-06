@@ -95,7 +95,7 @@ assert.ok(html.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hoos
 assert.ok(html.includes('sw.js?v=8.0.0-offline-shell.48'), 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
 assert.ok(toggleDirection.includes('#popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}'), 'Expanded category card must reverse the chevron direction without changing other cards');
-assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.4'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
+assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.5'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
 assert.ok(sw.includes('digiyar-v8-8.0.0-shell.49'), 'Updated category chevron must ship with a fresh service-worker cache');
 
 
