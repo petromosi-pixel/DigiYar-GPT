@@ -49,7 +49,7 @@ const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.51'), 'The category chevron direction fix must ship with a fresh app-shell cache version');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.52'), 'The category chevron direction fix must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
@@ -78,6 +78,8 @@ assert.ok(toggleDirection.includes('#v7PopularStoresHost #platforms{') && toggle
 assert.ok(toggleDirection.includes('flex:0 0 42px!important') && toggleDirection.includes('width:36px!important') && toggleDirection.includes('width:32px!important'), 'Popular-store logos must use the larger responsive size scale');
 assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-logo'), 'High-specificity rules must override legacy popular-store logo sizing');
 assert.ok(toggleDirection.includes('transform:none!important'), 'Legacy logo zoom must be disabled to prevent clipping and false size perception');
+assert.ok(toggleDirection.includes('border-radius:9px!important') && toggleDirection.includes('overflow:hidden!important'), 'Popular-store logos must share the category card rounded-corner treatment');
+assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-tag,'), 'Store taglines must be hidden so only the store name remains below each logo');
 assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-main') && toggleDirection.includes('flex-direction:column!important'), 'Popular-store names must be laid out directly beneath their logos');
 assert.ok(toggleDirection.includes('#v7PopularStoresHost #platforms .platform-tagline,') && toggleDirection.includes('#v7PopularStoresHost #platforms .platform-btn{display:none!important}'), 'Popular-store listing must show only each logo and its name like the category directory');
 assert.ok(ui.includes("title.addEventListener('click',flip)") && ui.includes("title.addEventListener('keydown'"), 'Purchase-profile card behavior must remain unchanged');
@@ -96,11 +98,11 @@ assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle-ma
 assert.ok(!/popular-discovery-(?:toggle:after|bottom-toggle:before|chevron)/.test(hooshyarCss), 'Legacy category toggle arrow source must be deleted from its originating stylesheet');
 assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'No duplicate-arrow suppression rules should remain after deleting the original arrow source');
 assert.ok(html.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
-assert.ok(html.includes('sw.js?v=8.0.0-offline-shell.49'), 'Updated service worker must bypass the previous registration cache');
+assert.ok(html.includes('sw.js?v=8.0.0-offline-shell.50'), 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
 assert.ok(toggleDirection.includes('#popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}'), 'Expanded category card must reverse the chevron direction without changing other cards');
-assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.6'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.51'), 'Updated category chevron must ship with a fresh service-worker cache');
+assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.7'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.52'), 'Updated category chevron must ship with a fresh service-worker cache');
 
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
