@@ -201,9 +201,9 @@
   max-height:42px!important;
   padding:0!important;
   margin:0 auto!important;
-  overflow:visible!important;
+  overflow:hidden!important;
   border:0!important;
-  border-radius:8px!important;
+  border-radius:9px!important;
   background:#fff!important;
   box-sizing:border-box!important;
 }
@@ -218,9 +218,9 @@
   max-height:100%!important;
   object-fit:contain!important;
   object-position:center!important;
-  overflow:visible!important;
+  overflow:hidden!important;
   padding:0!important;
-  border-radius:0!important;
+  border-radius:9px!important;
   transform:none!important;
 }
 #v7PopularStoresHost#v7PopularStoresHost #platforms .platform-name{
@@ -239,6 +239,7 @@
   white-space:nowrap!important;
 }
 #v7PopularStoresHost#v7PopularStoresHost #platforms .platform-tagline,
+#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-tag,
 #v7PopularStoresHost#v7PopularStoresHost #platforms .platform-btn{display:none!important}
 @media(max-width:420px){
   #v7PopularStoresHost#v7PopularStoresHost #platforms{gap:6px!important}
