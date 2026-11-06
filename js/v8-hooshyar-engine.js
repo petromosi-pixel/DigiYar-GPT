@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.1';
+var VERSION='8.0.0-hooshyar-engine.10';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -258,6 +258,40 @@ function featuredFor(domain,catalog){
  return out;
 }
 function fallbackStores(domain,catalog){return Object.keys(catalog).filter(function(id){return !isGeneral(id,catalog[id])&&!isPortal(id,catalog[id])&&(catalog[id].domains||[]).indexOf(domain)>=0;}).slice(0,6).map(function(id){var s=catalog[id];return {id:id,name:s.name||id,homepage:s.homepage||'',tagline:(s.specialties||[]).slice(0,2).join('، ')||'برای بررسی گزینه‌های مرتبط'};});}
+function setStoreType(next){
+ if(['general','portal','specialist'].indexOf(next)<0)return;
+ var toggle=document.getElementById('popularDiscoveryToggle');
+ var panel=document.getElementById('popularDiscoveryPanel');
+ if(!toggle||!panel)return;
+ var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;
+ if(isOpen&&state.type===next){
+  toggle.setAttribute('aria-expanded','false');
+  panel.hidden=true;
+  panel.setAttribute('aria-hidden','true');
+  var closeBottom=document.getElementById('popularDiscoveryBottomToggle');
+  if(closeBottom)closeBottom.setAttribute('aria-expanded','false');
+  return;
+ }
+ if(state.queryActive){
+  state.query='';
+  state.queryActive=false;
+  state.queryStoreIds=null;
+  state.categoriesByStore={};
+ }
+ state.type=next;
+ state.openCategories={};
+ if(next==='general')state.openCategories.general=true;
+ else if(next==='portal')state.openCategories.portal=true;
+ else domainsForSelection().forEach(function(domain){state.openCategories[domain]=true;});
+ toggle.setAttribute('aria-expanded','true');
+ panel.hidden=false;
+ panel.setAttribute('aria-hidden','false');
+ panel.dataset.rendered='true';
+ var bottom=document.getElementById('popularDiscoveryBottomToggle');
+ if(bottom)bottom.setAttribute('aria-expanded','true');
+ render();
+}
+function domainsForSelection(){return availableDomains(getCatalog());}
 function render(){
  var root=document.getElementById('v7PopularDiscovery');if(!root)return;
  var catalog=getCatalog(),domains=availableDomains(catalog);
@@ -567,7 +601,7 @@ function render(){
   }
  }
  root.querySelectorAll('[data-accordion-key]').forEach(function(btn){btn.addEventListener('click',function(){var key=btn.getAttribute('data-accordion-key');state.openCategories[key]=!state.openCategories[key];render();});});
- (tabsRoot||root).querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){var next=btn.getAttribute('data-store-type');if(['general','portal','specialist'].indexOf(next)<0)return;var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;if(isOpen&&state.type===next){toggle.setAttribute('aria-expanded','false');panel.hidden=true;panel.setAttribute('aria-hidden','true');var closeBottom=document.getElementById('popularDiscoveryBottomToggle');if(closeBottom)closeBottom.setAttribute('aria-expanded','false');return;}if(state.queryActive){state.query='';state.queryActive=false;state.queryStoreIds=null;state.categoriesByStore={};}state.type=next;state.openCategories={};if(next==='general'){state.openCategories.general=true;}else if(next==='portal'){state.openCategories.portal=true;}else{domains.forEach(function(d){state.openCategories[d]=true;});}toggle.setAttribute('aria-expanded','true');panel.hidden=false;panel.setAttribute('aria-hidden','false');panel.dataset.rendered='true';var bottom=document.getElementById('popularDiscoveryBottomToggle');if(bottom)bottom.setAttribute('aria-expanded','true');render();});});
+ (tabsRoot||root).querySelectorAll('[data-store-type]').forEach(function(btn){btn.addEventListener('click',function(){setStoreType(btn.getAttribute('data-store-type'));});});
 
 }
 function init(){
