@@ -106,3 +106,9 @@ body.v6-dark .v6-store-simulator-results .v6-auto-link{background:#2563eb!import
 body.v6-dark .v6-nav-sheet .section-title,
 body.v6-dark .v6-nav-sheet .v5-section-heading,
 body.v6-dark .v5-result-card .section-title{border-radius:12px!important;overflow:hidden!important}
+
+/* Unified expandable-card title interaction and shared three-chevron control. */
+.v5-profile-card .section-title[role="button"],.v5-popular-card .section-title[role="button"]{cursor:pointer;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent}
+.v5-profile-card .section-title[role="button"]:focus-visible,.v5-popular-card .section-title[role="button"]:focus-visible{outline:2px solid var(--v5-navy);outline-offset:4px;border-radius:8px}
+.v5-popular-card .v5-popular-toggle.v5-step4-toggle.v5-step4-final-toggle{margin:1px auto 0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.popular-discovery .popular-discovery-bottom-toggle.v5-step4-toggle.v5-step4-final-toggle{font:inherit;background:transparent;border:0;box-shadow:none}
