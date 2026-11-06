@@ -26,6 +26,7 @@ assert.ok(buttonRules.every(([, selector, declarations]) => {
   const authoredActionButton = /(?:\.primary|\.v5-primary|\.danger|\.v5-danger|\.popular-discovery-store-link|\.v6-auto-link|\.v5-smart-search-submit|\.v5-smart-search-clear|#installBtn|#v6ThemeToggle)/i.test(selector);
   return !authoredActionButton || !/(?:^|;)\s*(?:background(?:-[\w-]+)?|color|border-color)\s*:/i.test(declarations);
 }), 'The central theme must preserve authored brand/action button colors while allowing neutral disclosure controls to follow the theme.');
+assert.ok(index.includes('css/digiyar-theme-system.css?v=1.3.7'), 'Central theme stylesheet must be cache-busted after popular-store dark-mode adjustment');
 assert.match(index, /css\/digiyar-theme-system\.css\?v=[^"']+/,
   'The app must load the current centralized theme stylesheet with a cache-busting version.');
 
@@ -41,6 +42,7 @@ assert.doesNotMatch(discovery, /html\.dark|body\.dark|\[data-theme=["']dark|body
 const comparison = fs.readFileSync('js/v8-comparison-ui.js', 'utf8');
 assert.doesNotMatch(comparison, oldThemePattern,
   'Comparison UI must use the central theme contract rather than embedded dark-mode rules.');
+assert.match(theme, /body\.v6-dark #v7PopularStoresHost #platforms \.platform\{[^}]*background:transparent!important;[^}]*border:0!important;/s, 'Popular-store tiles must remain borderless and transparent in dark mode like the category directory.');
 const platforms = fs.readFileSync('js/platforms.js', 'utf8');
 assert.doesNotMatch(platforms, oldThemePattern,
   'Platform widgets must use the central theme contract rather than embedded dark-mode rules.');
