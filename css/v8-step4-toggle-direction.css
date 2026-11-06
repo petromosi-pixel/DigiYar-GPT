@@ -149,3 +149,5 @@
   #v7PopularStoresHost #platforms .platform-logo{flex-basis:32px!important;width:32px!important;height:32px!important}
   #v7PopularStoresHost #platforms .platform-name{font-size:.57rem!important}
 }
+#v7PopularStoresHost #platforms[hidden]{display:none!important}
+#v7PopularStoresHost .v5-popular-toggle{pointer-events:auto!important;touch-action:manipulation!important}
