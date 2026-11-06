@@ -188,14 +188,5 @@ body.v6-dark #v7ProfileSearchHost .v5-profile-completion-toggle .v5-step4-toggle
 }
 
 
-/* Category card: slightly smaller heading and absolutely no legacy header arrow. */
-#popularStoresDiscovery .popular-discovery-toggle::before,
-#popularStoresDiscovery .popular-discovery-toggle::after,
-#popularStoresDiscovery .popular-discovery-toggle-main::before,
-#popularStoresDiscovery .popular-discovery-toggle-main::after{
-  content:none!important;display:none!important;background:none!important;
-  border:0!important;box-shadow:none!important;
-}
-#popularStoresDiscovery .popular-discovery-toggle-main h2{
-  font-size:18px!important;
-}
+/* Category card heading size. */
+#popularStoresDiscovery .popular-discovery-toggle-main h2{font-size:18px!important}
