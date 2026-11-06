@@ -137,7 +137,6 @@ form.addEventListener('submit',async e=>{e.preventDefault();const data=Object.fr
 function escReport(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function initFooterNavigation(){
 if(document.getElementById('v6FooterNav'))return;
-const popular=document.querySelector('.v5-popular-card');
 const profileCompletionCard=document.querySelector('.v5-profile-completion');if(profileCompletionCard){profileCompletionCard.hidden=true;profileCompletionCard.setAttribute('aria-hidden','true');}
 const deals=document.getElementById('v7DealsHost');
 const style=document.createElement('style');
@@ -152,7 +151,7 @@ const backdrop=document.createElement('div');backdrop.className='v6-nav-backdrop
 const sheet=document.createElement('section');sheet.className='v6-nav-sheet';sheet.innerHTML='<div id="v6SheetBody"></div>';document.body.appendChild(sheet);
 const body=sheet.querySelector('#v6SheetBody');
 const anchors=new Map();
-[popular,profileCompletionCard].forEach(card=>{if(card&&card.parentNode){const a=document.createComment('v7-nav-anchor-'+card.id);card.parentNode.insertBefore(a,card);anchors.set(card,a);}});
+[profileCompletionCard].forEach(card=>{if(card&&card.parentNode){const a=document.createComment('v7-nav-anchor-'+card.id);card.parentNode.insertBefore(a,card);anchors.set(card,a);}});
 let activeCard=null;
 const restoreCard=card=>{
 if(!card)return;
@@ -173,12 +172,11 @@ const grid=card.querySelector('#platforms');if(grid){grid.hidden=false;grid.remo
 body.innerHTML='';body.appendChild(card);sheet.classList.add('is-open');backdrop.classList.add('is-open');
 };
 window.__v7OpenDeals=()=>{if(!deals)return false;close();deals.hidden=false;deals.removeAttribute('aria-hidden');deals.scrollIntoView({behavior:'smooth',block:'start'});return true;};
-const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-v6-popular>فروشگاه‌های محبوب</button><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
+const openRoot=()=>{if(sheet.classList.contains('is-open')){close();return;}body.innerHTML='<div class="v6-sheet-grid"><button class="v6-sheet-action" type="button" data-scroll="footerPanels">اطلاعات و راهنما</button></div>';sheet.classList.add('is-open');backdrop.classList.add('is-open');};
 backdrop.addEventListener('click',close);
 sheet.addEventListener('click',e=>{
-const popularBtn=e.target.closest('[data-v6-popular]'),dealsBtn=e.target.closest('[data-v6-deals]'),scrollBtn=e.target.closest('[data-scroll]');
-if(popularBtn)showCard(popular,'فروشگاه‌های محبوب','v6-menu-popular-card');
-else if(dealsBtn)showCard(deals,'پیشنهادات','v6-menu-deals-card');
+const dealsBtn=e.target.closest('[data-v6-deals]'),scrollBtn=e.target.closest('[data-scroll]');
+if(dealsBtn)showCard(deals,'پیشنهادات','v6-menu-deals-card');
 else if(scrollBtn){const target=$(scrollBtn.dataset.scroll);close();if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}
 });
 nav.querySelectorAll('button[data-v6-action]').forEach(button=>button.addEventListener('click',()=>{
