@@ -744,3 +744,12 @@ body.v6-dark #v7ProfileSearchHost .v5-step4-toggle,
 body.v6-dark #v7ProfileSearchHost .v5-step4-toggle-icon{color:#f8fafc!important}
 body.v6-dark #v7ProfileSearchHost .form-actions .v5-primary,
 body.v6-dark #v7ProfileSearchHost .form-actions .v5-danger{color:#fff!important}
+
+
+/* Ensure popular-store names remain legible in dark mode, including WebKit text fill. */
+body.v6-dark #v7PopularStoresHost#v7PopularStoresHost #platforms .platform .platform-name,
+body.v6-dark #v7PopularStoresHost#v7PopularStoresHost #platforms .platform-name,
+body.v6-dark #v7PopularStoresHost#v7PopularStoresHost #platforms .platform-name *{
+  color:var(--dy-text,#edf3fc)!important;
+  -webkit-text-fill-color:var(--dy-text,#edf3fc)!important;
+}
