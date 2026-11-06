@@ -688,3 +688,61 @@ body.v6-dark #v7ProfileSearchHost .v8-required-star{
   color:#e53935!important;
   -webkit-text-fill-color:#e53935!important;
 }
+
+
+/* V8 homepage accordion cards: one shared chevron control and complete dark surfaces. */
+.popular-discovery .popular-discovery-toggle::before,
+.popular-discovery .popular-discovery-toggle::after{content:none!important;display:none!important;background:none!important}
+.popular-discovery .popular-discovery-bottom-toggle{display:flex!important;align-items:center!important;justify-content:center!important;margin:2px auto 0!important;padding:0!important;width:58px!important;height:28px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:var(--v5-navy)!important;cursor:pointer!important}
+.popular-discovery .popular-discovery-bottom-toggle .v5-step4-toggle-icon{color:inherit!important}
+body.v6-dark #popularStoresDiscovery,
+body.v6-dark #v7PopularStoresHost,
+body.v6-dark #v7ProfileSearchHost{
+  color:var(--dy-text)!important;background:var(--dy-surface)!important;
+  background-image:none!important;border:1px solid var(--dy-border)!important;
+  box-shadow:var(--dy-shadow)!important;
+}
+body.v6-dark #popularStoresDiscovery .popular-discovery-toggle,
+body.v6-dark #popularStoresDiscovery .popular-discovery-panel,
+body.v6-dark #popularStoresDiscovery #v7PopularDiscovery,
+body.v6-dark #v7PopularStoresHost .section-title,
+body.v6-dark #v7ProfileSearchHost .section-title{
+  color:var(--dy-text)!important;background:var(--dy-surface)!important;
+  background-image:none!important;border-color:var(--dy-border)!important;
+}
+body.v6-dark #popularStoresDiscovery .popular-discovery-toggle h2,
+body.v6-dark #v7PopularStoresHost .section-title h2,
+body.v6-dark #v7PopularStoresHost .section-title p,
+body.v6-dark #v7ProfileSearchHost .section-title h2,
+body.v6-dark #v7ProfileSearchHost .section-title p{color:var(--dy-text)!important}
+body.v6-dark #popularStoresDiscovery .popular-discovery-bottom-toggle,
+body.v6-dark #popularStoresDiscovery .popular-discovery-bottom-toggle .v5-step4-toggle-icon,
+body.v6-dark #v7PopularStoresHost .v5-popular-toggle,
+body.v6-dark #v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon{
+  color:#f8fafc!important;background:transparent!important;border-color:transparent!important;
+}
+body.v6-dark #v7PopularStoresHost #platforms .platform{
+  color:var(--dy-text)!important;background:var(--dy-surface-raised)!important;
+  border:1px solid var(--dy-border)!important;box-shadow:none!important;
+}
+body.v6-dark #v7PopularStoresHost #platforms .platform-name{color:var(--dy-text)!important}
+body.v6-dark #v7PopularStoresHost #platforms .platform-tag,
+body.v6-dark #v7PopularStoresHost #platforms .platform-tagline{color:var(--dy-muted)!important}
+body.v6-dark #v7PopularStoresHost #platforms .platform-btn{color:#fff!important;background:#263b5c!important;border-color:#425879!important}
+body.v6-dark #v7PopularStoresHost #platforms .platform-logo{background:#fff!important;border-color:var(--dy-border)!important}
+body.v6-dark #v7ProfileSearchHost .v5-field,
+body.v6-dark #v7ProfileSearchHost .v5-field>span,
+body.v6-dark #v7ProfileSearchHost .v5-storage-note,
+body.v6-dark #v7ProfileSearchHost .input-hint{color:var(--dy-text)!important}
+body.v6-dark #v7ProfileSearchHost input,
+body.v6-dark #v7ProfileSearchHost select,
+body.v6-dark #v7ProfileSearchHost textarea{
+  color:var(--dy-text)!important;background:var(--dy-control)!important;
+  border-color:var(--dy-border)!important;color-scheme:dark;
+}
+body.v6-dark #v7ProfileSearchHost input::placeholder,
+body.v6-dark #v7ProfileSearchHost textarea::placeholder{color:var(--dy-muted)!important;opacity:1}
+body.v6-dark #v7ProfileSearchHost .v5-step4-toggle,
+body.v6-dark #v7ProfileSearchHost .v5-step4-toggle-icon{color:#f8fafc!important}
+body.v6-dark #v7ProfileSearchHost .form-actions .v5-primary,
+body.v6-dark #v7ProfileSearchHost .form-actions .v5-danger{color:#fff!important}
