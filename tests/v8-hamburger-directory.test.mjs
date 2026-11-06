@@ -42,13 +42,14 @@ assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity gr
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const ui = await readFile(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
 const sw = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+const toggleDirection = await readFile(new URL('../css/v8-step4-toggle-direction.css', import.meta.url), 'utf8');
 const categoryAt = html.indexOf('id="popularStoresDiscovery"');
 const popularAt = html.indexOf('id="v7PopularStoresHost"');
 const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.45'), 'The popular-card toggle fix must ship with a fresh app-shell cache version');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.46'), 'The category chevron direction fix must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
@@ -89,7 +90,9 @@ assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'N
 assert.ok(html.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
 assert.ok(html.includes('sw.js?v=8.0.0-offline-shell.43'), 'Updated service worker must bypass the previous registration cache');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.44'), 'Corrected category controller must ship with a fresh service-worker cache');
+assert.ok(toggleDirection.includes('#popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}'), 'Expanded category card must reverse the chevron direction without changing other cards');
+assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.2'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.46'), 'Updated category chevron must ship with a fresh service-worker cache');
 
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
