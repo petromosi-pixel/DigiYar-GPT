@@ -23,3 +23,118 @@
 
 /* Category card: reverse the open-state chevron direction without affecting the other cards. */
 #popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}
+
+
+/* Popular stores: mirror the category-card four-column logo-first directory. */
+#v7PopularStoresHost #platforms{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  align-items:start!important;
+  gap:8px!important;
+  margin-top:8px!important;
+}
+#v7PopularStoresHost #platforms .platform{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:4px 2px!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:center!important;
+  text-decoration:none!important;
+}
+#v7PopularStoresHost #platforms .platform-main{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#v7PopularStoresHost #platforms .platform-logo{
+  display:flex!important;
+  flex:0 0 46px!important;
+  width:46px!important;
+  height:46px!important;
+  padding:0!important;
+  margin:0 auto!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#v7PopularStoresHost #platforms .platform-name{
+  display:block!important;
+  align-self:auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  color:var(--v5-navy,#2a4169)!important;
+  font-size:.7rem!important;
+  font-weight:750!important;
+  line-height:1.45!important;
+  text-align:center!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#v7PopularStoresHost #platforms .platform-tagline,
+#v7PopularStoresHost #platforms .platform-btn{display:none!important}
+#v7PopularStoresHost .v5-popular-toggle.v5-step4-toggle.v5-step4-final-toggle{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:58px!important;
+  height:28px!important;
+  margin:1px auto 0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+  pointer-events:auto!important;
+}
+#v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon,
+#v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon i{pointer-events:none!important}
+#v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:38px!important;
+  height:24px!important;
+  color:var(--v5-navy,#2a4169)!important;
+}
+#v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon i{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  margin:0 -1px!important;
+  background:none!important;
+  border:0!important;
+  font-size:16px!important;
+  font-style:normal!important;
+  font-weight:400!important;
+  line-height:1!important;
+}
+@media(max-width:420px){
+  #v7PopularStoresHost #platforms{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}
+  #v7PopularStoresHost #platforms .platform{padding:4px 1px!important}
+  #v7PopularStoresHost #platforms .platform-logo{flex-basis:40px!important;width:40px!important;height:40px!important}
+  #v7PopularStoresHost #platforms .platform-name{font-size:.62rem!important;letter-spacing:-.1px!important}
+}
+@media(max-width:350px){
+  #v7PopularStoresHost #platforms{gap:3px!important}
+  #v7PopularStoresHost #platforms .platform-logo{flex-basis:36px!important;width:36px!important;height:36px!important}
+  #v7PopularStoresHost #platforms .platform-name{font-size:.57rem!important}
+}
+body.v6-dark #v7PopularStoresHost #platforms .platform{background:transparent!important;border:0!important;box-shadow:none!important}
+body.v6-dark #v7PopularStoresHost #platforms .platform-name{color:#f8fafc!important}
+body.v6-dark #v7PopularStoresHost .v5-popular-toggle .v5-step4-toggle-icon{color:#f8fafc!important}
