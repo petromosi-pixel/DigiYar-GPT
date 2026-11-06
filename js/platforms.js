@@ -43,6 +43,43 @@ const popularAffiliateStores=[
 {id:'memarket',name:'می‌مارکت',tagline:'خرید آنلاین با انتخاب‌های متنوع',logo:'assets/store-logos/می مارکت.webp',mark:'MM',url:'https://aff.memarket24.ir/dashboard',accent:'#7c3aed',dealLabel:'می‌مارکت',dealText:'ورود به پنل و فروشگاه می‌مارکت',dealIcon:'◆'},
 {id:'sabzgostar',name:'سبز گستر',tagline:'شبکه همکاری در فروش',logo:'https://www.google.com/s2/favicons?domain=sabzgostar.info&sz=128',mark:'SG',url:'http://sabzgostar.info',accent:'#0f766e',dealLabel:'شبکه همکاری در فروش',dealText:'ورود به وب‌سایت سبز گستر',dealIcon:'↗'}
 ];
+const popularStores=[
+['digikala','دیجی‌کالا','دیجی کالا.webp','https://www.digikala.com/','DK'],
+['snappshop','اسنپ‌شاپ','اسنپ شاپ.webp','https://snapp.shop/','SS'],
+['torob','ترب','ترب.webp','https://torob.com/','TR'],
+['basalam','باسلام','باسلام.webp','https://basalam.com/','BS'],
+['technolife','تکنولایف','تکنولایف.webp','https://www.technolife.com/','TL'],
+['gooshishop','گوشی شاپ','گوشی شاپ.webp','https://gooshishop.com/','GS'],
+['janebi','جانبی','جانبی.webp','https://janebi.com/','JN'],
+['dayan','دایان شاپ','دایان شاپ.webp','http://noura1393.affdn.ir/','DY'],
+['iranmiz','ایران میز','ایران میز.webp','https://www.iranmiz.com/','IM'],
+['chidahome','چیداهوم','چیدا هوم.webp','https://chidahomestudio.com/','CH'],
+['iransetkor','ایران ستکور','ایران ستکور.webp','https://iransetkor.com/','IS'],
+['choobineh','چوبینه','چوبینه.webp','https://choobineh.com/','CH'],
+['banimode','بانی مد','بانی مد.webp','https://www.banimode.com/','BM'],
+['jeanswest','جین وست','جین وست.webp','https://jeanswest.ir/','JW'],
+['modiseh','مدیسه','مدیسه.webp','https://www.modiseh.com/','MD'],
+['shixon','شیکستون','شیکستون..webp','https://shixon.com/','SH'],
+['khanoumi','خانومی','خانومی.webp','https://www.khanoumi.com/','KH'],
+['solokala','سولوکالا','سولو کالا.webp','https://solokala.com/','SK'],
+['mootanroo','مو تن رو','مو تن رو.webp','https://mootanroo.com/','MR'],
+['rojashop','روژا شاپ','روژا شاپ.webp','https://rojashop.com/','RJ'],
+['darukade','داروکده','داروکده.webp','https://www.darukade.com/','DK'],
+['neshatrokh','نشاط رخ','نشاط رخ.webp','https://neshatrokh.com/','NR'],
+['sportland','اسپرتلند','اسپرت لند.webp','https://sportland.ir/','SL'],
+['ninisite','نی نی سایت','نی نی سایت.webp','https://www.ninisite.com/','NN'],
+['taaghche','طاقچه','طاقچه.webp','https://taaghche.com/','TQ'],
+['fidibo','فیدیبو','فیدیبو.webp','https://fidibo.com/','FB'],
+['hamrahmechanic','همراه مکانیک','همراه مکانیک.webp','https://www.hamrah-mechanic.com/','HM'],
+['karnameh','کارنامه','کارنامه.webp','https://karnameh.com/','KN'],
+['yadakmarket','یدک مارکت','یدک مارکت.webp','https://yadakmarket.com/','YM'],
+['jobama','جاباما','جاباما.webp','https://www.jabama.com/','JB'],
+['flytoday','فلای تودی','فلای تودی.webp','https://www.flytoday.ir/','FT'],
+['safarmarket','سفر مارکت','سفر مارکت.webp','https://safarmarket.com/','SM'],
+['faradars','فرادرس','فرادرس.webp','https://faradars.org/','FR'],
+['daneshjooyar','دانشجویار','دانشجویار.webp','https://daneshjooyar.com/','DJ'],
+['sabzlearn','سبزلرن','سبز لرن.webp','https://sabzlearn.ir/','SZ']
+].map(([id,name,file,url,mark])=>({id,name,logo:'assets/store-logos/'+encodeURIComponent(file),url,mark}));
 const moreStores={name:'فروشگاه‌های بیشتر',tagline:'هر روز انتخاب‌های بیشتری در راه است',dealLabel:'به‌زودی',dealText:'فروشگاه‌های بیشتری به دیجی‌یار اضافه می‌شوند',dealIcon:'＋'};
 const affiliateUrls={digikala:{url:'https://aflo.ir/1GS4wzEjY',mode:'campaign'},snappshop:{url:'https://aflo.ir/13iJlKJaK',mode:'campaign'},dayan:{url:'http://noura1393.affdn.ir/',mode:'direct'},memarket:{url:'https://aff.memarket24.ir/dashboard',mode:'direct'}};
 window.DigiYarAffiliateUrls=affiliateUrls;
@@ -62,7 +99,7 @@ function styles(){if(document.getElementById('v6-store-brand-style'))return;cons
 /* Selected stores: keep every row inside the card; the card grows with content. */
 .v5-popular-card{overflow:hidden!important;contain:layout paint}.v5-popular-card .platform-grid{max-height:none!important;overflow:visible!important;height:auto!important;transition:none!important}.v5-popular-card:not(.is-open) .platform-grid{height:0!important;max-height:0!important;overflow:hidden!important}
 `;document.head.appendChild(s)}
-function renderPopularStores(){const grid=document.getElementById('platforms');if(!grid)return;grid.innerHTML=popularAffiliateStores.map(store=>{const affiliate=affiliateUrls[store.id];const target=affiliate&&affiliate.url?affiliate.url:store.url;return `<a class="platform" href="${target}" target="_blank" rel="noopener noreferrer" data-store="${store.id}" aria-label="ورود به ${store.name}"><div class="platform-main"><span class="platform-logo${newStoreIds.has(store.id)?' platform-logo-new':''}" aria-hidden="true"><img src="${store.logo}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="platform-mark" style="display:none">${store.mark}</span></span><span class="platform-name">${store.name}</span><span class="platform-tagline">${store.tagline}</span></div><span class="platform-btn">ورود به فروشگاه</span></a>`}).join('');styles()}
+function renderPopularStores(){const grid=document.getElementById('platforms');if(!grid)return;grid.innerHTML=popularStores.map(store=>{const affiliate=affiliateUrls[store.id];const target=affiliate&&affiliate.url?affiliate.url:store.url;return `<a class="platform" href="${target}" target="_blank" rel="noopener noreferrer" data-store="${store.id}" aria-label="ورود به ${store.name}"><div class="platform-main"><span class="platform-logo${newStoreIds.has(store.id)?' platform-logo-new':''}" aria-hidden="true"><img src="${store.logo}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="platform-mark" style="display:none">${store.mark}</span></span><span class="platform-name">${store.name}</span><span class="platform-tagline">${store.tagline}</span></div><span class="platform-btn">ورود به فروشگاه</span></a>`}).join('');styles()}
 function dealCard(store){const affiliate=affiliateUrls[store.id];const url=affiliate&&affiliate.url?affiliate.url:store.url;const card=document.createElement('article');card.className='v5-deal v5-deal-affiliate v6-store-deal';card.dataset.store=store.id;card.dataset.affiliateUrl=url;card.setAttribute('role','link');card.setAttribute('tabindex','0');card.setAttribute('aria-label',`مشاهده پیشنهادهای ${store.name}`);card.style.setProperty('--deal-accent',store.accent);const dealUrl=store.dealUrl||store.url;const visual = store.heroImage || store.logo;const cleanText=(store.dealText||"").replaceAll(store.name,"").replace(/\s{2,}/g," ").replace(/\s+([،؛,:])/g,"$1").trim();card.innerHTML=`<div class="v6-store-deal-visual"><img class="v6-store-deal-art" src="${visual}" alt="${store.name}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${store.logo}'"></div><div class="v6-store-deal-head"><div class="v6-store-deal-brand"><div class="v6-store-deal-name">${store.name}</div></div></div><div class="v6-store-deal-body"><div class="v6-store-deal-text">${cleanText}</div></div><div class="v6-store-deal-foot"><a class="v6-store-deal-link" href="${url}" target="_blank" rel="noopener noreferrer">ورود به فروشگاه</a></div>`;return card}
 function moreCard(){const card=document.createElement('article');card.className='v5-deal v5-deal-more v6-store-deal v6-store-deal-more';card.setAttribute('aria-label','فروشگاه‌های بیشتر');card.innerHTML=`<div class="v6-store-deal-head"><div class="v6-store-deal-brand"><div class="v6-store-deal-icon" style="width:50px;height:50px;border-radius:16px;font-size:25px;transform:none" aria-hidden="true">${moreStores.dealIcon}</div><div class="v6-store-deal-name">${moreStores.name}</div></div></div><div class="v6-store-deal-body"><div class="v6-store-deal-icon" aria-hidden="true">＋</div><div class="v6-store-deal-label">${moreStores.dealLabel}؛ فروشگاه‌های بیشتر در راه‌اند</div><div class="v6-store-deal-text">${moreStores.dealText}</div></div><div class="v6-store-deal-foot"><span class="v6-store-deal-badge">${moreStores.dealLabel}</span></div>`;return card}
 function renderAffiliateSlides(){const track=document.getElementById('v5DealTrack');if(!track)return;styles();track.innerHTML='';popularAffiliateStores.forEach(store=>track.appendChild(dealCard(store)));track.appendChild(moreCard())}
