@@ -39,6 +39,16 @@ assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity gr
    Keep this regression focused on canonical catalog classification and selector coverage. */
 
 
+
+const platforms = await readFile(new URL('../js/platforms.js', import.meta.url), 'utf8');
+const popularList = platforms.slice(platforms.indexOf('const popularStores=['), platforms.indexOf('const moreStores='));
+assert.equal((popularList.match(/^\\['/gm) || []).length, 35, 'The popular stores card must contain exactly the 35 requested stores');
+assert.ok(platforms.includes('grid.innerHTML=popularStores.map(store=>'), 'The homepage popular stores card must render its dedicated curated list');
+assert.ok(platforms.includes('popularAffiliateStores.forEach(store=>track.appendChild(dealCard(store)))'), 'Changing the popular stores card must not alter the discount carousel catalog');
+for (const id of ['digikala','snappshop','torob','basalam','technolife','gooshishop','janebi','dayan','iranmiz','chidahome','iransetkor','choobineh','banimode','jeanswest','modiseh','shixon','khanoumi','solokala','mootanroo','rojashop','darukade','neshatrokh','sportland','ninisite','taaghche','fidibo','hamrahmechanic','karnameh','yadakmarket','jobama','flytoday','safarmarket','faradars','daneshjooyar','sabzlearn']) {
+  assert.ok(popularList.includes("['" + id + "'"), `Requested store must appear in the popular stores card: ${id}`);
+}
+
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const ui = await readFile(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
 const sw = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
@@ -49,7 +59,7 @@ const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.52'), 'The category chevron direction fix must ship with a fresh app-shell cache version');
+assert.match(sw, /digiyar-v8-8\.0\.0-shell\.\d+/, 'The category chevron direction fix must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
