@@ -48,7 +48,7 @@ const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
-assert.ok(sw.includes('digiyar-v8-8.0.0-shell.39'), 'The relocated homepage card must ship with a fresh app-shell cache version');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.40'), 'The relocated homepage card must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
@@ -67,6 +67,9 @@ const theme = await readFile(new URL('../css/digiyar-theme-system.css', import.m
 const harmony = await readFile(new URL('../css/v5-page-harmony.css', import.meta.url), 'utf8');
 assert.ok(harmony.includes('Shared home-card heading and bottom-chevron system'), 'All three homepage cards must share typography and chevron styling');
 assert.ok(harmony.includes('#v7PopularStoresHost .section-title .v5-card-subtitle') && harmony.includes('border:0!important'), 'Popular-store subtitle frame must be removed');
+assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle-main h2{') && harmony.includes('font-size:18px!important'), 'Category heading must be one size smaller');
+assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle::after') && harmony.includes('content:none!important;display:none!important'), 'Legacy category heading arrow must be forcibly removed');
+assert.ok(ui.includes("head.querySelectorAll('.v5-step4-toggle-icon,.popular-discovery-toggle-icon,.accordion-arrow,.accordion-chevron,.chevron,.toggle-icon,svg').forEach(el=>el.remove())"), 'Legacy icon elements inside the category heading must be removed at initialization');
 assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
 assert.ok(theme.includes('.popular-discovery-toggle::after{content:none!important'), 'The duplicate legacy category arrow must be suppressed');
 assert.ok(sw.includes('digiyar-v8-8.0.0-shell.39'), 'Shared card-toggle UI must ship with a fresh service-worker cache');
