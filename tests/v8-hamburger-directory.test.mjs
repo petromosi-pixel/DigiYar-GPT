@@ -41,12 +41,14 @@ assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity gr
 
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const ui = await readFile(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
+const sw = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
 const categoryAt = html.indexOf('id="popularStoresDiscovery"');
 const popularAt = html.indexOf('id="v7PopularStoresHost"');
 const profileAt = html.indexOf('id="v7ProfileSearchHost"');
 assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
 assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
 assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
+assert.ok(sw.includes('digiyar-v8-8.0.0-shell.35'), 'The relocated homepage card must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
