@@ -38,4 +38,15 @@ assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity gr
    that UI is the next implementation phase, not part of the current V8 baseline.
    Keep this regression focused on canonical catalog classification and selector coverage. */
 
+
+const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const ui = await readFile(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
+const categoryAt = html.indexOf('id="popularStoresDiscovery"');
+const popularAt = html.indexOf('id="v7PopularStoresHost"');
+const profileAt = html.indexOf('id="v7ProfileSearchHost"');
+assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
+assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
+assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
+assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
+
 console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
