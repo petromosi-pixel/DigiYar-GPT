@@ -691,8 +691,6 @@ body.v6-dark #v7ProfileSearchHost .v8-required-star{
 
 
 /* V8 homepage accordion cards: one shared chevron control and complete dark surfaces. */
-.popular-discovery .popular-discovery-toggle::before,
-.popular-discovery .popular-discovery-toggle::after{content:none!important;display:none!important;background:none!important}
 .popular-discovery .popular-discovery-bottom-toggle{display:flex!important;align-items:center!important;justify-content:center!important;margin:2px auto 0!important;padding:0!important;width:58px!important;height:28px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:var(--v5-navy)!important;cursor:pointer!important}
 .popular-discovery .popular-discovery-bottom-toggle .v5-step4-toggle-icon{color:inherit!important}
 body.v6-dark #popularStoresDiscovery,
