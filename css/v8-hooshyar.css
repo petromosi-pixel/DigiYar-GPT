@@ -5,8 +5,6 @@
 .popular-discovery-mark{display:grid;place-items:center;flex:0 0 44px;height:44px;border-radius:14px;background:rgba(255,255,255,.13);font-size:22px}
 .popular-discovery-toggle h2{margin:0;font-size:1.04rem;font-weight:800;line-height:1.5}
 .popular-discovery-toggle p{margin:3px 0 0;color:#e2eaff;font-size:.82rem;line-height:1.7}
-.popular-discovery-chevron{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border:1px solid rgba(255,255,255,.35);border-radius:50%;font-size:19px;transition:transform .2s}
-.popular-discovery-toggle[aria-expanded="true"] .popular-discovery-chevron{transform:rotate(180deg)}
 .popular-discovery-panel{padding:18px 0 2px}
 .popular-discovery-intro{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 2px 14px}
 .popular-discovery-intro strong{color:var(--pd-ink);font-size:.94rem}
@@ -145,11 +143,7 @@
 .popular-discovery-toggle-main{display:flex!important;justify-content:center!important;align-items:center!important;gap:8px!important;width:100%!important;min-width:0!important}
 .popular-discovery-mark{display:none!important}
 .popular-discovery-toggle h2{margin:0!important;font-size:.96rem!important;font-weight:850!important;line-height:1.5!important;color:inherit!important}
-.popular-discovery-toggle:after,.popular-discovery-bottom-toggle:before{content:"";display:block;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);opacity:.75}
-.popular-discovery-toggle:after{display:none}
 .popular-discovery-bottom-toggle{display:flex!important;justify-content:center!important;align-items:center!important;gap:8px!important;width:100%!important;height:27px!important;margin:0!important;padding:0!important;border:0!important;border-radius:0 0 14px 14px!important;background:transparent!important;color:#77839a!important;font-size:0!important;cursor:pointer!important}
-.popular-discovery-bottom-toggle:before{width:8px;height:8px;transform:rotate(45deg);transition:transform .18s ease}
-.popular-discovery-bottom-toggle[aria-expanded="true"]:before{transform:rotate(225deg)}
 .popular-discovery-bottom-toggle svg{width:16px;height:16px}
 .popular-discovery-panel{padding:10px!important;background:transparent!important;border:0!important;box-shadow:none!important}
 .popular-discovery-type-tabs{display:flex!important;gap:9px!important;flex-wrap:nowrap!important;margin:0 0 12px!important}
