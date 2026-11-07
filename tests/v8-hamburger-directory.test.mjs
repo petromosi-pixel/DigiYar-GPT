@@ -41,13 +41,15 @@ assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity gr
 
 
 const platforms = await readFile(new URL('../js/platforms.js', import.meta.url), 'utf8');
-const popularList = platforms.slice(platforms.indexOf('const popularStores=['), platforms.indexOf('const moreStores='));
-assert.equal(popularList.split('\n').filter(line => line.startsWith("['")).length, 35, 'The popular stores card must contain exactly the 35 requested stores');
-assert.ok(platforms.includes('grid.innerHTML=popularStores.map(store=>'), 'The homepage popular stores card must render its dedicated curated list');
+const requestedPopularStoreIds = ["digikala","snappshop","torob","basalam","technolife","gooshishop","janebi","dayan","iranmiz","chidahome","iransetkor","choobineh","banimode","jeanswest","modiseh","shixon","khanoumi","solokala","mootanroo","rojashop","darukade","neshatrokh","sportland","ninisite","taaghche","fidibo","hamrahmechanic","karnameh","yadakmarket","jobama","flytoday","safarmarket","faradars","daneshjooyar","sabzlearn"];
+assert.deepEqual(kb.popularStoreIds, requestedPopularStoreIds, 'The knowledge base must be the sole source and exact order for the 35 curated popular stores');
+assert.equal(kb.popularStoreIds.length, 35, 'The popular stores card must contain exactly the 35 requested stores');
+assert.ok(kb.popularStoreIds.every(id => Object.prototype.hasOwnProperty.call(kb.catalog, id)), 'Every curated popular store must resolve to a canonical knowledge-base merchant');
+assert.ok(platforms.includes('const storeKnowledgeBase=window.DigiYarStoreBusinessDomains;'), 'The homepage popular stores card must read from the canonical knowledge base');
+assert.ok(platforms.includes('const popularStoreIds=storeKnowledgeBase&&Array.isArray(storeKnowledgeBase.popularStoreIds)?storeKnowledgeBase.popularStoreIds:[];'), 'The homepage popular stores card must use only the curated knowledge-base IDs');
+assert.ok(platforms.includes('grid.innerHTML=popularStores.map(store=>'), 'The homepage popular stores card must render the knowledge-base-resolved list');
 assert.ok(platforms.includes('popularAffiliateStores.forEach(store=>track.appendChild(dealCard(store)))'), 'Changing the popular stores card must not alter the discount carousel catalog');
-for (const id of ['digikala','snappshop','torob','basalam','technolife','gooshishop','janebi','dayan','iranmiz','chidahome','iransetkor','choobineh','banimode','jeanswest','modiseh','shixon','khanoumi','solokala','mootanroo','rojashop','darukade','neshatrokh','sportland','ninisite','taaghche','fidibo','hamrahmechanic','karnameh','yadakmarket','jobama','flytoday','safarmarket','faradars','daneshjooyar','sabzlearn']) {
-  assert.ok(popularList.includes("['" + id + "'"), `Requested store must appear in the popular stores card: ${id}`);
-}
+
 
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const ui = await readFile(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
