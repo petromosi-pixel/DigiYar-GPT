@@ -1,4 +1,4 @@
-const CACHE_VERSION="digiyar-v8-8.0.0-shell.57";
+const CACHE_VERSION="digiyar-v8-8.0.0-shell.58";
 const MEDIA_CACHE="digiyar-media-v1";
 const APP_SHELL=["./","./index.html","./manifest.json","./css/v8-base.css","./css/v8-splash.css","./css/v8-step2-header.css","./css/v8-ui.css","./css/v8-step4.css","./css/v8-step4-toggle-direction.css","./css/v8-smart-search.css","./css/v8-hooshyar.css","./css/v8-hooshyar-hero.css","./css/digiyar-theme-system.css?v=1.3.8","./css/v8-deals-redesign.css","./js/v8-splash.js?v=8.0.0-splash.4","./js/v8-hooshyar-input.js?v=8.0.0-hooshyar-input.9","./assets/logos/Splash logo.png"];
 const isRuntimeAsset=request=>{const u=new URL(request.url);return u.origin===self.location.origin&&(u.pathname.endsWith("/index.html")||u.pathname.endsWith("/")||u.pathname.endsWith(".js")||u.pathname.endsWith(".css")||u.pathname.endsWith(".json"))};
