@@ -64,6 +64,14 @@ assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be ope
 assert.match(sw, /digiyar-v8-8\.0\.0-shell\.\d+/, 'The category chevron direction fix must ship with a fresh app-shell cache version');
 assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
 
+const menuOpen = ui.slice(ui.indexOf('const openRoot=()=>'), ui.indexOf('backdrop.addEventListener'));
+assert.ok(menuOpen.includes('v6-home-shortcut-list'), 'Hamburger menu must render as a plain navigation list, not section cards');
+for (const id of ['v8HooshyarConceptHero','v7DealsHost','popularStoresDiscovery','v7PopularStoresHost','v7ProfileSearchHost','digiyarConversation','resultSection']) assert.ok(menuOpen.includes('data-home-shortcut=\\\"'+id+'\\\"'), `Hamburger shortcuts must include homepage section ${id}`);
+for (const key of ['about','guide','privacy','contact']) assert.ok(menuOpen.includes('footer:'+key), `Hamburger shortcuts must include footer section ${key}`);
+assert.ok(ui.includes("const shortcut=e.target.closest('[data-home-shortcut]')"), 'Hamburger shortcut activation must be delegated from the menu list');
+assert.ok(ui.includes("target.scrollIntoView({behavior:'smooth',block:'start'})"), 'Hamburger shortcuts must smoothly navigate to their homepage sections');
+assert.ok(ui.includes("if(footerButton)footerButton.click()"), 'Footer shortcuts must activate the existing footer navigation behavior');
+
 const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
 assert.ok(html.includes('popular-discovery-bottom-toggle v5-step4-toggle v5-step4-final-toggle'), 'Activity category must use the shared three-chevron toggle');
 const categoryInit = ui.slice(ui.indexOf('function initCategoryCardToggle(){'), ui.indexOf('function initPopularStores(){'));
