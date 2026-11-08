@@ -109,9 +109,15 @@ form.addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntr
 function syncFooterAccountAvatar(){
 const button=document.querySelector('#v6FooterNav [data-v6-action="account"]');if(!button)return;
 let profile={};try{profile=JSON.parse(localStorage.getItem('digiyar-account-profile-v1')||localStorage.getItem('digiyar-v5-profile')||'{}')||{}}catch(e){}
-const avatar=String(profile.avatarData||'');if(!/^data:image\/(?:jpeg|png|webp);base64,/i.test(avatar))return;
-let image=button.querySelector('.v6-footer-account-avatar');if(!image){image=document.createElement('img');image.className='v6-footer-account-avatar';image.alt='';image.setAttribute('aria-hidden','true');const label=button.querySelector('span');button.insertBefore(image,label||null);}
-image.src=avatar;
+const avatar=String(profile.avatarData||'');
+const valid=/^data:image\/(?:jpeg|png|webp);base64,/i.test(avatar);
+const icon=button.querySelector('svg');
+let image=button.querySelector('.v6-footer-account-avatar');
+if(!valid){if(image)image.remove();button.classList.remove('has-custom-avatar');if(icon)icon.style.removeProperty('display');return;}
+if(!image){image=document.createElement('img');image.className='v6-footer-account-avatar';image.alt='';image.setAttribute('aria-hidden','true');button.insertBefore(image,icon||button.firstChild);}
+if(image.src!==avatar)image.src=avatar;
+button.classList.add('has-custom-avatar');
+if(icon)icon.style.setProperty('display','none','important');
 }
 function openAccountDashboard(){
 const sheet=document.querySelector('.v6-nav-sheet'),backdrop=document.querySelector('.v6-nav-backdrop'),body=document.getElementById('v6SheetBody');
