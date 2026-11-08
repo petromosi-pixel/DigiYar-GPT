@@ -33,8 +33,8 @@ body.v6-dark #dyAccountPage{--dy-page:#101827;--dy-surface:#182437;--dy-control:
  page.innerHTML='<header class="dyac-top"><button type="button" class="dyac-back" data-back aria-label="بازگشت">→</button><strong>حساب کاربری <b>دیجی‌یار</b></strong><button type="button" class="dyac-support" data-tab="support">پشتیبانی</button></header><div class="dyac-profilebar"><div class="dyac-avatar">'+(p.avatarData?'<img src="'+esc(p.avatarData)+'" alt="عکس پروفایل">':'<span>👤</span>')+'</div><div class="dyac-identity"><strong>'+esc(p.name||'کاربر دیجی‌یار')+'</strong><small>'+esc(p.phone||'برای تکمیل حساب، اطلاعات فردی را وارد کن')+'</small></div><button type="button" data-photo>✎</button><input type="file" accept="image/*" hidden data-photo-input></div><nav class="dyac-tabs" aria-label="بخش‌های حساب"><button class="active" data-tab="personal">اطلاعات فردی</button><button data-tab="addresses">آدرس‌ها</button><button data-tab="finance">مالی</button><button data-tab="security">امنیت حساب</button></nav><div class="dyac-content" id="dyacContent"></div>';
  document.body.appendChild(page);
  const oldMainHidden=main.hidden,oldNavHidden=nav?nav.hidden:false;
- main.hidden=true;if(nav)nav.hidden=true;if(sheet){sheet.classList.remove('is-open')}if(backdrop){backdrop.classList.remove('is-open')}
- page.dataset.oldMainHidden=String(oldMainHidden);page.dataset.oldNavHidden=String(oldNavHidden);
+ main.hidden=true;if(nav){nav.hidden=true;nav.style.setProperty('display','none','important');}if(sheet){sheet.classList.remove('is-open')}if(backdrop){backdrop.classList.remove('is-open')}
+ page.dataset.oldMainHidden=String(oldMainHidden);page.dataset.oldNavHidden=String(oldNavHidden);page.dataset.oldNavDisplay=nav?nav.style.display:'';
  page.addEventListener('click',e=>{
   const back=e.target.closest('[data-back]');if(back){close();return}
   const tab=e.target.closest('[data-tab]');if(tab){render(tab.dataset.tab);return}
@@ -60,7 +60,7 @@ body.v6-dark #dyAccountPage{--dy-page:#101827;--dy-surface:#182437;--dy-control:
   if(tab==='support')c.innerHTML='<h2>پشتیبانی دیجی‌یار</h2><div class="dyac-card dyac-faq"><details><summary>چطور اطلاعات حسابم را ویرایش کنم؟</summary><p>از زبانه اطلاعات فردی، فیلدها را ویرایش و ذخیره کن.</p></details><details><summary>چطور نشانی اضافه کنم؟</summary><p>به زبانه آدرس‌ها برو و گزینه افزودن نشانی جدید را انتخاب کن.</p></details><details><summary>اطلاعات حساب کجا ذخیره می‌شود؟</summary><p>در نسخه فعلی روی همین دستگاه و مرورگر ذخیره می‌شود.</p></details><details><summary>چطور مشکل را گزارش کنم؟</summary><p>از منوی اصلی دیجی‌یار، بخش حساب من و گزارش مشکل به پشتیبانی را باز کن.</p></details></div>';
   c.scrollTop=0;
  }
- function close(){page.remove();main.hidden=page.dataset.oldMainHidden==='true';if(nav)nav.hidden=page.dataset.oldNavHidden==='true';}
+ function close(){page.remove();main.hidden=page.dataset.oldMainHidden==='true';if(nav){nav.hidden=page.dataset.oldNavHidden==='true';nav.style.display=page.dataset.oldNavDisplay||'';}}
  render('personal');
 }
 document.addEventListener('click',function(e){const b=e.target.closest('#v6FooterNav [data-v6-action="account"]');if(!b)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if($('#dyAccountPage'))return;mount();},true);
