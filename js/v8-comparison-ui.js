@@ -1,7 +1,7 @@
 /* DigiYar V7 — comparison UI / product intake */
 (function(window,document){
 'use strict';
-const VERSION='7.0.0-comparison-ui.50';
+const VERSION='7.0.0-comparison-ui.51';
 const MAX=3;
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');}
 function norm(v){return String(v==null?'':v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();}
@@ -111,20 +111,20 @@ function productCols(products){return products.map(p=>'<th scope="col" class="v7
 function productLinks(products){return '<div class="v7c-product-links">'+products.map(p=>{const u=p&&(p.comparisonUrl||p.productUrl||'');return '<div class="v7c-product-link">'+(p.store?'<span class="v7c-link-store">'+esc(p.store)+'</span>':'')+(u?'<a class="v7c-view-product" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">دیدن محصول</a>':'<span class="v7c-link-store">لینک محصول موجود نیست</span>')+'</div>';}).join('')+'</div>';}
 function bestIds(products,label){const nums=products.map(p=>({p,n:numeric((p.specs&&Object.values(p.specs).find(s=>norm(s.key).includes(norm(label))))?.value)})).filter(x=>x.n!==null);if(nums.length<2)return new Set();const low=/قیمت|وزن|مصرف|ضخامت|زمان پاسخ|تاخیر|دمای/i.test(label);const target=low?Math.min(...nums.map(x=>x.n)):Math.max(...nums.map(x=>x.n));return new Set(nums.filter(x=>x.n===target).map(x=>x.p.id));}
 function renderTable(comparison){if(!comparison||comparison.status!=='comparison_ready'||comparison.count<2)return '<p class="v7c-empty">حداقل ۲ محصول برای مقایسه لازم است.</p>';const ps=comparison.products||[];const three=ps.length>=3;let h='<div class="v7c-table-wrap'+(three?' has-three':'')+'"><table><thead><tr><th scope="col">شاخص</th>'+productCols(ps)+'</tr></thead><tbody>';const prices=ps.map(p=>p.priceToman||0).filter(Boolean),min=prices.length?Math.min(...prices):0;h+='<tr><th>قیمت</th>'+ps.map(p=>'<td class="'+(p.priceToman&&p.priceToman===min?'v7c-best':'')+'">'+esc(toman(p.priceToman))+(p.priceToman&&p.priceToman===min?'<span class="v7c-check">✓</span>':'')+'</td>').join('')+'</tr>';h+='<tr><th>برند</th>'+ps.map(p=>'<td>'+esc(p.brand||'—')+'</td>').join('')+'</tr>';h+='<tr><th>مدل</th>'+ps.map(p=>'<td>'+esc(p.model||'—')+'</td>').join('')+'</tr>';h+='<tr><th>فروشگاه</th>'+ps.map(p=>'<td>'+esc(p.store||'—')+'</td>').join('')+'</tr>';h+='<tr><th>وضعیت موجودی</th>'+ps.map(p=>{const ok=norm(p.availability).includes('موجود')||norm(p.availability).includes('available');return '<td class="'+(ok?'v7c-best':'')+'">'+esc(p.availability||'اطلاعات نامشخص')+(ok?'<span class="v7c-check">✓</span>':'')+'</td>';}).join('')+'</tr>';if(comparison.matchComparison&&comparison.matchComparison.available)h+='<tr><th>امتیاز تطابق</th>'+ps.map(p=>{const v=Number(p.matchScore);const vals=ps.map(x=>Number(x.matchScore)).filter(Number.isFinite);const best=Number.isFinite(v)&&vals.length>1&&v===Math.max(...vals);return '<td class="'+(best?'v7c-best':'')+'">'+(Number.isFinite(v)?esc(v):'—')+(best?'<span class="v7c-check">✓</span>':'')+'</td>';}).join('')+'</tr>';const specs=comparison.specificationComparison||[];specs.forEach(s=>{const ids=bestIds(ps,s.label);h+='<tr><th>'+esc(s.label)+'</th>'+ps.map(p=>{const f=(s.valuesByProduct||[]).find(v=>v.productId===p.id);const best=ids.has(p.id);return '<td class="'+(best?'v7c-best':'')+'">'+esc(f&&f.value?f.value:'—')+(best?'<span class="v7c-check">✓</span>':'')+'</td>';}).join('')+'</tr>';});h+='</tbody></table></div>';h+=productLinks(ps);if(comparison.expertReview&&comparison.expertReview.available){h+='<div class="v7c-section">نقد و بررسی مقایسه‌ای '+(ps.length===3?'سه محصول':'دو محصول')+'</div><div class="v7c-expert-review">'+comparison.expertReview.items.map(x=>'<p>'+x+'</p>').join('')+'</div>';}return h;}
-async function resolveManualName(name){const q=String(name||'').trim();if(!q)return null;
-try{
- const r=await fetch('/api/product-lookup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})});
- const data=await r.json().catch(()=>null);
- if(r.ok&&data&&data.product&&String(data.product.name||'').trim()){
-   const p=data.product;
-   return {id:'web|'+norm(p.name)+'|'+Date.now(),name:String(p.name).trim(),brand:p.brand||'',model:p.model||'',store:p.store||'فروشگاه',priceToman:Number(p.priceToman)||0,price:Number(p.priceToman)||0,currency:'IRT',availability:p.availability||'',productUrl:p.productUrl||'',sourceUrl:p.productUrl||'',url:p.productUrl||'',link:p.productUrl||'',attributes:p.attributes&&typeof p.attributes==='object'?p.attributes:{},source:'web-product-lookup'};
+async function resolveManualName(name){
+ const q=String(name||'').trim();
+ if(!q)return null;
+ const pr=producer();
+ if(pr&&typeof pr.findByName==='function'){
+   try{
+     const matches=await pr.findByName(q,{limit:5});
+     return Array.isArray(matches)&&matches.length?matches[0]:null;
+   }catch(error){
+     console.warn('[DigiYar comparison] local product search failed:',error&&error.message?error.message:error);
+   }
  }
- const message=(data&&data.stage)?String(data.stage):((data&&data.error)?String(data.error):'web_lookup_failed');
- throw new Error(message);
-}catch(e){
- console.warn('[DigiYar V7 comparison] web product lookup failed:',e&&e.message?e.message:e);
- return null;
-}}
+ return findLocal(q);
+}
 async function fetchSlot(i){
  const c=ensureCard(),input=c&&c.querySelector('[data-v7-url="'+i+'"]'),status=c&&c.querySelector('[data-v7-slot-status="'+i+'"]');
  if(!input)return;
@@ -134,17 +134,9 @@ async function fetchSlot(i){
  if(status){
    status.innerHTML='<span class="v7c-slot-processing">در حال بررسی محصول و یافتن صفحه مستقیم آن…</span>';
  }
- const steps=['دارم نام محصول را دقیق‌تر تحلیل می‌کنم…','دارم محصول واقعی را در وب پیدا می‌کنم…','دارم صفحه مستقیم محصول را بررسی می‌کنم…'];
- let n=0;
- const timer=setInterval(function(){
-   if(!status){clearInterval(timer);return;}
-   n=(n+1)%steps.length;
-   const el=status.querySelector('.v7c-slot-processing');
-   if(el)el.textContent=steps[n];
- },900);
  let p=null;
- try{p=isUrl?await enrich(nameFromUrl(url),url,storeFromUrl(url)):await resolveManualName(raw);}
- finally{clearInterval(timer);}
+ if(status)status.textContent='در حال جست‌وجو در فهرست محلی کالاها…';
+ p=isUrl?await enrich(nameFromUrl(url),url,storeFromUrl(url)):await resolveManualName(raw);
  if(!p){
    if(status)status.textContent=isUrl?'اطلاعات محصول از لینک قابل استخراج نشد.':'محصولی با اطلاعات معتبر از وب پیدا نشد؛ موتور جستجوی محصول نتوانست صفحه مستقیم و معتبر همان کالا را تأیید کند.';
    return;
@@ -191,8 +183,6 @@ function hideAndClear(){
 }
 function init(){
  installStyle();
- const s=source();
- if(s&&s.clearComparison)s.clearComparison();
  const existing=document.getElementById('v7ComparisonCard');
  if(existing){existing.style.display='none';existing.innerHTML='';}
  document.addEventListener('click',function(e){
