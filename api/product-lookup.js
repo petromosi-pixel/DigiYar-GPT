@@ -5,7 +5,6 @@
 module.exports=async function(req,res){
  if(req.method!=='POST')return res.status(405).json({error:'method_not_allowed'});
  const key=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_AI_GATEWAY_KEY;
- if(!key)return res.status(503).json({error:'ai_not_configured'});
  let body={};
  try{body=typeof req.body==='object'&&req.body?req.body:JSON.parse(req.body||'{}')}
  catch(_){return res.status(400).json({error:'invalid_json'})}
@@ -14,7 +13,7 @@ module.exports=async function(req,res){
 
  const gateway='https://ai-gateway.vercel.sh/v1/responses';
  const model='openai/gpt-5.6-luna';
- const RESOLVER_VERSION='7.0.0-product-lookup.5';
+ const RESOLVER_VERSION='7.0.0-product-lookup.6';
 
  async function ai(payload){
    const r=await fetch(gateway,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(payload)});
@@ -104,16 +103,19 @@ module.exports=async function(req,res){
            const a=address.split('.').map(Number);return a[0]===0||a[0]===10||a[0]===127||a[0]>=224||(a[0]===169&&a[1]===254)||(a[0]===172&&a[1]>=16&&a[1]<=31)||(a[0]===192&&a[1]===168)||(a[0]===100&&a[1]>=64&&a[1]<=127);
          });
          if(!ips.length||blocked)throw new Error('unsafe_host');
-         const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
+         const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
          let response;
-         try{response=await fetch(pageUrl,{redirect:'manual',signal:controller.signal,headers:{'User-Agent':'Mozilla/5.0 (compatible; DigiYarProductReader/1.0)','Accept':'text/html,application/xhtml+xml','Accept-Language':'fa-IR,fa;q=0.9,en;q=0.7'}});}finally{clearTimeout(timer);}
-         if([301,302,303,307,308].includes(response.status)){
-           const loc=response.headers.get('location');if(!loc||hop===3)throw new Error('redirect_limit');
-           pageUrl=new URL(loc,pageUrl).href;continue;
-         }
-         if(!response.ok)throw new Error('page_http_'+response.status);
-         const ct=response.headers.get('content-type')||'';if(!/html|xml|text/i.test(ct))throw new Error('not_html');
-         html=(await response.text()).slice(0,1500000);break;
+         try{
+           response=await fetch(pageUrl,{redirect:'manual',signal:controller.signal,headers:{'User-Agent':'Mozilla/5.0 (compatible; DigiYarProductReader/1.0)','Accept':'text/html,application/xhtml+xml','Accept-Language':'fa-IR,fa;q=0.9,en;q=0.7'}});
+           if([301,302,303,307,308].includes(response.status)){
+             const loc=response.headers.get('location');if(!loc||hop===3)throw new Error('redirect_limit');
+             pageUrl=new URL(loc,pageUrl).href;continue;
+           }
+           if(!response.ok)throw new Error('page_http_'+response.status);
+           const ct=response.headers.get('content-type')||'';if(!/html|xml|text/i.test(ct))throw new Error('not_html');
+           const declared=Number(response.headers.get('content-length')||0);if(declared>1500000)throw new Error('page_too_large');
+           html=(await response.text()).slice(0,1500000);break;
+         }finally{clearTimeout(timer);}
        }
        const unescapeHtml=v=>String(v||'').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/\s+/g,' ').trim();
        const meta={};let mm;
@@ -142,6 +144,7 @@ module.exports=async function(req,res){
        return res.status(422).json({error:'direct_product_extraction_failed',reason:error&&error.message?String(error.message):'unknown',resolverVersion:RESOLVER_VERSION,stage:'direct-page'});
      }
    }
+   if(!key)return res.status(503).json({error:'ai_not_configured'});
    const normalized=directPageUrl?{normalizedQuery:directPageUrl,alternateQueries:[],requiredTerms:[],brandHint:null,modelHint:null}:parse(await ai({
      model,input:[{type:'message',role:'user',content:normalizePrompt}],
      text:{format:{type:'json_schema',name:'digiyar_product_query',strict:true,schema:normalizeSchema}},
