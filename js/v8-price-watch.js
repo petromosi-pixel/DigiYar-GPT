@@ -75,5 +75,6 @@ function formUpdate(id){
  const f=$('#dpwForm',content);f.addEventListener('submit',e=>{e.preventDefault();const price=Number(new FormData(f).get('current'));if(!Number.isFinite(price)||price<0)return;const a=read(),v=a.find(z=>z.id===id);if(!v)return;v.current=price;v.history=v.history||[];v.history.push({price,date:new Date().toLocaleDateString('fa-IR')});write(a);render()},{once:true});
 }
 function history(id){const x=read().find(v=>v.id===id);if(!x)return;const h=(x.history||[]).slice().reverse();content.innerHTML='<div class="dpw-card"><h3>تاریخچه قیمت · '+esc(x.name)+'</h3>'+(h.length?h.map(v=>'<div class="dpw-meta" style="padding:9px 0;border-bottom:1px solid var(--dy-border)">'+esc(v.date)+' · <b>'+money(v.price)+'</b></div>').join(''):'<div class="dpw-empty">هنوز تغییری ثبت نشده است.</div>')+'<button class="dpw-add" style="margin-top:14px" data-dpw="cancel">بازگشت به فهرست</button></div>'}
-window.DigiYarPriceWatchOpen=open;\nif(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+window.DigiYarPriceWatchOpen=open;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
