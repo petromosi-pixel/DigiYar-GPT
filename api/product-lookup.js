@@ -123,7 +123,7 @@ module.exports=async function(req,res){
          || /[?&](q|query|search|keyword|page)=/.test(qs);
      }catch(_){return true}
    }
-   const direct=directPageUrl?candidates.filter(x=>{try{const a=new URL(x.url),b=new URL(directPageUrl);return !looksLikeSearchUrl(x.url)&&a.hostname.replace(/^www\\./,'')===b.hostname.replace(/^www\\./,'')&&a.pathname.replace(/\\/$/,'')===b.pathname.replace(/\\/$/,'');}catch(_){return false;}}):candidates.filter(x=>!looksLikeSearchUrl(x.url));
+   const direct=directPageUrl?candidates.filter(x=>{try{const a=new URL(x.url),b=new URL(directPageUrl);return !looksLikeSearchUrl(x.url)&&a.hostname.replace(/^www\./,'')===b.hostname.replace(/^www\./,'')&&a.pathname.replace(/\/$/,'')===b.pathname.replace(/\/$/,'');}catch(_){return false;}}):candidates.filter(x=>!looksLikeSearchUrl(x.url));
    if(!direct.length)return res.status(422).json({error:'web_product_not_verified',resolverVersion:RESOLVER_VERSION,stage:'direct_url_guard',normalizedQuery:normalized.normalizedQuery});
 
    // Stage 4 — AI verification against the actual web-search findings.
