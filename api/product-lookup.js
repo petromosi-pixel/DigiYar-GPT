@@ -115,27 +115,27 @@ module.exports=async function(req,res){
          const ct=response.headers.get('content-type')||'';if(!/html|xml|text/i.test(ct))throw new Error('not_html');
          html=(await response.text()).slice(0,1500000);break;
        }
-       const unescapeHtml=v=>String(v||'').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/\\s+/g,' ').trim();
+       const unescapeHtml=v=>String(v||'').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/\s+/g,' ').trim();
        const meta={};let mm;
-       const mr=/<meta\\b[^>]*(?:property|name)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*>/gi;
+       const mr=/<meta\b[^>]*(?:property|name)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*>/gi;
        while((mm=mr.exec(html)))meta[mm[1].toLowerCase()]=unescapeHtml(mm[2]);
-       const scripts=html.match(/<script\\b[^>]*type=["']application\\/ld\\+json["'][^>]*>[\\s\\S]*?<\\/script>/gi)||[];
+       const scripts=html.match(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi)||[];
        let product=null;
        const findProduct=x=>{if(!x||typeof x!=='object')return null;if(Array.isArray(x)){for(const y of x){const z=findProduct(y);if(z)return z;}return null;}const t=Array.isArray(x['@type'])?x['@type']:[x['@type']];if(t.some(v=>String(v).toLowerCase()==='product'))return x;for(const k of Object.keys(x)){const z=findProduct(x[k]);if(z)return z;}return null;};
-       for(const tag of scripts){try{const raw=tag.replace(/^<script[^>]*>/i,'').replace(/<\\/script>$/i,'');product=findProduct(JSON.parse(raw));if(product)break;}catch(_){}}
+       for(const tag of scripts){try{const raw=tag.replace(/^<script[^>]*>/i,'').replace(/<\/script>$/i,'');product=findProduct(JSON.parse(raw));if(product)break;}catch(_){}}
        const offers=product&&product.offers?(Array.isArray(product.offers)?product.offers[0]:product.offers):{};
-       const title=(html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)||[])[1]||'';
-       const name=unescapeHtml(product&&product.name||meta['og:title']||meta['twitter:title']||title).replace(/\\s*[|｜•].*$/,'').trim();
+       const title=(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'';
+       const name=unescapeHtml(product&&product.name||meta['og:title']||meta['twitter:title']||title).replace(/\s*[|｜•].*$/,'').trim();
        if(!name)throw new Error('product_metadata_not_found');
        const rawPrice=offers&&offers.price!=null?offers.price:product&&product.price!=null?product.price:meta['product:price:amount']||meta['og:price:amount']||'';
-       const priceString=String(rawPrice).replace(/[^\\d.]/g,''),price=priceString&&Number.isFinite(Number(priceString))?Number(priceString):null;
+       const priceString=String(rawPrice).replace(/[^\d.]/g,''),price=priceString&&Number.isFinite(Number(priceString))?Number(priceString):null;
        const currency=String(offers&&offers.priceCurrency||meta['product:price:currency']||'').toUpperCase();
        const brand=product&&product.brand?(typeof product.brand==='object'?product.brand.name:product.brand):'';
        const model=product&&(product.model||product.sku||product.mpn)||'';
        const availability=String(offers&&offers.availability||'').split('/').pop().replace(/([A-Z])/g,' $1').trim();
        const desc=unescapeHtml(product&&product.description||meta['og:description']||meta.description||'');
        const image=product&&product.image?(Array.isArray(product.image)?product.image[0]:typeof product.image==='object'?product.image.url:product.image):meta['og:image']||'';
-       const extracted={verified:true,name,brand:brand||null,model:model||null,priceToman:price==null?null:Math.round(currency==='IRR'?price/10:price),availability:availability||null,productUrl:directPageUrl,store:new URL(directPageUrl).hostname.replace(/^www\\./,''),attributes:Object.assign({},desc?{description:desc}:{},image?{image}:{}),confidence:product&&product.name?0.96:0.78};
+       const extracted={verified:true,name,brand:brand||null,model:model||null,priceToman:price==null?null:Math.round(currency==='IRR'?price/10:price),availability:availability||null,productUrl:directPageUrl,store:new URL(directPageUrl).hostname.replace(/^www\./,''),attributes:Object.assign({},desc?{description:desc}:{},image?{image}:{}),confidence:product&&product.name?0.96:0.78};
        return res.status(200).json({ok:true,product:extracted,resolverVersion:RESOLVER_VERSION,extraction:'direct-page'});
      }catch(error){
        console.warn('[DigiYar direct product extraction]',error&&error.message?error.message:error);
