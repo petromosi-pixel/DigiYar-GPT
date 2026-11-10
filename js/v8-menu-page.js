@@ -33,7 +33,7 @@ body.v6-dark #dyMenuPage{--dy-page:#101827;--dy-surface:#182437;--dy-control:#20
  function empty(icon,title,desc){return '<div class="dym-panel dym-empty"><i>'+icon+'</i><strong>'+title+'</strong><small>'+desc+'</small></div>'}
  function open(key){
   if(key==='home'){showHome();return}
-  if(key==='pricewatch'){page.hidden=true;document.body.style.overflow='';window.dispatchEvent(new Event('dy-open-pricewatch'));return}
+  if(key==='pricewatch'){page.hidden=true;document.body.style.overflow='';if(typeof window.DigiYarPriceWatchOpen==='function')window.DigiYarPriceWatchOpen();else window.dispatchEvent(new Event('dy-open-pricewatch'));return}
   if(key==='account'){page.hidden=true;const b=$('#v6FooterNav [data-v6-action="account"]');if(b)b.click();return}
   if(key==='wallet')sub('مدیریت کیف پول',empty('👛','کیف پول هنوز فعال نشده است','پس از راه‌اندازی خدمات مالی، موجودی و سوابق تراکنش‌ها در این بخش نمایش داده می‌شود. هیچ موجودی یا تراکنش واقعی در حال حاضر ثبت نشده است.'));
   else if(key.startsWith('orders')){const status=key==='orders-current'?'سفارش‌های جاری':key==='orders-delivered'?'سفارش‌های تحویل‌شده':key==='orders-cancelled'?'سفارش‌های لغوشده':key==='orders-returned'?'سفارش‌های مرجوع‌شده':'همه سفارش‌ها';sub(status,empty('🛍️','هنوز سفارشی ثبت نشده است','سفارش‌هایی که از طریق سرویس‌های متصل به دیجی‌یار ثبت شوند، در این بخش قابل پیگیری خواهند بود.'))}
@@ -49,7 +49,7 @@ body.v6-dark #dyMenuPage{--dy-page:#101827;--dy-surface:#182437;--dy-control:#20
  document.addEventListener('click',e=>{
   const menu=e.target.closest('#v6FooterNav [data-v6-action="menu"]');if(menu){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();openMenu();return}
   if(page.hidden)return;
-  const target=e.target.closest('[data-page]');if(target){e.preventDefault();open(target.dataset.page);return}
+  const target=e.target.closest('[data-page]');if(target){e.preventDefault();e.stopPropagation();if(target.dataset.page==='pricewatch')e.stopImmediatePropagation();open(target.dataset.page);return}
   if(e.target.closest('[data-close]')){close();return}
   if(e.target.closest('[data-home]')){close();window.scrollTo({top:0,behavior:'smooth'})}
  },true);
