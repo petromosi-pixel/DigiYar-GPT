@@ -40,7 +40,7 @@ body.v6-dark #dyPriceWatchPage{--dy-page:#101827;--dy-surface:#182437;--dy-contr
   if(act==='update')formUpdate(id);
   if(act==='history')history(id);
  });
- page.addEventListener('submit',e=>{if(e.target.id!=='dpwForm')return;e.preventDefault();saveForm(e.target)});
+ page.addEventListener('submit',e=>{if(e.target.id!=='dpwForm'||e.target.dataset.updateId)return;e.preventDefault();saveForm(e.target)});
  page.querySelector('[data-dpw-back]').addEventListener('click',close);
  window.addEventListener('dy-open-pricewatch',open);
 }
