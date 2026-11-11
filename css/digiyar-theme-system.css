@@ -48,7 +48,7 @@ body.v6-dark :where(
   [class*="-composer"],[class*="-content"],[class*="-inner"],[class*="-body"],
   [class*="-widget"],[class*="-item"],[class*="-box"],[class*="-list"],
   [class*="-menu"],[class*="-nav"],[class*="-slot"],[class*="-head"],
-  [class*="-status"],[class*="-section"],[class*="-table"],#v7ComparisonCard
+  [class*="-status"],[class*="-section"],[class*="-table"]
 ):not(button):not(a):not(input):not(select):not(textarea):not(button *){
   color:var(--dy-text);
   border-color:var(--dy-border);
@@ -376,7 +376,6 @@ body.v6-dark .v5-result-card,
 body.v6-dark .v5-profile-card,
 body.v6-dark .v5-popular-card,
 body.v6-dark .popular-discovery,
-body.v6-dark #v7ComparisonCard {
   background:var(--dy-surface)!important;
   background-image:none!important;
   border:1px solid var(--dy-border)!important;
@@ -406,7 +405,7 @@ body.v6-dark{
 }
 body.v6-dark :where(
   .card,.v5-chat-card,.v5-result-card,.v5-profile-card,.v5-popular-card,
-  .popular-discovery,#v7ComparisonCard,.footer-panel,.v6-nav-sheet,
+  .popular-discovery,.footer-panel,.v6-nav-sheet,
   [class*="-card"],[class*="-panel"],[class*="-sheet"]
 ):not(button):not(a):not(input):not(select):not(textarea){
   background:var(--dy-bg)!important;
