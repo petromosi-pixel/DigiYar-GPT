@@ -20,7 +20,7 @@
   function normalizeProduct(product,index){
     if(!product||typeof product!=='object')return null;
     const p=Object.assign({},product);
-    const id=p.id??p.productId??p.sku??('v7-result-'+(index+1));
+    const identity=[p.name??p.title??p.productName??'',p.brand??'',p.model??'',p.store??p.storeName??p.sourceId??'',p.productUrl??p.sourceUrl??''].map(function(v){return String(v||'').trim().toLowerCase();}).join('|');let hash=2166136261;for(let i=0;i<identity.length;i++){hash^=identity.charCodeAt(i);hash=Math.imul(hash,16777619);}const id=p.id??p.productId??p.sku??('v7-product-'+(hash>>>0).toString(36));
     const name=p.name??p.title??p.productName??'';
     if(!String(name).trim())return null;
     p.id=String(id);
