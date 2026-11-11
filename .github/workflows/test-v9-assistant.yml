@@ -6,11 +6,8 @@ on:
     paths:
       - 'js/v9-hooshyar-assistant.js'
       - 'js/v8-product-result-source.js'
-      - 'js/v8-comparison-ui.js'
       - 'sw.js'
       - 'index.html'
-      - 'tests/v9-comparison-multi-add.test.mjs'
-      - 'tests/v9-hooshyar-assistant.test.mjs'
       - 'tests/v9-hooshyar-assistant.test.mjs'
       - 'package.json'
       - '.github/workflows/test-v9-assistant.yml'
