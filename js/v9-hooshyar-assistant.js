@@ -3,8 +3,8 @@
 'use strict';
 var VERSION='9.1.0-hooshyar-assistant.1',ID='v9HooshyarAssistantResults';
 var state={query:'',task:'idle',stores:[],products:[],comparison:[],updatedAt:null};
-function clean(v){return String(v==null?'':v).replace(/\\s+/g,' ').trim();}
-function norm(v){return clean(v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\\u200c]/g,' ').toLowerCase();}
+function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
+function norm(v){return clean(v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').toLowerCase();}
 function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function money(v){var n=Number(v);return n>0?new Intl.NumberFormat('fa-IR').format(n)+' تومان':'قیمت ثبت نشده';}
 function classify(q){q=norm(q);if(/مقایسه|مقایسه کن|با هم بسنج/.test(q))return'compare';if(/کدوم.*بهتر|کدام.*بهتر|چی بخرم|چه.*بخرم|ارزش خرید/.test(q))return'buying_advice';if(/پیگیری قیمت|شکارچی قیمت|قیمت هدف|ارزان شد/.test(q))return'price_tracking';if(/خرید|بخر|می.?خوام|دنبال|نیاز دارم|قیمت|محصول|کالا/.test(q))return'shopping_search';}
