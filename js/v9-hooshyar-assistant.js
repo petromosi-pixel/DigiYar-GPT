@@ -1,7 +1,7 @@
 /* DigiYar V9 — local-first central purchase assistant */
 (function(root){
 'use strict';
-var VERSION='9.1.0-hooshyar-assistant.1',ID='v9HooshyarAssistantResults';
+var VERSION='9.1.0-hooshyar-assistant.2',ID='v9HooshyarAssistantResults';
 var state={query:'',task:'idle',stores:[],products:[],comparison:[],updatedAt:null};
 function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
 function norm(v){return clean(v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').toLowerCase();}
