@@ -69,7 +69,7 @@ var TYPE_RULES=[
  {key:'washing-machine',terms:['ماشین لباسشویی','لباسشویی'],fields:['washing-machine','ماشین لباسشویی','لباسشویی']},
  {key:'air-conditioner',terms:['کولر گازی','اسپلیت'],fields:['air-conditioner','کولر گازی','اسپلیت']},
  {key:'vacuum',terms:['جاروبرقی','جارو برقی'],fields:['vacuum','جاروبرقی','جارو برقی']},
- {key:'furniture',terms:['مبلمان','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری'],fields:['furniture','مبلمان','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری']}
+ {key:'furniture',terms:['مبل','مبلمان','کاناپه','sofa','couch','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری'],fields:['furniture','مبل','مبلمان','کاناپه','sofa','couch','مبلمان اداری','میز اداری','صندلی اداری','صندلی مدیریت','میز مدیریت','میز کارمندی','فایلینگ','کمد اداری','پارتیشن اداری']}
 ];
 
 function parseIntent(q){
@@ -186,7 +186,7 @@ function hasBrandIdentity(p,brand){
  return true;
 }
 
-function relevance(p,tokens,intent){
+function relevance(p,tokens,intent,dictionaryEntries){
  var f=fieldText(p),score=0;
  /* Standardized identity weighting:
     product-name evidence dominates everything else.
@@ -210,6 +210,13 @@ function relevance(p,tokens,intent){
    else if(f.model.indexOf(t)>=0)score+=35;
    else if(f.subcategory.indexOf(t)>=0)score+=10;
    else if(f.category.indexOf(t)>=0)score+=3;
+ });
+ (dictionaryEntries||[]).forEach(function(entry){
+   var aliases=[entry.canonical].concat(entry.aliases||[]).map(norm);
+   if(aliases.some(function(alias){return alias&&f.name.indexOf(alias)>=0;}))score+=120;
+   else if(aliases.some(function(alias){return alias&&f.model.indexOf(alias)>=0;}))score+=45;
+   else if(aliases.some(function(alias){return alias&&f.subcategory.indexOf(alias)>=0;}))score+=15;
+   else if(aliases.some(function(alias){return alias&&f.category.indexOf(alias)>=0;}))score+=5;
  });
  return score;
 }
@@ -244,7 +251,9 @@ function deduplicate(items){
 
 async function produce(query,options){
  options=options||{};
- var tokens=queryTokens(query),budget=parseBudget(query),intent=parseIntent(query),all=[];
+ var dictionary=root.DigiYarPersianDictionary,dictionaryEntries=dictionary&&typeof dictionary.resolve==='function'?dictionary.resolve(query):[],dictionaryTokens=Object.create(null);
+ dictionaryEntries.forEach(function(entry){[entry.canonical].concat(entry.aliases||[]).forEach(function(term){norm(term).split(/\s+/).forEach(function(token){if(token)dictionaryTokens[token]=true;});});});
+ var tokens=queryTokens(query).filter(function(token){return !dictionaryTokens[token];}),budget=parseBudget(query),intent=parseIntent(dictionary&&typeof dictionary.expand==='function'?dictionary.expand(query):query),all=[];
  if(options.aiPlan&&typeof options.aiPlan==='object'){
    var ai=options.aiPlan;
    if(ai.productTerms&&Array.isArray(ai.productTerms)) tokens=tokens.concat(ai.productTerms.map(norm).filter(Boolean));
@@ -267,7 +276,7 @@ async function produce(query,options){
    copy.currency='toman';
    var specs=extractSpecs(p);
    if(Object.keys(specs).length)copy.attributes=Object.assign({},copy.attributes||{},specs);
-   copy.matchScore=relevance(p,tokens,intent);
+   copy.matchScore=relevance(p,tokens,intent,dictionaryEntries);
    return copy;
  }).filter(function(p){
    if(budget.max&&p.priceToman>budget.max)return false;
@@ -276,7 +285,7 @@ async function produce(query,options){
    /* For explicit furniture searches, the requested product identity must be present in the product name. */
    if(intent.type&&intent.type.key==='furniture'){
      var n=fieldText(p).name;
-     var hasFurniture=/مبلمان|میز\s*(?:اداری|مدیریت|کارمندی)|صندلی\s*(?:اداری|مدیریت)|فایلینگ|کمد\s*اداری|پارتیشن\s*اداری/.test(n);
+     var hasFurniture=/مبل|مبلمان|کاناپه|sofa|couch|میز\s*(?:اداری|مدیریت|کارمندی)|صندلی\s*(?:اداری|مدیریت)|فایلینگ|کمد\s*اداری|پارتیشن\s*اداری/i.test(n);
      if(!hasFurniture)return false;
      if(norm(query).indexOf('اداری')>=0&&!n.includes('اداری'))return false;
    }
