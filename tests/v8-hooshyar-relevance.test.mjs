@@ -27,6 +27,8 @@ assert.ok(window.DigiYarPersianDictionary.resolve('مبل').some(x=>x.id==='sofa
 assert.equal(typeof resolve, 'function', 'Search-context resolver must be testable');
 const ids = query => resolve(query).storeIds.slice().sort();
 const exact = (query, expected) => assert.deepEqual(ids(query), expected.slice().sort(), query);
+assert.deepEqual(ids('پادری'),ids('فرش جلوی در'),'Doormat synonyms must resolve to the same store set');
+assert.deepEqual(ids('مبل'),ids('مبلمان'),'Sofa synonyms must resolve to the same store set');
 const includes = (query, expected) => {
   const got = ids(query);
   for (const id of expected) assert.ok(got.includes(id), `${query}: missing relevant store ${id}; got ${got.join(',')}`);
