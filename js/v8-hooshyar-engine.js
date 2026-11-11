@@ -98,11 +98,11 @@ var SEMANTIC_ALIASES=[
  {re:/(?:بلیط|بلیت|رزرو).*(?:قطار|ریل)|(?:قطار|ریل).*(?:بلیط|بلیت|رزرو)/i,terms:'بلیط قطار سفر ریلی حمل و نقل سفر'},
  {re:/(?:کیف.?اداری|کیف.?کار|کیف.?مدیریتی)/i,terms:'کیف اداری کیف کار کیف دستی اداری کیف لپ تاپ پوشاک کیف'}
 ];
-function semanticQuery(raw){var additions=[];SEMANTIC_ALIASES.forEach(function(entry){if(entry.re.test(raw))additions.push(entry.terms);});return additions.length?raw+' '+additions.join(' '):raw;}
+function semanticQuery(raw){var dictionary=window.DigiYarPersianDictionary,expanded=dictionary&&typeof dictionary.expand==='function'?dictionary.expand(raw):raw,additions=[];SEMANTIC_ALIASES.forEach(function(entry){if(entry.re.test(raw))additions.push(entry.terms);});return additions.length?expanded+' '+additions.join(' '):expanded;}
 function resolveSearchContext(query,filters){
  /* The product/category KB is the sole source of merchant eligibility.
     Intent rules prevent generic word overlap from masquerading as relevance. */
- var catalog=getCatalog(),raw=normalize(query),intent=detectIntent(raw);
+ var catalog=getCatalog(),raw=normalize(query),intent=detectIntent(semanticQuery(raw));
  var stop='برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق'.split(' ');
  var semanticRaw=semanticQuery(raw),tokens=wordTokens(semanticRaw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={},unavailableRoutes=[];
