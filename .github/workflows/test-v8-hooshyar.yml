@@ -59,5 +59,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Run Persian dictionary and synonym relevance checks
+        run: npm run test:v8:persian-dictionary
       - name: Run Hooshyar V8 checks
         run: npm run test:v8:hooshyar
