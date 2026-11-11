@@ -45,7 +45,7 @@ assert.equal(snapshot.task,'shopping_search');
 assert.equal(panel.hidden,false);
 assert.equal(assistant.addToComparison('p1').ok,true);
 assert.equal(assistant.addToComparison('p2').ok,true);
-assert.equal(showCalls,2);
+assert.equal(showCalls,0,'adding a result must not force-open the comparison card or scroll away from results');
 const compared=assistant.compareSelected();
 assert.equal(compared.ok,true);
 assert.equal(compared.result.count,2);
