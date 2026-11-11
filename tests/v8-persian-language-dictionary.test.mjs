@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const window={};
+vm.runInNewContext(fs.readFileSync('js/v8-persian-language-dictionary.js','utf8'),{window,globalThis:window});
+const lex=window.DigiYarPersianDictionary;
+assert.ok(lex,'dictionary must be exposed');
+for(const [q,id] of [['پادری','doormat'],['فرش جلوی در','doormat'],['قالیچه ورودی','doormat'],['مبل','sofa'],['مبلمان','sofa'],['کاناپه','sofa'],['لپتاپ','laptop'],['تلفن همراه','mobile-phone'],['ایر فرایر','air-fryer']])assert.ok(lex.resolve(q).some(x=>x.id===id),q);
+assert.ok(lex.expand('مبل').includes('مبلمان'));
+assert.ok(lex.matchProduct('پادری',{name:'فرش کوچک ورودی مدل ساده'}).some(x=>x.id==='doormat'));
+assert.equal(lex.resolve('عبارت کاملاً نامرتبط').length,0);
+console.log('DigiYar Persian commerce dictionary: PASS');
