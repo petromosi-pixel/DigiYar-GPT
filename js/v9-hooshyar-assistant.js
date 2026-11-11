@@ -2,8 +2,8 @@
    Results are emitted as events; no comparison card or results panel is created. */
 (function(root){
 'use strict';
-var VERSION='9.2.0-hooshyar-headless.1';
-var state={query:'',task:'idle',stores:[],products:[],updatedAt:null};
+var VERSION='9.2.0-hooshyar-headless.2';
+var state={query:'',normalizedQuery:'',concepts:[],task:'idle',stores:[],products:[],updatedAt:null};
 function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
 function norm(v){return clean(v).replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').toLowerCase();}
 function classify(q){
@@ -25,7 +25,8 @@ function storesFor(ids,q){
 function snapshot(){return JSON.parse(JSON.stringify(state));}
 async function handleSearch(query,context){
  var q=clean(query);if(!q)return null;
- state={query:q,task:classify(q),stores:storesFor(context&&context.storeIds||[],q),products:[],updatedAt:null};
+ var dictionary=root.DigiYarPersianDictionary,matches=dictionary&&typeof dictionary.resolve==='function'?dictionary.resolve(q):[];
+ state={query:q,normalizedQuery:dictionary&&typeof dictionary.expand==='function'?dictionary.expand(q):q,concepts:matches.map(function(entry){return{id:entry.id,canonical:entry.canonical};}),task:classify(q),stores:storesFor(context&&context.storeIds||[],q),products:[],updatedAt:null};
  var producer=root.DigiYarV7ProductResultProducer;
  if(producer&&typeof producer.produce==='function'){
   try{state.products=await producer.produce(q,{limit:8});}
@@ -36,7 +37,7 @@ async function handleSearch(query,context){
  return snapshot();
 }
 function clear(){
- state={query:'',task:'idle',stores:[],products:[],updatedAt:null};
+ state={query:'',normalizedQuery:'',concepts:[],task:'idle',stores:[],products:[],updatedAt:null};
  try{root.dispatchEvent(new CustomEvent('digiyar:v9-assistant-cleared',{detail:snapshot()}));}catch(_){}
  return snapshot();
 }
