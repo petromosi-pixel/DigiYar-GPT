@@ -133,7 +133,7 @@ function collectSpecGroups(p){
  return groups.filter(function(g){return g.rows.length;});
 }
 function renderProductSpecCard(p,index){
- const groups=collectSpecGroups(p),image=p.imageUrl||p.image||p.thumbnail||'',safeImage=/^https?:\\/\\//i.test(String(image))?image:'';
+ const groups=collectSpecGroups(p),image=p.imageUrl||p.image||p.thumbnail||'',safeImage=/^https?:\/\//i.test(String(image))?image:'';
  let h='<section class="v7c-product-spec-card"><div class="v7c-spec-top"><div class="v7c-spec-image">'+(safeImage?'<img src="'+esc(safeImage)+'" alt="" loading="lazy">':'<span>◇</span>')+'</div><div class="v7c-spec-identity"><h4>'+esc(p.name||('محصول '+(index+1)))+'</h4><div class="v7c-spec-meta">'+esc([p.brand,p.model,p.store||p.storeName].filter(Boolean).join(' · ')||'اطلاعات سازنده ثبت نشده')+'</div><div class="v7c-spec-tools">'+(p.productUrl?'<a class="v7c-spec-link" href="'+esc(p.productUrl)+'" target="_blank" rel="noopener noreferrer">مشاهده صفحه کالا</a>':'')+'<button type="button" class="v7c-spec-remove" data-v7-remove-id="'+esc(p.id)+'">حذف از مقایسه</button></div></div></div>';
  h+='<div class="v7c-spec-price"><span>قیمت ثبت‌شده</span><strong>'+esc(toman(p.priceToman||p.price))+'</strong></div>';
  if(!groups.length)h+='<div class="v7c-spec-empty">مشخصات فنی قابل نمایش برای این محصول در داده فعلی ثبت نشده است.</div>';
