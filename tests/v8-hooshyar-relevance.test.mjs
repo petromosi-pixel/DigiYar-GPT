@@ -10,6 +10,7 @@ globalThis.document = {
   querySelector(){ return null; },
   querySelectorAll(){ return []; }
 };
+await import('../js/v8-persian-language-dictionary.js');
 await import('../js/v8-store-catalog.js');
 await import('../js/v8-store-search-url.js');
 
@@ -21,6 +22,8 @@ vm.runInThisContext(source.replace(
 ), { filename:'v7-popular-store-discovery.test.js' });
 
 const resolve = window.__testResolveSearchContext;
+assert.ok(window.DigiYarPersianDictionary.resolve('پادری').some(x=>x.id==='doormat'));
+assert.ok(window.DigiYarPersianDictionary.resolve('مبل').some(x=>x.id==='sofa'));
 assert.equal(typeof resolve, 'function', 'Search-context resolver must be testable');
 const ids = query => resolve(query).storeIds.slice().sort();
 const exact = (query, expected) => assert.deepEqual(ids(query), expected.slice().sort(), query);
