@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'js/v8-hooshyar-engine.js'
+      - 'js/v8-persian-language-dictionary.js'
       - 'js/v8-store-catalog.js'
       - 'js/v8-store-search-url.js'
       - 'js/v8-product-result-source.js'
@@ -34,6 +35,7 @@ on:
       - 'index.html'
       - 'sw.js'
       - 'tests/v8-hooshyar-relevance.test.mjs'
+      - 'tests/v8-persian-language-dictionary.test.mjs'
       - 'tests/v8-store-taxonomy-audit.test.mjs'
       - 'tests/v8-store-search-routes.test.mjs'
       - 'tests/v8-hamburger-directory.test.mjs'
