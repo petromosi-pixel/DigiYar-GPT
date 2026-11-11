@@ -19,7 +19,8 @@
     "test:v8:store-search-routes:live": "node tests/v8-store-search-routes-live.test.mjs",
     "test:v8:product-result-source": "node tests/v8-product-result-source.test.mjs",
     "test:v8:comparison": "node tests/v8-comparison-engine.test.mjs",
-    "test:v8:product-result-producer": "node tests/v8-product-result-producer.test.mjs"
+    "test:v8:product-result-producer": "node tests/v8-product-result-producer.test.mjs",
+    "test:v9:assistant": "node --check js/v9-hooshyar-assistant.js && node tests/v9-hooshyar-assistant.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0",
