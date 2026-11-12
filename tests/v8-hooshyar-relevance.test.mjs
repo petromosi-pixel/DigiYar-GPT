@@ -42,6 +42,9 @@ const excludes = (query, forbidden) => {
 const general = ['digikala','snappshop','torob','basalam'];
 exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم', general);
 includes('پادری', general);
+includes('مبل', ['iranmiz','partochoob','chidahome','tidawood']);
+excludes('پادری', ['iranmiz','partochoob','chidahome','tidawood']);
+
 includes('فرش جلوی در', general);
 includes('یخچال فریزر', general);
 includes('جارو برقی', general);
