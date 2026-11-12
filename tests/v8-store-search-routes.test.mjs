@@ -54,6 +54,7 @@ assert.equal(typeof resolver.resolveSearchRoute,'function','Resolver must expose
 assert.ok(resolver.resolveSearchRoute('digikala','نمکدان سرامیکی'),'General marketplace must expose a verified direct search');
 assert.equal(resolver.resolveSearchRoute('dayan','کیف اداری'),null,'Homepage fallback must never qualify as product search');
 assert.equal(resolver.resolveSearchRoute('memarket','تصفیه هوا'),null,'Homepage fallback must never qualify as product search');
+assert.equal(resolver.resolveSearchRoute('snappshop','تصفیه هوا'),null,'A search URL on an unverified merchant host must not qualify');
 assert.equal(resolver.resolveSearchRoute('iranmiz','میز اداری'),null,'A relevant merchant without a verified query URL must not qualify');
 
 const audited = resolver.auditRoutes('نمونه کالا');

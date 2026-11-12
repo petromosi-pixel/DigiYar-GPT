@@ -133,7 +133,7 @@ console.log('V8 Hooshyar relevance scenarios: PASS (existing relevance/exclusion
 /* Unknown vocabulary must still reach the correct merchant category. */
 const unknownProduct=resolve('نمکدان سرامیکی دست ساز');
 assert.equal(unknownProduct.queryAnalysis.requestKind,'product');
-includes('نمکدان سرامیکی دست ساز',['digikala','snappshop','torob','basalam','memarket']);
+exact('نمکدان سرامیکی دست ساز',['digikala','torob','basalam']);
 const unknownFood=resolve('نوشیدنی جو دوسر');
 assert.equal(unknownFood.queryAnalysis.requestKind,'food');
 exact('نوشیدنی جو دوسر',['digikala','torob','basalam','pinket']);

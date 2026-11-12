@@ -163,6 +163,9 @@ function resolveSearchContext(query,filters){
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
   var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
+  /* Request kind is a hard category boundary: food cannot leak into beauty/home, and services cannot leak into ordinary product marketplaces. */
+  if(analysis.requestKind==='food'&&domains.indexOf('supermarket')<0)return;
+  if(analysis.requestKind==='service'&&!(analysis.inferredDomains||[]).some(function(domain){return domains.indexOf(domain)>=0;}))return;
   var conceptExactMatch=concepts.some(function(concept){return [concept.canonical].concat(concept.aliases||[]).some(function(term){var t=normalize(term);return t.length>1&&(' '+hay+' ').indexOf(' '+t+' ')>=0;});});
   var conceptDomainGeneral=conceptDomains.length>0&&store.storeType==='general'&&domains.some(function(domain){return conceptDomains.indexOf(domain)>=0;});
   var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0&&!(intent==='mobile_accessory'&&key==='janebi'&&x==='موبایل');});
