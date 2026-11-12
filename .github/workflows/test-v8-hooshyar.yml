@@ -38,6 +38,7 @@ on:
       - 'tests/v8-persian-language-dictionary.test.mjs'
       - 'tests/v8-store-taxonomy-audit.test.mjs'
       - 'tests/v8-store-search-routes.test.mjs'
+      - 'tests/v8-store-search-routes-live.test.mjs'
       - 'tests/v8-hamburger-directory.test.mjs'
       - 'js/user-profile.js'
       - 'tests/v8-hooshyar-theme-contract.test.mjs'
@@ -64,3 +65,5 @@ jobs:
         run: npm run test:v8:persian-dictionary
       - name: Run Hooshyar V8 checks
         run: npm run test:v8:hooshyar
+      - name: Smoke-test live merchant search routes
+        run: npm run test:v8:store-search-routes:live
