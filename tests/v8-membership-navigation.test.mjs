@@ -15,7 +15,13 @@ test('membership entry is above price hunter in hamburger menu',()=>{
  assert.ok(entry>=0&&price>entry);
  assert.match(menu,/key==='membership'[\s\S]*?DigiYarMembershipOpen/);
 });
-test('results promotion opens a centered dismissible popup after three seconds and navigates to membership',()=>{
+test('results promotion listens to actual Hooshyar and product producer events',()=>{
+ assert.match(js,/digiyar:hooshyar-results-ready/);
+ assert.match(js,/digiyar:v9-assistant-results/);
+ assert.match(js,/digiyar:v7-product-results-ready/);
+ assert.match(js,/digiyar:v7-product-results/);
+ assert.match(js,/hasResultData\(detail\)/);
+ assert.match(js,/schedulePromo\(document\.body\)/);
  assert.match(js,/setTimeout\(function\(\)\{if\(lastTarget&&lastTarget\.isConnected\)showPromo\(\)\},3000\)/);
  assert.match(js,/setTimeout\(closePromo,10000\)/);
  assert.match(js,/data-membership-popup-close/);

@@ -54,31 +54,27 @@ function closePromo(){if(popupTimer)clearTimeout(popupTimer);popupTimer=0;var po
 function showPromo(){closePromo();document.body.insertAdjacentHTML('beforeend',popupMarkup());popupTimer=setTimeout(closePromo,10000)}
 function schedulePromo(target){if(!target||!target.isConnected)return;lastTarget=target;if(promoTimer)clearTimeout(promoTimer);closePromo();promoTimer=setTimeout(function(){if(lastTarget&&lastTarget.isConnected)showPromo()},3000)}
 function isVisible(el){return !!(el&&!el.hidden&&el.getClientRects().length)}
-function handleHooshyarResults(){
- var candidates=[
-  document.getElementById('v5SmartSearchResults'),
-  document.getElementById('v5InlineResults'),
-  document.getElementById('digiyarConversation'),
-  document.getElementById('resultSection')
- ];
- var target=candidates.find(function(el){return isVisible(el)&&el.querySelector('.digiyar-product-card,.recommendation,[data-product-id],.v9-assistant-result,.store-result,.v8-store-result')});
- if(!target){
-  target=candidates.find(function(el){return isVisible(el)&&el.id==='v5SmartSearchResults'});
+function hasResultData(detail){
+ if(detail&&((Array.isArray(detail.products)&&detail.products.length)||(Array.isArray(detail.stores)&&detail.stores.length)))return true;
+ var assistant=window.DigiYarHooshyarAssistant;
+ if(assistant&&typeof assistant.getState==='function'){
+  try{var state=assistant.getState();if(state&&((state.products&&state.products.length)||(state.stores&&state.stores.length)))return true;}catch(_){}
  }
- if(target)schedulePromo(target);
+ var selectors='.digiyar-product-card,.product-card,.recommendation,.recommendations > *,[data-product-id],.v9-assistant-result,.store-result,.v8-store-result,.v7-store-card';
+ return Array.from(document.querySelectorAll(selectors)).some(function(el){return isVisible(el)});
 }
+function handleHooshyarResults(event){
+ var detail=event&&event.detail;
+ if(!hasResultData(detail))return;
+ schedulePromo(document.body);
+}
+function onProductResults(event){handleHooshyarResults(event)}
 document.addEventListener('click',function(e){if(e.target.closest('[data-membership-popup-close]')){closePromo();return}if(e.target.closest('[data-open-membership]')){closePromo();open()}});
-window.addEventListener('digiyar:hooshyar-results-ready',function(){setTimeout(handleHooshyarResults,0)});
-window.addEventListener('digiyar:v9-assistant-results',function(){setTimeout(handleHooshyarResults,0)});
-window.addEventListener('digiyar:product-results-ready',function(){setTimeout(handleHooshyarResults,0)});
-var observer=new MutationObserver(function(records){
- var relevant=records.some(function(record){return Array.from(record.addedNodes||[]).some(function(node){return node.nodeType===1&&(node.matches('.recommendation,.digiyar-product-card,[data-product-id],.v9-assistant-result,.store-result,.v8-store-result')||node.querySelector&&node.querySelector('.recommendation,.digiyar-product-card,[data-product-id],.v9-assistant-result,.store-result,.v8-store-result'))})});
- if(relevant){
-  var target=records.map(function(r){return r.target&&r.target.nodeType===1?r.target.closest('#v5SmartSearchResults,#v5InlineResults,#digiyarConversation,#resultSection'):null}).find(Boolean);
-  if(target&&isVisible(target))schedulePromo(target);
- }
+/* Listen to the actual producer/assistant event names. Product-result events carry data;
+   the final Hooshyar-ready event is also checked against the assistant state. */
+['digiyar:hooshyar-results-ready','digiyar:v9-assistant-results','digiyar:v7-product-results-ready','digiyar:v7-product-results','digiyar:product-results-ready'].forEach(function(name){
+ window.addEventListener(name,onProductResults);
 });
-observer.observe(document.body,{childList:true,subtree:true});
 renderPrices();
 window.DigiYarMembershipOpen=open;
 window.DigiYarMembershipClose=close;
