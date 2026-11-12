@@ -82,6 +82,12 @@ includes('هواپز بدون روغن برای آشپزخانه', general);
 includes('ربات جارو برای تمیز کردن خانه', general);
 includes('پایه مانیتور ارگونومیک', ['digikala','torob']);
 includes('ماوس بی‌سیم برای لپ‌تاپ', ['digikala','torob','janebi']);
+includes('یه گوشی خفن واسه عکس گرفتن می‌خوام', general);
+includes('یه لپ‌تاپ گیمینگ واسه بازی می‌خوام', general);
+includes('یه یخچال ساید برای خونه می‌خوام', general);
+includes('لباسشور درب از جلو می‌خوام', general);
+includes('یه مودم اینترنت برای خونه می‌خوام', general);
+includes('مبل‌شوی برای تمیز کردن مبل پارچه‌ای', general);
 assert.ok(resolve('هواپز بدون روغن برای آشپزخانه').storeIds.length > 0,
   'A colloquial synonym must not produce an empty result set');
 assert.ok(resolve('پایه مانیتور ارگونومیک').storeIds.length > 0,
