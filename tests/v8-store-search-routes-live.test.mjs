@@ -18,7 +18,22 @@ const cases = [
   { name:'office bag', id:'modiseh', query:'کیف اداری برای محل کارم می‌خوام', host:'www.modiseh.com', path:'/catalogsearch/result/' },
   { name:'sunscreen', id:'solokala', query:'ضد آفتاب برای پوست خشک', host:'solokala.com', path:'/' },
   { name:'mobile accessories', id:'janebi', query:'لوازم جانبی موبایل', host:'janebi.com', path:'/search' },
-  { name:'mobile accessories', id:'technolife', query:'لوازم جانبی موبایل', host:'www.technolife.com', path:'/product/list/search' }
+  { name:'mobile accessories', id:'technolife', query:'لوازم جانبی موبایل', host:'www.technolife.com', path:'/product/list/search' },
+  { name:'mobile accessories', id:'berozkala', query:'لوازم جانبی موبایل', host:'berozkala.com', path:'/search' },
+  { name:'mobile accessories', id:'digiland', query:'لوازم جانبی موبایل', host:'dgland.com', path:'/search' },
+  { name:'mobile accessories', id:'digido', query:'لوازم جانبی موبایل', host:'www.digido.ir', path:'/search' },
+  { name:'mobile accessories', id:'gooshishop', query:'لوازم جانبی موبایل', host:'gooshishop.com', path:'/search' },
+  { name:'mobile accessories', id:'meghdadit', query:'لوازم جانبی دیجیتال', host:'meghdadit.com', path:'/' },
+  { name:'beauty', id:'khanoumi', query:'ضد آفتاب', host:'www.khanoumi.com', path:'/search' },
+  { name:'fashion', id:'banimode', query:'کیف زنانه', host:'www.banimode.com', path:'/search' },
+  { name:'fashion', id:'modiseh', query:'کیف اداری', host:'www.modiseh.com', path:'/catalogsearch/result/' },
+  { name:'deals', id:'takhfifan', query:'تخفیف لوازم خانه', host:'takhfifan.com', path:'/search' },
+  { name:'supermarket', id:'pinket', query:'نوشیدنی جو دوسر', host:'pinket.com', path:'/search' },
+  { name:'beauty', id:'solokala', query:'ضد آفتاب', host:'solokala.com', path:'/' },
+  { name:'beauty', id:'mosbatesabz', query:'ضد آفتاب', host:'mosbatesabz.com', path:'/' },
+  { name:'health', id:'darmankala', query:'فشارسنج', host:'darmankala.com', path:'/catalogsearch/result/' },
+  { name:'health', id:'darukade', query:'ضد آفتاب', host:'darukade.com', path:'/products' },
+  { name:'auction', id:'esam', query:'کیف اداری', host:'esam.ir', path:'/search/' }
 ];
 
 const restrictedStatuses = new Set([403, 429, 503]);
@@ -63,4 +78,4 @@ console.log('V8 live route smoke test');
 for (const result of results) {
   console.log(`${result.status}\t${result.name}\t${result.id}\t${result.finalUrl || result.note}`);
 }
-console.log(`Checked ${results.length} direct routes; Dayan is explicitly a homepage fallback.`);
+console.log(`Checked ${results.length} direct routes across the active merchant catalog; homepage-only fallbacks are excluded from Hooshyar results.`);
