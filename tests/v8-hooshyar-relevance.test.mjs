@@ -44,6 +44,10 @@ includes('پادری', general);
 includes('فرش جلوی در', general);
 includes('یخچال فریزر', general);
 includes('جارو برقی', general);
+includes('سشوار', general);
+includes('مودم وای‌فای', general);
+includes('کلاه کاسکت', general);
+includes('غذای گربه', general);
 excludes('پادری', ['iranmiz','partochoob','chidahome','tidawood']);
 assert.equal(resolve('فرش جلوی در').intent,'general_product');
 assert.ok(window.DigiYarPersianDictionary.resolve('فرش جلوی در').some(x=>x.domains.includes('home')),
