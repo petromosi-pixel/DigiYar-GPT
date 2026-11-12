@@ -65,7 +65,7 @@ exact('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit'
 includes('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
 includes('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
 exact('کیف اداری برای محل کارم می‌خوام', [...general,'janebi','modiseh']);
-includes('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala','daroo-online','shavaz','neshatrokh','mootanroo']);
+exact('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala']);
 exact('ترازو هوشمند آشپزخانه', [...general,'technolife']);
 
 excludes('بلیط قطار تهران مشهد', ['eghamat24','jobama','flytoday','flysepehran']);
