@@ -119,6 +119,7 @@ assert.ok(petVacuum.features.includes('quiet'));
 const budgetLaptop=analyze('یه لپ تاپ دانشجویی تا ۳۰ میلیون تومن میخوام');
 assert.equal(budgetLaptop.budget.maxPriceToman,30000000);
 assert.equal(budgetLaptop.budget.operator,'max');
+assert.equal(resolve('یه لپ تاپ دانشجویی تا ۳۰ میلیون تومن میخوام').queryAnalysis.budget.maxPriceToman,30000000);
 assert.ok(budgetLaptop.usage.includes('study'));
 assert.equal(analyze('مقایسه لپ تاپ و تبلت').queryMode,'compare');
 assert.equal(analyze('جارو تا ۳۰ دقیقه میخوام').budget,null,
