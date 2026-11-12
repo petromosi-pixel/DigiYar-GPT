@@ -102,7 +102,7 @@ function semanticQuery(raw){var dictionary=window.DigiYarPersianDictionary,expan
 function resolveSearchContext(query,filters){
  /* The product/category KB is the sole source of merchant eligibility.
     Intent rules prevent generic word overlap from masquerading as relevance. */
- var catalog=getCatalog(),raw=normalize(query),intent=detectIntent(semanticQuery(raw));
+ var catalog=getCatalog(),raw=normalize(query),dictionary=window.DigiYarPersianDictionary,concepts=dictionary&&typeof dictionary.resolve==='function'?dictionary.resolve(raw):[],conceptDomains=Array.from(new Set([].concat.apply([],concepts.map(function(c){return c.domains||[];})))),intent=detectIntent(semanticQuery(raw));
  var stop='برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق'.split(' ');
  var semanticRaw=semanticQuery(raw),tokens=wordTokens(semanticRaw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={},unavailableRoutes=[];
@@ -122,6 +122,8 @@ function resolveSearchContext(query,filters){
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
   var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
+  var conceptExactMatch=concepts.some(function(concept){return [concept.canonical].concat(concept.aliases||[]).some(function(term){var t=normalize(term);return t.length>1&&(' '+hay+' ').indexOf(' '+t+' ')>=0;});});
+  var conceptDomainGeneral=conceptDomains.length>0&&store.storeType==='general'&&domains.some(function(domain){return conceptDomains.indexOf(domain)>=0;});
   var excluded=(store.exclude||[]).some(function(term){var x=normalize(term);return x.length>1&&raw.indexOf(x)>=0&&!(intent==='mobile_accessory'&&key==='janebi'&&x==='موبایل');});
   if(Array.isArray(store.hooshyarExcludeConcepts)&&store.hooshyarExcludeConcepts.indexOf(intent)>=0)return;
   var score=0,matchedPhrase=false;
@@ -167,6 +169,11 @@ function resolveSearchContext(query,filters){
    var travelTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
    if(domains.indexOf('travel_ticket')<0||!/(بلیط\s*قطار|بلیت\s*قطار|سفر ریلی)/.test(travelTerms))return;
    score=25;
+  }else if(concepts.length&&conceptDomainGeneral){
+   /* A recognized product concept is enough to surface relevant general marketplaces
+      in its domain even when their catalog only describes the range broadly. */
+   if(excluded)return;
+   score=conceptExactMatch?28:8;
   }else if(intent==='sunscreen'){
    var sunscreenGeneral=store.storeType==='general'&&['digikala','snappshop','torob','basalam'].indexOf(key)>=0;
    var directStoreTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
