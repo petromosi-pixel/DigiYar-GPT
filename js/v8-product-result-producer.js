@@ -56,6 +56,8 @@ function queryTokens(q){
 /* Strong product-type intents. These are used as hard relevance gates
    when the user's query explicitly names a product family. */
 var TYPE_RULES=[
+ {key:'doormat',terms:['پادری','فرش جلوی در','فرش جلوی درب','فرش ورودی','قالیچه ورودی','زیرانداز جلوی در','doormat'],fields:['پادری','فرش جلوی در','فرش ورودی','قالیچه ورودی','زیرانداز جلوی در','doormat']},
+ {key:'carpet',terms:['فرش','قالی','قالیچه','گلیم','موکت','carpet','rug'],fields:['فرش','قالی','قالیچه','گلیم','موکت','carpet','rug']},
  {key:'mobile',terms:['موبایل','گوشی موبایل','گوشی'],fields:['mobile','گوشی موبایل','گوشی']},
  {key:'laptop',terms:['لپ تاپ','لپ‌تاپ','لپتاپ','نوت بوک','نوت‌بوک'],fields:['laptop','لپ تاپ','لپ‌تاپ','لپتاپ','نوت بوک']},
  {key:'tablet',terms:['تبلت'],fields:['tablet','تبلت']},
