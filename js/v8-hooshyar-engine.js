@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.17';
+var VERSION='8.0.0-hooshyar-engine.18';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -109,6 +109,22 @@ function extractBudget(raw){
  var unit=m[2]||'',multiplier=/میلیون|ملیون/.test(unit)?1000000:/هزار/.test(unit)?1000:1;
  return {maxPriceToman:Math.round(amount*multiplier),operator:/حدود/.test(m[0])?'around':'max'};
 }
+function classifyRequest(normalized,conceptDomains){
+ var q=normalize(normalized),domains=(conceptDomains||[]).slice(),kind='product';
+ var petFood=/غذای\\s*(?:گربه|سگ)|غذای\\s*حیوان|پت\\s*شاپ/.test(q);
+ var food=!petFood&&/(?:غذا|خوراکی|مواد\\s*غذایی|نوشیدنی|تنقلات|میوه|سبزی|برنج|روغن\\s*خوراکی|گوشت|مرغ|ماهی|لبنیات|نان|حبوبات|قهوه|چای|آب\\s*معدنی)/.test(q);
+ var service=/(?:خدمات|سرویس|تعمیر|نصب|سرویس\\s*دوره|کارشناسی|رزرو|اجاره|آموزش|تدریس|قالیشویی|کارواش|نظافت|باربری|حمل\\s*و\\s*نقل|مشاوره|بیمه)/.test(q);
+ if(food){kind='food';domains.push('supermarket');}
+ else if(service){
+  kind='service';
+  if(/خودرو|ماشین|مکانیک|کارواش|کارشناسی|قطعه|لاستیک|بیمه\\s*خودرو/.test(q))domains.push('auto_service');
+  if(/بلیط|بلیت|پرواز|قطار|اتوبوس|سفر|حمل\\s*و\\s*نقل/.test(q))domains.push('travel_ticket');
+  if(/هتل|ویلا|سوئیت|اقامت|اجاره\\s*اقامت/.test(q))domains.push('lodging');
+  if(/آموزش|تدریس|دوره|کلاس|وبینار|مهارت|برنامه\\s*نویسی/.test(q))domains.push('education');
+  if(/نظافت|قالیشویی|مبل\\s*شویی|تعمیر\\s*لوازم\\s*خانگی|خدمات\\s*منزل/.test(q))domains.push('home');
+ }
+ return {kind:kind,domains:Array.from(new Set(domains))};
+}
 function analyzeQuery(query){
  var original=String(query==null?'':query),normalized=normalize(original),dictionary=window.DigiYarPersianDictionary;
  var concepts=dictionary&&typeof dictionary.resolve==='function'?dictionary.resolve(normalized):[];
@@ -121,13 +137,13 @@ function analyzeQuery(query){
  matchedConcepts.sort(function(a,b){return b.matchedAlias.length-a.matchedAlias.length;});
  [['pet_hair',/موی گربه|موی سگ|موی حیوان|موهای حیوان/],['home',/خانه|خونه|منزل|پذیرایی|اتاق خواب/],['work',/محل کار|اداری|دفتر کار|شرکت/],['study',/دانشگاه|دانشجویی|درس|مطالعه/],['gaming',/گیمینگ|بازی|گیم/],['travel',/سفر|مسافرت|کمپینگ/],['photography',/عکاسی|عکس گرفتن|دوربین خوب/],['cleaning',/تمیز|نظافت|شستشو|لکه|پاک کردن/]].forEach(function(rule){if(rule[1].test(normalized))usage.push(rule[0]);});
  [['budget',/ارزان|اقتصادی|مقرون به صرفه|قیمت مناسب|بودجه/],['wireless',/بی.?سیم|وای.?فای|بلوتوثی/],['waterproof',/ضد.?آب/],['compact',/کوچک|جمع.?وجور|کم.?جا/],['professional',/حرفه.?ای|پیشرفته/],['large',/بزرگ|ظرفیت بالا/],['low_power',/کم.?مصرف|مصرف برق پایین/],['quiet',/کم.?صدا|بی.?صدا|ساکت/]].forEach(function(rule){if(rule[1].test(normalized))features.push(rule[0]);});
- var budget=extractBudget(original),queryMode=/مقایسه|فرق|تفاوت/.test(normalized)?'compare':/فقط.*لینک|لینک مستقیم|جستجوی مستقیم/.test(normalized)?'direct_search':'product_discovery';
- return {original:original,normalized:normalized,canonicalQuery:dictionary&&typeof dictionary.canonicalize==='function'?dictionary.canonicalize(original):normalized,concepts:concepts,matchedConcepts:matchedConcepts,primaryConcept:matchedConcepts[0]||null,domains:domains,intent:intent,queryMode:queryMode,usage:usage,features:features,budget:budget};
+ var request=classifyRequest(normalized,domains),budget=extractBudget(original),queryMode=/مقایسه|فرق|تفاوت/.test(normalized)?'compare':/فقط.*لینک|لینک مستقیم|جستجوی مستقیم/.test(normalized)?'direct_search':'product_discovery';
+ return {original:original,normalized:normalized,canonicalQuery:dictionary&&typeof dictionary.canonicalize==='function'?dictionary.canonicalize(original):normalized,concepts:concepts,matchedConcepts:matchedConcepts,primaryConcept:matchedConcepts[0]||null,domains:domains,inferredDomains:request.domains,requestKind:request.kind,intent:intent,queryMode:queryMode,usage:usage,features:features,budget:budget};
 }
 function resolveSearchContext(query,filters){
  /* The product/category KB is the sole source of merchant eligibility.
     Intent rules prevent generic word overlap from masquerading as relevance. */
- var analysis=analyzeQuery(query),catalog=getCatalog(),raw=analysis.normalized,concepts=analysis.concepts,conceptDomains=analysis.domains,intent=analysis.intent;
+ var analysis=analyzeQuery(query),catalog=getCatalog(),raw=analysis.normalized,concepts=analysis.concepts,conceptDomains=Array.from(new Set((analysis.domains||[]).concat(analysis.inferredDomains||[]))),intent=analysis.intent;
  var stop='برای دنبال میخوام میخواهم می خوام میخام می خوام میخوام میخام میخام مناسب نیاز دارم خرید خریدن بخرم یک یه واسه واس واسه‌ی واسهٔ جهت جهتِ که یه جور یه مدل میشه میشه قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق خونه خانه'.split(' ');
  var semanticRaw=semanticQuery(raw),tokens=wordTokens(semanticRaw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={},unavailableRoutes=[];
@@ -143,7 +159,7 @@ function resolveSearchContext(query,filters){
   exactStores.forEach(function(id){var st=catalog[id]||{};exactCategories[id]=(st.domains||[]).map(function(d){return getDomainTitle(d);});});
   return {query:String(query||''),storeIds:exactStores,categoriesByStore:exactCategories,source:'product-category-catalog',intent:'store_lookup'};
  }
- if(!tokens.length)return {query:String(query||''),storeIds:[],eligibleStoreIds:[],routeUnavailableStoreIds:[],categoriesByStore:{},source:'product-category-catalog',intent:intent};
+ /* Do not stop merely because the product is absent from the local vocabulary. The catalog-level fallback below still routes unknown products to broad merchants. */
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
   var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
@@ -271,6 +287,29 @@ function resolveSearchContext(query,filters){
    out.push({id:id,score:score,categories:Array.from(new Set(categories)),routeUnavailable:!route});
    if(!route)unavailableRoutes.push({id:id,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});
    selectedCandidatesAdded++;
+  });
+ }
+ /* Unknown-product and broad-category fallback:
+    vocabulary coverage is advisory, never a prerequisite for discovery.
+    Food requests use grocery merchants; unknown physical products use general
+    marketplaces; services are limited to explicitly inferred service domains. */
+ if(!out.length&&!unavailableRoutes.length){
+  var allowedDomains=analysis.inferredDomains||[];
+  var selectedSet=filters&&filters.active?new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();})):null;
+  Object.keys(catalog).forEach(function(id){
+   var store=catalog[id]||{},type=store.storeType,domains=Array.isArray(store.domains)?store.domains:[];
+   if(type==='portal'||(selectedSet&&!selectedSet.has(id)))return;
+   var eligible=false;
+   if(analysis.requestKind==='product')eligible=type==='general';
+   else if(analysis.requestKind==='food')eligible=type==='general'||(type==='specialist'&&domains.indexOf('supermarket')>=0);
+   else if(analysis.requestKind==='service')eligible=allowedDomains.length>0&&domains.some(function(domain){return allowedDomains.indexOf(domain)>=0;});
+   if(!eligible||seen[id])return;
+   var resolver=window.DigiYarStoreSearchUrl,route=resolver&&typeof resolver.resolveRoute==='function'?resolver.resolveRoute(id,raw):null;
+   var categories=domains.map(function(domain){return getDomainTitle(domain);});
+   if(!categories.length)categories=[type==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
+   seen[id]=true;
+   out.push({id:id,score:5,categories:Array.from(new Set(categories)),routeUnavailable:!route});
+   if(!route)unavailableRoutes.push({id:id,score:5,categories:Array.from(new Set(categories)),domains:domains.slice()});
   });
  }
  out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});
