@@ -2,7 +2,7 @@
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='8.0.0-store-search-url.12';
+var VERSION='8.0.0-store-search-url.13';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
@@ -124,6 +124,12 @@ function resolveRoute(id,q){
     homepage, never mislabeled as a product-search page. */
  return home?{storeId:key,url:home,kind:'homepage_fallback',directSearch:false,query:query}:null;
 }
+function resolveSearchRoute(id,q){
+ var route=resolveRoute(id,q);
+ if(!route||route.kind!=='search'||route.directSearch!==true)return null;
+ var check=validateRoute(id,route,q);
+ return check.valid?route:null;
+}
 function resolve(id,q){var route=resolveRoute(id,q);return route?route.url:'';}
 function hasSearchHandler(id){var key=String(id||'').toLowerCase();return typeof SEARCH[key]==='function'&&!HOMEPAGE_ONLY[key];}
 function hasHandler(id){return hasSearchHandler(id)||!!safeHomepage(id);}
@@ -132,5 +138,5 @@ function handlerIds(){
  Object.keys(catalog).forEach(function(id){if(ids.indexOf(id)<0&&safeHomepage(id))ids.push(id);});
  return ids.filter(function(id){return hasHandler(id);}).sort();
 }
-root.DigiYarStoreSearchUrl={version:VERSION,resolve:resolve,resolveRoute:resolveRoute,validateRoute:validateRoute,auditRoutes:auditRoutes,productTerm:productTerm,hasHandler:hasHandler,hasSearchHandler:hasSearchHandler,handlerIds:handlerIds};
+root.DigiYarStoreSearchUrl={version:VERSION,resolve:resolve,resolveRoute:resolveRoute,resolveSearchRoute:resolveSearchRoute,validateRoute:validateRoute,auditRoutes:auditRoutes,productTerm:productTerm,hasHandler:hasHandler,hasSearchHandler:hasSearchHandler,handlerIds:handlerIds};
 })(typeof window!=='undefined'?window:globalThis);

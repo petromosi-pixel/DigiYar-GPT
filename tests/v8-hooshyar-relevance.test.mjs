@@ -42,7 +42,7 @@ const excludes = (query, forbidden) => {
 const general = ['digikala','snappshop','torob','basalam'];
 exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم', general);
 includes('پادری', general);
-includes('مبل', ['iranmiz','partochoob','chidahome','tidawood']);
+excludes('مبل', ['iranmiz','partochoob','chidahome','tidawood']);
 const sofaRanked = resolve('مبل').storeIds;
 assert.ok(sofaRanked.includes('iranmiz') && sofaRanked.includes('digikala'));
 assert.ok(sofaRanked.indexOf('iranmiz') < sofaRanked.indexOf('digikala'), 'Exact specialist product evidence should rank above broad marketplaces');
@@ -61,10 +61,10 @@ assert.ok(window.DigiYarPersianDictionary.resolve('فرش جلوی در').some(x
   'Doormat must resolve into the home product domain');
 
 exact('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای', general);
-includes('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit','shab','safarme','raja','trip','safarmarket']);
+exact('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit']);
 includes('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
 includes('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
-exact('کیف اداری برای محل کارم می‌خوام', [...general,'dayan','janebi','memarket','modiseh']);
+exact('کیف اداری برای محل کارم می‌خوام', [...general,'janebi','modiseh']);
 includes('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala','daroo-online','shavaz','neshatrokh','mootanroo']);
 exact('ترازو هوشمند آشپزخانه', [...general,'technolife']);
 
@@ -77,7 +77,7 @@ excludes('ترازو هوشمند آشپزخانه', ['iranmiz','partochoob','ch
 
 const office = resolve('کیف اداری برای محل کارم می‌خوام');
 assert.equal(window.DigiYarStoreSearchUrl.resolveRoute('dayan','کیف اداری').kind, 'homepage_fallback');
-assert.ok(office.storeIds.includes('dayan'), 'Dayan remains discoverable but must be clearly marked as homepage fallback');
+assert.ok(!office.storeIds.includes('dayan'), 'Dayan must be hidden until a verified product-search route exists');
 assert.equal(resolve('بلیط قطار تهران مشهد').intent, 'train_ticket');
 assert.equal(resolve('لوازم جانبی موبایل').intent, 'mobile_accessory');
 assert.equal(resolve('یه ضد آفتاب برای پوست خشک می‌خوام').intent, 'sunscreen');
@@ -136,10 +136,21 @@ assert.equal(unknownProduct.queryAnalysis.requestKind,'product');
 includes('نمکدان سرامیکی دست ساز',['digikala','snappshop','torob','basalam','memarket']);
 const unknownFood=resolve('نوشیدنی جو دوسر');
 assert.equal(unknownFood.queryAnalysis.requestKind,'food');
-includes('نوشیدنی جو دوسر',['digikala','snappshop','torob','basalam','memarket','ofoghkoroosh','janbo','shahrvand','hyperme','pinket']);
+exact('نوشیدنی جو دوسر',['digikala','snappshop','torob','basalam','pinket']);
 const serviceRequest=resolve('خدمات کارشناسی خودرو');
 assert.equal(serviceRequest.queryAnalysis.requestKind,'service');
-includes('خدمات کارشناسی خودرو',['hamrahmechanic','khodro45','aytol']);
+exact('خدمات کارشناسی خودرو',[]);
 assert.ok(analyze('نوشیدنی جو دوسر').inferredDomains.includes('supermarket'));
 assert.ok(analyze('خدمات کارشناسی خودرو').inferredDomains.includes('auto_service'));
 console.log('V8 unknown-query category fallback: PASS');
+
+/* Every visible product result must resolve to a validated direct search page. */
+for (const query of ['نمکدان سرامیکی دست ساز','نوشیدنی جو دوسر','کیف اداری','مبل','بلیط قطار تهران مشهد','خدمات کارشناسی خودرو']) {
+  const result=resolve(query);
+  assert.deepEqual(result.routeUnavailableStoreIds,[],query+': no route-unavailable merchant may be displayed');
+  for (const id of result.storeIds) {
+    const route=window.DigiYarStoreSearchUrl.resolveSearchRoute(id,query);
+    assert.ok(route&&route.kind==='search'&&route.directSearch,query+': '+id+' must have a verified direct search route');
+  }
+}
+

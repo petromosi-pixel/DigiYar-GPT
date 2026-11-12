@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.18';
+var VERSION='8.0.0-hooshyar-engine.19';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -170,6 +170,14 @@ function resolveSearchContext(query,filters){
   var score=0,matchedPhrase=false;
   fields.forEach(function(field){var f=normalize(field);if(f.length>=3&&raw.indexOf(f)>=0){matchedPhrase=true;score=Math.max(score,10+Math.min(f.length,12));}});
   tokens.forEach(function(t){var matched=fieldTokens.some(function(ft){return ft===t||(t.length>=4&&ft.length>=4&&(ft.indexOf(t)===0||t.indexOf(ft)===0));});if(matched)score+=t.length>=5?2:1;});
+  if(intent==='general_product'&&store.storeType==='specialist'){
+   if(concepts.length&&!conceptExactMatch)return;
+   if(!concepts.length){
+    var genericEvidence=/^(?:خانه|آشپزخانه|خانه و آشپزخانه|لوازم خانه|کالا|محصول|خرید|فروش|صنایع دستی|دست ساز|روزمره|مناسب|متنوع|مصرفی)$/;
+    var exactProductEvidence=fields.some(function(field){var f=normalize(field);return f.length>=4&&!genericEvidence.test(f)&&raw.indexOf(f)>=0;});
+    if(!exactProductEvidence)return;
+   }
+  }
   if(intent==='office_bag'){
    var generalAllowed=store.storeType==='general'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
    var specialistExact=store.storeType!=='general'&&store.storeType!=='portal'&&fields.some(function(field){return /کیف\s*اداری|کیف کار|کیف دستی اداری/.test(normalize(field));});
@@ -239,10 +247,12 @@ function resolveSearchContext(query,filters){
   }
   if(excluded)return;
   var urlResolver=window.DigiYarStoreSearchUrl;
+  var verifiedRoute=urlResolver&&typeof urlResolver.resolveSearchRoute==='function'?urlResolver.resolveSearchRoute(key,raw):null;
+  /* A homepage is not a product-search result. Hide any merchant without a verified query route. */
+  if(!verifiedRoute)return;
   var categories=domains.map(function(d){return getDomainTitle(d);});
-  if(!urlResolver||typeof urlResolver.resolve!=='function'||!urlResolver.resolve(key,raw)){unavailableRoutes.push({id:key,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories)),routeUnavailable:true});}return;}
   if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
-  if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories))});}
+  if(!seen[key]){seen[key]=true;out.push({id:key,score:score,categories:Array.from(new Set(categories)),routeUnavailable:false});}
  });
 
  /* Selection is applied after relevance. Re-evaluate selected catalog merchants
@@ -282,10 +292,10 @@ function resolveSearchContext(query,filters){
    var categories=domains.map(function(domain){return getDomainTitle(domain);});
    if(!categories.length)categories=[store.storeType==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
    var resolver=window.DigiYarStoreSearchUrl;
-   var route=resolver&&typeof resolver.resolveRoute==='function'?resolver.resolveRoute(id,raw):null;
+   var route=resolver&&typeof resolver.resolveSearchRoute==='function'?resolver.resolveSearchRoute(id,raw):null;
+   if(!route)return;
    seen[id]=true;
-   out.push({id:id,score:score,categories:Array.from(new Set(categories)),routeUnavailable:!route});
-   if(!route)unavailableRoutes.push({id:id,score:score,categories:Array.from(new Set(categories)),domains:domains.slice()});
+   out.push({id:id,score:score,categories:Array.from(new Set(categories)),routeUnavailable:false});
    selectedCandidatesAdded++;
   });
  }
@@ -304,12 +314,12 @@ function resolveSearchContext(query,filters){
    else if(analysis.requestKind==='food')eligible=type==='general'||(type==='specialist'&&domains.indexOf('supermarket')>=0);
    else if(analysis.requestKind==='service')eligible=allowedDomains.length>0&&domains.some(function(domain){return allowedDomains.indexOf(domain)>=0;});
    if(!eligible||seen[id])return;
-   var resolver=window.DigiYarStoreSearchUrl,route=resolver&&typeof resolver.resolveRoute==='function'?resolver.resolveRoute(id,raw):null;
+   var resolver=window.DigiYarStoreSearchUrl,route=resolver&&typeof resolver.resolveSearchRoute==='function'?resolver.resolveSearchRoute(id,raw):null;
+   if(!route)return;
    var categories=domains.map(function(domain){return getDomainTitle(domain);});
    if(!categories.length)categories=[type==='general'?'فروشگاه عمومی':'فروشگاه تخصصی'];
    seen[id]=true;
-   out.push({id:id,score:5,categories:Array.from(new Set(categories)),routeUnavailable:!route});
-   if(!route)unavailableRoutes.push({id:id,score:5,categories:Array.from(new Set(categories)),domains:domains.slice()});
+   out.push({id:id,score:5,categories:Array.from(new Set(categories)),routeUnavailable:false});
   });
  }
  out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});

@@ -49,6 +49,13 @@ assert.equal(resolver.hasHandler('meghdadit'), true);
 assert.equal(resolver.hasSearchHandler('meghdadit'), true);
 assert.equal(resolver.hasHandler('iranmiz'), true);
 assert.equal(resolver.hasSearchHandler('iranmiz'), false);
+
+assert.equal(typeof resolver.resolveSearchRoute,'function','Resolver must expose a verified-search-only API');
+assert.ok(resolver.resolveSearchRoute('digikala','نمکدان سرامیکی'),'General marketplace must expose a verified direct search');
+assert.equal(resolver.resolveSearchRoute('dayan','کیف اداری'),null,'Homepage fallback must never qualify as product search');
+assert.equal(resolver.resolveSearchRoute('memarket','تصفیه هوا'),null,'Homepage fallback must never qualify as product search');
+assert.equal(resolver.resolveSearchRoute('iranmiz','میز اداری'),null,'A relevant merchant without a verified query URL must not qualify');
+
 const audited = resolver.auditRoutes('نمونه کالا');
 assert.equal(audited.invalidCount, 0, `Merchant route audit found invalid routes: ${JSON.stringify(audited.invalid)}`);
 assert.equal(audited.validCount, audited.total, 'Every catalog merchant must have a validated direct-search or canonical-homepage route');
