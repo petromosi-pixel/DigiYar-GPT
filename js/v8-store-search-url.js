@@ -2,7 +2,7 @@
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='8.0.0-store-search-url.10';
+var VERSION='8.0.0-store-search-url.11';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
