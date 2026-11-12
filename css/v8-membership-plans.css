@@ -51,3 +51,13 @@ body.v6-dark .v8-membership{border-color:rgba(108,151,220,.3)}
 .dy-membership-promo-arrow{font-size:22px;color:#a7eaff}
 .dy-membership-promo:focus-visible,.dy-membership-page-head button:focus-visible{outline:2px solid #50d8ff;outline-offset:2px}
 body.v6-dark .dy-membership-page{--dy-page:#101827;--dy-surface:#182437;--dy-control:#202c3e;--dy-text:#e7edf7;--dy-muted:#aab6c8;--dy-border:#35445a}
+
+/* Centered timed membership promotion popup */
+.dy-membership-popup-backdrop{position:fixed;inset:0;z-index:2147483300;display:grid;place-items:center;padding:22px;background:rgba(7,15,30,.42);backdrop-filter:blur(3px);animation:dyMembershipFadeIn .35s ease both}
+.dy-membership-popup{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;width:min(100%,360px);padding:28px 20px 20px;border:1px solid rgba(118,191,255,.35);border-radius:20px;background:linear-gradient(145deg,#142b50,#174f70 62%,#183b61);color:#fff;text-align:center;box-shadow:0 20px 65px rgba(0,0,0,.3);animation:dyMembershipPopupIn .48s cubic-bezier(.2,.8,.2,1) both}
+.dy-membership-popup-close{position:absolute;top:9px;left:10px;width:28px;height:28px;border:0;border-radius:50%;background:rgba(255,255,255,.13);color:#fff;font:inherit;font-size:21px;line-height:1;cursor:pointer}
+.dy-membership-popup-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;background:rgba(110,220,255,.17);color:#8ceaff;font-size:27px}
+.dy-membership-popup>strong{font-size:16px;line-height:1.9;font-weight:900}.dy-membership-popup>small{color:#c9e5f2;font-size:11px;line-height:1.8}
+.dy-membership-popup-action{margin-top:5px;padding:10px 22px;border:0;border-radius:11px;background:linear-gradient(100deg,#2386e8,#10aebe);color:#fff;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
+@keyframes dyMembershipFadeIn{from{opacity:0}to{opacity:1}}@keyframes dyMembershipPopupIn{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.dy-membership-popup-backdrop,.dy-membership-popup{animation:none}}

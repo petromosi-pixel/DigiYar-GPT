@@ -48,21 +48,11 @@ root.querySelectorAll('[data-membership-choose]').forEach(function(button){
   if(notice)notice.textContent='سطح '+plan.title+' انتخاب شد؛ ثبت‌نام و پرداخت هنوز فعال نیست. این قیمت صرفاً برای نمایش ساختار اشتراک است و هیچ مبلغی از شما دریافت نمی‌شود.';
  });
 });
-function bannerMarkup(){return '<button type="button" class="dy-membership-promo" data-open-membership aria-label="مشاهده طرح‌های ارتقای حساب کاربری"><span class="dy-membership-promo-icon" aria-hidden="true">✦</span><span class="dy-membership-promo-copy"><strong>هوشمندتر بخر؛ انتخاب‌های بیشتری پیش روته!</strong><small>امکانات حرفه‌ای و تجاری دیجی‌یار رو کشف کن</small></span><span class="dy-membership-promo-arrow" aria-hidden="true">‹</span></button>'}
-function addPromo(target){
- if(!target||!target.isConnected)return;
- var old=target.querySelector(':scope > .dy-membership-promo');
- if(old)return;
- target.insertAdjacentHTML('beforeend',bannerMarkup());
-}
-var promoTimer=0,lastTarget=null;
-function schedulePromo(target){
- if(!target||!target.isConnected)return;
- lastTarget=target;
- if(promoTimer)clearTimeout(promoTimer);
- document.querySelectorAll('.dy-membership-promo').forEach(function(el){el.remove()});
- promoTimer=setTimeout(function(){if(lastTarget&&lastTarget.isConnected)addPromo(lastTarget)},3000);
-}
+function popupMarkup(){return '<div class="dy-membership-popup-backdrop" data-membership-popup><section class="dy-membership-popup" role="dialog" aria-modal="true" aria-label="ارتقای حساب کاربری"><button type="button" class="dy-membership-popup-close" data-membership-popup-close aria-label="بستن پیشنهاد">×</button><span class="dy-membership-popup-icon" aria-hidden="true">✦</span><strong>هوشمندتر بخر؛ انتخاب‌های بیشتری پیش روته!</strong><small>امکانات حرفه‌ای و تجاری دیجی‌یار رو کشف کن</small><button type="button" class="dy-membership-popup-action" data-open-membership>مشاهده امکانات ‹</button></section></div>'}
+var promoTimer=0,popupTimer=0,lastTarget=null;
+function closePromo(){if(popupTimer)clearTimeout(popupTimer);popupTimer=0;var popup=document.querySelector('.dy-membership-popup-backdrop');if(popup)popup.remove()}
+function showPromo(){closePromo();document.body.insertAdjacentHTML('beforeend',popupMarkup());popupTimer=setTimeout(closePromo,10000)}
+function schedulePromo(target){if(!target||!target.isConnected)return;lastTarget=target;if(promoTimer)clearTimeout(promoTimer);closePromo();promoTimer=setTimeout(function(){if(lastTarget&&lastTarget.isConnected)showPromo()},3000)}
 function isVisible(el){return !!(el&&!el.hidden&&el.getClientRects().length)}
 function handleHooshyarResults(){
  var candidates=[
@@ -77,7 +67,7 @@ function handleHooshyarResults(){
  }
  if(target)schedulePromo(target);
 }
-document.addEventListener('click',function(e){if(e.target.closest('[data-open-membership]'))open()});
+document.addEventListener('click',function(e){if(e.target.closest('[data-membership-popup-close]')){closePromo();return}if(e.target.closest('[data-open-membership]')){closePromo();open()}});
 window.addEventListener('digiyar:hooshyar-results-ready',function(){setTimeout(handleHooshyarResults,0)});
 window.addEventListener('digiyar:v9-assistant-results',function(){setTimeout(handleHooshyarResults,0)});
 window.addEventListener('digiyar:product-results-ready',function(){setTimeout(handleHooshyarResults,0)});

@@ -15,14 +15,16 @@ test('membership entry is above price hunter in hamburger menu',()=>{
  assert.ok(entry>=0&&price>entry);
  assert.match(menu,/key==='membership'[\s\S]*?DigiYarMembershipOpen/);
 });
-test('results promotion is delayed exactly three seconds and navigates to membership page',()=>{
- assert.match(js,/setTimeout\(function\(\)\{if\(lastTarget&&lastTarget\.isConnected\)addPromo\(lastTarget\)\},3000\)/);
+test('results promotion opens a centered dismissible popup after three seconds and navigates to membership',()=>{
+ assert.match(js,/setTimeout\(function\(\)\{if\(lastTarget&&lastTarget\.isConnected\)showPromo\(\)\},3000\)/);
+ assert.match(js,/setTimeout\(closePromo,10000\)/);
+ assert.match(js,/data-membership-popup-close/);
  assert.match(js,/data-open-membership/);
- assert.match(js,/if\(e\.target\.closest\('\[data-open-membership\]'\)\)open\(\)/);
 });
-test('promotion is inserted at the end of the result container and has compact styling',()=>{
- assert.match(js,/target\.insertAdjacentHTML\('beforeend',bannerMarkup\(\)\)/);
- assert.match(css,/\.dy-membership-promo\{display:flex/);
+test('membership menu entry cycles through five colors and popup is centered',()=>{
+ assert.match(menu,/dym-membership-item[\s\S]*?dymMembershipColorFlow/);
+ assert.match(css,/\.dy-membership-popup-backdrop\{position:fixed[\s\S]*?place-items:center/);
+ assert.match(css,/dyMembershipPopupIn/);
 });
 test('pricing remains illustrative and no payment is enabled',()=>{
  assert.match(js,/paymentEnabled:false/);
