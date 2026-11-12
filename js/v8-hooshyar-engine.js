@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.12';
+var VERSION='8.0.0-hooshyar-engine.13';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -178,6 +178,10 @@ function resolveSearchContext(query,filters){
    var travelTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
    if(domains.indexOf('travel_ticket')<0||!/(بلیط\s*قطار|بلیت\s*قطار|سفر ریلی)/.test(travelTerms))return;
    score=25;
+  }else if(intent==='general_product'&&concepts.length&&conceptExactMatch&&store.storeType!=='portal'&&domains.some(function(domain){return conceptDomains.indexOf(domain)>=0;})){
+   /* Exact product-family evidence in a matching specialist domain outranks broad marketplaces. */
+   if(excluded)return;
+   score=34;
   }else if(intent==='general_product'&&concepts.length&&conceptDomainGeneral){
    /* A recognized product concept is enough to surface relevant general marketplaces
       in its domain even when their catalog only describes the range broadly. */
