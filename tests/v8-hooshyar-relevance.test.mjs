@@ -143,6 +143,8 @@ assert.equal(serviceRequest.queryAnalysis.requestKind,'service');
 exact('خدمات کارشناسی خودرو',[]);
 assert.ok(analyze('نوشیدنی جو دوسر').inferredDomains.includes('supermarket'));
 assert.ok(analyze('خدمات کارشناسی خودرو').inferredDomains.includes('auto_service'));
+assert.equal(window.DigiYarStoreSearchUrl.resolveSearchRoute('meghdadit','لوازم جانبی دیجیتال'),null);
+assert.equal(window.DigiYarStoreSearchUrl.resolveSearchRoute('snappshop','تصفیه هوا'),null);
 console.log('V8 unknown-query category fallback: PASS');
 
 /* Every visible product result must resolve to a validated direct search page. */
