@@ -103,7 +103,7 @@ function resolveSearchContext(query,filters){
  /* The product/category KB is the sole source of merchant eligibility.
     Intent rules prevent generic word overlap from masquerading as relevance. */
  var catalog=getCatalog(),raw=normalize(query),dictionary=window.DigiYarPersianDictionary,concepts=dictionary&&typeof dictionary.resolve==='function'?dictionary.resolve(raw):[],conceptDomains=Array.from(new Set([].concat.apply([],concepts.map(function(c){return c.domains||[];})))),intent=detectIntent(semanticQuery(raw));
- var stop='برای دنبال میخوام میخواهم می خوام مناسب نیاز دارم خرید خریدن بخرم یک یه و یا از با در به که هست است باشد هستم لطفا قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق'.split(' ');
+ var stop='برای دنبال میخوام میخواهم می خوام میخام می خوام میخوام میخام میخام مناسب نیاز دارم خرید خریدن بخرم یک یه واسه واس واسه‌ی واسهٔ جهت جهتِ که یه جور یه مدل میشه میشه قیمت بودجه متوسط ارزان گران بهترین خوب محل کارم محل کار اتاق خواب اتاق خونه خانه'.split(' ');
  var semanticRaw=semanticQuery(raw),tokens=wordTokens(semanticRaw).filter(function(t){return stop.indexOf(t)<0;});
  var out=[],seen={},unavailableRoutes=[];
  /* Exact merchant-name/domain lookups are directory requests, not product
