@@ -44,7 +44,6 @@ exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب 
 includes('پادری', general);
 includes('مبل', ['iranmiz','partochoob','chidahome','tidawood']);
 const sofaRanked = resolve('مبل').storeIds;
-console.log('SOFA_RANKED_DEBUG', JSON.stringify(sofaRanked));
 assert.ok(sofaRanked.includes('iranmiz') && sofaRanked.includes('digikala'));
 assert.ok(sofaRanked.indexOf('iranmiz') < sofaRanked.indexOf('digikala'), 'Exact specialist product evidence should rank above broad marketplaces');
 excludes('پادری', ['iranmiz','partochoob','chidahome','tidawood']);
