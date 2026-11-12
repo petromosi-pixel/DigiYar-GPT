@@ -20,7 +20,7 @@
     "test:v8:product-result-source": "node tests/v8-product-result-source.test.mjs",
     "test:v8:product-result-producer": "node tests/v8-product-result-producer.test.mjs",
     "test:v9:assistant": "node --check js/v9-hooshyar-assistant.js && node --check js/v8-product-result-source.js && node tests/v9-hooshyar-assistant.test.mjs",
-    "test:v8:persian-dictionary": "node tests/v8-persian-language-dictionary.test.mjs && node tests/v8-hooshyar-relevance.test.mjs"
+    "test:v8:persian-dictionary": "node tests/v8-persian-language-dictionary.test.mjs && node tests/v8-hooshyar-relevance.test.mjs && node tests/v8-product-result-producer.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0",
