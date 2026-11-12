@@ -33,3 +33,21 @@
 @media(min-width:760px){.v8-membership{padding:22px}.v8-membership-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}.v8-membership-card{display:flex;flex-direction:column}.v8-membership-features{flex:1}.v8-membership-heading h2{font-size:22px}.v8-membership-duration{justify-content:center}.v8-membership-duration button{flex:0 0 auto;min-width:78px}}
 @media(max-width:380px){.v8-membership{padding:14px 10px}.v8-membership-heading h2{font-size:17px}.v8-membership-card{padding:13px 11px}.v8-membership-ribbon{font-size:8px}.v8-membership-plan-desc{font-size:10px}}
 body.v6-dark .v8-membership{border-color:rgba(108,151,220,.3)}
+
+/* Dedicated membership page, opened from menu or results promo */
+.dy-membership-page{position:fixed;inset:0;z-index:2147483250;display:flex;flex-direction:column;overflow:hidden;background:var(--dy-page,#f6f8fc);color:var(--dy-text,#24334c);font-family:inherit;direction:rtl}
+.dy-membership-page[hidden]{display:none!important}
+.dy-membership-page-head{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:12px;padding:0 15px;border-bottom:1px solid var(--dy-border,#e3e9f2);background:var(--dy-surface,#fff)}
+.dy-membership-page-head button{width:36px;height:36px;border:0;border-radius:10px;background:var(--dy-control,#eef2f8);color:inherit;font:inherit;font-size:23px}
+.dy-membership-page-head h1{flex:1;margin:0;font-size:15px;font-weight:900}
+.dy-membership-page-head>span{color:#22b9d0;font-size:21px}
+.dy-membership-page-content{flex:1;overflow:auto;overscroll-behavior:contain;padding:10px 12px calc(24px + env(safe-area-inset-bottom))}
+.dy-membership-page-content .v8-membership{margin:0 auto;max-width:920px}
+.dy-membership-promo{display:flex;align-items:center;gap:9px;width:100%;box-sizing:border-box;margin:12px 0 3px;padding:9px 11px;border:1px solid rgba(43,143,211,.28);border-radius:11px;background:linear-gradient(105deg,#142c52,#145b79);color:#fff;text-align:right;cursor:pointer;box-shadow:0 4px 12px rgba(17,62,103,.12);font-family:inherit}
+.dy-membership-promo-icon{flex:0 0 28px;width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:rgba(111,224,255,.16);color:#8ceaff;font-size:17px}
+.dy-membership-promo-copy{display:grid;gap:2px;flex:1;min-width:0}
+.dy-membership-promo-copy strong{font-size:11px;font-weight:900;line-height:1.6}
+.dy-membership-promo-copy small{font-size:9px;color:#c3e5f2;line-height:1.6}
+.dy-membership-promo-arrow{font-size:22px;color:#a7eaff}
+.dy-membership-promo:focus-visible,.dy-membership-page-head button:focus-visible{outline:2px solid #50d8ff;outline-offset:2px}
+body.v6-dark .dy-membership-page{--dy-page:#101827;--dy-surface:#182437;--dy-control:#202c3e;--dy-text:#e7edf7;--dy-muted:#aab6c8;--dy-border:#35445a}
