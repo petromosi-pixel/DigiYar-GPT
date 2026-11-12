@@ -1,0 +1,35 @@
+/* DigiYar membership tiers: pricing preview only; no billing or entitlement activation. */
+.v8-membership{margin:18px 0 20px;padding:18px 14px;border:1px solid rgba(91,139,213,.25);border-radius:22px;background:linear-gradient(155deg,rgba(17,39,76,.98),rgba(9,22,46,.98));color:#f3f7ff;box-shadow:0 12px 30px rgba(6,20,48,.13)}
+.v8-membership-heading{text-align:center;margin:0 auto 15px;max-width:680px}
+.v8-membership-eyebrow{display:inline-block;padding:4px 10px;border:1px solid rgba(103,190,255,.28);border-radius:999px;color:#79d9ff;font-size:10px;font-weight:800}
+.v8-membership-heading h2{margin:9px 0 5px;color:#fff;font-size:19px;font-weight:900}
+.v8-membership-heading p{margin:0;color:#bdcce2;font-size:11px;line-height:1.9}
+.v8-membership-duration{display:flex;gap:6px;overflow-x:auto;padding:3px 1px 10px;scrollbar-width:thin}
+.v8-membership-duration button{flex:1 0 auto;min-width:54px;padding:8px 9px;border:1px solid rgba(148,177,218,.25);border-radius:11px;background:rgba(255,255,255,.055);color:#d9e6f8;font:700 10px inherit;cursor:pointer}
+.v8-membership-duration button[aria-pressed=true]{border-color:#5ed7ff;background:linear-gradient(135deg,rgba(42,119,224,.4),rgba(15,175,205,.2));color:#fff;box-shadow:0 0 0 1px rgba(94,215,255,.12)}
+.v8-membership-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.v8-membership-card{position:relative;min-width:0;padding:15px 13px 13px;border:1px solid rgba(144,173,213,.22);border-radius:17px;background:linear-gradient(155deg,rgba(255,255,255,.075),rgba(255,255,255,.025));overflow:hidden}
+.v8-membership-card.is-featured{border-color:rgba(75,203,255,.65);box-shadow:inset 0 0 0 1px rgba(75,203,255,.13),0 8px 22px rgba(0,0,0,.13)}
+.v8-membership-ribbon{position:absolute;top:12px;left:12px;padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,#1979d5,#0da9b8);color:#fff;font-size:9px;font-weight:900}
+.v8-membership-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.v8-membership-plan-kicker{color:#91a9ca;font-size:10px}
+.v8-membership-card h3{margin:2px 0 0;color:#fff;font-size:20px;font-weight:900}
+.v8-membership-plan-mark{padding:5px 8px;border:1px solid rgba(144,180,225,.2);border-radius:8px;color:#b9d3ef;font-size:9px;font-weight:800}
+.v8-membership-plan-desc{min-height:38px;margin:9px 0;color:#c2d0e4;font-size:11px;line-height:1.8}
+.v8-membership-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;margin:10px 0 12px;padding:10px;border-radius:12px;background:rgba(0,0,0,.16)}
+.v8-membership-price strong{color:#fff;font-size:19px;font-weight:900}
+.v8-membership-price>span{color:#9fb4d1;font-size:10px}
+.v8-membership-price small{flex-basis:100%;min-height:14px;color:#83d7bb;font-size:10px}
+.v8-membership-features{display:grid;gap:9px;list-style:none;margin:0;padding:0}
+.v8-membership-features li{display:flex;align-items:flex-start;gap:7px;color:#e1e9f5;font-size:10px;line-height:1.8}
+.v8-feature-state{flex:0 0 auto;min-width:48px;padding:2px 5px;border-radius:6px;text-align:center;font-size:8px;font-weight:900;line-height:1.8}
+.v8-feature-state.is-live{background:rgba(52,190,137,.14);color:#78e1b8}
+.v8-feature-state.is-planned{background:rgba(255,190,84,.12);color:#ffd28a}
+.v8-membership-cta{width:100%;min-height:42px;margin-top:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#267de0,#11a9c0);color:#fff;font:800 12px inherit;cursor:pointer}
+.v8-membership-cta.is-current{border:1px solid rgba(118,208,177,.25);background:rgba(54,170,129,.13);color:#a6ebce;cursor:default}
+.v8-membership-cta:focus-visible,.v8-membership-duration button:focus-visible{outline:2px solid #7be2ff;outline-offset:3px}
+.v8-membership-notice{margin:13px 0 0;padding:10px 11px;border:1px solid rgba(255,199,105,.22);border-radius:11px;background:rgba(255,183,74,.07);color:#ffdaa0;font-size:10px;line-height:1.9;text-align:center}
+.v8-membership-footnote{margin:8px 2px 0;color:#94a8c5;font-size:9px;line-height:1.9;text-align:center}
+@media(min-width:760px){.v8-membership{padding:22px}.v8-membership-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}.v8-membership-card{display:flex;flex-direction:column}.v8-membership-features{flex:1}.v8-membership-heading h2{font-size:22px}.v8-membership-duration{justify-content:center}.v8-membership-duration button{flex:0 0 auto;min-width:78px}}
+@media(max-width:380px){.v8-membership{padding:14px 10px}.v8-membership-heading h2{font-size:17px}.v8-membership-card{padding:13px 11px}.v8-membership-ribbon{font-size:8px}.v8-membership-plan-desc{font-size:10px}}
+body.v6-dark .v8-membership{border-color:rgba(108,151,220,.3)}
