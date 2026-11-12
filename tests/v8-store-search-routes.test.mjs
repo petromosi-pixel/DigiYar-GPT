@@ -25,9 +25,8 @@ const basalamAccessories = resolver.resolve('basalam', 'لوازم جانبی م
 assert.match(decodeURIComponent(basalamAccessories), /لوازم جانبی موبایل/);
 const basalamSamsung = resolver.resolve('basalam', 'لوازم جانبی گوشی سامسونگ');
 assert.match(decodeURIComponent(basalamSamsung), /سامسونگ/);
-const meghdad = resolver.resolve('meghdadit', 'لوازم جانبی دیجیتال');
-assert.match(meghdad, /^https:\/\/meghdadit\.com\/\?s=/);
-assert.match(decodeURIComponent(meghdad), /لوازم جانبی دیجیتال/);
+assert.equal(resolver.resolveRoute('meghdadit','لوازم جانبی دیجیتال').kind,'homepage_fallback');
+assert.equal(resolver.resolveSearchRoute('meghdadit','لوازم جانبی دیجیتال'),null);
 assert.equal(resolver.resolveRoute('dayan', 'کیف اداری').kind, 'homepage_fallback',
   'Dayan must use its canonical homepage until a verified product-search route exists');
 assert.equal(resolver.resolveRoute('memarket', 'تصفیه هوا').kind, 'homepage_fallback',
@@ -46,7 +45,7 @@ assert.ok(solokala.startsWith('https://solokala.com/?s='));
 assert.match(solokala, /post_type=product/);
 assert.match(decodeURIComponent(solokala), /ضد آفتاب برای پوست خشک/);
 assert.equal(resolver.hasHandler('meghdadit'), true);
-assert.equal(resolver.hasSearchHandler('meghdadit'), true);
+assert.equal(resolver.hasSearchHandler('meghdadit'), false);
 assert.equal(resolver.hasHandler('iranmiz'), true);
 assert.equal(resolver.hasSearchHandler('iranmiz'), false);
 
@@ -54,7 +53,8 @@ assert.equal(typeof resolver.resolveSearchRoute,'function','Resolver must expose
 assert.ok(resolver.resolveSearchRoute('digikala','نمکدان سرامیکی'),'General marketplace must expose a verified direct search');
 assert.equal(resolver.resolveSearchRoute('dayan','کیف اداری'),null,'Homepage fallback must never qualify as product search');
 assert.equal(resolver.resolveSearchRoute('memarket','تصفیه هوا'),null,'Homepage fallback must never qualify as product search');
-assert.equal(resolver.resolveSearchRoute('snappshop','تصفیه هوا'),null,'A search URL on an unverified merchant host must not qualify');
+assert.equal(resolver.resolveSearchRoute('snappshop','تصفیه هوا'),null,'SnappShop must remain hidden until its search host is verified');
+assert.equal(resolver.resolveSearchRoute('meghdadit','لوازم جانبی دیجیتال'),null,'Meghdad IT must remain hidden until its search route is reachable');
 assert.equal(resolver.resolveSearchRoute('iranmiz','میز اداری'),null,'A relevant merchant without a verified query URL must not qualify');
 
 const audited = resolver.auditRoutes('نمونه کالا');

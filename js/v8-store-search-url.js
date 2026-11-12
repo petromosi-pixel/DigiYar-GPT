@@ -2,7 +2,7 @@
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='8.0.0-store-search-url.13';
+var VERSION='8.0.0-store-search-url.14';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
@@ -47,7 +47,7 @@ SEARCH.darukade=q=>'https://darukade.com/products?w='+encodeURIComponent(product
 /* These two stores do not yet have verified query-specific paths. They still
    receive a safe canonical-homepage route so relevant merchants are not
    silently omitted from Hooshyar results. */
-var HOMEPAGE_ONLY={dayan:true,memarket:true};
+var HOMEPAGE_ONLY={dayan:true,memarket:true,snappshop:true,meghdadit:true};
 /* Dayan's previously tested affiliate route resolved to login/home, so fail closed until a real product-search route is verified. */
 SEARCH.dayan=q=>'';
 /* MiMarket's product-search route has not been verified; do not send users to a guessed URL. */

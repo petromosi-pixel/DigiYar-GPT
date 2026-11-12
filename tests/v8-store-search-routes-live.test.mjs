@@ -23,7 +23,6 @@ const cases = [
   { name:'mobile accessories', id:'digiland', query:'لوازم جانبی موبایل', host:'dgland.com', path:'/search' },
   { name:'mobile accessories', id:'digido', query:'لوازم جانبی موبایل', host:'www.digido.ir', path:'/search' },
   { name:'mobile accessories', id:'gooshishop', query:'لوازم جانبی موبایل', host:'gooshishop.com', path:'/search' },
-  { name:'mobile accessories', id:'meghdadit', query:'لوازم جانبی دیجیتال', host:'meghdadit.com', path:'/' },
   { name:'beauty', id:'khanoumi', query:'ضد آفتاب', host:'www.khanoumi.com', path:'/search' },
   { name:'fashion', id:'banimode', query:'کیف زنانه', host:'www.banimode.com', path:'/search' },
   { name:'fashion', id:'modiseh', query:'کیف اداری', host:'www.modiseh.com', path:'/catalogsearch/result/' },
