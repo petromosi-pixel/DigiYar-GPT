@@ -18,10 +18,11 @@ const source = fs.readFileSync(new URL('../js/v8-hooshyar-engine.js', import.met
 assert.ok(source.includes('function init(){'), 'Discovery init anchor must exist');
 vm.runInThisContext(source.replace(
   'function init(){',
-  'window.__testResolveSearchContext=resolveSearchContext; function init(){'
+  'window.__testResolveSearchContext=resolveSearchContext; window.__testAnalyzeQuery=analyzeQuery; function init(){'
 ), { filename:'v7-popular-store-discovery.test.js' });
 
 const resolve = window.__testResolveSearchContext;
+const analyze = window.__testAnalyzeQuery;
 assert.ok(window.DigiYarPersianDictionary.resolve('پادری').some(x=>x.id==='doormat'));
 assert.ok(window.DigiYarPersianDictionary.resolve('مبل').some(x=>x.id==='sofa'));
 assert.equal(typeof resolve, 'function', 'Search-context resolver must be testable');
@@ -92,5 +93,16 @@ assert.ok(resolve('هواپز بدون روغن برای آشپزخانه').stor
   'A colloquial synonym must not produce an empty result set');
 assert.ok(resolve('پایه مانیتور ارگونومیک').storeIds.length > 0,
   'A new product phrase must be matched through its canonical product family');
+
+
+/* Structured query understanding: preserve the product concept while extracting use and feature context. */
+const campusLaptop=analyze('یه لپ تاپ اقتصادی برای دانشگاه میخوام');
+assert.equal(campusLaptop.intent,'digital_product');
+assert.ok(campusLaptop.concepts.some(x=>x.id==='laptop'));
+assert.ok(campusLaptop.usage.includes('study'));
+assert.ok(campusLaptop.features.includes('budget'));
+assert.equal(analyze('مبل شور برای لکه های مبل').intent,'upholstery_cleaning');
+exact('مبل شور برای لکه های مبل',general);
+assert.ok(analyze('مودم خونگی برای اتاق خواب').usage.includes('home'));
 
 console.log('V8 Hooshyar relevance scenarios: PASS (existing relevance/exclusion plus synonym generalization)');
