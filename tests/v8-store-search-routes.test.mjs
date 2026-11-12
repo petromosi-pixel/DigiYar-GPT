@@ -32,6 +32,10 @@ assert.equal(resolver.resolveRoute('dayan', 'کیف اداری').kind, 'homepage
   'Dayan must use its canonical homepage until a verified product-search route exists');
 assert.equal(resolver.resolveRoute('memarket', 'تصفیه هوا').kind, 'homepage_fallback',
   'MiMarket must use its canonical homepage until a verified product-search route exists');
+assert.equal(new URL(resolver.resolveRoute('memarket', 'تصفیه هوا').url).hostname, 'memarket24.ir');
+assert.equal(new URL(resolver.resolveRoute('dayan', 'کیف اداری').url).hostname, 'dayanshop.com');
+assert.equal(resolver.hasSearchHandler('dayan'), false, 'Do not invent a Dayan product-search route');
+assert.equal(resolver.hasSearchHandler('memarket'), false, 'Do not invent a MiMarket product-search route');
 assert.equal(resolver.resolveRoute('iranmiz', 'میز اداری').kind, 'homepage_fallback',
   'Relevant specialist stores without a direct search route must remain visible via their canonical homepage');
 const modiseh = resolver.resolve('modiseh', 'کیف اداری');
