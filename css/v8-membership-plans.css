@@ -5,7 +5,7 @@
 .v8-membership-heading h2{margin:9px 0 5px;color:#fff;font-size:19px;font-weight:900}
 .v8-membership-heading p{margin:0;color:#bdcce2;font-size:11px;line-height:1.9}
 .v8-membership-duration{display:flex;gap:6px;overflow-x:auto;padding:3px 1px 10px;scrollbar-width:thin}
-.v8-membership-duration button{flex:1 0 auto;min-width:54px;padding:8px 9px;border:1px solid rgba(148,177,218,.25);border-radius:11px;background:rgba(255,255,255,.055);color:#d9e6f8;font:700 10px inherit;cursor:pointer}
+.v8-membership-duration button{flex:1 0 auto;min-width:54px;padding:8px 9px;border:1px solid rgba(148,177,218,.25);border-radius:11px;background:rgba(255,255,255,.055);color:#d9e6f8;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer}
 .v8-membership-duration button[aria-pressed=true]{border-color:#5ed7ff;background:linear-gradient(135deg,rgba(42,119,224,.4),rgba(15,175,205,.2));color:#fff;box-shadow:0 0 0 1px rgba(94,215,255,.12)}
 .v8-membership-grid{display:grid;grid-template-columns:1fr;gap:12px}
 .v8-membership-card{position:relative;min-width:0;padding:15px 13px 13px;border:1px solid rgba(144,173,213,.22);border-radius:17px;background:linear-gradient(155deg,rgba(255,255,255,.075),rgba(255,255,255,.025));overflow:hidden}
@@ -25,7 +25,7 @@
 .v8-feature-state{flex:0 0 auto;min-width:48px;padding:2px 5px;border-radius:6px;text-align:center;font-size:8px;font-weight:900;line-height:1.8}
 .v8-feature-state.is-live{background:rgba(52,190,137,.14);color:#78e1b8}
 .v8-feature-state.is-planned{background:rgba(255,190,84,.12);color:#ffd28a}
-.v8-membership-cta{width:100%;min-height:42px;margin-top:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#267de0,#11a9c0);color:#fff;font:800 12px inherit;cursor:pointer}
+.v8-membership-cta{width:100%;min-height:42px;margin-top:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#267de0,#11a9c0);color:#fff;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer}
 .v8-membership-cta.is-current{border:1px solid rgba(118,208,177,.25);background:rgba(54,170,129,.13);color:#a6ebce;cursor:default}
 .v8-membership-cta:focus-visible,.v8-membership-duration button:focus-visible{outline:2px solid #7be2ff;outline-offset:3px}
 .v8-membership-notice{margin:13px 0 0;padding:10px 11px;border:1px solid rgba(255,199,105,.22);border-radius:11px;background:rgba(255,183,74,.07);color:#ffdaa0;font-size:10px;line-height:1.9;text-align:center}
