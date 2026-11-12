@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.14';
+var VERSION='8.0.0-hooshyar-engine.15';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -99,14 +99,30 @@ var SEMANTIC_ALIASES=[
  {re:/(?:کیف.?اداری|کیف.?کار|کیف.?مدیریتی)/i,terms:'کیف اداری کیف کار کیف دستی اداری کیف لپ تاپ پوشاک کیف'}
 ];
 function semanticQuery(raw){var dictionary=window.DigiYarPersianDictionary,expanded=dictionary&&typeof dictionary.expand==='function'?dictionary.expand(raw):raw,additions=[];SEMANTIC_ALIASES.forEach(function(entry){if(entry.re.test(raw))additions.push(entry.terms);});return additions.length?expanded+' '+additions.join(' '):expanded;}
+function normalizeDigits(value){
+ return String(value==null?'':value).replace(/[۰-۹٠-٩]/g,function(ch){var fa='۰۱۲۳۴۵۶۷۸۹',ar='٠١٢٣٤٥٦٧٨٩',n=fa.indexOf(ch);return String(n>=0?n:ar.indexOf(ch));});
+}
+function extractBudget(raw){
+ var q=normalizeDigits(raw).replace(/[,٬]/g,''),m=q.match(/(?:تا|زیر|حداکثر|نهایتا|حدود)\\s*(\\d+(?:\\.\\d+)?)\\s*(میلیون|ملیون|هزار|تومان|تومن)?/);
+ if(!m)return null;
+ var amount=Number(m[1]);if(!Number.isFinite(amount)||amount<=0)return null;
+ var unit=m[2]||'',multiplier=/میلیون|ملیون/.test(unit)?1000000:/هزار/.test(unit)?1000:1;
+ return {maxPriceToman:Math.round(amount*multiplier),operator:/حدود/.test(m[0])?'around':'max'};
+}
 function analyzeQuery(query){
  var original=String(query==null?'':query),normalized=normalize(original),dictionary=window.DigiYarPersianDictionary;
  var concepts=dictionary&&typeof dictionary.resolve==='function'?dictionary.resolve(normalized):[];
  var domains=Array.from(new Set([].concat.apply([],concepts.map(function(c){return c.domains||[];}))));
- var semantic=semanticQuery(normalized),intent=detectIntent(semantic),usage=[],features=[];
- [['home',/خانه|خونه|منزل|پذیرایی|اتاق خواب/],['work',/محل کار|اداری|دفتر کار|شرکت/],['study',/دانشگاه|دانشجویی|درس|مطالعه/],['gaming',/گیمینگ|بازی|گیم/],['travel',/سفر|مسافرت|کمپینگ/],['photography',/عکاسی|عکس گرفتن|دوربین خوب/]].forEach(function(rule){if(rule[1].test(normalized))usage.push(rule[0]);});
- [['budget',/ارزان|اقتصادی|مقرون به صرفه|قیمت مناسب/],['wireless',/بی.?سیم|وای.?فای|بلوتوثی/],['waterproof',/ضد.?آب/],['compact',/کوچک|جمع.?وجور|کم.?جا/],['professional',/حرفه.?ای|پیشرفته/],['large',/بزرگ|ظرفیت بالا/]].forEach(function(rule){if(rule[1].test(normalized))features.push(rule[0]);});
- return {original:original,normalized:normalized,canonicalQuery:dictionary&&typeof dictionary.canonicalize==='function'?dictionary.canonicalize(original):normalized,concepts:concepts,domains:domains,intent:intent,usage:usage,features:features};
+ var semantic=semanticQuery(normalized),intent=detectIntent(semantic),usage=[],features=[],matchedConcepts=[];
+ concepts.forEach(function(concept){
+  var aliases=(concept.aliases||[]).map(normalize).filter(Boolean).filter(function(alias){return (' '+normalized+' ').indexOf(' '+alias+' ')>=0;}).sort(function(a,b){return b.length-a.length;});
+  if(aliases.length)matchedConcepts.push({id:concept.id,canonical:concept.canonical,matchedAlias:aliases[0],domains:concept.domains||[],intent:concept.intent||null});
+ });
+ matchedConcepts.sort(function(a,b){return b.matchedAlias.length-a.matchedAlias.length;});
+ [['pet_hair',/موی گربه|موی سگ|موی حیوان|موهای حیوان/],['home',/خانه|خونه|منزل|پذیرایی|اتاق خواب/],['work',/محل کار|اداری|دفتر کار|شرکت/],['study',/دانشگاه|دانشجویی|درس|مطالعه/],['gaming',/گیمینگ|بازی|گیم/],['travel',/سفر|مسافرت|کمپینگ/],['photography',/عکاسی|عکس گرفتن|دوربین خوب/],['cleaning',/تمیز|نظافت|شستشو|لکه|پاک کردن/]].forEach(function(rule){if(rule[1].test(normalized))usage.push(rule[0]);});
+ [['budget',/ارزان|اقتصادی|مقرون به صرفه|قیمت مناسب|بودجه/],['wireless',/بی.?سیم|وای.?فای|بلوتوثی/],['waterproof',/ضد.?آب/],['compact',/کوچک|جمع.?وجور|کم.?جا/],['professional',/حرفه.?ای|پیشرفته/],['large',/بزرگ|ظرفیت بالا/],['low_power',/کم.?مصرف|مصرف برق پایین/],['quiet',/کم.?صدا|بی.?صدا|ساکت/]].forEach(function(rule){if(rule[1].test(normalized))features.push(rule[0]);});
+ var budget=extractBudget(original),queryMode=/مقایسه|فرق|تفاوت/.test(normalized)?'compare':/فقط.*لینک|لینک مستقیم|جستجوی مستقیم/.test(normalized)?'direct_search':'product_discovery';
+ return {original:original,normalized:normalized,canonicalQuery:dictionary&&typeof dictionary.canonicalize==='function'?dictionary.canonicalize(original):normalized,concepts:concepts,matchedConcepts:matchedConcepts,primaryConcept:matchedConcepts[0]||null,domains:domains,intent:intent,queryMode:queryMode,usage:usage,features:features,budget:budget};
 }
 function resolveSearchContext(query,filters){
  /* The product/category KB is the sole source of merchant eligibility.
