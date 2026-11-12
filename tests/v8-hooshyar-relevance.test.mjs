@@ -63,7 +63,7 @@ assert.ok(window.DigiYarPersianDictionary.resolve('فرش جلوی در').some(x
 exact('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای', general);
 exact('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit']);
 includes('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife']);
-includes('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
+includes('لوازم جانبی گوشی سامسونگ', [...general,'digido','digiland','gooshishop','berozkala','technolife']);
 exact('کیف اداری برای محل کارم می‌خوام', [...general,'janebi','modiseh']);
 exact('یه ضد آفتاب برای پوست خشک می‌خوام', [...general,'khanoumi','darukade','mosbatesabz','solokala']);
 exact('ترازو هوشمند آشپزخانه', [...general,'technolife']);
