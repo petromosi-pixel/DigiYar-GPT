@@ -110,5 +110,21 @@ assert.ok(campusLaptop.features.includes('budget'));
 assert.equal(analyze('مبل شور برای لکه های مبل').intent,'upholstery_cleaning');
 exact('مبل شور برای لکه های مبل',general);
 assert.ok(analyze('مودم خونگی برای اتاق خواب').usage.includes('home'));
+const petVacuum=analyze('یه جاروبرقی کم صدا برای جمع کردن موی گربه توی خونه میخوام');
+assert.ok(petVacuum.concepts.some(x=>x.id==='vacuum-cleaner'));
+assert.equal(petVacuum.primaryConcept.id,'vacuum-cleaner');
+assert.ok(petVacuum.usage.includes('pet_hair'));
+assert.ok(petVacuum.usage.includes('home'));
+assert.ok(petVacuum.features.includes('quiet'));
+const budgetLaptop=analyze('یه لپ تاپ دانشجویی تا ۳۰ میلیون تومن میخوام');
+assert.equal(budgetLaptop.budget.maxPriceToman,30000000);
+assert.equal(budgetLaptop.budget.operator,'max');
+assert.ok(budgetLaptop.usage.includes('study'));
+assert.equal(analyze('مقایسه لپ تاپ و تبلت').queryMode,'compare');
+assert.equal(analyze('جارو تا ۳۰ دقیقه میخوام').budget,null,
+  'A duration must not be mistaken for a price budget');
+assert.equal(analyze('یه مودم بی سیم کم مصرف برای خونه').features.includes('wireless'),true);
+assert.equal(analyze('یه مودم بی سیم کم مصرف برای خونه').features.includes('low_power'),true);
+
 
 console.log('V8 Hooshyar relevance scenarios: PASS (existing relevance/exclusion plus synonym generalization)');
