@@ -75,8 +75,8 @@ function safeHomepage(id){
 function officialHostMatch(id,url){
  var home=safeHomepage(id);if(!home)return false;
  try{
-  var official=new URL(home).hostname.toLowerCase().replace(/^www\\./,'');
-  var target=new URL(url).hostname.toLowerCase().replace(/^www\\./,'');
+  var official=new URL(home).hostname.toLowerCase().replace(/^www\./,'');
+  var target=new URL(url).hostname.toLowerCase().replace(/^www\./,'');
   return target===official||target.endsWith('.'+official)||official.endsWith('.'+target);
  }catch(e){return false;}
 }
