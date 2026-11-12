@@ -43,6 +43,7 @@ const general = ['digikala','snappshop','torob','basalam'];
 exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم', general);
 includes('پادری', general);
 includes('مبل', ['iranmiz','partochoob','chidahome','tidawood']);
+assert.ok(ids('مبل').indexOf('iranmiz') < ids('مبل').indexOf('digikala'), 'Exact specialist product evidence should rank above broad marketplaces');
 excludes('پادری', ['iranmiz','partochoob','chidahome','tidawood']);
 
 includes('فرش جلوی در', general);
