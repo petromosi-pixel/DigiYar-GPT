@@ -129,3 +129,17 @@ assert.equal(analyze('یه مودم بی سیم کم مصرف برای خونه'
 
 
 console.log('V8 Hooshyar relevance scenarios: PASS (existing relevance/exclusion plus synonym generalization)');
+
+/* Unknown vocabulary must still reach the correct merchant category. */
+const unknownProduct=resolve('نمکدان سرامیکی دست ساز');
+assert.equal(unknownProduct.queryAnalysis.requestKind,'product');
+includes('نمکدان سرامیکی دست ساز',['digikala','snappshop','torob','basalam','memarket']);
+const unknownFood=resolve('نوشیدنی جو دوسر');
+assert.equal(unknownFood.queryAnalysis.requestKind,'food');
+includes('نوشیدنی جو دوسر',['digikala','snappshop','torob','basalam','memarket','okala','ofoghkoroosh','shahrvand','hyperme']);
+const serviceRequest=resolve('خدمات کارشناسی خودرو');
+assert.equal(serviceRequest.queryAnalysis.requestKind,'service');
+includes('خدمات کارشناسی خودرو',['hamrahmechanic','khodro45','aytol']);
+assert.ok(analyze('نوشیدنی جو دوسر').inferredDomains.includes('supermarket'));
+assert.ok(analyze('خدمات کارشناسی خودرو').inferredDomains.includes('auto_service'));
+console.log('V8 unknown-query category fallback: PASS');
