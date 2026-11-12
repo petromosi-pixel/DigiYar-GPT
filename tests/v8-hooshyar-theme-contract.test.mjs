@@ -39,9 +39,8 @@ for (const path of legacyStyles) {
 const discovery = fs.readFileSync('js/v8-hooshyar-engine.js', 'utf8');
 assert.doesNotMatch(discovery, /html\.dark|body\.dark|\[data-theme=["']dark|body\.v6-dark\s+\.v6-auto/,
   'The active store discovery UI must use the central --dy-* theme contract.');
-const comparison = fs.readFileSync('js/v8-comparison-ui.js', 'utf8');
-assert.doesNotMatch(comparison, oldThemePattern,
-  'Comparison UI must use the central theme contract rather than embedded dark-mode rules.');
+assert.ok(!index.includes('js/v8-comparison-ui.js'),
+  'Detached comparison UI must not be loaded into the active V8 application.');
 assert.match(theme, /body\.v6-dark #v7PopularStoresHost #platforms \.platform\{[^}]*background:transparent!important;[^}]*border:0!important;/s, 'Popular-store tiles must remain borderless and transparent in dark mode like the category directory.');
 const platforms = fs.readFileSync('js/platforms.js', 'utf8');
 assert.doesNotMatch(platforms, oldThemePattern,
