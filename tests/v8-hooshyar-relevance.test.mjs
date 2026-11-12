@@ -136,7 +136,7 @@ assert.equal(unknownProduct.queryAnalysis.requestKind,'product');
 includes('نمکدان سرامیکی دست ساز',['digikala','snappshop','torob','basalam','memarket']);
 const unknownFood=resolve('نوشیدنی جو دوسر');
 assert.equal(unknownFood.queryAnalysis.requestKind,'food');
-includes('نوشیدنی جو دوسر',['digikala','snappshop','torob','basalam','memarket','okala','ofoghkoroosh','shahrvand','hyperme']);
+includes('نوشیدنی جو دوسر',['digikala','snappshop','torob','basalam','memarket','ofoghkoroosh','janbo','shahrvand','hyperme','pinket']);
 const serviceRequest=resolve('خدمات کارشناسی خودرو');
 assert.equal(serviceRequest.queryAnalysis.requestKind,'service');
 includes('خدمات کارشناسی خودرو',['hamrahmechanic','khodro45','aytol']);
