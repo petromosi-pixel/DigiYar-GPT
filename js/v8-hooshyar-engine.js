@@ -1,7 +1,7 @@
 /* DigiYar — Popular Stores discovery module */
 (function(){
 'use strict';
-var VERSION='8.0.0-hooshyar-engine.16';
+var VERSION='8.0.0-hooshyar-engine.17';
 var DOMAIN_META={
  digital:{title:'دیجیتال و موبایل',icon:'📱',subtitle:'از گوشی و لپ‌تاپ تا مقایسهٔ قیمت و لوازم جانبی',sub:['موبایل و تبلت','لپ‌تاپ و کامپیوتر','مقایسهٔ قیمت','لوازم جانبی']},
  accessories:{title:'لوازم جانبی دیجیتال',icon:'🎧',subtitle:'برای پیدا کردن لوازم جانبی متناسب با دستگاهت',sub:['قاب و محافظ','شارژر و کابل','صوتی و گجت']},
@@ -275,7 +275,7 @@ function resolveSearchContext(query,filters){
  }
  out.sort(function(a,b){return b.score-a.score||a.id.localeCompare(b.id);});
  var categoriesByStore={};out.forEach(function(x){categoriesByStore[x.id]=x.categories;});
- return {query:String(query||''),storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:Array.from(new Set(out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})))),routeUnavailableStoreIds:Array.from(new Set(unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}))),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent,diagnostics:{catalogCandidateCount:Object.keys(catalog).length,matchedCount:out.length,selectedCandidatesAdded:selectedCandidatesAdded,routeUnavailableCount:unavailableRoutes.length}};
+ return {query:String(query||''),queryAnalysis:analysis,storeIds:out.map(function(x){return x.id;}),eligibleStoreIds:Array.from(new Set(out.map(function(x){return x.id;}).concat(unavailableRoutes.map(function(x){return x.id;})))),routeUnavailableStoreIds:Array.from(new Set(unavailableRoutes.sort(function(a,b){return b.score-a.score;}).map(function(x){return x.id;}))),categoriesByStore:categoriesByStore,source:'product-category-catalog',intent:intent,diagnostics:{catalogCandidateCount:Object.keys(catalog).length,matchedCount:out.length,selectedCandidatesAdded:selectedCandidatesAdded,routeUnavailableCount:unavailableRoutes.length}};
 }
 function applyStoreSelection(resolved,filters){if(!filters||!filters.active)return resolved;var selected=Array.from(new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();})));var eligible=resolved.eligibleStoreIds||resolved.storeIds||[];resolved.storeIds=(resolved.storeIds||[]).filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});resolved.eligibleStoreIds=eligible.filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});resolved.routeUnavailableStoreIds=(resolved.routeUnavailableStoreIds||[]).filter(function(id){return selected.indexOf(String(id).toLowerCase())>=0;});var filteredCategories={};resolved.storeIds.forEach(function(id){if(resolved.categoriesByStore&&resolved.categoriesByStore[id])filteredCategories[id]=resolved.categoriesByStore[id];});resolved.categoriesByStore=filteredCategories;return resolved;}
 function isGeneral(id,s){return !!(s&&s.storeType==='general');}
