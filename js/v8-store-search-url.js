@@ -2,7 +2,7 @@
    This module deliberately has no dependency on the removed Store Simulator. */
 (function(root){
 'use strict';
-var VERSION='8.0.0-store-search-url.9';
+var VERSION='8.0.0-store-search-url.10';
 function normalize(q){
  return String(q||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[‌\u200c]/g,' ').replace(/ضد\s*آفتاب|ضدآفتاب/g,'ضد آفتاب').replace(/مرطوب\s*[-‌]?\s*کننده/g,'مرطوب کننده').replace(/آب\s*رسان/g,'آبرسان').replace(/\s+/g,' ').trim();
 }
@@ -55,12 +55,12 @@ SEARCH.memarket=q=>'';
 SEARCH.alibaba=q=>/(?:قطار|ریل)/.test(normalize(q))?'https://www.alibaba.ir/train':'';
 SEARCH.mrbilit=q=>/(?:قطار|ریل)/.test(normalize(q))?'https://mrbilit.com/train-ticket':'';
 SEARCH.ghasedak24=q=>/(?:قطار|ریل)/.test(normalize(q))?'https://ghasedak24.com/train-ticket':'';
-function hasQuery(url){
+function hasQuery(url,expected){
  try{
-  var u=new URL(url);if(u.protocol!=='https:'||!u.hostname)return false;
+  var u=new URL(url);if(u.protocol!=='https:'||!u.hostname||u.username||u.password)return false;
   var keys=['q','query','s','search','title','kw','keywords','w','term','text','keyword','product','search_query'];
-  for(var i=0;i<keys.length;i++){var v=u.searchParams.get(keys[i]);if(v&&v.trim().length>=2)return true;}
-  return /\/(?:train-ticket|train)\/?$/.test(u.pathname);
+  for(var i=0;i<keys.length;i++){var v=u.searchParams.get(keys[i]);if(v&&v.trim().length>=2){if(expected&&normalize(v)!==normalize(expected))return false;return true;}}
+  return !expected&&/(?:^|\/)(?:train-ticket|train)\/?$/.test(u.pathname);
  }catch(e){return false;}
 }
 function safeHomepage(id){
@@ -71,6 +71,40 @@ function safeHomepage(id){
   if(u.protocol!=='https:'||!u.hostname||/^(?:localhost|127\.|0\.0\.0\.0)/i.test(u.hostname)||/affdn\.ir$/i.test(u.hostname))return '';
   return u.href;
  }catch(e){return '';}
+}
+function officialHostMatch(id,url){
+ var home=safeHomepage(id);if(!home)return false;
+ try{
+  var official=new URL(home).hostname.toLowerCase().replace(/^www\\./,'');
+  var target=new URL(url).hostname.toLowerCase().replace(/^www\\./,'');
+  return target===official||target.endsWith('.'+official)||official.endsWith('.'+target);
+ }catch(e){return false;}
+}
+function validateRoute(id,route,q){
+ if(!route||!route.url)return {valid:false,reason:'missing_url'};
+ try{
+  var u=new URL(route.url);if(u.protocol!=='https:'||!u.hostname||u.username||u.password)return {valid:false,reason:'unsafe_url'};
+  if(route.kind==='search'){
+   var expected=productTerm(id,q);
+   if(!officialHostMatch(id,route.url))return {valid:false,reason:'unverified_host'};
+   if(!hasQuery(route.url,expected)&&!(/(?:^|\\/)(?:train-ticket|train)\\/?$/.test(u.pathname)))return {valid:false,reason:'query_mismatch'};
+   return {valid:true,kind:'search'};
+  }
+  if(route.kind==='homepage_fallback'||route.kind==='homepage'){
+   if(route.url!==safeHomepage(id))return {valid:false,reason:'noncanonical_homepage'};
+   return {valid:true,kind:route.kind};
+  }
+  return {valid:false,reason:'unknown_route_kind'};
+ }catch(e){return {valid:false,reason:'invalid_url'};}
+}
+function auditRoutes(q){
+ var catalog=root.DigiYarStoreBusinessDomains&&root.DigiYarStoreBusinessDomains.catalog||{},rows=[],invalid=[];
+ Object.keys(catalog).forEach(function(id){
+  var route=resolveRoute(id,q),check=validateRoute(id,route,q);
+  var row={storeId:id,kind:route&&route.kind||'missing',url:route&&route.url||'',valid:check.valid,reason:check.reason||''};
+  rows.push(row);if(!check.valid)invalid.push(row);
+ });
+ return {query:String(q||''),total:rows.length,validCount:rows.length-invalid.length,invalidCount:invalid.length,invalid:invalid,rows:rows};
 }
 function resolveRoute(id,q){
  var key=String(id||'').toLowerCase(),query=normalize(q);
@@ -84,7 +118,7 @@ function resolveRoute(id,q){
  var make=SEARCH[key],url='';
  if(typeof make==='function'&&!HOMEPAGE_ONLY[key]){
   try{url=make(query);}catch(e){url='';}
-  if(typeof url==='string'&&hasQuery(url))return {storeId:key,url:url,kind:'search',directSearch:true,query:query};
+  if(typeof url==='string'&&hasQuery(url,productTerm(key,query))&&officialHostMatch(key,url))return {storeId:key,url:url,kind:'search',directSearch:true,query:query};
  }
  /* Route fallback is explicit and inspectable: it is a canonical merchant
     homepage, never mislabeled as a product-search page. */
@@ -98,5 +132,5 @@ function handlerIds(){
  Object.keys(catalog).forEach(function(id){if(ids.indexOf(id)<0&&safeHomepage(id))ids.push(id);});
  return ids.filter(function(id){return hasHandler(id);}).sort();
 }
-root.DigiYarStoreSearchUrl={version:VERSION,resolve:resolve,resolveRoute:resolveRoute,productTerm:productTerm,hasHandler:hasHandler,hasSearchHandler:hasSearchHandler,handlerIds:handlerIds};
+root.DigiYarStoreSearchUrl={version:VERSION,resolve:resolve,resolveRoute:resolveRoute,validateRoute:validateRoute,auditRoutes:auditRoutes,productTerm:productTerm,hasHandler:hasHandler,hasSearchHandler:hasSearchHandler,handlerIds:handlerIds};
 })(typeof window!=='undefined'?window:globalThis);
