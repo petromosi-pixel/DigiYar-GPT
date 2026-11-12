@@ -87,7 +87,7 @@ function validateRoute(id,route,q){
   if(route.kind==='search'){
    var expected=productTerm(id,q);
    if(!officialHostMatch(id,route.url))return {valid:false,reason:'unverified_host'};
-   if(!hasQuery(route.url,expected)&&!(/(?:^|\\/)(?:train-ticket|train)\\/?$/.test(u.pathname)))return {valid:false,reason:'query_mismatch'};
+   if(!hasQuery(route.url,expected)&&!(/train-ticket$|\/train\/?$/.test(u.pathname)))return {valid:false,reason:'query_mismatch'};
    return {valid:true,kind:'search'};
   }
   if(route.kind==='homepage_fallback'||route.kind==='homepage'){
