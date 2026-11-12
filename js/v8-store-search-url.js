@@ -60,7 +60,7 @@ function hasQuery(url,expected){
   var u=new URL(url);if(u.protocol!=='https:'||!u.hostname||u.username||u.password)return false;
   var keys=['q','query','s','search','title','kw','keywords','w','term','text','keyword','product','search_query'];
   for(var i=0;i<keys.length;i++){var v=u.searchParams.get(keys[i]);if(v&&v.trim().length>=2){if(expected&&normalize(v)!==normalize(expected))return false;return true;}}
-  return !expected&&/(?:^|\/)(?:train-ticket|train)\/?$/.test(u.pathname);
+  return /(?:^|\/)(?:train-ticket|train)\/?$/.test(u.pathname);
  }catch(e){return false;}
 }
 function safeHomepage(id){
