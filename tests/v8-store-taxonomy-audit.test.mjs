@@ -20,7 +20,7 @@ assert.deepEqual(['divar','sheypoor','esam'].filter(id => kb.byType.portal.store
   'Divar, Sheypoor and Esam must be grouped as resale marketplaces');
 assert.equal(kb.byType.portal.subtitle, 'کالاهای نو و دست دوم در همه حوزه‌ها');
 assert.ok(kb.byType.specialist.storeIds.includes('meghdadit'));
-assert.equal(resolver.hasSearchHandler('meghdadit'), true);
+assert.equal(resolver.hasSearchHandler('meghdadit'), false, 'Meghdad IT stays homepage-only until its search endpoint is reachable');
 assert.equal(resolver.hasHandler('shab'), true);
 const configured = ids.filter(id => resolver.hasSearchHandler(id));
 const fallback = ids.filter(id => resolver.hasHandler(id) && !resolver.hasSearchHandler(id));
