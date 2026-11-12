@@ -55,6 +55,9 @@ const fallback = resolver.resolveRoute('dayan', 'کیف اداری');
 assert.equal(fallback?.kind, 'homepage_fallback',
   'Dayan must remain explicitly marked as a homepage fallback until a product-search URL is verified');
 assert.equal(new URL(fallback.url).hostname, 'dayanshop.com');
+const miMarketFallback = resolver.resolveRoute('memarket', 'تصفیه هوا');
+assert.equal(miMarketFallback?.kind, 'homepage_fallback');
+assert.equal(new URL(miMarketFallback.url).hostname, 'memarket24.ir');
 
 console.log('V8 live route smoke test');
 for (const result of results) {
