@@ -66,7 +66,7 @@ assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"),
 
 const menuOpen = ui.slice(ui.indexOf('const openRoot=()=>'), ui.indexOf('backdrop.addEventListener'));
 assert.ok(menuOpen.includes('v6-home-shortcut-list'), 'Hamburger menu must render as a plain navigation list, not section cards');
-for (const id of ['v8HooshyarConceptHero','v7DealsHost','popularStoresDiscovery','v7PopularStoresHost','v7ProfileSearchHost','digiyarConversation','resultSection']) assert.ok(menuOpen.includes('data-home-shortcut=\\\"'+id+'\\\"'), `Hamburger shortcuts must include homepage section ${id}`);
+for (const id of ['v8HooshyarConceptHero','v7DealsHost','popularStoresDiscovery','v7PopularStoresHost','v7ProfileSearchHost','digiyarConversation','resultSection']) assert.ok(menuOpen.includes('data-home-shortcut="'+id+'"'), `Hamburger shortcuts must include homepage section ${id}`);
 for (const key of ['about','guide','privacy','contact']) assert.ok(menuOpen.includes('footer:'+key), `Hamburger shortcuts must include footer section ${key}`);
 assert.ok(ui.includes("const shortcut=e.target.closest('[data-home-shortcut]')"), 'Hamburger shortcut activation must be delegated from the menu list');
 assert.ok(ui.includes("target.scrollIntoView({behavior:'smooth',block:'start'})"), 'Hamburger shortcuts must smoothly navigate to their homepage sections');
