@@ -134,6 +134,7 @@ console.log('V8 Hooshyar relevance scenarios: PASS (existing relevance/exclusion
 const unknownProduct=resolve('نمکدان سرامیکی دست ساز');
 assert.equal(unknownProduct.queryAnalysis.requestKind,'product');
 exact('نمکدان سرامیکی دست ساز',['digikala','torob','basalam']);
+excludes('نمکدان سرامیکی دست ساز',['snappshop','memarket','dayan']);
 const unknownFood=resolve('نوشیدنی جو دوسر');
 assert.equal(unknownFood.queryAnalysis.requestKind,'food');
 exact('نوشیدنی جو دوسر',['digikala','torob','basalam','pinket']);
