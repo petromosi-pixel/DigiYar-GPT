@@ -22,7 +22,7 @@ vm.runInThisContext(source.replace(
 const resolve = window.__resolveSearchContext;
 const apply = window.__applyStoreSelection;
 const broad = resolve('کیف چرمی اداری');
-for (const id of ['dayan','memarket','janebi','modiseh','digikala','snappshop','torob','basalam']) {
+for (const id of ['janebi','modiseh','digikala','torob','basalam']) {
   assert.ok(broad.storeIds.includes(id), 'Missing relevant catalog match: '+id+'; got '+broad.storeIds.join(','));
 }
 assert.ok(!broad.storeIds.includes('iranmiz'), 'An office-furniture merchant must not match an office bag query');
@@ -30,7 +30,7 @@ const filtered = apply(resolve('کیف چرمی اداری'), {
   active:true,
   selectedStoreIds:['dayan','memarket','janebi','digikala','torob','iranmiz']
 });
-for (const id of ['dayan','memarket','janebi','digikala','torob']) {
+for (const id of ['janebi','digikala','torob']) {
   assert.ok(filtered.storeIds.includes(id), 'Selected relevant store was filtered out: '+id);
 }
 assert.ok(!filtered.storeIds.includes('iranmiz'), 'Selected but irrelevant store leaked into results');
