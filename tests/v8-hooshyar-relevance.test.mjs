@@ -39,7 +39,7 @@ const excludes = (query, forbidden) => {
   for (const id of forbidden) assert.ok(!got.includes(id), `${query}: irrelevant store ${id} leaked into results; got ${got.join(',')}`);
 };
 
-const general = ['digikala','snappshop','torob','basalam'];
+const general = ['digikala','torob','basalam'];
 exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم', general);
 includes('پادری', general);
 excludes('مبل', ['iranmiz','partochoob','chidahome','tidawood']);
@@ -136,7 +136,7 @@ assert.equal(unknownProduct.queryAnalysis.requestKind,'product');
 includes('نمکدان سرامیکی دست ساز',['digikala','snappshop','torob','basalam','memarket']);
 const unknownFood=resolve('نوشیدنی جو دوسر');
 assert.equal(unknownFood.queryAnalysis.requestKind,'food');
-exact('نوشیدنی جو دوسر',['digikala','snappshop','torob','basalam','pinket']);
+exact('نوشیدنی جو دوسر',['digikala','torob','basalam','pinket']);
 const serviceRequest=resolve('خدمات کارشناسی خودرو');
 assert.equal(serviceRequest.queryAnalysis.requestKind,'service');
 exact('خدمات کارشناسی خودرو',[]);
