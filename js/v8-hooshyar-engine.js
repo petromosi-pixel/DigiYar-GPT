@@ -293,7 +293,7 @@ function resolveSearchContext(query,filters){
     vocabulary coverage is advisory, never a prerequisite for discovery.
     Food requests use grocery merchants; unknown physical products use general
     marketplaces; services are limited to explicitly inferred service domains. */
- if(analysis.requestKind==='food'||analysis.requestKind==='service'||(analysis.requestKind==='product'&&!concepts.length)){
+ if(analysis.requestKind==='food'||analysis.requestKind==='service'||(analysis.requestKind==='product'&&!concepts.length&&!out.length&&!unavailableRoutes.length)){
   var allowedDomains=analysis.inferredDomains||[];
   var selectedSet=filters&&filters.active?new Set((filters.selectedStoreIds||[]).map(function(id){return String(id).toLowerCase();})):null;
   Object.keys(catalog).forEach(function(id){
