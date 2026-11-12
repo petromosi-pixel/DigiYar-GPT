@@ -26,9 +26,9 @@ assert.ok(!splash.includes('setTimeout(dismissSplash, 1200)'), 'Legacy early-dis
 
 // Versioned URLs and a fresh shell cache prevent stale service-worker assets from masking the fixes.
 assert.ok(index.includes('js/v8-splash.js?v=8.0.0-splash.4'), 'Splash asset URL must be cache-busted');
-assert.ok(index.includes('js/v8-hooshyar-input.js?v=8.0.0-hooshyar-input.9'), 'Hooshyar input URL must be cache-busted');
+assert.ok(index.includes('js/v8-hooshyar-input.js?v=8.0.0-hooshyar-input.10'), 'Hooshyar input URL must be cache-busted');
 assert.match(index, /sw\.js\?v=8\.0\.0-offline-shell\.\d+/, 'Service worker registration URL must be versioned');
 assert.ok(/digiyar-v8-8[.]0[.]0-shell[.][0-9]+/.test(serviceWorker), 'Service worker cache version must be incremented');
-assert.ok(serviceWorker.includes('./js/v8-hooshyar-input.js?v=8.0.0-hooshyar-input.9'), 'Updated Hooshyar input must be precached');
+assert.ok(serviceWorker.includes('./js/v8-hooshyar-input.js?v=8.0.0-hooshyar-input.10'), 'Updated Hooshyar input must be precached');
 
 console.log('V8 Hooshyar independent search, profile handoff, and 3s splash contract: PASS');
