@@ -169,7 +169,7 @@ function resolveSearchContext(query,filters){
    var travelTerms=normalize([].concat(store.products||[],store.aliases||[]).join(' '));
    if(domains.indexOf('travel_ticket')<0||!/(بلیط\s*قطار|بلیت\s*قطار|سفر ریلی)/.test(travelTerms))return;
    score=25;
-  }else if(concepts.length&&conceptDomainGeneral){
+  }else if(intent==='general_product'&&concepts.length&&conceptDomainGeneral){
    /* A recognized product concept is enough to surface relevant general marketplaces
       in its domain even when their catalog only describes the range broadly. */
    if(excluded)return;
