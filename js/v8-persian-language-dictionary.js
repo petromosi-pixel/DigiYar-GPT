@@ -60,14 +60,70 @@ var ENTRIES=[{"id":"doormat","canonical":"پادری","aliases":["پادری","�
 {"id":"gardening-tools","canonical":"ابزار باغبانی","aliases":["ابزار باغبانی","قیچی باغبانی","شلنگ آب","آبپاش","بیلچه باغبانی","gardening tools"]},
 {"id":"power-generator","canonical":"موتور برق","aliases":["موتور برق","ژنراتور","مولد برق","generator","power generator"]},
 {"id":"solar-power","canonical":"تجهیزات برق خورشیدی","aliases":["پنل خورشیدی","صفحه خورشیدی","شارژر خورشیدی","سیستم خورشیدی","solar panel","solar power"]}];
+/* Concept-to-domain ontology. These are broad retrieval hints, not blind synonym substitutions. */
+var CONCEPT_METADATA={
+ doormat:{domains:['home'],intent:'home_product',productType:'doormat'},
+ carpet:{domains:['home'],intent:'home_product',productType:'carpet'},
+ curtain:{domains:['home'],intent:'home_product',productType:'curtain'},
+ mattress:{domains:['home'],intent:'home_product',productType:'mattress'},
+ bedsheet:{domains:['home'],intent:'home_product',productType:'bedding'},
+ wardrobe:{domains:['home','furniture'],intent:'home_product',productType:'furniture'},
+ desk:{domains:['home','furniture'],intent:'home_product',productType:'furniture'},
+ 'dining-table':{domains:['home','furniture'],intent:'home_product',productType:'furniture'},
+ chair:{domains:['home','furniture'],intent:'home_product',productType:'furniture'},
+ sofa:{domains:['home','furniture'],intent:'furniture',productType:'furniture'},
+ armchair:{domains:['home','furniture'],intent:'furniture',productType:'furniture'},
+ 'shoe-rack':{domains:['home','furniture'],intent:'home_product',productType:'furniture'},
+ 'air-purifier':{domains:['home'],intent:'home_product',productType:'air-purifier'},
+ refrigerator:{domains:['home'],intent:'home_product',productType:'refrigerator'},
+ 'washing-machine':{domains:['home'],intent:'home_product',productType:'washing-machine'},
+ 'air-conditioner':{domains:['home'],intent:'home_product',productType:'air-conditioner'},
+ 'vacuum-cleaner':{domains:['home'],intent:'home_product',productType:'vacuum'},
+ 'robot-vacuum':{domains:['home'],intent:'home_product',productType:'vacuum'},
+ 'water-purifier':{domains:['home'],intent:'home_product',productType:'water-purifier'},
+ 'air-fryer':{domains:['home'],intent:'home_product',productType:'air-fryer'},
+ 'coffee-maker':{domains:['home'],intent:'home_product',productType:'coffee-maker'},
+ blender:{domains:['home'],intent:'home_product',productType:'blender'},
+ microwave:{domains:['home'],intent:'home_product',productType:'microwave'},
+ dishwasher:{domains:['home'],intent:'home_product',productType:'dishwasher'},
+ cookware:{domains:['home'],intent:'home_product',productType:'cookware'},
+ lighting:{domains:['home'],intent:'home_product',productType:'lighting'},
+ 'hair-dryer':{domains:['beauty','health'],intent:'beauty_product',productType:'hair-dryer'},
+ cosmetics:{domains:['beauty'],intent:'beauty_product',productType:'cosmetics'},
+ skincare:{domains:['beauty','health'],intent:'beauty_product',productType:'skincare'},
+ sunscreen:{domains:['beauty','health'],intent:'beauty_product',productType:'sunscreen'},
+ shampoo:{domains:['beauty','health'],intent:'beauty_product',productType:'shampoo'},
+ perfume:{domains:['beauty','fashion'],intent:'beauty_product',productType:'perfume'},
+ 'mobile-phone':{domains:['digital'],intent:'digital_product',productType:'mobile'},
+ laptop:{domains:['digital'],intent:'digital_product',productType:'laptop'},
+ television:{domains:['digital','home'],intent:'digital_product',productType:'television'},
+ monitor:{domains:['digital'],intent:'digital_product',productType:'monitor'},
+ printer:{domains:['digital'],intent:'digital_product',productType:'printer'},
+ router:{domains:['digital'],intent:'digital_product',productType:'router'},
+ speaker:{domains:['digital'],intent:'digital_product',productType:'speaker'},
+ 'game-console':{domains:['digital'],intent:'digital_product',productType:'game-console'},
+ 'car-accessories':{domains:['auto'],intent:'auto_product',productType:'auto-accessory'},
+ 'automotive-oil':{domains:['auto'],intent:'auto_product',productType:'auto-oil'},
+ 'car-battery':{domains:['auto'],intent:'auto_product',productType:'auto-battery'},
+ 'car-tire':{domains:['auto'],intent:'auto_product',productType:'auto-tire'},
+ 'pet-food':{domains:['pets','supermarket'],intent:'pet_product',productType:'pet-food'},
+ 'pet-accessories':{domains:['pets'],intent:'pet_product',productType:'pet-accessory'},
+ book:{domains:['books','education'],intent:'book_product',productType:'book'},
+ stationery:{domains:['books','education'],intent:'stationery_product',productType:'stationery'},
+ 'sports-shoes':{domains:['sports','fashion'],intent:'sports_product',productType:'sports-shoes'},
+ 'fitness-equipment':{domains:['sports'],intent:'sports_product',productType:'fitness-equipment'},
+ 'baby-stroller':{domains:['kids'],intent:'kids_product',productType:'baby-stroller'},
+ 'baby-clothes':{domains:['kids','fashion'],intent:'kids_product',productType:'baby-clothes'}
+};
+function conceptMetadata(id){var value=CONCEPT_METADATA[id]||{};return{domains:(value.domains||[]).slice(),intent:value.intent||'general_product',productType:value.productType||null};}
 function normalize(value){return String(value==null?'':value).toLowerCase().replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[ۀة]/g,'ه').replace(/[أإٱ]/g,'ا').replace(/[‌\u200c]/g,' ').replace(/[\u064b-\u065f\u0670]/g,'').replace(/[ـ]/g,'').replace(/[،؛,:!?؟()[\]{}<>«»\"'`]/g,' ').replace(/[.\\/\\\\|_–—-]+/g,' ').replace(/\s+/g,' ').trim();}
 function phraseMatch(query,term){var q=' '+normalize(query)+' ',t=' '+normalize(term)+' ';return t.length>2&&q.indexOf(t)>=0;}
-function resolve(query){var q=normalize(query);if(!q)return[];var hits=ENTRIES.map(function(entry){return{entry:entry,matched:entry.aliases.filter(function(alias){return phraseMatch(q,alias);})};}).filter(function(hit){return hit.matched.length;});var all=hits.reduce(function(out,hit){hit.matched.forEach(function(alias){out.push({id:hit.entry.id,term:normalize(alias)});});return out;},[]);return hits.filter(function(hit){return hit.matched.some(function(alias){var term=normalize(alias);return !all.some(function(other){return other.id!==hit.entry.id&&other.term.length>term.length&&other.term.indexOf(term)>=0;});});}).map(function(hit){return{id:hit.entry.id,canonical:hit.entry.canonical,aliases:hit.entry.aliases.slice()};});}
+function resolve(query){var q=normalize(query);if(!q)return[];var hits=ENTRIES.map(function(entry){return{entry:entry,matched:entry.aliases.filter(function(alias){return phraseMatch(q,alias);})};}).filter(function(hit){return hit.matched.length;});var all=hits.reduce(function(out,hit){hit.matched.forEach(function(alias){out.push({id:hit.entry.id,term:normalize(alias)});});return out;},[]);return hits.filter(function(hit){return hit.matched.some(function(alias){var term=normalize(alias);return !all.some(function(other){return other.id!==hit.entry.id&&other.term.length>term.length&&other.term.indexOf(term)>=0;});});}).map(function(hit){var meta=conceptMetadata(hit.entry.id);return{id:hit.entry.id,canonical:hit.entry.canonical,aliases:hit.entry.aliases.slice(),domains:meta.domains,intent:meta.intent,productType:meta.productType};});}
 function expand(query){var matches=resolve(query),seen=Object.create(null),parts=[String(query==null?'':query)];matches.forEach(function(entry){[entry.canonical].concat(entry.aliases).forEach(function(term){var key=normalize(term);if(key&&!seen[key]){seen[key]=true;parts.push(term);}});});return parts.join(' ');}
 function matchProduct(query,product){var matches=resolve(query),hay=normalize(typeof product==='string'?product:[product&&product.name,product&&product.title,product&&product.brand,product&&product.model,product&&product.category,product&&product.subcategory].filter(Boolean).join(' '));return matches.filter(function(entry){return entry.aliases.some(function(alias){return phraseMatch(hay,alias);});});}
-function getEntries(){return ENTRIES.map(function(entry){return{id:entry.id,canonical:entry.canonical,aliases:entry.aliases.slice()};});}
+function getEntries(){return ENTRIES.map(function(entry){var meta=conceptMetadata(entry.id);return{id:entry.id,canonical:entry.canonical,aliases:entry.aliases.slice(),domains:meta.domains,intent:meta.intent,productType:meta.productType};});}
 function canonicalize(query){var original=String(query==null?'':query),matches=resolve(original),replacements=[];matches.forEach(function(entry){entry.aliases.forEach(function(alias){var a=normalize(alias);if(a)replacements.push({alias:a,canonical:entry.canonical,length:a.length});});});replacements.sort(function(a,b){return b.length-a.length;});var result=normalize(original);replacements.forEach(function(item){var escaped=item.alias.replace(/[.*+?^${}()|[\]\\]/g,'\\root.DigiYarPersianDictionary={version:VERSION,normalize:normalize,resolve:resolve,expand:expand,matchProduct:matchProduct,getEntries:getEntries};');result=result.replace(new RegExp('(^|\\s)'+escaped+'(?=\\s|$)','g'),function(_,prefix){return prefix+normalize(item.canonical);});});return result;}
 function expandDetailed(query){var concepts=resolve(query);return{original:String(query==null?'':query),normalized:normalize(query),canonicalQuery:canonicalize(query),concepts:concepts,canonicalTerms:concepts.map(function(x){return x.canonical;}),aliases:concepts.reduce(function(out,x){return out.concat(x.aliases);},[]),expandedQuery:expand(query)};}
 function lookup(query){return resolve(query);}
-root.DigiYarPersianDictionary={version:VERSION,normalize:normalize,resolve:resolve,lookup:lookup,canonicalize:canonicalize,expand:expand,expandDetailed:expandDetailed,matchProduct:matchProduct,getEntries:getEntries};
+root.DigiYarPersianDictionary={version:VERSION,normalize:normalize,resolve:resolve,lookup:lookup,canonicalize:canonicalize,expand:expand,expandDetailed:expandDetailed,matchProduct:matchProduct,getEntries:getEntries,conceptMetadata:conceptMetadata};
 })(typeof window!=='undefined'?window:globalThis);
