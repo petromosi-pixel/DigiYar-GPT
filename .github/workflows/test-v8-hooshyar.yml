@@ -42,6 +42,7 @@ on:
       - 'js/user-profile.js'
       - 'tests/v8-hooshyar-theme-contract.test.mjs'
       - 'tests/v8-hooshyar-independent-search.test.mjs'
+      - 'tests/v8-hooshyar-independent-search.test.mjs'
       - 'tests/v8-product-result-source.test.mjs'
       - 'tests/v8-product-result-producer.test.mjs'
       - 'package.json'
