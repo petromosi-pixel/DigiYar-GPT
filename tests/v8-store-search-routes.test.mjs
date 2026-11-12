@@ -45,6 +45,12 @@ assert.equal(resolver.hasHandler('meghdadit'), true);
 assert.equal(resolver.hasSearchHandler('meghdadit'), true);
 assert.equal(resolver.hasHandler('iranmiz'), true);
 assert.equal(resolver.hasSearchHandler('iranmiz'), false);
+const audited = resolver.auditRoutes('نمونه کالا');
+assert.equal(audited.invalidCount, 0, `Merchant route audit found invalid routes: ${JSON.stringify(audited.invalid)}`);
+assert.equal(audited.validCount, audited.total, 'Every catalog merchant must have a validated direct-search or canonical-homepage route');
+const digikalaRoute = resolver.resolveRoute('digikala', 'گوشی موبایل');
+assert.equal(resolver.validateRoute('digikala', digikalaRoute, 'گوشی موبایل').valid, true);
+assert.equal(resolver.validateRoute('digikala', { ...digikalaRoute, url: 'http://example.com/?q=test' }, 'گوشی موبایل').valid, false, 'Non-HTTPS external destinations must be rejected');
 for (const id of kb.ids()) {
   const route = resolver.resolveRoute(id, 'نمونه کالا');
   assert.ok(route && /^https:\/\//.test(route.url), `Every catalog store must have a safe route: ${id}`);
