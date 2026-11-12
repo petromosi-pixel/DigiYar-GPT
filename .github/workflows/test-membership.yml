@@ -1,0 +1,27 @@
+name: DigiYar membership preview tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'js/v8-membership-plans.js'
+      - 'css/v8-membership-plans.css'
+      - 'tests/v8-membership-plans.test.mjs'
+      - 'package.json'
+      - '.github/workflows/test-membership.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  membership-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate tier, duration, and no-payment contract
+        run: npm run test:v8:membership
