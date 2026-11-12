@@ -103,7 +103,7 @@ function normalizeDigits(value){
  return String(value==null?'':value).replace(/[۰-۹٠-٩]/g,function(ch){var fa='۰۱۲۳۴۵۶۷۸۹',ar='٠١٢٣٤٥٦٧٨٩',n=fa.indexOf(ch);return String(n>=0?n:ar.indexOf(ch));});
 }
 function extractBudget(raw){
- var q=normalizeDigits(raw).replace(/[,٬]/g,''),m=q.match(/(?:تا|زیر|حداکثر|نهایتا|حدود)\\s*(\\d+(?:\\.\\d+)?)\\s*(میلیون|ملیون|هزار|تومان|تومن)/);
+ var q=normalizeDigits(raw).replace(/[,٬]/g,''),m=q.match(/(?:تا|زیر|حداکثر|نهایتا|حدود)\s*(\d+(?:\.\d+)?)\s*(میلیون|ملیون|هزار|تومان|تومن)/);
  if(!m)return null;
  var amount=Number(m[1]);if(!Number.isFinite(amount)||amount<=0)return null;
  var unit=m[2]||'',multiplier=/میلیون|ملیون/.test(unit)?1000000:/هزار/.test(unit)?1000:1;
