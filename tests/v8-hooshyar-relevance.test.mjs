@@ -40,6 +40,15 @@ const excludes = (query, forbidden) => {
 
 const general = ['digikala','snappshop','torob','basalam'];
 exact('دنبال دستگاه تصفیه هوای مناسب اتاق خواب هستم', general);
+includes('پادری', general);
+includes('فرش جلوی در', general);
+includes('یخچال فریزر', general);
+includes('جارو برقی', general);
+excludes('پادری', ['iranmiz','partochoob','chidahome','tidawood']);
+assert.equal(resolve('فرش جلوی در').intent,'general_product');
+assert.ok(window.DigiYarPersianDictionary.resolve('فرش جلوی در').some(x=>x.domains.includes('home')),
+  'Doormat must resolve into the home product domain');
+
 exact('یه چیزی می‌خوام برای تمیز کردن مبل پارچه‌ای', general);
 includes('بلیط قطار تهران مشهد', ['alibaba','ghasedak24','mrbilit','shab','safarme','raja','trip','safarmarket']);
 includes('لوازم جانبی موبایل', [...general,'janebi','digido','digiland','gooshishop','berozkala','technolife','meghdadit']);
