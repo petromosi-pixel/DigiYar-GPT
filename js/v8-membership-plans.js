@@ -10,17 +10,18 @@ var durationToggle=root.querySelector('#v8MembershipDurationToggle'),durationPan
 var costValue=root.querySelector('#v8MembershipCostValue'),costDetail=root.querySelector('#v8MembershipCostDetail'),durationHint=root.querySelector('#v8MembershipDurationHint');
 var paymentTrigger=root.querySelector('#v8MembershipPayTrigger'),paymentPanel=root.querySelector('#v8MembershipPaymentMethods'),paymentNote=root.querySelector('#v8MembershipPaymentNote');
 function money(value){return fmt.format(Math.round(value))+' تومان';}
+function setPaymentReady(ready,amount){if(!paymentTrigger)return;paymentTrigger.hidden=!ready;if(ready){paymentTrigger.textContent='پرداخت '+amount}else{paymentTrigger.setAttribute('aria-expanded','false');if(paymentPanel)paymentPanel.hidden=true}}
 function setDurationOptions(){
  if(!durationPanel)return;
  if(selectedPlan==='base'){durationPanel.innerHTML='<button type="button" data-membership-duration="lifetime" aria-pressed="false">بدون محدودیت زمانی</button>';if(durationHint)durationHint.textContent='سطح پایه رایگان است و نیازی به تمدید دوره‌ای ندارد.'}
  else{durationPanel.innerHTML='<button type="button" data-membership-duration="1" aria-pressed="false">۱ ماه</button><button type="button" data-membership-duration="3" aria-pressed="false">۳ ماه</button><button type="button" data-membership-duration="6" aria-pressed="false">۶ ماه</button><button type="button" data-membership-duration="9" aria-pressed="false">۹ ماه</button><button type="button" data-membership-duration="12" aria-pressed="false">۱۲ ماه</button>';if(durationHint)durationHint.textContent='مدت موردنظر را انتخاب کنید تا هزینهٔ نهایی محاسبه شود.'}
 }
 function updateCost(){
- if(!selectedPlan){costValue.textContent='ابتدا سطح اشتراک را انتخاب کنید';costDetail.textContent='مبلغ نهایی پس از انتخاب سطح و مدت اشتراک نمایش داده می‌شود.';return}
- if(selectedPlan==='base'){costValue.textContent='رایگان';costDetail.textContent='سطح پایه بدون محدودیت زمانی است.';return}
- if(!selectedMonths){costValue.textContent='مدت اشتراک را انتخاب کنید';costDetail.textContent='پس از انتخاب مدت، مبلغ نهایی با تخفیف همان دوره محاسبه می‌شود.';return}
- var plan=CONFIG.plans[selectedPlan],duration=CONFIG.durations.find(function(x){return x.months===selectedMonths}),original=plan.monthlyPrice*duration.months,total=Math.round(original*(1-duration.discount/100));
- costValue.textContent=money(total);costDetail.textContent=fmt.format(duration.months)+' ماه · '+(duration.discount?fmt.format(duration.discount)+'٪ تخفیف · ':'بدون تخفیف · ')+'مبلغ پایه '+money(original);
+ if(!selectedPlan){setPaymentReady(false);costValue.textContent='ابتدا سطح اشتراک را انتخاب کنید';costDetail.textContent='مبلغ نهایی پس از انتخاب سطح و مدت اشتراک نمایش داده می‌شود.';return}
+ if(selectedPlan==='base'){setPaymentReady(false);costValue.textContent='رایگان';costDetail.textContent='سطح پایه بدون محدودیت زمانی است.';return}
+ if(!selectedMonths){setPaymentReady(false);costValue.textContent='مدت اشتراک را انتخاب کنید';costDetail.textContent='پس از انتخاب مدت، مبلغ نهایی با تخفیف همان دوره محاسبه می‌شود.';return}
+ var plan=CONFIG.plans[selectedPlan],duration=CONFIG.durations.find(function(x){return x.months===selectedMonths});if(!duration){setPaymentReady(false);return}var original=plan.monthlyPrice*duration.months,total=Math.round(original*(1-duration.discount/100));
+ costValue.textContent=money(total);setPaymentReady(total>0,money(total));costDetail.textContent=fmt.format(duration.months)+' ماه · '+(duration.discount?fmt.format(duration.discount)+'٪ تخفیف · ':'بدون تخفیف · ')+'مبلغ پایه '+money(original);
 }
 function openDurationStep(){
  if(durationPanel)durationPanel.hidden=false;if(durationToggle)durationToggle.setAttribute('aria-expanded','true');
