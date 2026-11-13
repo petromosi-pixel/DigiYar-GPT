@@ -24,7 +24,8 @@ test('subscription duration selector expands and collapses from its own heading'
  assert.match(html,/انتخاب مدت زمان اشتراک/);
  assert.match(html,/aria-expanded="false"/);
  assert.match(js,/durationToggle&&durationPanel\)durationToggle\.addEventListener\('click'/);
- for(const months of [1,3,6,9,12])assert.match(html,new RegExp('data-membership-duration="'+months+'"'));
+ for(const months of [1,3,6,9,12])assert.match(js,new RegExp('data-membership-duration="'+months+'"'));
+ assert.match(js,/data-membership-duration="lifetime"/);
 });
 test('selecting a tier guides the user to the highlighted duration step and total cost',()=>{
  assert.match(js,/function choosePlan\(button\)/);
