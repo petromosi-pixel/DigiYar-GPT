@@ -42,6 +42,10 @@ function guardEvent(event){
  var featureId=target.getAttribute('data-membership-feature');
  if(canAccess(featureId))return;
  event.preventDefault();event.stopPropagation();if(event.stopImmediatePropagation)event.stopImmediatePropagation();
+ if(state.status==='unknown'){
+  refresh().then(function(){if(canAccess(featureId)){if(typeof target.click==='function')target.click()}else requireFeature(featureId)}).catch(function(){requireFeature(featureId)});
+  return;
+ }
  requireFeature(featureId);
 }
 if(root.document&&typeof root.document.addEventListener==='function'){
