@@ -65,3 +65,8 @@ test('first premium click refreshes server access before deciding whether to rep
  assert.equal(replayed,1);
  assert.equal(w.DigiYarMembershipAccess.canAccess('multi_store_comparison'),true);
 });
+
+test('comparison panel does not expose itself on initial page load',()=>{
+ const ui=readFileSync(new URL('../js/v8-comparison-ui.js',import.meta.url),'utf8');
+ assert.match(ui,/if\(existing\)\{existing\.style\.display='none';renderControls\(\);bind\(\);\}/);
+});
