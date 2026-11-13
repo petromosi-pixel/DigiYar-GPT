@@ -1,0 +1,128 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+
+globalThis.window = globalThis;
+globalThis.document = { readyState: 'loading', addEventListener() {} };
+
+await import('../js/v8-store-catalog.js');
+await import('../js/v8-store-search-url.js');
+globalThis.DigiYarPopularAffiliateStores = [
+  { id: 'digikala', name: 'دیجی‌کالا' },
+  { id: 'snappshop', name: 'اسنپ‌شاپ' },
+  { id: 'torob', name: 'ترب' },
+  { id: 'basalam', name: 'باسلام' }
+];
+await import('../js/user-profile.js');
+
+const kb = window.DigiYarStoreBusinessDomains;
+const options = window.DigiYarGetSelectableStores();
+const ids = kb.ids();
+assert.equal(ids.length, 99, 'The canonical catalog should contain all 99 active stores');
+assert.equal(options.length, ids.length, 'The purchase-profile selector should expose every routable catalog store');
+assert.equal(new Set(options.map(store => store.id)).size, options.length, 'Store options must be unique');
+assert.equal(options[0].id, 'digikala', 'Existing popular-store ordering should be preserved');
+for (const id of ['maktabkhooneh', 'karnameh', 'dimaaffiliate', 'affilio', 'meghdadit']) {
+  assert.ok(options.some(store => store.id === id), `New catalog store should appear in the selector: ${id}`);
+}
+assert.ok(!options.some(store => store.id === 'daru24'), 'Removed Daru24 must not return to the selector');
+
+const classified = [
+  ...kb.byType.general.storeIds,
+  ...kb.byType.portal.storeIds,
+  ...kb.byType.specialist.storeIds
+];
+assert.equal(new Set(classified).size, ids.length, 'Every catalog store must belong to exactly one top-level activity type');
+assert.deepEqual([...classified].sort(), [...ids].sort(), 'Top-level activity groups must cover the complete catalog');
+
+/* Hamburger business-directory rendering is intentionally not asserted here:
+   that UI is the next implementation phase, not part of the current V8 baseline.
+   Keep this regression focused on canonical catalog classification and selector coverage. */
+
+
+
+const platforms = await readFile(new URL('../js/platforms.js', import.meta.url), 'utf8');
+const requestedPopularStoreIds = ["digikala","snappshop","torob","basalam","technolife","gooshishop","janebi","dayan","iranmiz","chidahome","iransetkor","choobineh","banimode","jeanswest","modiseh","shixon","khanoumi","solokala","mootanroo","rojashop","darukade","neshatrokh","sportland","ninisite","taaghche","fidibo","hamrahmechanic","karnameh","yadakmarket","jobama","flytoday","safarmarket","faradars","daneshjooyar","sabzlearn"];
+assert.deepEqual(kb.popularStoreIds, requestedPopularStoreIds, 'The knowledge base must be the sole source and exact order for the 35 curated popular stores');
+assert.equal(kb.popularStoreIds.length, 35, 'The popular stores card must contain exactly the 35 requested stores');
+assert.ok(kb.popularStoreIds.every(id => Object.prototype.hasOwnProperty.call(kb.catalog, id)), 'Every curated popular store must resolve to a canonical knowledge-base merchant');
+assert.ok(platforms.includes('const storeKnowledgeBase=window.DigiYarStoreBusinessDomains;'), 'The homepage popular stores card must read from the canonical knowledge base');
+assert.ok(platforms.includes('const popularStoreIds=storeKnowledgeBase&&Array.isArray(storeKnowledgeBase.popularStoreIds)?storeKnowledgeBase.popularStoreIds:[];'), 'The homepage popular stores card must use only the curated knowledge-base IDs');
+assert.ok(platforms.includes('grid.innerHTML=popularStores.map(store=>'), 'The homepage popular stores card must render the knowledge-base-resolved list');
+assert.ok(platforms.includes('popularAffiliateStores.forEach(store=>track.appendChild(dealCard(store)))'), 'Changing the popular stores card must not alter the discount carousel catalog');
+
+
+const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const ui = await readFile(new URL('../js/v8-ui.js', import.meta.url), 'utf8');
+const sw = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+const toggleDirection = await readFile(new URL('../css/v8-step4-toggle-direction.css', import.meta.url), 'utf8');
+const categoryAt = html.indexOf('id="popularStoresDiscovery"');
+const popularAt = html.indexOf('id="v7PopularStoresHost"');
+const profileAt = html.indexOf('id="v7ProfileSearchHost"');
+assert.ok(categoryAt >= 0 && popularAt > categoryAt && profileAt > popularAt, 'Popular stores must sit below the activity-category card and above the purchase profile');
+assert.ok(!/id="v7PopularStoresHost"[^>]*\shidden/.test(html), 'Popular stores must be visible on the homepage, initially collapsed by its toggle');
+assert.ok(!ui.includes('data-v6-popular'), 'Popular stores must no longer be opened from the hamburger menu');
+assert.match(sw, /digiyar-v8-8\.0\.0-shell\.\d+/, 'The category chevron direction fix must ship with a fresh app-shell cache version');
+assert.ok(!ui.includes("showCard(popular,'فروشگاه‌های محبوب'"), 'Hamburger navigation must not relocate the popular stores card');
+
+const menuOpen = ui.slice(ui.indexOf('const openRoot=()=>'), ui.indexOf('backdrop.addEventListener'));
+assert.ok(menuOpen.includes('v6-home-shortcut-list'), 'Hamburger menu must render as a plain navigation list, not section cards');
+for (const id of ['v8HooshyarConceptHero','v7DealsHost','popularStoresDiscovery','v7PopularStoresHost','v7ProfileSearchHost','digiyarConversation','resultSection']) assert.ok(menuOpen.includes('data-home-shortcut="'+id+'"'), `Hamburger shortcuts must include homepage section ${id}`);
+for (const key of ['about','guide','privacy','contact']) assert.ok(menuOpen.includes('footer:'+key), `Hamburger shortcuts must include footer section ${key}`);
+assert.ok(ui.includes("const shortcut=e.target.closest('[data-home-shortcut]')"), 'Hamburger shortcut activation must be delegated from the menu list');
+assert.ok(ui.includes("target.scrollIntoView({behavior:'smooth',block:'start'})"), 'Hamburger shortcuts must smoothly navigate to their homepage sections');
+assert.ok(ui.includes("if(footerButton)footerButton.click()"), 'Footer shortcuts must activate the existing footer navigation behavior');
+
+const hooshyar = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
+assert.ok(html.includes('popular-discovery-bottom-toggle v5-step4-toggle v5-step4-final-toggle'), 'Activity category must use the shared three-chevron toggle');
+const categoryInit = ui.slice(ui.indexOf('function initCategoryCardToggle(){'), ui.indexOf('function initPopularStores(){'));
+const popularInit = ui.slice(ui.indexOf('function initPopularStores(){'), ui.indexOf('function initPageHarmony(){'));
+assert.ok(!categoryInit.includes('head.addEventListener'), 'Category heading must not toggle; only its bottom icon does');
+const engine = await readFile(new URL('../js/v8-hooshyar-engine.js', import.meta.url), 'utf8');
+assert.ok(engine.includes("state.type=next;") && engine.includes("state.openCategories={};"), 'Selecting an activity button must replace the active top-level category');
+assert.ok(engine.includes("function setStoreType(next){"), 'Activity tabs must use one shared category-state controller');
+assert.ok(engine.includes("var toggle=document.getElementById('popularDiscoveryToggle');") && engine.includes("var panel=document.getElementById('popularDiscoveryPanel');"), 'The category controller must resolve its own DOM references in its scope');
+assert.ok(engine.includes("if(isOpen&&state.type===next){"), 'Tapping the currently selected category button must close the card');
+assert.ok(engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;"), 'Category button toggle state must follow the actual card state');
+assert.ok(engine.includes("setStoreType(btn.getAttribute('data-store-type'));"), 'Category buttons must call the shared controller');
+assert.ok(!engine.includes("var isOpen=toggle.getAttribute('aria-expanded')==='true'&&!panel.hidden;if(isOpen&&state.type===next)"), 'Category button listeners must not reference init-local DOM variables');
+assert.ok(engine.includes("toggle.setAttribute('aria-expanded','true');") && engine.includes("panel.hidden=false;") && engine.includes("panel.setAttribute('aria-hidden','false');"), 'Selecting any activity button must open the category card');
+assert.ok(engine.includes("if(next==='general')state.openCategories.general=true;") && engine.includes("else if(next==='portal')state.openCategories.portal=true;") && engine.includes("domainsForSelection().forEach(function(domain){state.openCategories[domain]=true;});"), 'Each activity button must reveal only its matching category group');
+assert.ok(engine.includes("if(bottom)bottom.setAttribute('aria-expanded','true');") && engine.includes("render();\n}"), 'The bottom toggle state must stay synchronized after selecting an activity');
+assert.ok(popularInit.includes("title.addEventListener('click',flip)"), 'Popular-store heading must toggle the card on tap');
+assert.ok(popularInit.includes("title.addEventListener('keydown'"), 'Popular-store heading must support Enter and Space keyboard activation');
+assert.ok(popularInit.includes("title.setAttribute('role','button')") && popularInit.includes("title.setAttribute('aria-expanded','false')"), 'Popular-store heading must expose accessible button semantics and synchronized state');
+assert.ok(popularInit.includes("if(title)title.setAttribute('aria-expanded',String(open))"), 'Popular-store heading state must stay synchronized with the card');
+assert.ok(popularInit.includes("toggle.className='v5-popular-toggle v5-step4-toggle v5-step4-final-toggle'") && popularInit.includes('class="v5-step4-toggle-icon"'), 'Popular stores must use the same three-chevron control as the other homepage cards');
+assert.ok(popularInit.includes("card.addEventListener('click',function(e)"), 'The popular-store chevron button itself must toggle the card open and closed');
+assert.ok(toggleDirection.includes('#v7PopularStoresHost #platforms{') && toggleDirection.includes('grid-template-columns:repeat(4,minmax(0,1fr))!important'), 'Popular stores must use a four-column directory like the category card');
+assert.ok(toggleDirection.includes('flex:0 0 42px!important') && toggleDirection.includes('width:36px!important') && toggleDirection.includes('width:32px!important'), 'Popular-store logos must use the larger responsive size scale');
+assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-logo'), 'High-specificity rules must override legacy popular-store logo sizing');
+assert.ok(toggleDirection.includes('transform:none!important'), 'Legacy logo zoom must be disabled to prevent clipping and false size perception');
+assert.ok(toggleDirection.includes('border-radius:9px!important') && toggleDirection.includes('overflow:hidden!important'), 'Popular-store logos must share the category card rounded-corner treatment');
+assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-tag,'), 'Store taglines must be hidden so only the store name remains below each logo');
+assert.ok(toggleDirection.includes('#v7PopularStoresHost#v7PopularStoresHost #platforms .platform-main') && toggleDirection.includes('flex-direction:column!important'), 'Popular-store names must be laid out directly beneath their logos');
+assert.ok(toggleDirection.includes('#v7PopularStoresHost #platforms .platform-tagline,') && toggleDirection.includes('#v7PopularStoresHost #platforms .platform-btn{display:none!important}'), 'Popular-store listing must show only each logo and its name like the category directory');
+assert.ok(ui.includes("title.addEventListener('click',flip)") && ui.includes("title.addEventListener('keydown'"), 'Purchase-profile card behavior must remain unchanged');
+assert.ok(ui.includes('v5-popular-toggle v5-step4-toggle v5-step4-final-toggle'), 'Popular stores must use the same toggle control style as the purchase-profile card');
+assert.ok(html.includes('<div class="popular-discovery-toggle v8-accordion-heading" id="popularDiscoveryToggle"'), 'Category heading must be display-only rather than a button');
+assert.ok(ui.includes('setState(false)}'), 'Expandable cards must initialize closed');
+assert.ok(ui.includes('initCategoryCardToggle();initPopularStores();'), 'Category and popular-store accordions must both initialize on page startup');
+assert.ok(ui.includes("panel.hidden=!open") && ui.includes("grid.hidden=!open"), 'Both accordion panels must be explicitly hidden when collapsed');
+const theme = await readFile(new URL('../css/digiyar-theme-system.css', import.meta.url), 'utf8');
+const harmony = await readFile(new URL('../css/v5-page-harmony.css', import.meta.url), 'utf8');
+const hooshyarCss = await readFile(new URL('../css/v8-hooshyar.css', import.meta.url), 'utf8');
+assert.ok(hooshyarCss.includes('flex:0 0 38px!important') && hooshyarCss.includes('flex-basis:32px!important') && hooshyarCss.includes('flex-basis:28px!important'), 'Category-card logo sizes must remain the reference scale below popular-store logos');
+assert.ok(harmony.includes('Shared home-card heading and bottom-chevron system'), 'All three homepage cards must share typography and chevron styling');
+assert.ok(harmony.includes('#v7PopularStoresHost .section-title .v5-card-subtitle') && harmony.includes('border:0!important'), 'Popular-store subtitle frame must be removed');
+assert.ok(harmony.includes('#popularStoresDiscovery .popular-discovery-toggle-main h2{') && harmony.includes('font-size:18px!important'), 'Category heading must be one size smaller');
+assert.ok(!/popular-discovery-(?:toggle:after|bottom-toggle:before|chevron)/.test(hooshyarCss), 'Legacy category toggle arrow source must be deleted from its originating stylesheet');
+assert.ok(!/popular-discovery-toggle::?(?:before|after)/.test(harmony+theme), 'No duplicate-arrow suppression rules should remain after deleting the original arrow source');
+assert.ok(html.includes('css/v8-hooshyar.css?v=8.0.0-hooshyar.2'), 'Updated Hooshyar stylesheet must bypass the previous browser cache');
+assert.ok(/sw[.]js[?]v=8[.]0[.]0-offline-shell[.][0-9]+/.test(html), 'Updated service worker must bypass the previous registration cache');
+assert.ok(theme.includes('V8 homepage accordion cards: one shared chevron control and complete dark surfaces'), 'Homepage cards must have complete dark-mode coverage');
+assert.ok(toggleDirection.includes('#popularStoresDiscovery .popular-discovery-bottom-toggle[aria-expanded="true"] .v5-step4-toggle-icon{transform:rotate(90deg)!important}'), 'Expanded category card must reverse the chevron direction without changing other cards');
+assert.ok(html.includes('css/v8-step4-toggle-direction.css?v=8.0.0-step4-direction.7'), 'Updated chevron direction stylesheet must bypass the previous browser cache');
+assert.ok(/digiyar-v8-8[.]0[.]0-shell[.][0-9]+/.test(sw), 'Updated category chevron must ship with a fresh service-worker cache');
+
+
+console.log('V8 canonical catalog and purchase-profile store coverage: PASS');
