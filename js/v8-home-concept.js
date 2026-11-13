@@ -14,7 +14,7 @@ function init(){
  if(!shortcuts){
    shortcuts=document.createElement('div');
    shortcuts.id='v8HomeShortcuts';
-   shortcuts.innerHTML='<button type="button" class="v8-home-shortcut" data-v7-open-comparison><span class="v8-shortcut-icon" aria-hidden="true">⇄</span><span><strong>مقایسهٔ تخصصی کالاها</strong><small>محصولات را کنار هم بررسی کن</small></span></button><button type="button" class="v8-home-shortcut" data-v8-scroll="#popularStoresDiscovery"><span class="v8-shortcut-icon" aria-hidden="true">▦</span><span><strong>پیدا کردن فروشگاه</strong><small>بر اساس حوزهٔ فعالیت</small></span></button>';
+   shortcuts.innerHTML='<button type="button" class="v8-home-shortcut" data-v7-open-comparison data-membership-feature="multi_store_comparison"><span class="v8-shortcut-icon" aria-hidden="true">⇄</span><span><strong>مقایسهٔ تخصصی کالاها</strong><small>محصولات را کنار هم بررسی کن</small></span></button><button type="button" class="v8-home-shortcut" data-v8-scroll="#popularStoresDiscovery"><span class="v8-shortcut-icon" aria-hidden="true">▦</span><span><strong>پیدا کردن فروشگاه</strong><small>بر اساس حوزهٔ فعالیت</small></span></button>';
    searchBar.insertAdjacentElement('afterend',shortcuts);
  }
  const result=document.getElementById('resultSection');
@@ -28,7 +28,7 @@ function init(){
    const nav=document.createElement('nav');
    nav.className='v8-bottom-nav';
    nav.setAttribute('aria-label','ناوبری اصلی');
-   nav.innerHTML='<button type="button" aria-current="page" data-v8-scroll="#digiyarConversation"><span class="v8-nav-icon" aria-hidden="true">⌂</span><small>خانه</small></button><button type="button" data-v7-open-comparison><span class="v8-nav-icon" aria-hidden="true">⇄</span><small>مقایسه</small></button><button type="button" data-v8-scroll="#popularStoresDiscovery"><span class="v8-nav-icon" aria-hidden="true">▦</span><small>فروشگاه‌ها</small></button><button type="button" data-v8-scroll=".main-footer"><span class="v8-nav-icon" aria-hidden="true">☰</span><small>بیشتر</small></button>';
+   nav.innerHTML='<button type="button" aria-current="page" data-v8-scroll="#digiyarConversation"><span class="v8-nav-icon" aria-hidden="true">⌂</span><small>خانه</small></button><button type="button" data-v7-open-comparison data-membership-feature="multi_store_comparison"><span class="v8-nav-icon" aria-hidden="true">⇄</span><small>مقایسه</small></button><button type="button" data-v8-scroll="#popularStoresDiscovery"><span class="v8-nav-icon" aria-hidden="true">▦</span><small>فروشگاه‌ها</small></button><button type="button" data-v8-scroll=".main-footer"><span class="v8-nav-icon" aria-hidden="true">☰</span><small>بیشتر</small></button>';
    document.body.appendChild(nav);
  }
  document.addEventListener('click',function(e){
