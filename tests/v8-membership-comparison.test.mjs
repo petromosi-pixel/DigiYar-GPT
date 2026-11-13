@@ -10,9 +10,9 @@ const products=[
  {id:'fallback',name:'جستجو در ترب',store:'ترب',priceToman:0,productUrl:'https://torob.com/search?q=x',isSearchFallback:true},
  {id:'bad',name:'محصول بدون لینک',store:'فروشگاه سوم',priceToman:9000000}
 ];
-function setup(allowed=true){
+function setup(planId='professional'){
  const events={};
- const access={canAccess:()=>allowed,requireFeature:id=>{access.requested=id;return false;}};
+ const access={canAccess:()=>['professional','commercial'].includes(planId),requireFeature:id=>{access.requested=id;return false;}};
  const window={DigiYarMembershipAccess:access,location:{href:'https://digiyar.test/'}};
  window.addEventListener=(name,fn)=>{events[name]=fn;};
  vm.runInNewContext(engineSource,{window,console});
@@ -35,13 +35,13 @@ test('comparison refuses two products from the same store',()=>{
  assert.equal(prepared.storeCount,1);
 });
 test('execution path denies comparison without server entitlement',()=>{
- const {window,access}=setup(false);
+ const {window,access}=setup('base');
  const result=window.DigiYarMembershipComparison.compare(products,'تست');
  assert.equal(result.status,'locked');
  assert.equal(access.requested,'multi_store_comparison');
 });
-test('professional/commercial server entitlement allows comparison using real source data only',()=>{
- const {window}=setup(true);
+for(const planId of ['professional','commercial'])test(planId+' server entitlement allows comparison using real source data only',()=>{
+ const {window}=setup(planId);
  const result=window.DigiYarMembershipComparison.compare(products,'گوشی');
  assert.equal(result.status,'comparison_ready');
  assert.equal(result.result.count,2);
