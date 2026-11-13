@@ -70,3 +70,11 @@ test('unified card remains responsive and supports dark mode',()=>{
  assert.match(css,/body\.v6-dark \.v8-membership/);
  assert.match(html,/aria-live="polite"/);
 });
+
+test('comparison rows are rendered from the shared catalog, not duplicated HTML labels',()=>{
+ assert.match(html,/id="v8MembershipFeatureRows"/);
+ assert.doesNotMatch(html,/v8-membership-feature-row/);
+ assert.match(js,/function renderFeatureMatrix\(\)/);
+ assert.match(js,/Object\.keys\(CATALOG\.features\)/);
+ assert.match(js,/data-membership-feature-row/);
+});
