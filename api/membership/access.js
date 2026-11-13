@@ -23,6 +23,6 @@ module.exports=async function membershipAccess(req,res){
   const subResponse=await fetch(base+'/rest/v1/user_subscriptions?'+query.toString(),{headers:{apikey:serviceKey,Authorization:'Bearer '+serviceKey}});
   if(!subResponse.ok)return send(res,503,{error:'membership_store_unavailable'});
   const rows=await subResponse.json(),entitlements=resolveEntitlements(Array.isArray(rows)?rows[0]:null);
-  return send(res,200,{userId:user.id,planId:entitlements.planId,planLabel:entitlements.planLabel,subscription:{active:entitlements.isActive,startsAt:entitlements.startsAt,endsAt:entitlements.endsAt},features:entitlements.features.map(id=>({id,enabled:true})),paymentEnabled:false});
+  return send(res,200,{userId:user.id,planId:entitlements.planId,planLabel:entitlements.planLabel,subscription:{active:entitlements.isActive,startsAt:entitlements.startsAt,endsAt:entitlements.endsAt},features:entitlements.features.map(id=>({id,enabled:true})),paymentEnabled:Boolean(process.env.ZARINPAL_MERCHANT_ID&&process.env.SUPABASE_URL&&process.env.SUPABASE_ANON_KEY&&process.env.SUPABASE_SERVICE_ROLE_KEY)});
  }catch(error){return send(res,502,{error:'membership_service_error'});}
 };

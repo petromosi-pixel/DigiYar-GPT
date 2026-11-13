@@ -94,3 +94,5 @@ body.v6-dark .v8-membership-payment-option{background:rgba(18,29,45,.65);border-
 body.v6-dark .v8-membership-payment-option[aria-pressed=true]{background:rgba(35,134,217,.2);border-color:#3999e8}
 
 @media(max-width:360px){.v8-membership-pay-trigger{padding:8px 14px;font-size:11px}.v8-membership-payment-grid{grid-template-columns:1fr}.v8-payment-logo{max-width:100px;height:32px}}
+
+.v8-membership-checkout{display:block;width:100%;margin:12px auto 0;padding:13px 16px;border:0;border-radius:12px;background:#1f8f5f;color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.v8-membership-checkout[hidden]{display:none!important}.v8-membership-checkout:disabled{opacity:.65;cursor:wait}

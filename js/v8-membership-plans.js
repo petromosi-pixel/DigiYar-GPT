@@ -8,7 +8,7 @@ var root=document.getElementById('v8MembershipPlans'),page=document.getElementBy
 var fmt=new Intl.NumberFormat('fa-IR'),selectedPlan=null,selectedMonths=null;
 var durationToggle=root.querySelector('#v8MembershipDurationToggle'),durationPanel=root.querySelector('#v8MembershipDurations'),durationWrap=root.querySelector('#v8MembershipDurationWrap');
 var costValue=root.querySelector('#v8MembershipCostValue'),costDetail=root.querySelector('#v8MembershipCostDetail'),durationHint=root.querySelector('#v8MembershipDurationHint');
-var paymentTrigger=root.querySelector('#v8MembershipPayTrigger'),paymentPanel=root.querySelector('#v8MembershipPaymentMethods'),paymentNote=root.querySelector('#v8MembershipPaymentNote');
+var paymentTrigger=root.querySelector('#v8MembershipPayTrigger'),paymentPanel=root.querySelector('#v8MembershipPaymentMethods'),paymentNote=root.querySelector('#v8MembershipPaymentNote'),checkoutButton=root.querySelector('#v8MembershipCheckoutButton');
 /* Hide failed logo images cleanly; the adjacent payment-method text remains the fallback. */
 root.querySelectorAll('.v8-payment-logo').forEach(function(img){
  function hideBrokenLogo(){img.hidden=true;img.setAttribute('aria-hidden','true');}
@@ -47,7 +47,41 @@ if(durationPanel)durationPanel.addEventListener('click',function(event){
  durationWrap.classList.remove('is-attention');updateCost();
 });
 if(paymentTrigger&&paymentPanel)paymentTrigger.addEventListener('click',function(){var expanded=paymentTrigger.getAttribute('aria-expanded')==='true';paymentTrigger.setAttribute('aria-expanded',String(!expanded));paymentPanel.hidden=expanded});
-if(paymentPanel)paymentPanel.addEventListener('click',function(event){var option=event.target.closest('[data-payment-method]');if(!option)return;paymentPanel.querySelectorAll('[data-payment-method]').forEach(function(item){item.setAttribute('aria-pressed',String(item===option))});if(paymentNote)paymentNote.textContent='روش «'+option.textContent.trim()+'» انتخاب شد؛ اتصال سرویس و انجام تراکنش هنوز فعال نیست.'});
+if(paymentPanel)paymentPanel.addEventListener('click',function(event){
+ var option=event.target.closest('[data-payment-method]');if(!option)return;
+ paymentPanel.querySelectorAll('[data-payment-method]').forEach(function(item){item.setAttribute('aria-pressed',String(item===option))});
+ var supported=option.getAttribute('data-payment-method')==='shaparak';
+ if(checkoutButton)checkoutButton.hidden=!supported;
+ if(paymentNote)paymentNote.textContent=supported?'درگاه کارت‌های عضو شتاب از طریق زرین‌پال آمادهٔ اتصال است. برای ادامه باید وارد حساب کاربری تأییدشده شده باشی.':'این روش پرداخت هنوز به سرویس پذیرنده متصل نشده است.';
+});
+async function getMembershipAccessToken(){
+ var direct=window.DigiYarAuth;
+ if(direct&&typeof direct.getAccessToken==='function'){var token=await direct.getAccessToken();if(token)return token;}
+ var clients=[window.DigiYarSupabaseClient,window.supabaseClient,window.supabase];
+ for(var i=0;i<clients.length;i++){
+  var client=clients[i];if(!client||!client.auth||typeof client.auth.getSession!=='function')continue;
+  var result=await client.auth.getSession(),session=result&&result.data&&result.data.session;
+  if(session&&session.access_token)return session.access_token;
+ }
+ return null;
+}
+if(checkoutButton)checkoutButton.addEventListener('click',async function(){
+ if(!selectedPlan||selectedPlan==='base'||!selectedMonths||typeof selectedMonths!=='number')return;
+ checkoutButton.disabled=true;checkoutButton.textContent='در حال آماده‌سازی پرداخت…';
+ try{
+  var token=await getMembershipAccessToken();
+  if(!token){if(paymentNote)paymentNote.textContent='برای پرداخت باید ابتدا وارد حساب کاربری تأییدشده شوی. اتصال ورود و احراز هویت هنوز در این نسخه فعال نشده است.';return;}
+  var key=(window.crypto&&typeof window.crypto.randomUUID==='function')?window.crypto.randomUUID():'dy-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+  var response=await fetch('/api/membership/checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'Idempotency-Key':key},body:JSON.stringify({planId:selectedPlan,months:selectedMonths})});
+  var result=await response.json().catch(function(){return{}});
+  if(!response.ok||!result.checkoutUrl)throw new Error(result.error||'checkout_failed');
+  var url=new URL(result.checkoutUrl);
+  if(!['www.zarinpal.com','sandbox.zarinpal.com'].includes(url.hostname)||!url.pathname.startsWith('/pg/StartPay/'))throw new Error('invalid_checkout_url');
+  window.location.assign(url.href);
+ }catch(error){if(paymentNote)paymentNote.textContent='آغاز پرداخت انجام نشد. وضعیت اتصال حساب، سرویس پرداخت و تنظیمات سرور باید بررسی شود.';}
+ finally{checkoutButton.disabled=false;checkoutButton.textContent='ادامه و ورود به درگاه زرین‌پال';}
+});
+
 function open(){page.hidden=false;page.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';var content=page.querySelector('.dy-membership-page-content');if(content)content.scrollTop=0;var back=page.querySelector('[data-membership-back]');if(back)back.focus({preventScroll:true})}
 function close(){page.hidden=true;page.setAttribute('aria-hidden','true');document.body.style.overflow=''}
 page.addEventListener('click',function(e){if(e.target.closest('[data-membership-back]'))close()});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!page.hidden)close()});
@@ -65,6 +99,13 @@ function hasResultData(detail){
 function handleHooshyarResults(event){if(!hasResultData(event&&event.detail))return;schedulePromo(document.body)}
 document.addEventListener('click',function(e){if(e.target.closest('[data-membership-popup-close]')){closePromo();return}if(e.target.closest('[data-open-membership]')){closePromo();open()}});
 ['digiyar:hooshyar-results-ready','digiyar:v9-assistant-results','digiyar:v7-product-results-ready','digiyar:v7-product-results','digiyar:product-results-ready'].forEach(function(name){window.addEventListener(name,handleHooshyarResults)});
-updateCost();window.DigiYarMembershipOpen=open;window.DigiYarMembershipClose=close;
+updateCost();
+var returnStatus=new URLSearchParams(window.location.search).get('membership_payment');
+if(returnStatus){
+ open();
+ var returnMessages={success:'پرداخت با موفقیت تأیید شد و اشتراک در حساب ثبت شده است.',cancelled:'پرداخت توسط کاربر لغو شد؛ اشتراکی فعال نشد.',failed:'پرداخت ناموفق بود؛ اشتراکی فعال نشد.',expired:'مهلت پرداخت پایان یافته است.',verification_error:'تأیید تراکنش با خطا روبه‌رو شد؛ وضعیت پرداخت باید از سرور بررسی شود.',unavailable:'سرویس پرداخت موقتاً در دسترس نیست.',not_found:'سفارش پرداخت پیدا نشد.'};
+ if(paymentNote)paymentNote.textContent=returnMessages[returnStatus]||'نتیجهٔ بازگشت از درگاه دریافت شد.';
+}
+window.DigiYarMembershipOpen=open;window.DigiYarMembershipClose=close;
 window.DigiYarMembershipPlans=Object.freeze({version:CONFIG.version,pricingStatus:CONFIG.pricingStatus,paymentEnabled:CONFIG.paymentEnabled,getPlans:function(){return JSON.parse(JSON.stringify(CONFIG.plans))},getSelectedPlan:function(){return selectedPlan},getSelectedDuration:function(){return selectedMonths}});
 })();

@@ -21,7 +21,7 @@
     "test:v8:product-result-producer": "node tests/v8-product-result-producer.test.mjs",
     "test:v9:assistant": "node --check js/v9-hooshyar-assistant.js && node --check js/v8-product-result-source.js && node tests/v9-hooshyar-assistant.test.mjs",
     "test:v8:persian-dictionary": "node tests/v8-persian-language-dictionary.test.mjs && node tests/v8-hooshyar-relevance.test.mjs && node tests/v8-product-result-producer.test.mjs",
-    "test:v8:membership": "node --check js/v8-membership-plans.js && node --check api/membership/access.js && node --check api/_lib/membership-entitlements.js && node tests/v8-membership-plans.test.mjs && node tests/v8-membership-navigation.test.mjs"
+    "test:v8:membership": "node --check js/v8-membership-plans.js && node --check api/membership/access.js && node --check api/membership/checkout.js && node --check api/membership/zarinpal/verify.js && node --check api/_lib/membership-entitlements.js && node --check api/_lib/membership-pricing.js && node --check api/_lib/zarinpal.js && node --check api/_lib/membership-http.js && node tests/v8-membership-plans.test.mjs && node tests/v8-membership-navigation.test.mjs && node tests/v8-membership-payments.test.mjs"
   },
   "dependencies": {
     "@vercel/node": "^2.0.0",
