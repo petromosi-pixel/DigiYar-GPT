@@ -55,7 +55,7 @@ body.v6-dark #dyAccountPage{--dy-page:#101827;--dy-surface:#182437;--dy-control:
  function renderMembership(c){
   c.innerHTML='<h2>اشتراک من</h2><div class="dyac-card dyac-membership-card"><div class="dyac-membership-loading" role="status">در حال بررسی وضعیت اشتراک…</div></div>';
   const card=$('.dyac-membership-card',c);
-  const labels={hooshyar_search:'جست‌وجوی فعلی هوش‌یار',store_directory:'دسته‌بندی و معرفی فروشگاه‌ها',deal_feed:'مشاهده پیشنهادها و تخفیف‌ها',verified_store_routes:'مسیرهای جست‌وجوی تأییدشده',conversational_intent:'فهم عبارت‌های محاوره‌ای و چندبخشی',semantic_product_search:'جست‌وجوی معنایی محصولات',product_cards:'کارت محصول با تصویر و قیمت',advanced_product_filters:'فیلتر بودجه، برند و ویژگی‌ها',multi_store_comparison:'مقایسه محصولات چند فروشگاه',extended_store_catalog:'کاتالوگ گسترده‌تر فروشگاه‌ها',personalized_ranking:'رتبه‌بندی شخصی‌سازی‌شده',price_stock_alerts:'پایش قیمت و موجودی و هشدار',advanced_comparison:'مقایسه پیشرفته و اولویت‌دهی'};
+  const catalog=window.DigiYarMembershipCatalog;const labels=catalog&&catalog.features?Object.keys(catalog.features).reduce(function(out,id){out[id]=catalog.features[id].label;return out;},{}):{};
   function show(message){card.innerHTML='<div class="dyac-note">'+message+'</div><button type="button" class="dyac-membership-action" data-upgrade-membership>مشاهده و ارتقای سطح اشتراک</button>'}
   const access=window.DigiYarMembershipAccess;
   if(!access||typeof access.refresh!=='function'){show('سامانهٔ بررسی اشتراک هنوز بارگذاری نشده است. تا زمان تأیید سرور، هیچ دسترسی پولی باز نمی‌شود.');return}
