@@ -66,7 +66,7 @@ test('checkout derives price on the server and requires a verified Supabase user
  assert.match(checkout,/getAuthenticatedUser\(req\)/);
  assert.match(checkout,/calculateMembershipPrice/);
  assert.match(checkout,/create_membership_payment_order/);
- assert.match(checkout,/Idempotency-Key/);
+ assert.match(checkout,/idempotency-key/);
  assert.doesNotMatch(checkout,/body\.amount|body\.price|amountToman\s*=/);
 });
 
