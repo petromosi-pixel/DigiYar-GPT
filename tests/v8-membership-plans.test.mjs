@@ -7,6 +7,7 @@ const entitlements=require('../api/_lib/membership-entitlements.js');
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const js=readFileSync(new URL('../js/v8-membership-plans.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../css/v8-membership-plans.css',import.meta.url),'utf8');
+const catalog=readFileSync(new URL('../js/v8-membership-catalog.js',import.meta.url),'utf8');
 const now=Date.parse('2026-11-13T12:00:00.000Z');
 test('membership page is a single comparison matrix with feature names on the right',()=>{
  assert.match(html,/v8-membership-matrix/);
@@ -37,11 +38,10 @@ test('selecting a tier guides the user to the highlighted duration step and tota
  assert.match(css,/dyMembershipGreenPulse/);
 });
 test('duration pricing keeps the agreed plan prices and discounts',()=>{
- const config=js.match(/durations:\[(.*?)\]/s);
- assert.ok(config);
- for(const discount of ['months:1,discount:0','months:3,discount:8','months:6,discount:15','months:9,discount:21','months:12,discount:28'])assert.ok(config[1].includes(discount));
- assert.match(js,/professional:\{title:'حرفه‌ای',monthlyPrice:199000\}/);
- assert.match(js,/commercial:\{title:'تجاری',monthlyPrice:499000\}/);
+ assert.match(js,/window\.DigiYarMembershipCatalog/);
+ assert.match(catalog,/professional:\{title:'حرفه‌ای',monthlyPrice:199000/);
+ assert.match(catalog,/commercial:\{title:'تجاری',monthlyPrice:499000/);
+ for(const [months,discount] of [[1,0],[3,8],[6,15],[9,21],[12,28]])assert.match(catalog,new RegExp(months+':'+discount));
 });
 test('expired, pending, unknown and future subscriptions never grant paid access',()=>{
  for(const sub of [null,{plan_id:'professional',status:'pending',starts_at:'2026-11-01T00:00:00Z',ends_at:'2026-12-01T00:00:00Z'},{plan_id:'professional',status:'active',starts_at:'2026-12-01T00:00:00Z',ends_at:'2027-01-01T00:00:00Z'},{plan_id:'professional',status:'active',starts_at:'2026-10-01T00:00:00Z',ends_at:'2026-11-01T00:00:00Z'},{plan_id:'unknown',status:'active',starts_at:'2026-10-01T00:00:00Z',ends_at:'2026-12-01T00:00:00Z'}]){
