@@ -14,7 +14,7 @@
 .v8-membership-duration{display:flex;gap:6px;padding:9px 8px;overflow-x:auto;background:var(--dy-surface,#fff)}
 .v8-membership-duration[hidden]{display:none!important}.v8-membership-duration button{flex:1 0 auto;min-width:48px;padding:7px 8px;border:1px solid var(--dy-border,#dce4ef);border-radius:8px;background:var(--dy-control,#f5f7fb);color:var(--dy-text,#24334c);font:inherit;font-size:10px;font-weight:750;cursor:pointer}
 .v8-membership-duration button[aria-pressed=true]{border-color:#3189d7;background:rgba(49,137,215,.13);color:var(--dy-text,#24334c)}
-.v8-membership-feature-row{display:contents}.v8-membership-feature-name,.v8-membership-state{min-height:43px;display:flex;align-items:center;padding:7px 6px;border-bottom:1px solid var(--dy-border,#e8edf4)}
+.v8-membership-feature-row{display:contents}#v8MembershipFeatureRows{display:contents}.v8-membership-feature-name,.v8-membership-state{min-height:43px;display:flex;align-items:center;padding:7px 6px;border-bottom:1px solid var(--dy-border,#e8edf4)}
 .v8-membership-feature-name{justify-content:flex-start;font-size:10px;line-height:1.65;text-align:right;color:var(--dy-text,#34445b)}
 .v8-membership-state{justify-content:center;border-right:1px solid var(--dy-border,#edf0f5);font-size:17px;font-weight:900;color:#169b70}
 .v8-membership-state.is-off{color:#a1a9b5;font-size:18px;font-weight:500}.v8-membership-state.is-planned{color:#c58a25}
