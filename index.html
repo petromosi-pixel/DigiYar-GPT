@@ -47,21 +47,11 @@
    <div class="v8-membership-matrix" id="v8MembershipCards" role="table" aria-label="مقایسه امکانات سه سطح اشتراک">
     <div class="v8-membership-matrix-head" role="row">
      <div class="v8-membership-feature-head" role="columnheader">امکانات</div>
-     <div class="v8-membership-plan-head" role="columnheader"><strong>پایه</strong><small>رایگان</small></div>
-     <div class="v8-membership-plan-head is-pro" role="columnheader"><strong>حرفه‌ای</strong><small data-plan-price="professional">۱۹۹٬۰۰۰ تومان</small><small data-plan-period="professional">۱ ماه</small></div>
-     <div class="v8-membership-plan-head is-commercial" role="columnheader"><strong>تجاری</strong><small data-plan-price="commercial">۴۹۹٬۰۰۰ تومان</small><small data-plan-period="commercial">۱ ماه</small></div>
+     <div class="v8-membership-plan-head" role="columnheader"><button type="button" class="v8-membership-plan-choice" data-membership-plan="base" aria-pressed="false"><strong>پایه</strong><small>رایگان</small><span>انتخاب این سطح</span></button></div>
+     <div class="v8-membership-plan-head is-pro" role="columnheader"><button type="button" class="v8-membership-plan-choice" data-membership-plan="professional" aria-pressed="false"><strong>حرفه‌ای</strong><small>امکانات پیشرفته</small><span>انتخاب این سطح</span></button></div>
+     <div class="v8-membership-plan-head is-commercial" role="columnheader"><button type="button" class="v8-membership-plan-choice" data-membership-plan="commercial" aria-pressed="false"><strong>تجاری</strong><small>امکانات کامل‌تر</small><span>انتخاب این سطح</span></button></div>
     </div>
-    <div class="v8-membership-duration-wrap">
-     <button type="button" class="v8-membership-duration-toggle" id="v8MembershipDurationToggle" aria-expanded="false" aria-controls="v8MembershipDurations"><span>انتخاب اشتراک</span><span class="v8-membership-duration-chevron" aria-hidden="true">⌄</span></button>
-     <div class="v8-membership-duration" id="v8MembershipDurations" hidden aria-label="مدت اشتراک">
-      <button type="button" data-membership-duration="1" aria-pressed="true">۱ ماه</button>
-      <button type="button" data-membership-duration="3" aria-pressed="false">۳ ماه</button>
-      <button type="button" data-membership-duration="6" aria-pressed="false">۶ ماه</button>
-      <button type="button" data-membership-duration="9" aria-pressed="false">۹ ماه</button>
-      <button type="button" data-membership-duration="12" aria-pressed="false">۱۲ ماه</button>
-     </div>
-    </div>
-    <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">جست‌وجوی فعلی هوش‌یار و تشخیص مفاهیم پشتیبانی‌شده</span><span class="v8-membership-state" aria-label="پایه دارد">✓</span><span class="v8-membership-state" aria-label="حرفه‌ای دارد">✓</span><span class="v8-membership-state" aria-label="تجاری دارد">✓</span></div>
+    <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">جست‌وجوی فعلی هوش‌یار و تشخیص مفاهیم پشتیبانی‌شده</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span></div>
     <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">دسته‌بندی و معرفی فروشگاه‌ها</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span></div>
     <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">مشاهدهٔ پیشنهادها و تخفیف‌های ثبت‌شده</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span></div>
     <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">هدایت به مسیرهای جست‌وجوی تأییدشده</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span><span class="v8-membership-state">✓</span></div>
@@ -74,6 +64,12 @@
     <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">رتبه‌بندی شخصی‌سازی‌شدهٔ نتایج</span><span class="v8-membership-state is-off">−</span><span class="v8-membership-state is-off">−</span><span class="v8-membership-state is-planned">✓</span></div>
     <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">پایش قیمت و موجودی و هشدار هوشمند</span><span class="v8-membership-state is-off">−</span><span class="v8-membership-state is-off">−</span><span class="v8-membership-state is-planned">✓</span></div>
     <div class="v8-membership-feature-row" role="row"><span class="v8-membership-feature-name" role="rowheader">ابزارهای پیشرفتهٔ مقایسه و اولویت‌دهی نتایج</span><span class="v8-membership-state is-off">−</span><span class="v8-membership-state is-off">−</span><span class="v8-membership-state is-planned">✓</span></div>
+    <div class="v8-membership-cost" id="v8MembershipCost" aria-live="polite"><span class="v8-membership-cost-label">هزینهٔ اشتراک انتخابی</span><strong id="v8MembershipCostValue">ابتدا سطح اشتراک را انتخاب کنید</strong><small id="v8MembershipCostDetail">مبلغ نهایی پس از انتخاب سطح و مدت اشتراک نمایش داده می‌شود.</small></div>
+    <div class="v8-membership-duration-wrap" id="v8MembershipDurationWrap">
+     <button type="button" class="v8-membership-duration-toggle" id="v8MembershipDurationToggle" aria-expanded="false" aria-controls="v8MembershipDurations"><span>انتخاب مدت زمان اشتراک</span><span class="v8-membership-duration-chevron" aria-hidden="true">⌄</span></button>
+     <div class="v8-membership-duration" id="v8MembershipDurations" hidden aria-label="مدت زمان اشتراک"></div>
+     <p class="v8-membership-duration-hint" id="v8MembershipDurationHint">ابتدا یکی از سطوح اشتراک را انتخاب کنید.</p>
+    </div>
    </div>
    <p class="v8-membership-notice" id="v8MembershipNotice" role="status" aria-live="polite">پرداخت و فعال‌سازی اشتراک پولی هنوز غیرفعال است.</p>
   </section>

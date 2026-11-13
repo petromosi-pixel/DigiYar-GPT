@@ -12,14 +12,28 @@ test('membership page is a single comparison matrix with feature names on the ri
  assert.match(html,/v8-membership-matrix/);
  assert.match(html,/مقایسهٔ امکانات اشتراک/);
  assert.match(html,/v8-membership-feature-name/);
+ assert.match(html,/data-membership-plan="base"/);
+ assert.match(html,/data-membership-plan="professional"/);
+ assert.match(html,/data-membership-plan="commercial"/);
+ assert.doesNotMatch(html,/data-plan-price/);
+ assert.match(html,/v8MembershipCost/);
  for(const id of ['base','professional','commercial'])assert.match(html,new RegExp('>'+({base:'پایه',professional:'حرفه‌ای',commercial:'تجاری'}[id])+'<'));
  assert.doesNotMatch(html,/پیشنهاد محبوب|برای خرید هوشمندتر|سه سطح هوشمندی/);
 });
 test('subscription duration selector expands and collapses from its own heading',()=>{
- assert.match(html,/انتخاب اشتراک/);
+ assert.match(html,/انتخاب مدت زمان اشتراک/);
  assert.match(html,/aria-expanded="false"/);
- assert.match(js,/durationToggle\.addEventListener\('click'/);
+ assert.match(js,/durationToggle&&durationPanel\)durationToggle\.addEventListener\('click'/);
  for(const months of [1,3,6,9,12])assert.match(html,new RegExp('data-membership-duration="'+months+'"'));
+});
+test('selecting a tier guides the user to the highlighted duration step and total cost',()=>{
+ assert.match(js,/function choosePlan\(button\)/);
+ assert.match(js,/openDurationStep\(\)/);
+ assert.match(js,/durationWrap\.classList\.add\('is-attention'\)/);
+ assert.match(js,/scrollIntoView\(\{behavior:'smooth',block:'center'\}\)/);
+ assert.match(js,/function updateCost\(\)/);
+ assert.match(js,/data-membership-duration="lifetime"/);
+ assert.match(css,/dyMembershipGreenPulse/);
 });
 test('duration pricing keeps the agreed plan prices and discounts',()=>{
  const config=js.match(/durations:\[(.*?)\]/s);
