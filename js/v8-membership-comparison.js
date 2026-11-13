@@ -6,7 +6,13 @@ var state={query:'',products:[],comparison:null};
 function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
 function normalizeStore(p){
  var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
- return clean(offer.storeName||offer.store||p.storeName||p.store||p.sourceName||p.sourceId||p.source);
+ var raw=clean(offer.storeName||offer.store||p.storeName||p.store||p.sourceName||p.sourceId||p.source);
+ if(/torobshop/i.test(raw))return 'ترب';
+ if(/technolife/i.test(raw))return 'تکنولایف';
+ if(/digikala/i.test(raw))return 'دیجی‌کالا';
+ if(/snappshop/i.test(raw))return 'اسنپ‌شاپ';
+ if(/basalam/i.test(raw))return 'باسلام';
+ return raw;
 }
 function productUrl(p){
  var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
