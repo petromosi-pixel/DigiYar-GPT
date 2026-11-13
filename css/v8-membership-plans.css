@@ -20,7 +20,7 @@
 .v8-membership-state.is-off{color:#a1a9b5;font-size:18px;font-weight:500}.v8-membership-state.is-planned{color:#c58a25}
 .v8-membership-notice{margin:9px 2px 0;color:var(--dy-muted,#718096);font-size:9px;line-height:1.8;text-align:center}
 .v8-membership-duration-toggle:focus-visible,.v8-membership-duration button:focus-visible{outline:2px solid #3999e8;outline-offset:-2px}
-@media(max-width:380px){.v8-membership{padding:10px 7px}.v8-membership-matrix{grid-template-columns:minmax(0,1fr) repeat(3,minmax(48px,.29fr))}.v8-membership-feature-name{font-size:9px;padding:6px 5px}.v8-membership-plan-head small{font-size:8px}.v8-membership-state{font-size:15px}}
+@media(max-width:380px){.v8-membership{padding:10px 7px}.v8-membership-matrix{grid-template-columns:minmax(0,1fr) repeat(3,minmax(48px,.29fr))}.v8-membership-feature-name{font-size:9px;padding:6px 5px}.v8-membership-plan-head small{font-size:8px;white-space:normal;overflow-wrap:anywhere}.v8-membership-state{font-size:15px}}
 @media(prefers-reduced-motion:reduce){.v8-membership-duration-chevron{transition:none}}
 body.v6-dark .v8-membership{border-color:rgba(108,151,220,.3);background:var(--dy-surface,#182437)}
 body.v6-dark .v8-membership-matrix{border-color:var(--dy-border,#35445a)}
@@ -30,7 +30,7 @@ body.v6-dark .v8-membership-duration button{background:#202c3e;color:#e7edf7;bor
 
 /* Membership plan selection and guided duration step */
 .v8-membership-plan-choice{width:100%;height:100%;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:7px 3px;border:2px solid transparent;border-radius:9px;background:transparent;color:inherit;font:inherit;cursor:pointer;transition:border-color .18s ease,background .18s ease,box-shadow .18s ease}
-.v8-membership-plan-choice strong{font-size:11px;font-weight:900}.v8-membership-plan-choice small{font-size:9px;line-height:1.4;color:var(--dy-muted,#718096);white-space:nowrap}.v8-membership-plan-choice span{font-size:8px;font-weight:800;color:var(--dy-muted,#718096)}
+.v8-membership-plan-choice strong{font-size:12px;font-weight:900}.v8-membership-plan-choice small{font-size:8px;line-height:1.45;color:var(--dy-muted,#718096);white-space:normal;overflow-wrap:anywhere;text-align:center}
 .v8-membership-plan-choice[aria-pressed=true]{border-color:#159b68;background:rgba(27,170,111,.13);box-shadow:inset 0 0 0 1px rgba(27,170,111,.12)}.v8-membership-plan-choice[aria-pressed=true] span{color:#138c5e}
 .v8-membership-plan-choice:focus-visible{outline:2px solid #3999e8;outline-offset:1px}.v8-membership-matrix-head .v8-membership-plan-head{padding:4px;min-height:86px}
 .v8-membership-cost{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:5px;margin:10px 8px;padding:13px 10px;border:1px solid #d6a33b;border-radius:13px;background:linear-gradient(125deg,#fff7df,#ffedbd);color:#63470b;text-align:center;box-shadow:0 4px 13px rgba(160,117,26,.12)}
