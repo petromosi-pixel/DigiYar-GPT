@@ -1,0 +1,67 @@
+name: V6 Live Store Ingestion
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/v6-live-store-crawler.mjs'
+      - 'tests/v6-live-store-ingestion.test.mjs'
+      - 'js/v6-hooshyar-search-core.js'
+      - '.github/workflows/v6-live-store-ingestion.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Crawl public store pages
+        id: crawl
+        shell: bash
+        run: |
+          set +e
+          node tools/v6-live-store-crawler.mjs
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Validate crawl threshold
+        if: steps.crawl.outputs.status != '0'
+        run: |
+          echo "Live public-store ingestion did not reach the 20-product acceptance threshold."
+          exit 1
+
+      - name: Validate Search Core ranking
+        run: node tests/v6-live-store-ingestion.test.mjs
+
+      - name: Publish generated live index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/live-store-product-index-v6.js reports/v6-live-store-ingestion.json
+          if git diff --cached --quiet; then
+            echo "No generated index changes."
+          else
+            git commit -m "chore(v6): refresh live public-store Xiaomi index"
+            git push
+          fi
+
+      - name: Upload ingestion report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-live-store-ingestion-report
+          path: reports/v6-live-store-ingestion.json
+          if-no-files-found: warn

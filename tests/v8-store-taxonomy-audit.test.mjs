@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+
+globalThis.window = globalThis;
+await import('../js/v8-store-catalog.js');
+await import('../js/v8-store-search-url.js');
+const kb = window.DigiYarStoreBusinessDomains;
+const resolver = window.DigiYarStoreSearchUrl;
+
+const ids = kb.ids();
+assert.equal(ids.length, 99, 'The canonical catalog excludes Daru24 and contains 99 active stores');
+assert.ok(kb.domainTitles.digital && kb.domainTitles.education && kb.domainTitles.auto_service,
+  'The canonical taxonomy must cover product and service domains');
+assert.ok(kb.byDomain.education.storeIds.includes('maktabkhooneh'));
+assert.ok(kb.byDomain.travel_ticket.storeIds.includes('safarme'));
+assert.ok(kb.byDomain.auto_service.storeIds.includes('karnameh'));
+assert.ok(kb.byType.general.storeIds.includes('digikala'));
+assert.deepEqual(['divar','sheypoor','esam'].filter(id => kb.byType.general.storeIds.includes(id)), [],
+  'Resale marketplaces must not be classified as general stores');
+assert.deepEqual(['divar','sheypoor','esam'].filter(id => kb.byType.portal.storeIds.includes(id)).sort(), ['divar','esam','sheypoor'],
+  'Divar, Sheypoor and Esam must be grouped as resale marketplaces');
+assert.equal(kb.byType.portal.subtitle, 'کالاهای نو و دست دوم در همه حوزه‌ها');
+assert.ok(kb.byType.specialist.storeIds.includes('meghdadit'));
+assert.equal(resolver.hasSearchHandler('meghdadit'), false, 'Meghdad IT stays homepage-only until its search endpoint is reachable');
+assert.equal(resolver.hasHandler('shab'), true);
+const configured = ids.filter(id => resolver.hasSearchHandler(id));
+const fallback = ids.filter(id => resolver.hasHandler(id) && !resolver.hasSearchHandler(id));
+const missing = ids.filter(id => !resolver.hasHandler(id));
+assert.equal(configured.length + fallback.length + missing.length, ids.length,
+  'Every catalog entry must be accounted for by direct-search, homepage fallback, or missing route');
+assert.ok(configured.length > 0, 'Known query-specific search handlers must remain available');
+assert.equal(missing.length, 0, 'Every catalog store should have a routable official homepage fallback');
+assert.ok(fallback.length > 0, 'Fallback routes must remain visible as a separate coverage class');
+console.log('V8 catalog taxonomy and route-coverage contract: PASS');
