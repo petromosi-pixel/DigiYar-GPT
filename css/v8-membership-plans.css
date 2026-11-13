@@ -80,7 +80,7 @@ body.v6-dark .dy-membership-page{--dy-page:#101827;--dy-surface:#182437;--dy-con
 .v8-membership-duration-toggle{justify-content:center;gap:10px;text-align:center}
 .v8-membership-cost{position:relative;box-sizing:border-box;align-items:center;text-align:center;padding:17px 12px 13px}
 .v8-membership-cost-label,.v8-membership-cost strong,.v8-membership-cost small{text-align:center}
-.v8-membership-pay-trigger{position:absolute;top:9px;left:9px;min-width:68px;padding:7px 13px;border:0;border-radius:9px;background:linear-gradient(135deg,#2588ee,#1765c4);color:#fff;font:inherit;font-size:11px;font-weight:900;box-shadow:0 3px 9px rgba(23,101,196,.22);cursor:pointer}
+.v8-membership-cost-total{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;width:100%;min-width:0}.v8-membership-pay-trigger{position:static;max-width:100%;padding:8px 13px;border:0;border-radius:9px;background:linear-gradient(135deg,#2588ee,#1765c4);color:#fff;font:inherit;font-size:11px;font-weight:900;line-height:1.6;white-space:nowrap;box-shadow:0 3px 9px rgba(23,101,196,.22);cursor:pointer}.v8-membership-pay-trigger[hidden]{display:none!important}
 .v8-membership-pay-trigger:focus-visible,.v8-membership-payment-option:focus-visible{outline:2px solid #3999e8;outline-offset:2px}
 .v8-membership-payment-methods{width:100%;margin-top:10px;padding-top:11px;border-top:1px solid rgba(139,108,40,.25);text-align:center}
 .v8-membership-payment-methods[hidden]{display:none!important}
@@ -95,4 +95,4 @@ body.v6-dark .dy-membership-page{--dy-page:#101827;--dy-surface:#182437;--dy-con
 body.v6-dark .v8-membership-payment-option{background:rgba(18,29,45,.65);border-color:#76653e;color:#ffe8a5}
 body.v6-dark .v8-membership-payment-option[aria-pressed=true]{background:rgba(35,134,217,.2);border-color:#3999e8}
 body.v6-dark .v8-payment-digipay{background:#15334b;color:#75c5ff}body.v6-dark .v8-payment-snappay{background:#153c2a;color:#79e5a1}
-@media(max-width:360px){.v8-membership-pay-trigger{top:7px;left:7px;min-width:58px;padding:6px 9px;font-size:10px}.v8-membership-cost{padding-top:48px}.v8-membership-payment-grid{grid-template-columns:1fr}}
+@media(max-width:360px){.v8-membership-cost-total{gap:6px}.v8-membership-pay-trigger{padding:7px 10px;font-size:10px}.v8-membership-payment-grid{grid-template-columns:1fr}}
