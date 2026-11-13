@@ -35,5 +35,18 @@ function requireFeature(featureId){
  if(typeof root.DigiYarMembershipOpen==='function')root.DigiYarMembershipOpen();
  return false;
 }
+/* Delegated gate: attach data-membership-feature="<feature-id>" to a premium action. */
+function guardEvent(event){
+ var target=event.target&&event.target.closest?event.target.closest('[data-membership-feature]'):null;
+ if(!target)return;
+ var featureId=target.getAttribute('data-membership-feature');
+ if(canAccess(featureId))return;
+ event.preventDefault();event.stopPropagation();if(event.stopImmediatePropagation)event.stopImmediatePropagation();
+ requireFeature(featureId);
+}
+if(root.document&&typeof root.document.addEventListener==='function'){
+ root.document.addEventListener('click',guardEvent,true);
+ root.document.addEventListener('submit',guardEvent,true);
+}
 root.DigiYarMembershipAccess=Object.freeze({refresh:refresh,getState:getState,canAccess:canAccess,requireFeature:requireFeature});
 })(window);
