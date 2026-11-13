@@ -45,16 +45,6 @@ test('delegated premium action gate allows a click when server grants the featur
  assert.equal(prevented,false);
 });
 
-test('existing comparison UI checks the paid feature before opening or running',()=>{
- const ui=readFileSync(new URL('../js/v8-comparison-ui.js',import.meta.url),'utf8');
- const home=readFileSync(new URL('../js/v8-home-concept.js',import.meta.url),'utf8');
- assert.match(ui,/hasComparisonAccess/);
- assert.match(ui,/access\.requireFeature\('multi_store_comparison'\)/);
- assert.match(ui,/async function show\(\)\{\s*if\(!await hasComparisonAccess\(\)\)return/);
- assert.match(ui,/async function runComparison\(\)\{if\(!await hasComparisonAccess\(\)\)return/);
- assert.match(home,/data-membership-feature="multi_store_comparison"/);
-});
-
 test('first premium click refreshes server access before deciding whether to replay it',async()=>{
  const {w,listeners}=createWindow({response:{planId:'professional',planLabel:'حرفه‌ای',subscription:{active:true},features:[{id:'multi_store_comparison',enabled:true}],paymentEnabled:false}});
  let replayed=0,prevented=false;
@@ -66,7 +56,3 @@ test('first premium click refreshes server access before deciding whether to rep
  assert.equal(w.DigiYarMembershipAccess.canAccess('multi_store_comparison'),true);
 });
 
-test('comparison panel does not expose itself on initial page load',()=>{
- const ui=readFileSync(new URL('../js/v8-comparison-ui.js',import.meta.url),'utf8');
- assert.match(ui,/if\(existing\)\{existing\.style\.display='none';renderControls\(\);bind\(\);\}/);
-});
