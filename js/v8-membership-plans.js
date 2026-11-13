@@ -9,6 +9,16 @@ var fmt=new Intl.NumberFormat('fa-IR'),selectedPlan=null,selectedMonths=null;
 var durationToggle=root.querySelector('#v8MembershipDurationToggle'),durationPanel=root.querySelector('#v8MembershipDurations'),durationWrap=root.querySelector('#v8MembershipDurationWrap');
 var costValue=root.querySelector('#v8MembershipCostValue'),costDetail=root.querySelector('#v8MembershipCostDetail'),durationHint=root.querySelector('#v8MembershipDurationHint');
 var paymentTrigger=root.querySelector('#v8MembershipPayTrigger'),paymentPanel=root.querySelector('#v8MembershipPaymentMethods'),paymentNote=root.querySelector('#v8MembershipPaymentNote'),checkoutButton=root.querySelector('#v8MembershipCheckoutButton');
+var featureRows=root.querySelector('#v8MembershipFeatureRows');
+function renderFeatureMatrix(){
+ if(!featureRows)return;
+ featureRows.innerHTML=Object.keys(CATALOG.features).map(function(id){
+  var feature=CATALOG.features[id],base=CATALOG.plans.base.features.indexOf(id)!==-1,pro=CATALOG.plans.professional.features.indexOf(id)!==-1,commercial=CATALOG.plans.commercial.features.indexOf(id)!==-1;
+  function cell(enabled){return '<span class="v8-membership-state '+(enabled?(feature.group==='core'?'':'is-planned'):'is-off')+'" role="cell" aria-label="'+(enabled?'ارائه می‌شود':'ارائه نمی‌شود')+'">'+(enabled?'✓':'−')+'</span>'}
+  return '<div class="v8-membership-feature-row" role="row" data-membership-feature-row="'+id+'"><span class="v8-membership-feature-name" role="rowheader">'+feature.label+'</span>'+cell(base)+cell(pro)+cell(commercial)+'</div>';
+ }).join('');
+}
+renderFeatureMatrix();
 /* Hide failed logo images cleanly; the adjacent payment-method text remains the fallback. */
 root.querySelectorAll('.v8-payment-logo').forEach(function(img){
  function hideBrokenLogo(){img.hidden=true;img.setAttribute('aria-hidden','true');}
