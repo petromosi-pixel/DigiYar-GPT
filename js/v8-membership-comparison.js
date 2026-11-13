@@ -1,0 +1,111 @@
+/* DigiYar V8 — server-entitlement-gated multi-store comparison */
+(function(root){
+'use strict';
+var FEATURE='multi_store_comparison';
+var state={query:'',products:[],comparison:null};
+function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
+function normalizeStore(p){
+ var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
+ return clean(offer.storeName||offer.store||p.storeName||p.store||p.sourceName||p.sourceId||p.source);
+}
+function productUrl(p){
+ var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
+ return clean(p.productUrl||p.comparisonUrl||p.sourceUrl||p.url||p.affiliateUrl||offer.productUrl||offer.comparisonUrl||offer.affiliateUrl);
+}
+function price(p){
+ var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
+ var value=Number(offer.priceToman||offer.price||p.priceToman||p.price);
+ return Number.isFinite(value)&&value>0?value:0;
+}
+function prepare(input){
+ var list=Array.isArray(input)?input:[];
+ var seen=Object.create(null),out=[];
+ list.forEach(function(p){
+  if(!p||typeof p!=='object'||p.isSearchFallback===true||p.source==='store-search-fallback')return;
+  var name=clean(p.name||p.title||p.productName),store=normalizeStore(p),url=productUrl(p),amount=price(p);
+  if(!name||!store||!amount||!url)return;
+  var parsed;try{parsed=new URL(url,root.location&&root.location.href||'https://digiyar.invalid/');}catch(_){return;}
+  if(!/^https?:$/.test(parsed.protocol)||!parsed.hostname||parsed.hostname==='digiyar.invalid')return;
+  var key=clean(p.id||p.productId||url).toLowerCase();
+  if(seen[key])return;seen[key]=true;
+  out.push(Object.assign({},p,{name:name,store:store,storeName:store,priceToman:amount,price:amount,productUrl:parsed.href,comparisonUrl:parsed.href}));
+ });
+ var stores=Object.create(null);out.forEach(function(p){stores[p.store.toLowerCase()]=true;});
+ return {products:out.slice(0,20),storeCount:Object.keys(stores).length,ready:out.length>=2&&Object.keys(stores).length>=2};
+}
+function render(result,query){
+ var host=root.document&&root.document.getElementById('v8MembershipComparisonOutput');
+ if(!host)return;
+ host.textContent='';
+ var title=root.document.createElement('p');title.className='v8-mc-summary';
+ title.textContent='نتیجهٔ مقایسه برای «'+clean(query)+'»؛ '+result.count+' محصول از '+result.storeComparison.length+' فروشگاه';
+ host.appendChild(title);
+ var table=root.document.createElement('div');table.className='v8-mc-grid';
+ result.products.forEach(function(p){
+  var card=root.document.createElement('article');card.className='v8-mc-product';
+  var name=root.document.createElement('strong');name.textContent=p.name;card.appendChild(name);
+  var store=root.document.createElement('span');store.textContent=p.store||'فروشگاه نامشخص';card.appendChild(store);
+  var priceNode=root.document.createElement('b');priceNode.textContent=new Intl.NumberFormat('fa-IR').format(p.priceToman)+' تومان';card.appendChild(priceNode);
+  if(p.productUrl){var link=root.document.createElement('a');link.href=p.productUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='مشاهدهٔ کالا در فروشگاه';card.appendChild(link);}
+  table.appendChild(card);
+ });
+ host.appendChild(table);
+ if(result.priceComparison&&result.priceComparison.available){
+  var diff=root.document.createElement('p');diff.className='v8-mc-summary';
+  diff.textContent='اختلاف قیمت کمترین و بیشترین پیشنهاد: '+new Intl.NumberFormat('fa-IR').format(result.priceComparison.difference)+' تومان';
+  host.appendChild(diff);
+ }
+ host.hidden=false;
+}
+function compare(input,query){
+ var access=root.DigiYarMembershipAccess;
+ if(!access||typeof access.canAccess!=='function'||!access.canAccess(FEATURE)){
+  if(access&&typeof access.requireFeature==='function')access.requireFeature(FEATURE);
+  return {status:'locked'};
+ }
+ var prepared=prepare(input);
+ if(!prepared.ready)return {status:'insufficient_verified_products',count:prepared.products.length,storeCount:prepared.storeCount};
+ var engine=root.DigiYarComparisonEngine;
+ if(!engine||typeof engine.compare!=='function')return {status:'comparison_engine_unavailable'};
+ var result=engine.compare(prepared.products);
+ if(result.status!=='comparison_ready'||result.storeComparison.length<2)return {status:'insufficient_verified_products',count:result.count,storeCount:result.storeComparison.length};
+ state={query:clean(query),products:prepared.products,comparison:result};
+ render(result,query);
+ return {status:'comparison_ready',result:result};
+}
+function onResults(event){
+ var detail=event&&event.detail||{},prepared=prepare(detail.products||[]);
+ var card=root.document&&root.document.getElementById('v8MembershipComparison');
+ var button=root.document&&root.document.getElementById('v8MembershipCompareButton');
+ var hint=root.document&&root.document.getElementById('v8MembershipComparisonHint');
+ var output=root.document&&root.document.getElementById('v8MembershipComparisonOutput');
+ if(!card||!button)return;
+ state={query:clean(detail.query),products:prepared.products,comparison:null};
+ if(output){output.textContent='';output.hidden=true;}
+ card.hidden=!prepared.ready;
+ if(hint)hint.textContent=prepared.ready?'محصولات معتبر از '+prepared.storeCount+' فروشگاه پیدا شدند. برای مشاهدهٔ جدول، مقایسه را اجرا کن.':'برای این جست‌وجو هنوز دو محصولِ دارای قیمت، لینک معتبر و فروشگاه متفاوت در دسترس نیست.';
+}
+function init(){
+ if(!root.document)return;
+ var button=root.document.getElementById('v8MembershipCompareButton');
+ if(button)button.addEventListener('click',function(){
+  var result=compare(state.products,state.query);
+  if(result.status==='insufficient_verified_products'){
+   var hint=root.document.getElementById('v8MembershipComparisonHint');
+   if(hint)hint.textContent='دادهٔ معتبر از حداقل دو فروشگاه متفاوت برای مقایسه موجود نیست.';
+  }else if(result.status==='comparison_engine_unavailable'){
+   var hint2=root.document.getElementById('v8MembershipComparisonHint');
+   if(hint2)hint2.textContent='موتور مقایسه در دسترس نیست؛ بعداً دوباره تلاش کن.';
+  }
+ });
+ root.addEventListener('digiyar:v9-assistant-results',onResults);
+ root.addEventListener('digiyar:v7-product-results',function(e){if(!state.query)onResults(e);});
+ root.addEventListener('digiyar:v9-assistant-cleared',function(){
+  state={query:'',products:[],comparison:null};
+  var card=root.document.getElementById('v8MembershipComparison'),out=root.document.getElementById('v8MembershipComparisonOutput');
+  if(card)card.hidden=true;if(out){out.textContent='';out.hidden=true;}
+ });
+}
+if(root.document){if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',init,{once:true});else init();}
+root.DigiYarMembershipComparison=Object.freeze({featureId:FEATURE,prepare:prepare,compare:compare,getState:function(){return{query:state.query,products:state.products.slice(),comparison:state.comparison};}});
+})(window);
