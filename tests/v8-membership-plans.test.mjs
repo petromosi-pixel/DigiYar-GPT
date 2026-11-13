@@ -12,7 +12,7 @@ const now=Date.parse('2026-11-13T12:00:00.000Z');
 test('membership page is a single comparison matrix with feature names on the right',()=>{
  assert.match(html,/v8-membership-matrix/);
  assert.match(html,/مقایسهٔ امکانات اشتراک/);
- assert.match(html,/v8-membership-feature-name/);
+ assert.match(js,/v8-membership-feature-name/);
  assert.match(html,/data-membership-plan="base"/);
  assert.match(html,/data-membership-plan="professional"/);
  assert.match(html,/data-membership-plan="commercial"/);
