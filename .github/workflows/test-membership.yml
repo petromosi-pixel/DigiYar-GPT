@@ -10,6 +10,7 @@ on:
       - 'js/v8-account-page.js'
       - 'js/v8-membership-plans.js'
       - 'css/v8-membership-plans.css'
+      - 'tests/v8-membership-catalog.test.mjs'
       - 'tests/v8-membership-plans.test.mjs'
       - 'tests/v8-membership-navigation.test.mjs'
       - 'api/membership/access.js'
