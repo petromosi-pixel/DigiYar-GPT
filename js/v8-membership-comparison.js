@@ -7,7 +7,7 @@ function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
 function normalizeStore(p){
  var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
  var raw=clean(offer.storeName||offer.store||p.storeName||p.store||p.sourceName||p.sourceId||p.source);
- if(/torobshop/i.test(raw))return 'ترب';
+ if(/torobshop|torob/i.test(raw))return 'ترب';
  if(/technolife/i.test(raw))return 'تکنولایف';
  if(/digikala/i.test(raw))return 'دیجی‌کالا';
  if(/snappshop/i.test(raw))return 'اسنپ‌شاپ';
@@ -106,10 +106,23 @@ function onResults(event){
  var hint=root.document&&root.document.getElementById('v8MembershipComparisonHint');
  var output=root.document&&root.document.getElementById('v8MembershipComparisonOutput');
  if(!card||!button)return;
- state={query:clean(detail.query),products:prepared.products,comparison:null};
+ var query=clean(detail.query);
+ state={query:query,products:prepared.products,comparison:null};
  if(output){output.textContent='';output.hidden=true;}
- card.hidden=!prepared.ready;
- if(hint)hint.textContent=prepared.ready?'محصولات معتبر از '+prepared.storeCount+' فروشگاه پیدا شدند. برای مشاهدهٔ جدول، مقایسه را اجرا کن.':'برای این جست‌وجو هنوز دو محصولِ دارای قیمت، لینک معتبر و فروشگاه متفاوت در دسترس نیست.';
+ /* Always show the comparison status after a completed Hooshyar search.
+    Hiding the whole card made an unavailable data set look like a broken UI. */
+ card.hidden=!query;
+ button.hidden=!prepared.ready;
+ button.disabled=!prepared.ready;
+ if(hint){
+  if(prepared.ready){
+   hint.textContent='محصولات معتبر از '+prepared.storeCount+' فروشگاه پیدا شدند. برای مشاهدهٔ جدول، مقایسه را اجرا کن.';
+  }else if(prepared.products.length){
+   hint.textContent='برای «'+query+'» فقط '+prepared.products.length+' محصولِ دارای قیمت و لینک معتبر از '+prepared.storeCount+' فروشگاه در داده‌های فعلی پیدا شد. مقایسهٔ واقعی به حداقل دو فروشگاه مستقل نیاز دارد.';
+  }else{
+   hint.textContent='نتایج این جست‌وجو فعلاً مسیر جست‌وجوی فروشگاه‌ها هستند، نه اطلاعات محصول و قیمت. برای جلوگیری از جدول ساختگی، مقایسه تا دریافت دادهٔ واقعی از دست‌کم دو فروشگاه فعال نمی‌شود.';
+  }
+ }
 }
 function init(){
  if(!root.document)return;
