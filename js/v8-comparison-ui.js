@@ -234,7 +234,7 @@ function hideAndClear(){
 function init(){
  installStyle();
  const existing=ensureCard();
- if(existing){existing.style.display='block';renderControls();bind();}
+ if(existing){existing.style.display='none';renderControls();bind();}
  document.addEventListener('click',function(e){
    const b=e.target&&e.target.closest?e.target.closest('[data-v7-open-comparison]'):null;
    if(!b)return;
