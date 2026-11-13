@@ -1,9 +1,9 @@
 /* DigiYar membership page + selectable plans, duration and results promotion. */
 (function(){
 'use strict';
-var CONFIG={version:'2.1.0',pricingStatus:'illustrative_only',paymentEnabled:false,
- durations:[{months:1,discount:0},{months:3,discount:8},{months:6,discount:15},{months:9,discount:21},{months:12,discount:28}],
- plans:{base:{title:'پایه',monthlyPrice:0},professional:{title:'حرفه‌ای',monthlyPrice:199000},commercial:{title:'تجاری',monthlyPrice:499000}}};
+var CATALOG=window.DigiYarMembershipCatalog;
+if(!CATALOG)throw new Error('membership_catalog_not_loaded');
+var CONFIG={version:'2.2.0',pricingStatus:'illustrative_only',paymentEnabled:false,durations:Object.keys(CATALOG.discounts).map(function(months){return{months:Number(months),discount:CATALOG.discounts[months]}}),plans:CATALOG.plans};
 var root=document.getElementById('v8MembershipPlans'),page=document.getElementById('dyMembershipPage');if(!root||!page)return;
 var fmt=new Intl.NumberFormat('fa-IR'),selectedPlan=null,selectedMonths=null;
 var durationToggle=root.querySelector('#v8MembershipDurationToggle'),durationPanel=root.querySelector('#v8MembershipDurations'),durationWrap=root.querySelector('#v8MembershipDurationWrap');
