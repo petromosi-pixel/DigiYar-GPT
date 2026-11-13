@@ -1,6 +1,7 @@
 -- DigiYar paid subscription entitlement storage.
 -- Apply only after the linked Supabase project is active and authentication is configured.
 -- This table stores subscription state, never payment-card or bank credentials.
+-- Keep the public schema exposed only as needed; row access remains service-role-only.
 create table if not exists public.user_subscriptions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -15,7 +16,8 @@ create table if not exists public.user_subscriptions (
   constraint user_subscriptions_valid_period check (ends_at > starts_at)
 );
 create index if not exists user_subscriptions_user_period_idx
-  on public.user_subscriptions (user_id, ends_at desc);
+  on public.user_subscriptions (user_id, status, starts_at, ends_at desc);
 alter table public.user_subscriptions enable row level security;
 revoke all on table public.user_subscriptions from anon, authenticated;
+grant usage on schema public to service_role;
 grant select, insert, update on table public.user_subscriptions to service_role;
