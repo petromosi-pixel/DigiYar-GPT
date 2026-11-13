@@ -61,8 +61,8 @@ if(paymentPanel)paymentPanel.addEventListener('click',function(event){
  var option=event.target.closest('[data-payment-method]');if(!option)return;
  paymentPanel.querySelectorAll('[data-payment-method]').forEach(function(item){item.setAttribute('aria-pressed',String(item===option))});
  var supported=option.getAttribute('data-payment-method')==='shaparak';
- if(checkoutButton)checkoutButton.hidden=!supported;
- if(paymentNote)paymentNote.textContent=supported?'درگاه کارت‌های عضو شتاب از طریق زرین‌پال آمادهٔ اتصال است. برای ادامه باید وارد حساب کاربری تأییدشده شده باشی.':'این روش پرداخت هنوز به سرویس پذیرنده متصل نشده است.';
+ if(checkoutButton)checkoutButton.hidden=!supported||!CONFIG.paymentEnabled;
+ if(paymentNote)paymentNote.textContent=!CONFIG.paymentEnabled?'پرداخت و فعال‌سازی اشتراک تا تکمیل احراز هویت و اتصال امن سرور غیرفعال است.':(supported?'درگاه کارت‌های عضو شتاب از طریق زرین‌پال آمادهٔ اتصال است.':'این روش پرداخت هنوز به سرویس پذیرنده متصل نشده است.');
 });
 async function getMembershipAccessToken(){
  var direct=window.DigiYarAuth;
@@ -76,6 +76,7 @@ async function getMembershipAccessToken(){
  return null;
 }
 if(checkoutButton)checkoutButton.addEventListener('click',async function(){
+ if(!CONFIG.paymentEnabled){if(paymentNote)paymentNote.textContent='پرداخت و فعال‌سازی اشتراک تا تکمیل احراز هویت و اتصال امن سرور غیرفعال است.';return;}
  if(!selectedPlan||selectedPlan==='base'||!selectedMonths||typeof selectedMonths!=='number')return;
  checkoutButton.disabled=true;checkoutButton.textContent='در حال آماده‌سازی پرداخت…';
  try{
