@@ -8,6 +8,10 @@ on:
       - 'js/v8-membership-plans.js'
       - 'css/v8-membership-plans.css'
       - 'tests/v8-membership-plans.test.mjs'
+      - 'tests/v8-membership-navigation.test.mjs'
+      - 'api/membership/access.js'
+      - 'api/_lib/membership-entitlements.js'
+      - 'supabase/sql/membership-subscriptions.sql'
       - 'package.json'
       - '.github/workflows/test-membership.yml'
   workflow_dispatch:
