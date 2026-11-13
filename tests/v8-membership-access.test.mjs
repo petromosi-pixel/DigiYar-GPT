@@ -54,3 +54,14 @@ test('existing comparison UI checks the paid feature before opening or running',
  assert.match(ui,/async function runComparison\(\)\{if\(!await hasComparisonAccess\(\)\)return/);
  assert.match(home,/data-membership-feature="multi_store_comparison"/);
 });
+
+test('first premium click refreshes server access before deciding whether to replay it',async()=>{
+ const {w,listeners}=createWindow({response:{planId:'professional',planLabel:'حرفه‌ای',subscription:{active:true},features:[{id:'multi_store_comparison',enabled:true}],paymentEnabled:false}});
+ let replayed=0,prevented=false;
+ const target={getAttribute:()=> 'multi_store_comparison',click:()=>{replayed++}};
+ listeners.click({target:{closest:()=>target},preventDefault:()=>{prevented=true},stopPropagation:()=>{},stopImmediatePropagation:()=>{}});
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(prevented,true);
+ assert.equal(replayed,1);
+ assert.equal(w.DigiYarMembershipAccess.canAccess('multi_store_comparison'),true);
+});
