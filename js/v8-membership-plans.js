@@ -8,6 +8,7 @@ var root=document.getElementById('v8MembershipPlans'),page=document.getElementBy
 var fmt=new Intl.NumberFormat('fa-IR'),selectedPlan=null,selectedMonths=null;
 var durationToggle=root.querySelector('#v8MembershipDurationToggle'),durationPanel=root.querySelector('#v8MembershipDurations'),durationWrap=root.querySelector('#v8MembershipDurationWrap');
 var costValue=root.querySelector('#v8MembershipCostValue'),costDetail=root.querySelector('#v8MembershipCostDetail'),durationHint=root.querySelector('#v8MembershipDurationHint');
+var paymentTrigger=root.querySelector('#v8MembershipPayTrigger'),paymentPanel=root.querySelector('#v8MembershipPaymentMethods'),paymentNote=root.querySelector('#v8MembershipPaymentNote');
 function money(value){return fmt.format(Math.round(value))+' تومان';}
 function setDurationOptions(){
  if(!durationPanel)return;
@@ -38,6 +39,8 @@ if(durationPanel)durationPanel.addEventListener('click',function(event){
  durationPanel.querySelectorAll('[data-membership-duration]').forEach(function(item){item.setAttribute('aria-pressed',String(item===button))});
  durationWrap.classList.remove('is-attention');updateCost();
 });
+if(paymentTrigger&&paymentPanel)paymentTrigger.addEventListener('click',function(){var expanded=paymentTrigger.getAttribute('aria-expanded')==='true';paymentTrigger.setAttribute('aria-expanded',String(!expanded));paymentPanel.hidden=expanded});
+if(paymentPanel)paymentPanel.addEventListener('click',function(event){var option=event.target.closest('[data-payment-method]');if(!option)return;paymentPanel.querySelectorAll('[data-payment-method]').forEach(function(item){item.setAttribute('aria-pressed',String(item===option))});if(paymentNote)paymentNote.textContent='روش «'+option.textContent.trim()+'» انتخاب شد؛ اتصال سرویس و انجام تراکنش هنوز فعال نیست.'});
 function open(){page.hidden=false;page.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';var content=page.querySelector('.dy-membership-page-content');if(content)content.scrollTop=0;var back=page.querySelector('[data-membership-back]');if(back)back.focus({preventScroll:true})}
 function close(){page.hidden=true;page.setAttribute('aria-hidden','true');document.body.style.overflow=''}
 page.addEventListener('click',function(e){if(e.target.closest('[data-membership-back]'))close()});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!page.hidden)close()});
