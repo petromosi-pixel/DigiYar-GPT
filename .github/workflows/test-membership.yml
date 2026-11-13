@@ -9,8 +9,6 @@ on:
       - 'js/v8-membership-access.js'
       - 'js/v8-account-page.js'
       - 'js/v8-membership-plans.js'
-      - 'js/v8-comparison-ui.js'
-      - 'js/v8-home-concept.js'
       - 'css/v8-membership-plans.css'
       - 'tests/v8-membership-catalog.test.mjs'
       - 'tests/v8-membership-plans.test.mjs'
