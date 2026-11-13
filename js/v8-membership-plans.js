@@ -9,6 +9,12 @@ var fmt=new Intl.NumberFormat('fa-IR'),selectedPlan=null,selectedMonths=null;
 var durationToggle=root.querySelector('#v8MembershipDurationToggle'),durationPanel=root.querySelector('#v8MembershipDurations'),durationWrap=root.querySelector('#v8MembershipDurationWrap');
 var costValue=root.querySelector('#v8MembershipCostValue'),costDetail=root.querySelector('#v8MembershipCostDetail'),durationHint=root.querySelector('#v8MembershipDurationHint');
 var paymentTrigger=root.querySelector('#v8MembershipPayTrigger'),paymentPanel=root.querySelector('#v8MembershipPaymentMethods'),paymentNote=root.querySelector('#v8MembershipPaymentNote');
+/* Hide failed logo images cleanly; the adjacent payment-method text remains the fallback. */
+root.querySelectorAll('.v8-payment-logo').forEach(function(img){
+ function hideBrokenLogo(){img.hidden=true;img.setAttribute('aria-hidden','true');}
+ img.addEventListener('error',hideBrokenLogo,{once:true});
+ if(img.complete&&img.naturalWidth===0)hideBrokenLogo();
+});
 function money(value){return fmt.format(Math.round(value))+' تومان';}
 function setPaymentReady(ready,amount){if(!paymentTrigger)return;paymentTrigger.hidden=!ready;if(ready){paymentTrigger.textContent='پرداخت '+amount}else{paymentTrigger.setAttribute('aria-expanded','false');if(paymentPanel)paymentPanel.hidden=true}}
 function setDurationOptions(){
