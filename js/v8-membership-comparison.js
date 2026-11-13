@@ -33,23 +33,43 @@ function prepare(input){
  var stores=Object.create(null);out.forEach(function(p){stores[p.store.toLowerCase()]=true;});
  return {products:out.slice(0,20),storeCount:Object.keys(stores).length,ready:out.length>=2&&Object.keys(stores).length>=2};
 }
+function installStyle(){
+ if(root.document.getElementById('v8-membership-comparison-style'))return;
+ var style=root.document.createElement('style');style.id='v8-membership-comparison-style';
+ style.textContent='#v8MembershipComparison{margin-top:14px}#v8MembershipComparison .v8-mc-grid-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--dy-border,rgba(42,65,105,.14));border-radius:12px}#v8MembershipComparison table{width:100%;min-width:560px;border-collapse:collapse;font-size:12px}#v8MembershipComparison th,#v8MembershipComparison td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--dy-border,rgba(42,65,105,.12));vertical-align:middle}#v8MembershipComparison th:first-child,#v8MembershipComparison td:first-child{font-weight:800;background:var(--dy-surface-raised,rgba(42,65,105,.045))}#v8MembershipComparison a{display:inline-block;color:var(--dy-link,#2876bd);font-size:10px;margin-top:5px}#v8MembershipComparison .v8-mc-summary{font-size:11px;text-align:center;margin:10px 0;color:var(--dy-text,inherit)}#v8MembershipComparison .v8-mc-cheapest{font-weight:900;color:var(--dy-success,#16834a)}';
+ root.document.head.appendChild(style);
+}
 function render(result,query){
  var host=root.document&&root.document.getElementById('v8MembershipComparisonOutput');
  if(!host)return;
  host.textContent='';
  var title=root.document.createElement('p');title.className='v8-mc-summary';
- title.textContent='نتیجهٔ مقایسه برای «'+clean(query)+'»؛ '+result.count+' محصول از '+result.storeComparison.length+' فروشگاه';
+ title.textContent='مقایسهٔ «'+clean(query)+'»؛ '+result.count+' محصول از '+result.storeComparison.length+' فروشگاه';
  host.appendChild(title);
- var table=root.document.createElement('div');table.className='v8-mc-grid';
+ var wrap=root.document.createElement('div');wrap.className='v8-mc-grid-wrap';
+ var table=root.document.createElement('table'),head=root.document.createElement('thead'),headRow=root.document.createElement('tr');
+ var first=root.document.createElement('th');first.textContent='شاخص مقایسه';headRow.appendChild(first);
  result.products.forEach(function(p){
-  var card=root.document.createElement('article');card.className='v8-mc-product';
-  var name=root.document.createElement('strong');name.textContent=p.name;card.appendChild(name);
-  var store=root.document.createElement('span');store.textContent=p.store||'فروشگاه نامشخص';card.appendChild(store);
-  var priceNode=root.document.createElement('b');priceNode.textContent=new Intl.NumberFormat('fa-IR').format(p.priceToman)+' تومان';card.appendChild(priceNode);
-  if(p.productUrl){var link=root.document.createElement('a');link.href=p.productUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='مشاهدهٔ کالا در فروشگاه';card.appendChild(link);}
-  table.appendChild(card);
+  var th=root.document.createElement('th'),name=root.document.createElement('strong');name.textContent=p.name;th.appendChild(name);
+  if(p.productUrl){var link=root.document.createElement('a');link.href=p.productUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='مشاهدهٔ کالا';th.appendChild(link);}
+  headRow.appendChild(th);
  });
- host.appendChild(table);
+ head.appendChild(headRow);table.appendChild(head);
+ var body=root.document.createElement('tbody');
+ function addRow(label,values,cheapest){
+  var tr=root.document.createElement('tr'),th=root.document.createElement('th');th.textContent=label;tr.appendChild(th);
+  values.forEach(function(value,index){var td=root.document.createElement('td');td.textContent=value==null||value===''?'—':String(value);if(cheapest&&result.priceComparison.cheapestIds.indexOf(result.products[index].id)>=0)td.className='v8-mc-cheapest';tr.appendChild(td);});
+  body.appendChild(tr);
+ }
+ addRow('فروشگاه',result.products.map(function(p){return p.store;}));
+ addRow('قیمت',result.products.map(function(p){return p.priceToman?new Intl.NumberFormat('fa-IR').format(p.priceToman)+' تومان':'نامشخص';}),true);
+ addRow('برند',result.products.map(function(p){return p.brand;}));
+ addRow('مدل',result.products.map(function(p){return p.model;}));
+ addRow('وضعیت موجودی',result.products.map(function(p){return p.availability;}));
+ (result.specificationComparison||[]).forEach(function(spec){
+  addRow(spec.label,spec.valuesByProduct.map(function(item){return item.value;}));
+ });
+ table.appendChild(body);wrap.appendChild(table);host.appendChild(wrap);
  if(result.priceComparison&&result.priceComparison.available){
   var diff=root.document.createElement('p');diff.className='v8-mc-summary';
   diff.textContent='اختلاف قیمت کمترین و بیشترین پیشنهاد: '+new Intl.NumberFormat('fa-IR').format(result.priceComparison.difference)+' تومان';
@@ -87,6 +107,7 @@ function onResults(event){
 }
 function init(){
  if(!root.document)return;
+ installStyle();
  var button=root.document.getElementById('v8MembershipCompareButton');
  if(button)button.addEventListener('click',function(){
   var result=compare(state.products,state.query);
