@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>آزمایشگاه مستقل ویجت افیلیو | دیجی‌یار</title>
+<style>
+:root{color-scheme:light dark;font-family:Tahoma,Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:#101827;color:#eef3ff;padding:18px;line-height:1.8}.wrap{max-width:900px;margin:auto}.card{background:#1a2639;border:1px solid #34445e;border-radius:16px;padding:16px;margin:14px 0}h1{font-size:1.25rem;margin:0 0 8px}h2{font-size:1rem;margin:0 0 8px}.muted{color:#aebbd0;font-size:.9rem}.status{padding:10px;border-radius:10px;background:#243752;margin:10px 0}.widget{min-height:120px;background:#fff;color:#172033;border-radius:12px;padding:12px;overflow:auto}button{border:0;border-radius:10px;padding:11px 16px;background:#3278df;color:white;font:inherit;font-weight:bold;cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;direction:ltr;text-align:left;background:#0b1220;padding:12px;border-radius:10px;max-height:420px;overflow:auto;font:12px/1.6 monospace}.actions{display:flex;gap:8px;flex-wrap:wrap}.warn{color:#ffd68a}.good{color:#a8efc1}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="card">
+<h1>آزمایشگاه مستقل ویجت افیلیو</h1>
+<p class="muted">این صفحه فقط برای بررسی ویجت است و به جست‌وجو، نتایج یا پایگاه دادهٔ عمومی دیجی‌یار متصل نیست. هیچ کوکی، رمز یا اطلاعات حسابی خوانده یا ارسال نمی‌شود.</p>
+<div id="status" class="status">در حال آماده‌سازی محیط آزمایش…</div>
+</header>
+<section class="card">
+<h2>خروجی قابل مشاهدهٔ ویجت</h2>
+<div id="affilio-widget-811a0066-413e-4d2a-9891-758dde31003e" class="widget"><span class="muted">در انتظار بارگذاری ویجت افیلیو…</span></div>
+</section>
+<section class="card">
+<h2>گزارش رهگیری مرورگر</h2>
+<p class="muted">درخواست‌های شبکه‌ای که مرورگر ثبت کرده، نوع منبع، دامنه و مسیر، زمان بارگذاری و محتوای متنی رندرشده ثبت می‌شود. مقادیر پارامترهای URL عمداً پوشانده می‌شوند تا شناسه‌ها و توکن‌های احتمالی افشا نشوند.</p>
+<div class="actions"><button id="refresh" type="button">به‌روزرسانی گزارش</button><button id="copy" type="button">کپی گزارش امن</button></div>
+<pre id="report">هنوز گزارشی ثبت نشده است…</pre>
+<p class="muted warn">برای دیدن بدنهٔ پاسخ‌ها (مثلاً JSON یا HTML)، باید همین صفحه را در Chrome دسکتاپ با DevTools → Network بررسی کنیم. این صفحه به‌تنهایی محتوای پاسخ‌های cross-origin را دور نمی‌زند.</p>
+</section>
+</div>
+<script>
+(function(){
+  const root=document.getElementById('affilio-widget-811a0066-413e-4d2a-9891-758dde31003e');
+  const status=document.getElementById('status');
+  const report=document.getElementById('report');
+  const resources=new Map();
+  const errors=[];
+  const started=Date.now();
+  function safeUrl(raw){
+    try{const u=new URL(raw,location.href);return {origin:u.origin,path:u.pathname,queryKeys:[...u.searchParams.keys()]};}
+    catch(e){return {origin:'نامشخص',path:String(raw).slice(0,160),queryKeys:[]};}
+  }
+  function addResource(e){
+    if(!e||!e.name)return;
+    const u=safeUrl(e.name);
+    const key=e.name;
+    resources.set(key,{type:e.initiatorType||'unknown',origin:u.origin,path:u.path,queryKeys:u.queryKeys,durationMs:Math.round(e.duration||0),transferBytes:e.transferSize||null});
+  }
+  try{
+    new PerformanceObserver(list=>list.getEntries().forEach(addResource)).observe({type:'resource',buffered:true});
+  }catch(e){}
+  performance.getEntriesByType('resource').forEach(addResource);
+  window.addEventListener('error',e=>errors.push({message:String(e.message||'resource error').slice(0,200),source:e.filename?safeUrl(e.filename):null}));
+  const observer=new MutationObserver(()=>{status.textContent='ویجت در حال تغییر DOM است؛ تغییرات ثبت می‌شود.';});
+  observer.observe(root,{subtree:true,childList:true,attributes:true,characterData:true});
+  function sanitizeNode(){
+    const clone=root.cloneNode(true);
+    clone.querySelectorAll('[href],[src]').forEach(el=>{
+      ['href','src'].forEach(attr=>{
+        if(el.hasAttribute(attr)){
+          const v=el.getAttribute(attr);
+          if(/^https?:/i.test(v)){const u=safeUrl(v);el.setAttribute(attr,u.origin+u.path+(u.queryKeys.length?'?'+u.queryKeys.map(k=>encodeURIComponent(k)+'=[redacted]').join('&'):''));}
+          else if(v.length>240)el.setAttribute(attr,v.slice(0,240)+'…');
+        }
+      });
+    });
+    return {text:(root.innerText||'').trim().slice(0,12000),html:clone.innerHTML.slice(0,18000)};
+  }
+  function build(){
+    performance.getEntriesByType('resource').forEach(addResource);
+    const dom=sanitizeNode();
+    const data={
+      page:location.origin+location.pathname,
+      widgetId:'811a0066-413e-4d2a-9891-758dde31003e',
+      elapsedSeconds:Math.round((Date.now()-started)/1000),
+      resourceCount:resources.size,
+      resources:[...resources.values()],
+      widgetText:dom.text,
+      widgetHtmlSanitized:dom.html,
+      errors
+    };
+    report.textContent=JSON.stringify(data,null,2);
+    if(root.children.length||dom.text.length>0)status.innerHTML='<span class="good">محتوای ویجت در DOM مشاهده شد.</span> تعداد منابع ثبت‌شده: '+resources.size;
+    else status.textContent='هنوز محتوای قابل مشاهده‌ای از ویجت ثبت نشده است. چند ثانیه دیگر گزارش را به‌روزرسانی کن.';
+    return data;
+  }
+  document.getElementById('refresh').addEventListener('click',build);
+  document.getElementById('copy').addEventListener('click',async()=>{
+    const data=build();
+    try{await navigator.clipboard.writeText(JSON.stringify(data,null,2));status.textContent='گزارش امن کپی شد.';}
+    catch(e){status.textContent='کپی خودکار ممکن نشد؛ متن گزارش را دستی انتخاب و کپی کن.';}
+  });
+  setTimeout(build,2500);
+  setTimeout(build,7000);
+})();
+</script>
+<div id="affilio-widget-811a0066-413e-4d2a-9891-758dde31003e"></div>
+<script async src="https://public.affilio.ir/static/loader.js" data-widget-id="811a0066-413e-4d2a-9891-758dde31003e" data-container-id="affilio-widget-811a0066-413e-4d2a-9891-758dde31003e"></script>
+</body>
+</html>
