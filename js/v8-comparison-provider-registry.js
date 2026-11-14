@@ -51,5 +51,11 @@ async function search(query,options){
  var ids=Object.keys(providers),results=await Promise.all(ids.map(async function(id){try{var raw=await providers[id].search(String(query||''),options||{}),list=Array.isArray(raw)?raw:(raw&&Array.isArray(raw.products)?raw.products:[]);return{providerId:id,products:normalizeMany(list,id),error:null};}catch(e){return{providerId:id,products:[],error:clean(e&&e.message||e)};}}));
  var products=[];results.forEach(function(r){products=products.concat(r.products);});return{query:String(query||''),products:products,providers:results.map(function(r){return{providerId:r.providerId,count:r.products.length,error:r.error};})};
 }
+/* Static retailer identity/host allowlist; credentials and feed URLs remain server-only. */
+[
+ {id:'digikala-feed',retailers:[{id:'digikala',name:'دیجی‌کالا',hosts:['digikala.com']}]},
+ {id:'technolife-feed',retailers:[{id:'technolife',name:'تکنولایف',hosts:['technolife.ir']}]},
+ {id:'snappshop-feed',retailers:[{id:'snappshop',name:'اسنپ‌شاپ',hosts:['snappshop.ir']}]}
+].forEach(function(item){register(item.id,{retailers:item.retailers,search:async function(){return[];}});});
 root.DigiYarComparisonProviderRegistry=Object.freeze({version:VERSION,register:register,normalize:normalize,normalizeMany:normalizeMany,search:search,listProviders:function(){return Object.keys(providers);}});
 })(typeof window!=='undefined'?window:globalThis);

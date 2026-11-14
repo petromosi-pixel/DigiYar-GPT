@@ -32,13 +32,17 @@ async function handleSearch(query,context){
   try{state.products=await producer.produce(q,{limit:8});}
   catch(error){console.warn('[Hooshyar] local product search failed',error);}
  }
- /* Only current, source-backed retailer offers are merged for comparison.
-    Local catalogue results remain discovery results, never verified offers. */
- var providerRegistry=root.DigiYarComparisonProviderRegistry;
- if(providerRegistry&&typeof providerRegistry.search==='function'){
-  try{var feed=await providerRegistry.search(q,{limit:8});if(feed&&Array.isArray(feed.products))state.products=state.products.concat(feed.products);state.providerFeed=feed&&Array.isArray(feed.providers)?feed.providers:[];}
-  catch(error){console.warn('[Hooshyar] verified retailer feeds unavailable',error);}
- }
+ /* Comparison offers come only from the server-side authorized partner-feed gateway.
+    No retailer token or feed URL is exposed to this browser module. */
+ try{
+  var apiOrigin=root.location&&/\\.vercel\\.app$/.test(root.location.hostname)?root.location.origin:'https://digi-yar-core.vercel.app';
+  var feedResponse=await root.fetch(apiOrigin+'/api/comparison/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q,limit:8})});
+  if(feedResponse&&feedResponse.ok){
+   var feed=await feedResponse.json();
+   if(feed&&Array.isArray(feed.products))state.products=state.products.concat(feed.products);
+   state.providerFeed=feed&&Array.isArray(feed.sources)?feed.sources:[];
+  }else{state.providerFeed=[];console.warn('[Hooshyar] comparison feed gateway returned',feedResponse&&feedResponse.status);}
+ }catch(error){state.providerFeed=[];console.warn('[Hooshyar] authorized comparison feeds unavailable',error);}
  state.updatedAt=new Date().toISOString();
  try{root.dispatchEvent(new CustomEvent('digiyar:v9-assistant-results',{detail:snapshot()}));}catch(_){}
  return snapshot();

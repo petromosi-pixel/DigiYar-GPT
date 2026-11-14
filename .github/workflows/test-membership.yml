@@ -8,6 +8,8 @@ on:
       - 'js/v8-membership-catalog.js'
       - 'js/v8-membership-access.js'
       - 'js/v8-comparison-engine.js'
+      - 'api/comparison/products.js'
+      - 'tests/v8-comparison-api.test.mjs'
       - 'js/v8-comparison-provider-registry.js'
       - 'js/v9-hooshyar-assistant.js'
       - 'js/v8-hooshyar-engine.js'
