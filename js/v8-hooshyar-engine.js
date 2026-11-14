@@ -162,6 +162,8 @@ function resolveSearchContext(query,filters){
  /* Do not stop merely because the product is absent from the local vocabulary. The catalog-level fallback below still routes unknown products to broad merchants. */
  Object.keys(catalog).forEach(function(id){
   var key=String(id).toLowerCase(),store=catalog[id]||{},fields=[].concat(store.products||[],store.aliases||[],store.specialties||[],store.productFamilies||[],store.querySignals||[]);
+   /* BerozKala currently diverts phone searches to accessories; Takhfifan redirects to login. Exclude only from phone-product searches, not from other categories. */
+   if(intent==='digital_product'&&/(?:گوشی|موبایل)/.test(raw)&&['berozkala','takhfifan'].indexOf(key)>=0)return;
   var hay=normalize(fields.join(' ')),fieldTokens=wordTokens(hay),domains=Array.isArray(store.domains)?store.domains:[];
   /* Request kind is a hard category boundary: food cannot leak into beauty/home, and services cannot leak into ordinary product marketplaces. */
   if(analysis.requestKind==='food'&&domains.indexOf('supermarket')<0)return;

@@ -6,7 +6,7 @@ var state={query:'',products:[],comparison:null};
 function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
 function normalizeStore(p){
  var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
- var raw=clean(offer.storeName||offer.store||p.storeName||p.store||p.sourceName||p.sourceId||p.source);
+ var raw=clean(offer.storeName||offer.store||p.storeName||p.store);
  if(/torobshop|torob/i.test(raw))return 'ترب';
  if(/technolife/i.test(raw))return 'تکنولایف';
  if(/digikala/i.test(raw))return 'دیجی‌کالا';
@@ -14,30 +14,17 @@ function normalizeStore(p){
  if(/basalam/i.test(raw))return 'باسلام';
  return raw;
 }
-function productUrl(p){
- var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
- return clean(p.productUrl||p.comparisonUrl||p.sourceUrl||p.url||p.affiliateUrl||offer.productUrl||offer.comparisonUrl||offer.affiliateUrl);
-}
+function productUrl(p){return clean(p&&p.productUrl);}
 function price(p){
  var offer=p&&p.bestOffer&&typeof p.bestOffer==='object'?p.bestOffer:{};
  var value=Number(offer.priceToman||offer.price||p.priceToman||p.price);
  return Number.isFinite(value)&&value>0?value:0;
 }
 function prepare(input){
- var list=Array.isArray(input)?input:[];
- var seen=Object.create(null),out=[];
- list.forEach(function(p){
-  if(!p||typeof p!=='object'||p.isSearchFallback===true||p.source==='store-search-fallback')return;
-  var name=clean(p.name||p.title||p.productName),store=normalizeStore(p),url=productUrl(p),amount=price(p);
-  if(!name||!store||!amount||!url)return;
-  var parsed;try{parsed=new URL(url,root.location&&root.location.href||'https://digiyar.invalid/');}catch(_){return;}
-  if(!/^https?:$/.test(parsed.protocol)||!parsed.hostname||parsed.hostname==='digiyar.invalid')return;
-  var key=clean(p.id||p.productId||url).toLowerCase();
-  if(seen[key])return;seen[key]=true;
-  out.push(Object.assign({},p,{name:name,store:store,storeName:store,priceToman:amount,price:amount,productUrl:parsed.href,comparisonUrl:parsed.href}));
- });
- var stores=Object.create(null);out.forEach(function(p){stores[p.store.toLowerCase()]=true;});
- return {products:out.slice(0,20),storeCount:Object.keys(stores).length,ready:out.length>=2&&Object.keys(stores).length>=2};
+ var registry=root.DigiYarComparisonProviderRegistry;
+ var verified=registry&&typeof registry.normalizeMany==='function'?registry.normalizeMany(Array.isArray(input)?input:[]):[];
+ var stores=Object.create(null);verified.forEach(function(p){stores[p.retailerId]=true;});
+ return {products:verified.slice(0,20),storeCount:Object.keys(stores).length,ready:verified.length>=2&&Object.keys(stores).length>=2};
 }
 function installStyle(){
  if(root.document.getElementById('v8-membership-comparison-style'))return;
@@ -120,7 +107,7 @@ function onResults(event){
   }else if(prepared.products.length){
    hint.textContent='برای «'+query+'» فقط '+prepared.products.length+' محصولِ دارای قیمت و لینک معتبر از '+prepared.storeCount+' فروشگاه در داده‌های فعلی پیدا شد. مقایسهٔ واقعی به حداقل دو فروشگاه مستقل نیاز دارد.';
   }else{
-   hint.textContent='نتایج این جست‌وجو فعلاً مسیر جست‌وجوی فروشگاه‌ها هستند، نه اطلاعات محصول و قیمت. برای جلوگیری از جدول ساختگی، مقایسه تا دریافت دادهٔ واقعی از دست‌کم دو فروشگاه فعال نمی‌شود.';
+   hint.textContent='هنوز دادهٔ تازه و تأییدشدهٔ محصول از دو فروشگاه مستقل به دیجی‌یار متصل نیست. مسیرهای جست‌وجوی فروشگاه‌ها، قیمت‌های قدیمی و لینک‌های دسته‌بندی برای ساخت جدول مقایسه پذیرفته نمی‌شوند.';
   }
  }
 }
