@@ -18,7 +18,7 @@
 </header>
 <section class="card">
 <h2>خروجی قابل مشاهدهٔ ویجت</h2>
-<div id="affilio-widget-811a0066-413e-4d2a-9891-758dde31003e" class="widget"><span class="muted">در انتظار بارگذاری ویجت افیلیو…</span></div>
+<div id="affilio-widget-e645ea96-6e3d-454f-9e8e-638d47cf5fb9" class="widget"><span class="muted">در انتظار بارگذاری ویجت افیلیو…</span></div>
 </section>
 <section class="card">
 <h2>گزارش رهگیری مرورگر</h2>
@@ -30,11 +30,32 @@
 </div>
 <script>
 (function(){
-  const root=document.getElementById('affilio-widget-811a0066-413e-4d2a-9891-758dde31003e');
+  const root=document.getElementById('affilio-widget-e645ea96-6e3d-454f-9e8e-638d47cf5fb9');
   const status=document.getElementById('status');
   const report=document.getElementById('report');
   const resources=new Map();
+  const apiResponses=[];
   const errors=[];
+  // Capture only the two public JSON endpoints for this test widget.
+  // Response cloning preserves the widget's original fetch flow.
+  const nativeFetch=window.fetch.bind(window);
+  window.fetch=function(input,init){
+    let requestUrl='';
+    try{requestUrl=typeof input==='string'?input:(input&&input.url)||'';}catch(e){}
+    const isTarget=/^https:\/\/public\.affilio\.ir\/api\/public\/widgets\/e645ea96-6e3d-454f-9e8e-638d47cf5fb9\/(config|products)(?:\?|$)/.test(requestUrl);
+    return nativeFetch(input,init).then(response=>{
+      if(isTarget){
+        const endpoint=requestUrl.includes('/products')?'products':'config';
+        response.clone().text().then(body=>{
+          let parsed;
+          try{parsed=JSON.parse(body);}catch(e){parsed={rawText:body.slice(0,20000)};}
+          apiResponses.push({endpoint,status:response.status,ok:response.ok,response:parsed});
+          build();
+        }).catch(error=>apiResponses.push({endpoint,captureError:String(error).slice(0,200)}));
+      }
+      return response;
+    });
+  };
   const started=Date.now();
   function safeUrl(raw){
     try{const u=new URL(raw,location.href);return {origin:u.origin,path:u.pathname,queryKeys:[...u.searchParams.keys()]};}
@@ -71,10 +92,11 @@
     const dom=sanitizeNode();
     const data={
       page:location.origin+location.pathname,
-      widgetId:'811a0066-413e-4d2a-9891-758dde31003e',
+      widgetId:'e645ea96-6e3d-454f-9e8e-638d47cf5fb9',
       elapsedSeconds:Math.round((Date.now()-started)/1000),
       resourceCount:resources.size,
       resources:[...resources.values()],
+      publicApiResponses:apiResponses,
       widgetText:dom.text,
       widgetHtmlSanitized:dom.html,
       errors
@@ -94,6 +116,6 @@
   setTimeout(build,7000);
 })();
 </script>
-<script async src="https://public.affilio.ir/static/loader.js" data-widget-id="811a0066-413e-4d2a-9891-758dde31003e" data-container-id="affilio-widget-811a0066-413e-4d2a-9891-758dde31003e"></script>
+<script async src="https://public.affilio.ir/static/loader.js" data-widget-id="e645ea96-6e3d-454f-9e8e-638d47cf5fb9" data-container-id="affilio-widget-e645ea96-6e3d-454f-9e8e-638d47cf5fb9"></script>
 </body>
 </html>
